@@ -3,38 +3,52 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public float jumpForce = 250f, force = 10f;
+    public float speed = 5f;
+    public float jumpForce = 5f;
+    public float gravityMultiplier = 2f;
 
     private Rigidbody _rb;
     private PlayerInput _playerInput;
-    private Vector3 _input;
+    private bool _isGrounded;
 
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
         _playerInput = GetComponent<PlayerInput>();
+        _rb.freezeRotation = true;
     }
 
-    void Update()
+    void FixedUpdate()
     {
+
         Vector2 moveInput = _playerInput.actions["Move"].ReadValue<Vector2>();
-        _input = new Vector3(moveInput.x, 0f, moveInput.y);
+        Vector3 move = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
 
-        Debug.Log(_input);
-    }
 
-    private void FixedUpdate()
-    {
-        _rb.AddForce(_input * force);
-    }
+        Vector3 displacement = move * speed * Time.fixedDeltaTime;
+        _rb.MovePosition(_rb.position + displacement);
 
-    public void Jump(InputAction.CallbackContext callbackContext)
-    {
-        if (callbackContext.performed)
+   
+        if (!_isGrounded)
         {
-            _rb.AddForce(Vector3.up * jumpForce);
-            Debug.Log("Jump");
-            Debug.Log(callbackContext.phase);
+            _rb.AddForce(Vector3.up * Physics.gravity.y * (gravityMultiplier - 1), ForceMode.Acceleration);
+        }
+    }
+
+    public void Jump(InputAction.CallbackContext context)
+    {
+        if (context.performed && _isGrounded)
+        {
+            _rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            _isGrounded = false;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            _isGrounded = true;
         }
     }
 }
