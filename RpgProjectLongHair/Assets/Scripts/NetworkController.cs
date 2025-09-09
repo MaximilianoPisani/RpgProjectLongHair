@@ -89,6 +89,15 @@ public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
+        NetworkInputData data = new NetworkInputData();
+
+
+        data.move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+        if (Input.GetKey(KeyCode.Space))
+            data.jump = true;
+
+        input.Set(data);
     }
 
 
