@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
 {
-    [Header("UI Elements")]
+
     [SerializeField] private GameObject _lobbyPanel;
     [SerializeField] private Button _createRoomButton;
     [SerializeField] private Button _joinRoomButton;
-
-    [Header("Network Components")]
     [SerializeField] private NetworkRunner _networkRunner;
     [SerializeField] private NetworkSceneManagerDefault _networkSceneManagerDefault;
     [SerializeField] private NetworkObject _playerPrefab;
+    [SerializeField] private PlayerInput _playerInput; 
 
     private Dictionary<PlayerRef, NetworkObject> _spawnedPlayers = new Dictionary<PlayerRef, NetworkObject>();
 
@@ -63,20 +63,25 @@ public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
+        if (!runner.IsServer) return;
+
+        NetworkObject playerObject = runner.Spawn(
+            _playerPrefab,
+            new Vector3(UnityEngine.Random.Range(-3, 3), 0, 0),
+            Quaternion.identity,
+            player
+        );
+        _spawnedPlayers[player] = playerObject;
+
         if (player == runner.LocalPlayer)
         {
             _lobbyPanel.SetActive(false);
+            _playerInput = playerObject.GetComponent<PlayerInput>();
         }
-
-        if (!runner.IsServer) return;
-
-        NetworkObject playerObject = runner.Spawn(_playerPrefab, new Vector3(Random.Range(-3, 3), 0, 0), Quaternion.identity, player);
-        _spawnedPlayers[player] = playerObject;
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-
         if (_spawnedPlayers.ContainsKey(player))
         {
             runner.Despawn(_spawnedPlayers[player]);
@@ -84,22 +89,15 @@ public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-
-
-
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         NetworkInputData data = new NetworkInputData();
 
-
-        data.move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-
-        if (Input.GetKey(KeyCode.Space))
-            data.jump = true;
+        data.move = _playerInput.actions["Move"].ReadValue<Vector2>();
+        data.jump = _playerInput.actions["Jump"].triggered;
 
         input.Set(data);
     }
-
 
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
     {

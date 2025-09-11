@@ -861,6 +861,7 @@ MonoBehaviour:
   _networkRunner: {fileID: 1419029008}
   _networkSceneManagerDefault: {fileID: 1419029009}
   _playerPrefab: {fileID: 7112553827686591942, guid: 499ab2d360995bb4684d8db4275f339a, type: 3}
+  _playerInput: {fileID: 1816180264773577734, guid: 499ab2d360995bb4684d8db4275f339a, type: 3}
 --- !u!114 &1419029008
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -125,6 +125,7 @@ GameObject:
   - component: {fileID: 1816180264773577734}
   - component: {fileID: -6536937099997974698}
   - component: {fileID: 7112553827686591942}
+  - component: {fileID: -8506794374674832341}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -213,9 +214,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb1831ec914348c4c865b76cbcc35007, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 22
-  jumpHeight: 5
-  gravity: -9.81
+  speed: 42
+  jumpHeight: 10
+  gravity: -200
 --- !u!136 &5970437305773189019
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -290,7 +291,19 @@ MonoBehaviour:
     m_ActionId: 6b444451-8a00-4d00-a97e-f47457f736a8
     m_ActionName: 'Player/Look[/Mouse/delta]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: -8506794374674832341}
+        m_TargetAssemblyTypeName: PlayerMeleeAttack, Assembly-CSharp
+        m_MethodName: OnAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 6c2ab1b8-8984-453a-af3d-a3c78ae1679a
     m_ActionName: 'Player/Attack[/Mouse/leftButton,/Keyboard/enter]'
   - m_PersistentCalls:
@@ -305,8 +318,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 449427388260264733}
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: Jump
-        m_Mode: 0
+        m_MethodName: RequestJump
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -397,7 +410,7 @@ CharacterController:
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
+  m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7112553827686591942
 MonoBehaviour:
@@ -418,4 +431,18 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 449427388260264733}
   - {fileID: 9113509475349114794}
+  - {fileID: -8506794374674832341}
   ForceRemoteRenderTimeframe: 0
+--- !u!114 &-8506794374674832341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6090477234238928752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ba710d21559a8e4fbe2eefb9dd00676, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _attackData: {fileID: 11400000, guid: 42af7a95122dd174a91af0608bd5822c, type: 2}
