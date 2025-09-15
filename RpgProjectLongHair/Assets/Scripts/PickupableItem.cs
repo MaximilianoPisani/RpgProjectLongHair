@@ -1,40 +1,59 @@
+using Fusion;
 using UnityEngine;
 
-public class PickupableItem : MonoBehaviour
+public class PickupableItem : NetworkBehaviour
 {
-    [SerializeField] private Item _itemData; 
-    [SerializeField] private bool _autoPickup = false; 
+    [SerializeField] private Item _itemData;
+    [SerializeField] private bool _autoPickup = false;
 
-    private bool playerInRange = false;
-    private GameObject player;
+    private bool _playerInRange = false;
+    private GameObject _player;
 
     private void Update()
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
+        if (_playerInRange && Input.GetKeyDown(KeyCode.E))
+        {
+            TryPickup();
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            _playerInRange = true;
+            _player = other.gameObject;
+
+            if (_autoPickup)
+                TryPickup();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            _playerInRange = false;
+            _player = null;
+        }
+    }
+
+    private void TryPickup()
+    {
+        if (Object.HasStateAuthority)
         {
             Pickup();
         }
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
+        else
         {
-            playerInRange = true;
-            player = other.gameObject;
-
-            if (_autoPickup)
-                Pickup();
+            RPC_RequestPickup();
         }
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_RequestPickup()
     {
-        if (other.CompareTag("Player"))
-        {
-            playerInRange = false;
-            player = null;
-        }
+        Pickup();
     }
 
     private void Pickup()
@@ -55,6 +74,6 @@ public class PickupableItem : MonoBehaviour
 
         Debug.Log($"Picked up {_itemData.name}");
 
-        Destroy(gameObject);
+        Runner.Despawn(Object);
     }
 }
