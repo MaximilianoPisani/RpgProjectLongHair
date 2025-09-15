@@ -63,20 +63,21 @@ public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (!runner.IsServer) return;
-
-        NetworkObject playerObject = runner.Spawn(
-            _playerPrefab,
-            new Vector3(UnityEngine.Random.Range(-3, 3), 0, 0),
-            Quaternion.identity,
-            player
-        );
-        _spawnedPlayers[player] = playerObject;
+        if (runner.IsServer)
+        {
+            NetworkObject playerObject = runner.Spawn(
+                _playerPrefab,
+                new Vector3(UnityEngine.Random.Range(-3, 3), 0, 0),
+                Quaternion.identity,
+                player
+            );
+            _spawnedPlayers[player] = playerObject;
+        }
 
         if (player == runner.LocalPlayer)
         {
-            _lobbyPanel.SetActive(false);
-            _playerInput = playerObject.GetComponent<PlayerInput>();
+            _lobbyPanel.SetActive(false); 
+            _playerInput = _spawnedPlayers[player].GetComponent<PlayerInput>();
         }
     }
 
