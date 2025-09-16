@@ -92,10 +92,8 @@ public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         NetworkInputData data = new NetworkInputData();
-
         data.move = _playerInput.actions["Move"].ReadValue<Vector2>();
         data.jump = _playerInput.actions["Jump"].triggered;
-
         input.Set(data);
     }
 
