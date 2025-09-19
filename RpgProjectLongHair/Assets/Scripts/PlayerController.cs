@@ -1,73 +1,33 @@
 using Fusion;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : NetworkBehaviour
 {
-    [Header("Movement Settings")]
-    public float speed = 5f;
-    public float jumpHeight = 2f;
-    public float gravity = -9.81f;
+    private NetworkCharacterController _characterController;
+    [SerializeField] private Renderer _renderer;
 
-    private CharacterController _controller;
-    private Vector3 _velocity;
-    private bool _isGrounded;
+    public float moveSpeed = 5f;
 
-    private bool _jumpRequested;
-    private PickupableItem _itemInRange;
-
-    private NetworkInputData _networkInput;
-
-    void Awake()
+    private void Awake()
     {
-        _controller = GetComponent<CharacterController>();
+        _characterController = GetComponent<NetworkCharacterController>();
     }
 
-    public void RequestJump()
+    public override void Spawned()
     {
-        _jumpRequested = true;
-    }
-
-    public void SetItemInRange(PickupableItem item)
-    {
-        _itemInRange = item;
-
-        if (_itemInRange != null)
+        if (HasInputAuthority)
         {
-            var playerInput = GetComponent<PlayerInput>();
-            playerInput.actions["Interact"].performed += ctx =>
-            {
-                InventoryManager.Instance.PickupItem(_itemInRange);
-                _itemInRange = null;
-            };
+            _renderer.material.color = Color.white;
         }
     }
 
     public override void FixedUpdateNetwork()
     {
-
-        if (!GetInput<NetworkInputData>(out var inputData))
-            return;
-
-        _networkInput = inputData;
-
-        Vector3 horizontalMove = new Vector3(_networkInput.move.x, 0, _networkInput.move.y);
-        _controller.Move(horizontalMove * speed * Runner.DeltaTime);
-
-        _velocity.y += gravity * Runner.DeltaTime;
-        _controller.Move(new Vector3(0, _velocity.y, 0) * Runner.DeltaTime);
-
-        _isGrounded = _controller.isGrounded;
-        if (_isGrounded && _velocity.y < 0)
-            _velocity.y = -2f;
-
-        if ((_networkInput.jump || _jumpRequested) && _isGrounded)
+        if (GetInput(out NetworkInputData inputPlayer))
         {
-            _velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            Debug.Log("[Player] Jump executed!");
+            Vector3 move = inputPlayer.moveDirection.normalized;
+            _characterController.Move(move * moveSpeed * Runner.DeltaTime);
         }
-
-        _jumpRequested = false;
     }
 }

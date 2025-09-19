@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
 {
-
+    [Header("UI Elements")]
     [SerializeField] private GameObject _lobbyPanel;
     [SerializeField] private Button _createRoomButton;
     [SerializeField] private Button _joinRoomButton;
+
+    [Header("Network Components")]
     [SerializeField] private NetworkRunner _networkRunner;
     [SerializeField] private NetworkSceneManagerDefault _networkSceneManagerDefault;
     [SerializeField] private NetworkObject _playerPrefab;
-    [SerializeField] private PlayerInput _playerInput; 
 
-    private Dictionary<PlayerRef, NetworkObject> _spawnedPlayers = new Dictionary<PlayerRef, NetworkObject>();
+    private Dictionary<PlayerRef, NetworkObject> _players = new Dictionary<PlayerRef, NetworkObject>();
 
     private void Start()
     {
@@ -63,41 +62,44 @@ public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.IsServer)
-        {
-            NetworkObject playerObject = runner.Spawn(
-                _playerPrefab,
-                new Vector3(UnityEngine.Random.Range(-3, 3), 0, 0),
-                Quaternion.identity,
-                player
-            );
-            _spawnedPlayers[player] = playerObject;
-        }
+        Debug.Log("OnPlayerJoined");
+        _lobbyPanel.SetActive(false);
 
-        if (player == runner.LocalPlayer)
-        {
-            _lobbyPanel.SetActive(false); 
-            _playerInput = _spawnedPlayers[player].GetComponent<PlayerInput>();
-        }
+        if (!_networkRunner.IsServer) return;
+
+        var spawnedPlayer = _networkRunner.Spawn(
+            _playerPrefab,
+            new Vector3(UnityEngine.Random.Range(-3, 3), 0, 0),
+            Quaternion.identity,
+            player
+        );
+
+        _players[player] = spawnedPlayer;
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        if (_spawnedPlayers.ContainsKey(player))
+        if (!_networkRunner.IsServer) return;
+
+        if (_players.Remove(player, out var playerSpawned))
         {
-            runner.Despawn(_spawnedPlayers[player]);
-            _spawnedPlayers.Remove(player);
+            _networkRunner.Despawn(playerSpawned);
         }
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        NetworkInputData data = new NetworkInputData();
-        data.move = _playerInput.actions["Move"].ReadValue<Vector2>();
-        data.jump = _playerInput.actions["Jump"].triggered;
-        input.Set(data);
-    }
+        Vector3 move = Vector3.zero;
+        move.x = Input.GetAxisRaw("Horizontal");
+        move.z = Input.GetAxisRaw("Vertical");
 
+        var inputPlayer = new NetworkInputData
+        {
+            moveDirection = move
+        };
+
+        input.Set(inputPlayer);
+    }
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
     {
     }

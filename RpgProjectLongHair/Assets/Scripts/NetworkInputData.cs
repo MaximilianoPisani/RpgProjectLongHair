@@ -3,6 +3,5 @@ using UnityEngine;
 
 public struct NetworkInputData : INetworkInput
 {
-    public Vector2 move;
-    public NetworkBool jump;
+    public Vector3 moveDirection; 
 }
