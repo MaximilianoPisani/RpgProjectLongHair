@@ -126,6 +126,7 @@ GameObject:
   - component: {fileID: 7112553827686591942}
   - component: {fileID: -8506794374674832341}
   - component: {fileID: 6908045070730609134}
+  - component: {fileID: 3075019007369046505}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -427,6 +428,7 @@ MonoBehaviour:
   - {fileID: 449427388260264733}
   - {fileID: -8506794374674832341}
   - {fileID: 6908045070730609134}
+  - {fileID: 3075019007369046505}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-8506794374674832341
 MonoBehaviour:
@@ -460,3 +462,15 @@ MonoBehaviour:
   braking: 10
   maxSpeed: 10
   rotationSpeed: 15
+--- !u!114 &3075019007369046505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6090477234238928752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23b3c77091fde3d47a824e8d9bbee206, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -6,7 +6,14 @@ public class PickupableItem : NetworkBehaviour
 {
     [SerializeField] private Item _itemData;
 
-    public Item GetItemData() => _itemData;
+    public ItemData ToItemData(int id)
+    {
+        return new ItemData
+        {
+            id = id,
+            type = _itemData.type
+        };
+    }
 
     private void Reset()
     {

@@ -1,11 +1,15 @@
 using Fusion;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(NetworkCharacterController))]
+[RequireComponent(typeof(NetworkedInventory))]
 public class PlayerController : NetworkBehaviour
 {
-    private NetworkCharacterController _characterController;
     [SerializeField] private Renderer _renderer;
+
+    private NetworkCharacterController _characterController;
+    private NetworkedInventory _inventory;
 
     public float moveSpeed = 5f;
     public float pickupRange = 2f;
@@ -13,12 +17,14 @@ public class PlayerController : NetworkBehaviour
     private void Awake()
     {
         _characterController = GetComponent<NetworkCharacterController>();
+        _inventory = GetComponent<NetworkedInventory>();
     }
 
     public override void Spawned()
     {
         if (HasInputAuthority)
-            _renderer.material.color = Color.white;
+           _renderer.material.color = Color.white;
+        Debug.Log("PlayerController Spawned con autoridad de input.");
     }
 
     public override void FixedUpdateNetwork()
@@ -30,23 +36,34 @@ public class PlayerController : NetworkBehaviour
 
             if (input.interact)
             {
-                AttemptPickup();
+                TryPickupItem();
             }
         }
     }
 
-    private void AttemptPickup()
+    private void TryPickupItem()
     {
+        if (!Object.HasStateAuthority)
+            return;
+
         Collider[] hits = Physics.OverlapSphere(transform.position, pickupRange);
         foreach (var hit in hits)
         {
-            if (hit.TryGetComponent<PickupableItem>(out var item))
+            if (hit.TryGetComponent<PickupableItem>(out var pickup))
             {
-                if (item.Object.HasStateAuthority) 
+                int newItemId = Random.Range(1, 999999);
+
+                if (_inventory.AddItem(pickup.ToItemData(newItemId)))
                 {
-                    Runner.Despawn(item.Object);
-                    Debug.Log($"Item {item.GetItemData().name} despawned by {name}");
+                    Runner.Despawn(pickup.Object);
+                    Debug.Log($"Item {pickup.name} pickeado y guardado en inventario.");
                 }
+                else
+                {
+                    Debug.Log("Inventario lleno, no se puede agarrar.");
+                }
+
+                break; 
             }
         }
     }
