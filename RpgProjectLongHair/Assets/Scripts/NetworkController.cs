@@ -16,6 +16,7 @@ public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkRunner _networkRunner;
     [SerializeField] private NetworkSceneManagerDefault _networkSceneManagerDefault;
     [SerializeField] private NetworkObject _playerPrefab;
+    [SerializeField] private NetworkObject _itemPrefab;
 
     private Dictionary<PlayerRef, NetworkObject> _players = new Dictionary<PlayerRef, NetworkObject>();
 
@@ -75,6 +76,19 @@ public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
         );
 
         _players[player] = spawnedPlayer;
+
+        if (_players.Count == 1) 
+        {
+            SpawnTestItem();
+        }
+    }
+
+    private void SpawnTestItem()
+    {
+        if (!_networkRunner.IsServer) return; 
+
+        Vector3 pos = new Vector3(UnityEngine.Random.Range(-5f, 5f), 0.5f, UnityEngine.Random.Range(-5f, 5f));
+        _networkRunner.Spawn(_itemPrefab, pos, Quaternion.identity);
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -93,9 +107,12 @@ public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
         move.x = Input.GetAxisRaw("Horizontal");
         move.z = Input.GetAxisRaw("Vertical");
 
+        bool interact = Input.GetKey(KeyCode.E); 
+
         var inputPlayer = new NetworkInputData
         {
-            moveDirection = move
+            moveDirection = move,
+            interact = interact
         };
 
         input.Set(inputPlayer);

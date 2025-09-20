@@ -14,7 +14,8 @@ GameObject:
   - component: {fileID: 8660179776883193737}
   - component: {fileID: 3159236666338180664}
   - component: {fileID: 8920251194860380540}
-  - component: {fileID: 6179743182851368720}
+  - component: {fileID: 2804549079892669209}
+  - component: {fileID: -752974502390191848}
   m_Layer: 0
   m_Name: Item
   m_TagString: Untagged
@@ -124,12 +125,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _itemData:
-    name: Weapon
+    name: 
     description: 
     type: 0
-  _autoPickup: 0
-  pickupPrefab:
-    RawGuidValue: a35687a7c34634345ba72ef41fc5d291
 --- !u!114 &8920251194860380540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,9 +146,36 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 3159236666338180664}
-  - {fileID: 6179743182851368720}
+  - {fileID: -752974502390191848}
   ForceRemoteRenderTimeframe: 0
---- !u!114 &6179743182851368720
+--- !u!54 &2804549079892669209
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7807835937172801353}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &-752974502390191848
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
