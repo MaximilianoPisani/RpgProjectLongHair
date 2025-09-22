@@ -24,7 +24,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (HasInputAuthority)
            _renderer.material.color = Color.white;
-        Debug.Log("PlayerController Spawned con autoridad de input.");
+        Debug.Log("PlayerController Spawned with input authority.");
     }
 
     public override void FixedUpdateNetwork()
@@ -56,11 +56,11 @@ public class PlayerController : NetworkBehaviour
                 if (_inventory.AddItem(pickup.ToItemData(newItemId)))
                 {
                     Runner.Despawn(pickup.Object);
-                    Debug.Log($"Item {pickup.name} pickeado y guardado en inventario.");
+                    Debug.Log($"Item {pickup.name} picked and stored in inventory.");
                 }
                 else
                 {
-                    Debug.Log("Inventario lleno, no se puede agarrar.");
+                    Debug.Log("Inventory full, cannot be grabbed.");
                 }
 
                 break; 

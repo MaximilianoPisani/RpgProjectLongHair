@@ -16,12 +16,12 @@ public class NetworkedInventory : NetworkBehaviour
             if (Items[i].id == 0) 
             {
                 Items.Set(i, item); 
-                Debug.Log($"Item agregado en slot {i} para {Object.InputAuthority}");
+                Debug.Log($"Item added to slot {i} for {Object.InputAuthority}");
                 return true;
             }
         }
 
-        Debug.LogWarning("Inventario lleno");
+        Debug.LogWarning("Inventory full");
         return false;
     }
 

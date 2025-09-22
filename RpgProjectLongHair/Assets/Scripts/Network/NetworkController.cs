@@ -17,6 +17,7 @@ public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkSceneManagerDefault _networkSceneManagerDefault;
     [SerializeField] private NetworkObject _playerPrefab;
     [SerializeField] private NetworkObject _itemPrefab;
+    [SerializeField] private EnemySpawner _enemySpawner;
 
     private Dictionary<PlayerRef, NetworkObject> _players = new Dictionary<PlayerRef, NetworkObject>();
 
@@ -63,7 +64,6 @@ public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        Debug.Log("OnPlayerJoined");
         _lobbyPanel.SetActive(false);
 
         if (!_networkRunner.IsServer) return;
@@ -77,13 +77,13 @@ public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
 
         _players[player] = spawnedPlayer;
 
-        if (_players.Count == 1) 
+        if (_players.Count == 1)
         {
-            SpawnTestItem();
+            SpawnItem();
+            EnemySpawner.Instance.SpawnEnemies(_networkRunner);
         }
     }
-
-    private void SpawnTestItem()
+    private void SpawnItem()
     {
         if (!_networkRunner.IsServer) return; 
 

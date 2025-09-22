@@ -862,6 +862,7 @@ MonoBehaviour:
   _networkSceneManagerDefault: {fileID: 1419029009}
   _playerPrefab: {fileID: 7112553827686591942, guid: 499ab2d360995bb4684d8db4275f339a, type: 3}
   _itemPrefab: {fileID: 8920251194860380540, guid: a35687a7c34634345ba72ef41fc5d291, type: 3}
+  _enemySpawner: {fileID: -1656151890187047037, guid: 8ef7f7a8728d0cd48966167f51918daf, type: 3}
 --- !u!114 &1419029008
 MonoBehaviour:
   m_ObjectHideFlags: 0
