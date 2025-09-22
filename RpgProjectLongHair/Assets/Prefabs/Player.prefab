@@ -216,8 +216,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _renderer: {fileID: 9027024041521625861}
-  moveSpeed: 25
-  pickupRange: 2
+  pickupRange: 3
 --- !u!136 &5970437305773189019
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -458,9 +457,9 @@ MonoBehaviour:
   _stateAuthorityChangeErrorCorrectionDelta: 0
   gravity: -40
   jumpImpulse: 8
-  acceleration: 15
-  braking: 10
-  maxSpeed: 10
+  acceleration: 16
+  braking: 27
+  maxSpeed: 15
   rotationSpeed: 15
 --- !u!114 &3075019007369046505
 MonoBehaviour:

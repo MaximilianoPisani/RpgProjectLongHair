@@ -11,7 +11,6 @@ public class PlayerController : NetworkBehaviour
     private NetworkCharacterController _characterController;
     private NetworkedInventory _inventory;
 
-    public float moveSpeed = 5f;
     public float pickupRange = 2f;
 
     private void Awake()
@@ -31,8 +30,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (GetInput(out NetworkInputData input))
         {
-            Vector3 move = input.moveDirection.normalized;
-            _characterController.Move(move * moveSpeed * Runner.DeltaTime);
+            _characterController.Move(input.moveDirection);
 
             if (input.interact)
             {
