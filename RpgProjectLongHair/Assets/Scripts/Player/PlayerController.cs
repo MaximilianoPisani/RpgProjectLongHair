@@ -34,6 +34,7 @@ public class PlayerController : NetworkBehaviour
             Vector3 move = input.moveDirection.normalized;
             _characterController.Move(move * moveSpeed * Runner.DeltaTime);
 
+
             if (input.interact)
             {
                 TryPickupItem();
