@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4985959513854983216
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7505190822256135982}
+  m_Layer: 0
+  m_Name: AttackOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7505190822256135982
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4985959513854983216}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.058, y: -0.018, z: 0.52}
+  m_LocalScale: {x: 0.10901172, y: 0.109758526, z: 0.111047804}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3421648598093018387}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5456948168675829924
 GameObject:
   m_ObjectHideFlags: 0
@@ -16,9 +47,10 @@ GameObject:
   - component: {fileID: -6679422955088169947}
   - component: {fileID: -1964026567790909735}
   - component: {fileID: -6737000312332604829}
-  m_Layer: 0
+  - component: {fileID: 1680863857489578343}
+  m_Layer: 3
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -32,10 +64,11 @@ Transform:
   m_GameObject: {fileID: 5456948168675829924}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.6, y: -3.04, z: -2.73}
-  m_LocalScale: {x: 9.173326, y: 9.65108, z: 9.005131}
+  m_LocalPosition: {x: -1.6, y: 5.79, z: -2.73}
+  m_LocalScale: {x: 9.173326, y: 9.110909, z: 9.005131}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7505190822256135982}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8025735016533120825
@@ -131,6 +164,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: -6679422955088169947}
   - {fileID: -6737000312332604829}
+  - {fileID: 1680863857489578343}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-6679422955088169947
 MonoBehaviour:
@@ -159,8 +193,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 25
-  m_Acceleration: 20
+  m_Speed: 16
+  m_Acceleration: 17
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
@@ -168,7 +202,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1
-  m_BaseOffset: 0.2
+  m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 1
 --- !u!114 &-6737000312332604829
@@ -184,3 +218,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _updateInterval: 0.5
+--- !u!114 &1680863857489578343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5456948168675829924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99d1311fb4a7e5145a5e9003b9b56192, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 100
+  _meshRenderer: {fileID: 9220746733493959180}
+  _flashColor: {r: 0.4264151, g: 0.068976164, b: 0.031377666, a: 1}
+  _flashDuration: 0.4

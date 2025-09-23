@@ -23,24 +23,22 @@ public class EnemySpawner : MonoBehaviour
     }
 
     public void SpawnEnemies(NetworkRunner runner, NetworkObject targetPlayer)
-    {
+    {    
         if (!runner.IsServer) return;
 
-        for (int i = 0; i < _enemyCount; i++)
-        {
-            Transform spawnPoint = _spawnPoints[i % _spawnPoints.Length];
-            Vector3 pos = spawnPoint.position;
+        for (int i = 0; i < _enemyCount; i++) 
+        { 
+            Transform spawnPoint = _spawnPoints[i % _spawnPoints.Length]; 
 
-            var enemy = runner.Spawn(_enemyPrefab, pos, Quaternion.identity);
-            _spawnedEnemies.Add(enemy);
+            Vector3 pos = spawnPoint.position; var enemy = runner.Spawn(_enemyPrefab, pos, Quaternion.identity);
 
+            _spawnedEnemies.Add(enemy); var enemyController = enemy.GetComponent<EnemyController>();
 
-            var enemyController = enemy.GetComponent<EnemyController>();
-            if (enemyController != null)
-            {
-                enemyController.SetTarget(targetPlayer);
-            }
-        }
+            if (enemyController != null) 
+            { 
+                enemyController.SetTarget(targetPlayer); 
+            } 
+        } 
     }
 
     public List<NetworkObject> GetEnemies() => _spawnedEnemies;

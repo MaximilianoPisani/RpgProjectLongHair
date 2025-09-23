@@ -108,6 +108,37 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &2798630553954225004
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5150705641561846506}
+  m_Layer: 0
+  m_Name: AttackOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5150705641561846506
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2798630553954225004}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.004813093, y: -0.07768881, z: -0.015251761, w: -0.99684936}
+  m_LocalPosition: {x: 0.045, y: 0.043, z: 0.464}
+  m_LocalScale: {x: 0.11796686, y: 0.12185942, z: 0.10965004}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6285194965559427798}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6090477234238928752
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,6 +158,7 @@ GameObject:
   - component: {fileID: -8506794374674832341}
   - component: {fileID: 6908045070730609134}
   - component: {fileID: 3075019007369046505}
+  - component: {fileID: 27165992549200713}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -148,6 +180,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2504046093254682203}
+  - {fileID: 5150705641561846506}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -179.314, y: 171.09799, z: 178.3}
 --- !u!33 &3135776235995525224
@@ -428,6 +461,7 @@ MonoBehaviour:
   - {fileID: -8506794374674832341}
   - {fileID: 6908045070730609134}
   - {fileID: 3075019007369046505}
+  - {fileID: 27165992549200713}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-8506794374674832341
 MonoBehaviour:
@@ -442,6 +476,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _attackData: {fileID: 11400000, guid: 42af7a95122dd174a91af0608bd5822c, type: 2}
+  _attackOrigin: {fileID: 5150705641561846506}
+  _enemyLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!114 &6908045070730609134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -473,3 +511,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b3c77091fde3d47a824e8d9bbee206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &27165992549200713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6090477234238928752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f1a3bc9ed3017c4891b63ddb57c5688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 100
