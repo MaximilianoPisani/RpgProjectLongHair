@@ -159,7 +159,7 @@ GameObject:
   - component: {fileID: 6908045070730609134}
   - component: {fileID: 3075019007369046505}
   - component: {fileID: 27165992549200713}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -248,8 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb1831ec914348c4c865b76cbcc35007, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _renderer: {fileID: 9027024041521625861}
-  pickupRange: 3
+  _pickupRange: 2
 --- !u!136 &5970437305773189019
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -326,11 +325,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 449427388260264733}
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: SetItemInRange
-        m_Mode: 2
+        m_MethodName: OnInteract
+        m_Mode: 0
         m_Arguments:
-          m_ObjectArgument: {fileID: 3159236666338180664, guid: a35687a7c34634345ba72ef41fc5d291, type: 3}
-          m_ObjectArgumentAssemblyTypeName: PickupableItem, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -524,3 +523,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxHealth: 100
+  _meshRenderer: {fileID: 9027024041521625861}
+  _flashColor: {r: 0.42745098, g: 0.07058824, b: 0.03137255, a: 1}
+  _flashCount: 3
+  _flashDuration: 0.2

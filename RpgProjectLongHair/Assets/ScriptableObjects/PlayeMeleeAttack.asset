@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: PlayeMeleeAttack
   m_EditorClassIdentifier: 
   _attackRange: 5
-  _damage: 50
+  _damage: 25
   _cooldown: 1

@@ -1,50 +1,65 @@
-using Fusion;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.InputSystem;
+using Fusion;
 
+[RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(NetworkCharacterController))]
 [RequireComponent(typeof(NetworkedInventory))]
 public class PlayerController : NetworkBehaviour
 {
-    [SerializeField] private Renderer _renderer;
+    [Header("Pickup Settings")]
+    [SerializeField] private float _pickupRange = 2f;
 
+    private PlayerInput _playerInput;
     private NetworkCharacterController _characterController;
     private NetworkedInventory _inventory;
 
-    public float pickupRange = 2f;
-
     private void Awake()
     {
+        _playerInput = GetComponent<PlayerInput>();
         _characterController = GetComponent<NetworkCharacterController>();
         _inventory = GetComponent<NetworkedInventory>();
     }
 
-    public override void Spawned()
+    private void OnEnable()
     {
-        if (HasInputAuthority)
-           _renderer.material.color = Color.white;
-        Debug.Log("PlayerController Spawned with input authority.");
+        if (_playerInput != null)
+        {
+            _playerInput.actions["Interact"].performed += OnInteract;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (_playerInput != null)
+        {
+            _playerInput.actions["Interact"].performed -= OnInteract;
+        }
     }
 
     public override void FixedUpdateNetwork()
     {
-        if (GetInput(out NetworkInputData input))
-        {
-            _characterController.Move(input.moveDirection);
+        if (!GetInput(out NetworkInputData input)) return;
 
-            if (input.interact)
-            {
-                TryPickupItem();
-            }
-        }
+        _characterController.Move(input.moveDirection);
+
+        if (input.interact)
+            TryPickupItem();
+    }
+
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (!HasInputAuthority) return;
+
+        Debug.Log("[Player] Interact pressed via Input System!");
+        TryPickupItem();
     }
 
     private void TryPickupItem()
     {
-        if (!Object.HasStateAuthority)
-            return;
+        if (!Object.HasStateAuthority) return;
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, pickupRange);
+        Collider[] hits = Physics.OverlapSphere(transform.position, _pickupRange);
         foreach (var hit in hits)
         {
             if (hit.TryGetComponent<PickupableItem>(out var pickup))
@@ -61,7 +76,7 @@ public class PlayerController : NetworkBehaviour
                     Debug.Log("Inventory full, cannot be grabbed.");
                 }
 
-                break; 
+                break;
             }
         }
     }

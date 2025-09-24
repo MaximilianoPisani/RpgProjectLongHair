@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: -1964026567790909735}
   - component: {fileID: -6737000312332604829}
   - component: {fileID: 1680863857489578343}
+  - component: {fileID: -5684874997109495305}
   m_Layer: 3
   m_Name: Enemy
   m_TagString: Enemy
@@ -139,7 +140,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -165,6 +166,7 @@ MonoBehaviour:
   - {fileID: -6679422955088169947}
   - {fileID: -6737000312332604829}
   - {fileID: 1680863857489578343}
+  - {fileID: -5684874997109495305}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-6679422955088169947
 MonoBehaviour:
@@ -233,4 +235,21 @@ MonoBehaviour:
   _maxHealth: 100
   _meshRenderer: {fileID: 9220746733493959180}
   _flashColor: {r: 0.4264151, g: 0.068976164, b: 0.031377666, a: 1}
-  _flashDuration: 0.4
+  _flashDuration: 0.2
+--- !u!114 &-5684874997109495305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5456948168675829924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b428245167cf0f47ab0b48a2fc01f3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _attackData: {fileID: 11400000, guid: d4f40e7ef69ca2543acb5b9093db7ab8, type: 2}
+  _playerLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  _attackOrigin: {fileID: 7505190822256135982}
