@@ -1,17 +1,36 @@
-using System.Collections;
-using UnityEngine;
 using Fusion;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerMeleeAttack : NetworkBehaviour
 {
     [SerializeField] private MeleeAttackData _attackData;
+    [SerializeField] private Transform _attackOrigin;
+    [SerializeField] private LayerMask _enemyLayer;
 
     private float _nextAttackTime;
+    private PlayerInput _playerInput;
+
+    private void Awake()
+    {
+        _playerInput = GetComponent<PlayerInput>();
+    }
+
+    private void OnEnable()
+    {
+        if (_playerInput != null)
+            _playerInput.actions["Attack"].performed += OnAttack;
+    }
+
+    private void OnDisable()
+    {
+        if (_playerInput != null)
+            _playerInput.actions["Attack"].performed -= OnAttack;
+    }
 
     public void OnAttack(InputAction.CallbackContext context)
     {
-        if (!HasInputAuthority || !context.started) return;
+        if (!HasInputAuthority) return;
         TryAttack();
     }
 
@@ -20,23 +39,22 @@ public class PlayerMeleeAttack : NetworkBehaviour
         if (Time.time < _nextAttackTime) return;
 
         _nextAttackTime = Time.time + _attackData.Cooldown;
-
-
-        Debug.Log($"[Player] Melee Attack - Range: {_attackData.AttackRange}, Damage: {_attackData.Damage}");
-
-
-        StartCoroutine(ShowDebugAttackArea());
+        RPC_PerformAttack();
     }
 
-    private IEnumerator ShowDebugAttackArea()
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_PerformAttack()
     {
-        float duration = 0.2f;
-        float timer = 0f;
-        while (timer < duration)
+        Collider[] hits = Physics.OverlapSphere(_attackOrigin.position, _attackData.AttackRange, _enemyLayer);
+
+        foreach (var hit in hits)
         {
-            timer += Time.deltaTime;
-            Debug.DrawRay(transform.position, transform.forward * _attackData.AttackRange, Color.red);
-            yield return null;
+            if (hit.TryGetComponent<EnemyHealth>(out var enemyHealth))
+            {
+                enemyHealth.TakeDamage(_attackData.Damage);
+                Debug.Log($"[Server] Enemy {hit.name} received {_attackData.Damage} of damage.");
+            }
         }
     }
+
 }

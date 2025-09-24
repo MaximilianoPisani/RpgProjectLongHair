@@ -108,7 +108,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &2675060966892825923
+--- !u!1 &2798630553954225004
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,29 +116,29 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 239836834020603414}
+  - component: {fileID: 5150705641561846506}
   m_Layer: 0
-  m_Name: CameraTarget
+  m_Name: AttackOrigin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &239836834020603414
+--- !u!4 &5150705641561846506
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2675060966892825923}
+  m_GameObject: {fileID: 2798630553954225004}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.11320323, y: 0, z: 0, w: 0.9935719}
-  m_LocalPosition: {x: 0.5, y: 1.4, z: -1.8}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.004813093, y: -0.07768881, z: -0.015251761, w: -0.99684936}
+  m_LocalPosition: {x: 0.045, y: 0.043, z: 0.464}
+  m_LocalScale: {x: 0.11796686, y: 0.12185942, z: 0.10965004}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6285194965559427798}
-  m_LocalEulerAnglesHint: {x: 13, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6090477234238928752
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,8 +158,8 @@ GameObject:
   - component: {fileID: -8506794374674832341}
   - component: {fileID: 6908045070730609134}
   - component: {fileID: 3075019007369046505}
-  - component: {fileID: 6334534986449747543}
-  m_Layer: 0
+  - component: {fileID: 27165992549200713}
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -180,7 +180,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2504046093254682203}
-  - {fileID: 239836834020603414}
+  - {fileID: 5150705641561846506}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -179.314, y: 171.09799, z: 178.3}
 --- !u!33 &3135776235995525224
@@ -248,9 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb1831ec914348c4c865b76cbcc35007, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _renderer: {fileID: 9027024041521625861}
-  moveSpeed: 25
-  pickupRange: 2
+  _pickupRange: 2
 --- !u!136 &5970437305773189019
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -327,11 +325,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 449427388260264733}
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: SetItemInRange
-        m_Mode: 2
+        m_MethodName: OnInteract
+        m_Mode: 0
         m_Arguments:
-          m_ObjectArgument: {fileID: 3159236666338180664, guid: a35687a7c34634345ba72ef41fc5d291, type: 3}
-          m_ObjectArgumentAssemblyTypeName: PickupableItem, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -462,6 +460,7 @@ MonoBehaviour:
   - {fileID: -8506794374674832341}
   - {fileID: 6908045070730609134}
   - {fileID: 3075019007369046505}
+  - {fileID: 27165992549200713}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-8506794374674832341
 MonoBehaviour:
@@ -476,6 +475,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _attackData: {fileID: 11400000, guid: 42af7a95122dd174a91af0608bd5822c, type: 2}
+  _attackOrigin: {fileID: 5150705641561846506}
+  _enemyLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!114 &6908045070730609134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -491,9 +494,9 @@ MonoBehaviour:
   _stateAuthorityChangeErrorCorrectionDelta: 0
   gravity: -40
   jumpImpulse: 8
-  acceleration: 15
-  braking: 10
-  maxSpeed: 10
+  acceleration: 16
+  braking: 27
+  maxSpeed: 15
   rotationSpeed: 15
 --- !u!114 &3075019007369046505
 MonoBehaviour:
@@ -507,7 +510,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b3c77091fde3d47a824e8d9bbee206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6334534986449747543
+--- !u!114 &27165992549200713
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -516,8 +519,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6090477234238928752}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57d556a1e438176448bd79eff0ef0722, type: 3}
+  m_Script: {fileID: 11500000, guid: 6f1a3bc9ed3017c4891b63ddb57c5688, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _camPrefab: {fileID: 5743471595904747980, guid: 3fab343d863825640a11a040b601f467, type: 3}
-  _cameraTarget: {fileID: 239836834020603414}
+  _maxHealth: 100
+  _meshRenderer: {fileID: 9027024041521625861}
+  _flashColor: {r: 0.42745098, g: 0.07058824, b: 0.03137255, a: 1}
+  _flashCount: 3
+  _flashDuration: 0.2

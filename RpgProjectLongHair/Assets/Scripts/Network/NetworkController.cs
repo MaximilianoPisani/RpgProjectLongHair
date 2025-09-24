@@ -68,7 +68,8 @@ public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
 
         if (!_networkRunner.IsServer) return;
 
-        var spawnedPlayer = _networkRunner.Spawn(
+        var spawnedPlayer = _networkRunner.Spawn
+        (
             _playerPrefab,
             new Vector3(UnityEngine.Random.Range(-3, 3), 0, 0),
             Quaternion.identity,
@@ -77,10 +78,10 @@ public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
 
         _players[player] = spawnedPlayer;
 
-        if (_players.Count == 1)
+        if (runner.IsServer && _players.Count == 1)
         {
             SpawnItem();
-            EnemySpawner.Instance.SpawnEnemies(_networkRunner);
+            _enemySpawner.SpawnEnemies(_networkRunner, spawnedPlayer);
         }
     }
     private void SpawnItem()
