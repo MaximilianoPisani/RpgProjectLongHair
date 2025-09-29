@@ -1,5 +1,5 @@
 using UnityEngine;
-using Unity.Cinemachine;   
+//using Unity.Cinemachine;   
 using Fusion;
 
 public class LocalCameraSpawner : MonoBehaviour
@@ -12,8 +12,8 @@ public class LocalCameraSpawner : MonoBehaviour
         if (!GetComponent<NetworkObject>().HasInputAuthority) return;
 
         GameObject newCam = Instantiate(_camPrefab);
-        var cmc = newCam.GetComponent<CinemachineCamera>();
-        cmc.Follow = _cameraTarget;
-        cmc.LookAt = _cameraTarget;
+        //var cmc = newCam.GetComponent<CinemachineCamera>();
+        //cmc.Follow = _cameraTarget;
+        //cmc.LookAt = _cameraTarget;
     }
 }
