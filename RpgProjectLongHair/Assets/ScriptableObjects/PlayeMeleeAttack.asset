@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d61aee9732b15bb4fbf6ec6ab93a8047, type: 3}
   m_Name: PlayeMeleeAttack
   m_EditorClassIdentifier: 
-  _attackRange: 5
+  _attackRange: 8
   _damage: 25
   _cooldown: 1

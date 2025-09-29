@@ -1,184 +1,59 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using Fusion;
-using Fusion.Sockets;
 using UnityEngine.UI;
+using Fusion;
 
-public class NetworkController : MonoBehaviour, INetworkRunnerCallbacks
+public class NetworkController : MonoBehaviour
 {
     [Header("UI Elements")]
     [SerializeField] private GameObject _lobbyPanel;
     [SerializeField] private Button _createRoomButton;
     [SerializeField] private Button _joinRoomButton;
 
-    [Header("Network Components")]
-    [SerializeField] private NetworkRunner _networkRunner;
-    [SerializeField] private NetworkSceneManagerDefault _networkSceneManagerDefault;
-    [SerializeField] private NetworkObject _playerPrefab;
-    [SerializeField] private NetworkObject _itemPrefab;
-    [SerializeField] private EnemySpawner _enemySpawner;
+    [Header("Prefabs")]
+    [SerializeField] private RunnerManager _runnerManagerPrefab;
 
-    private Dictionary<PlayerRef, NetworkObject> _players = new Dictionary<PlayerRef, NetworkObject>();
+    private RunnerManager _runnerManagerInstance;
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
 
     private void Start()
     {
-        _createRoomButton.onClick.AddListener(CreateRoom);
-        _joinRoomButton.onClick.AddListener(JoinRoom);
+        _createRoomButton.onClick.AddListener(() => TryStartRunner(GameMode.Host));
+        _joinRoomButton.onClick.AddListener(() => TryStartRunner(GameMode.Client));
     }
 
-    private async void CreateRoom()
+    private void TryStartRunner(GameMode mode)
     {
-        var gameArg = new StartGameArgs()
+        if (_runnerManagerInstance == null)
         {
-            GameMode = GameMode.Host,
-            SessionName = "Room_01",
-            SceneManager = _networkSceneManagerDefault
-        };
+            _runnerManagerInstance = Instantiate(_runnerManagerPrefab);
+            _runnerManagerInstance.name = "RunnerManager";
 
-        var result = await _networkRunner.StartGame(gameArg);
+            _runnerManagerInstance.OnPlayerSpawned += HandlePlayerSpawned;
 
-        if (!result.Ok)
-        {
-            Debug.LogError($"Failed to create room: {result.ShutdownReason}");
-            Debug.LogError($"Error: {result.ErrorMessage}");
+            _runnerManagerInstance.StartRunner(mode, OnRunnerFailed);
         }
     }
 
-    private async void JoinRoom()
+    private void HandlePlayerSpawned(NetworkObject playerObj)
     {
-        var gameArg = new StartGameArgs()
-        {
-            GameMode = GameMode.Client,
-            SessionName = "Room_01",
-            SceneManager = _networkSceneManagerDefault
-        };
-
-        var result = await _networkRunner.StartGame(gameArg);
-
-        if (!result.Ok)
-        {
-            Debug.LogError(result.ShutdownReason);
-        }
-    }
-
-    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
-    {
+        Debug.Log("[UIController] Player spawned, hiding lobby UI.");
         _lobbyPanel.SetActive(false);
+    }
 
-        if (!_networkRunner.IsServer) return;
-
-        var spawnedPlayer = _networkRunner.Spawn
-        (
-            _playerPrefab,
-            new Vector3(UnityEngine.Random.Range(-3, 3), 0, 0),
-            Quaternion.identity,
-            player
-        );
-
-        _players[player] = spawnedPlayer;
-
-        if (runner.IsServer && _players.Count == 1)
+    private void OnRunnerFailed()
+    {
+        if (_runnerManagerInstance != null)
         {
-            SpawnItem();
-            _enemySpawner.SpawnEnemies(_networkRunner, spawnedPlayer);
+            Destroy(_runnerManagerInstance.gameObject);
+            _runnerManagerInstance = null;
         }
-    }
-    private void SpawnItem()
-    {
-        if (!_networkRunner.IsServer) return; 
 
-        Vector3 pos = new Vector3(UnityEngine.Random.Range(-5f, 5f), 0.5f, UnityEngine.Random.Range(-5f, 5f));
-        _networkRunner.Spawn(_itemPrefab, pos, Quaternion.identity);
-    }
-
-    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
-    {
-        if (!_networkRunner.IsServer) return;
-
-        if (_players.Remove(player, out var playerSpawned))
-        {
-            _networkRunner.Despawn(playerSpawned);
-        }
-    }
-
-    public void OnInput(NetworkRunner runner, NetworkInput input)
-    {
-        Vector3 move = Vector3.zero;
-        move.x = Input.GetAxisRaw("Horizontal");
-        move.z = Input.GetAxisRaw("Vertical");
-
-        bool interact = Input.GetKey(KeyCode.E); 
-
-        var inputPlayer = new NetworkInputData
-        {
-            moveDirection = move,
-            interact = interact
-        };
-
-        input.Set(inputPlayer);
-    }
-    public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
-    {
-    }
-
-    public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
-    {
-    }
-
-    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
-    {
-    }
-
-    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
-    {
-    }
-
-    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
-    {
-    }
-
-    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
-    {
-    }
-
-    public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
-    {
-    }
-
-    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data)
-    {
-    }
-
-    public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress)
-    {
-    }
-
-    public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
-    {
-    }
-
-    public void OnConnectedToServer(NetworkRunner runner)
-    {
-    }
-
-    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
-    {
-    }
-
-    public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)
-    {
-    }
-
-    public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
-    {
-    }
-
-    public void OnSceneLoadDone(NetworkRunner runner)
-    {
-    }
-
-    public void OnSceneLoadStart(NetworkRunner runner)
-    {
+        Debug.Log("[UIController] Runner failed. Ready to retry.");
+        _lobbyPanel.SetActive(true);
     }
 }

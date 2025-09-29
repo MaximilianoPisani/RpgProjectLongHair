@@ -108,6 +108,37 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &946111196182130019
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5951394136088473082}
+  m_Layer: 0
+  m_Name: RespawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5951394136088473082
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 946111196182130019}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.004813093, y: -0.07768881, z: -0.015251761, w: -0.99684936}
+  m_LocalPosition: {x: -0.61, y: -1.16, z: -1.32}
+  m_LocalScale: {x: 0.11796686, y: 0.12185942, z: 0.10965004}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6285194965559427798}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2798630553954225004
 GameObject:
   m_ObjectHideFlags: 0
@@ -181,6 +212,7 @@ Transform:
   m_Children:
   - {fileID: 2504046093254682203}
   - {fileID: 5150705641561846506}
+  - {fileID: 5951394136088473082}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -179.314, y: 171.09799, z: 178.3}
 --- !u!33 &3135776235995525224
@@ -523,7 +555,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxHealth: 100
+  __currentHealth: 0
   _meshRenderer: {fileID: 9027024041521625861}
   _flashColor: {r: 0.42745098, g: 0.07058824, b: 0.03137255, a: 1}
   _flashCount: 3
   _flashDuration: 0.2
+  _respawnPoint: {fileID: 5951394136088473082}
+  _respawnDelay: 1
+  _playerPrefab: {fileID: 7112553827686591942}

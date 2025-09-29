@@ -1,0 +1,116 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using Fusion;
+using Fusion.Sockets;
+
+public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
+{
+    public event Action<NetworkObject> OnPlayerSpawned;
+
+    [Header("Network Prefabs")]
+    [SerializeField] private NetworkObject _playerPrefab;
+    [SerializeField] private NetworkObject _itemPrefab;
+    [SerializeField] private EnemySpawner _enemySpawner;
+
+    private NetworkRunner _runner;
+    private Dictionary<PlayerRef, NetworkObject> _spawnedPlayers = new();
+
+    public async void StartRunner(GameMode mode, Action onFail)
+    {
+        _runner = gameObject.AddComponent<NetworkRunner>();
+        _runner.ProvideInput = true;
+
+        var startGameArgs = new StartGameArgs
+        {
+            GameMode = mode,
+            SessionName = "Room_01",
+            Scene = SceneRef.FromIndex(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex),
+            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
+        };
+
+        var result = await _runner.StartGame(startGameArgs);
+
+        if (!result.Ok)
+        {
+            Debug.LogError($"[RunnerManager] Failed to start: {result.ShutdownReason}");
+            onFail?.Invoke();
+        }
+    }
+
+    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+    {
+        Vector3 spawnPos = GetRandomSpawnPosition();
+
+        var playerObj = runner.Spawn(_playerPrefab, spawnPos, Quaternion.identity, player);
+        _spawnedPlayers[player] = playerObj;
+
+        Debug.Log($"[RunnerManager] Player {player} spawned.");
+
+        if (playerObj.HasInputAuthority)
+        {
+            OnPlayerSpawned?.Invoke(playerObj);
+        }
+
+        if (runner.IsServer && _spawnedPlayers.Count == 1)
+        {
+            SpawnItem(runner);
+            if (_enemySpawner != null)
+                _enemySpawner.SpawnEnemies(runner);
+        }
+    }
+
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    {
+        if (runner.IsServer && _spawnedPlayers.TryGetValue(player, out var obj))
+        {
+            runner.Despawn(obj);
+            _spawnedPlayers.Remove(player);
+        }
+    }
+
+    private void SpawnItem(NetworkRunner runner)
+    {
+        if (!runner.IsServer) return;
+
+        Vector3 pos = new Vector3(UnityEngine.Random.Range(-5f, 5f), 0.5f, UnityEngine.Random.Range(-5f, 5f));
+        runner.Spawn(_itemPrefab, pos, Quaternion.identity);
+        Debug.Log("[RunnerManager] Item spawned.");
+    }
+
+    private Vector3 GetRandomSpawnPosition()
+    {
+        return new Vector3(UnityEngine.Random.Range(-3, 3), 0, UnityEngine.Random.Range(-3, 3));
+    }
+
+    public void OnInput(NetworkRunner runner, NetworkInput input)
+    {
+        Vector3 move = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        bool interact = Input.GetKey(KeyCode.E);
+
+        var data = new NetworkInputData
+        {
+            moveDirection = move,
+            interact = interact
+        };
+
+        input.Set(data);
+    }
+    public void OnObjectExitAOI(NetworkRunner r, NetworkObject o, PlayerRef p) { }
+    public void OnObjectEnterAOI(NetworkRunner r, NetworkObject o, PlayerRef p) { }
+    public void OnShutdown(NetworkRunner r, ShutdownReason s) { }
+    public void OnDisconnectedFromServer(NetworkRunner r, NetDisconnectReason reason) { }
+    public void OnConnectRequest(NetworkRunner r, NetworkRunnerCallbackArgs.ConnectRequest req, byte[] token) { }
+    public void OnConnectFailed(NetworkRunner r, NetAddress remote, NetConnectFailedReason reason) { }
+    public void OnUserSimulationMessage(NetworkRunner r, SimulationMessagePtr msg) { }
+    public void OnReliableDataReceived(NetworkRunner r, PlayerRef p, ReliableKey k, ArraySegment<byte> d) { }
+    public void OnReliableDataProgress(NetworkRunner r, PlayerRef p, ReliableKey k, float pr) { }
+    public void OnInputMissing(NetworkRunner r, PlayerRef p, NetworkInput i) { }
+    public void OnConnectedToServer(NetworkRunner r) { }
+    public void OnSessionListUpdated(NetworkRunner r, List<SessionInfo> s) { }
+    public void OnCustomAuthenticationResponse(NetworkRunner r, Dictionary<string, object> d) { }
+    public void OnHostMigration(NetworkRunner r, HostMigrationToken h) { }
+    public void OnSceneLoadDone(NetworkRunner r) { }
+    public void OnSceneLoadStart(NetworkRunner r) { }
+
+}

@@ -11,8 +11,8 @@ public class PlayerHealth : NetworkBehaviour
     [Header("Flash Effect")]
     [SerializeField] private Renderer _meshRenderer;
     [SerializeField] private Color _flashColor = Color.red;
-    [SerializeField] private int _flashCount = 3;          
-    [SerializeField] private float _flashDuration = 0.1f;  
+    [SerializeField] private int _flashCount = 3;
+    [SerializeField] private float _flashDuration = 0.1f;
 
     private Color _originalColor;
     private Coroutine _flashCoroutine;
@@ -34,9 +34,11 @@ public class PlayerHealth : NetworkBehaviour
         _currentHealth -= damage;
         Debug.Log($"[Player] {_currentHealth}/{_maxHealth} HP after taking {damage} damage.");
 
-        RPC_Flash();
-
-        if (_currentHealth <= 0)
+        if (_currentHealth > 0)
+        {
+            RPC_Flash();
+        }
+        else
         {
             Die();
         }
@@ -46,9 +48,18 @@ public class PlayerHealth : NetworkBehaviour
     {
         Debug.Log("[Player] Player has died!");
 
-        if (HasInputAuthority)
+        if (_flashCoroutine != null)
         {
-            Debug.Log("[Player] Local player died - disable input here.");
+            StopCoroutine(_flashCoroutine);
+            _flashCoroutine = null;
+        }
+
+        if (_meshRenderer != null)
+            _meshRenderer.material.color = _originalColor;
+
+        if (Object.HasStateAuthority)
+        {
+            Runner.Despawn(Object);
         }
     }
 
