@@ -2,14 +2,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 
+[System.Serializable]
+public class ItemSpawnData
+{
+    public NetworkObject Prefab;
+    public Transform[] SpawnPoints;
+    public int Count = 1;
+}
+
 public class ItemSpawner : MonoBehaviour
 {
     public static ItemSpawner Instance { get; private set; }
 
-    [SerializeField] private NetworkObject _itemPrefab; 
-    [SerializeField] private Transform[] _spawnPoints;
-    [SerializeField] private int _itemCount = 5;
-
+    [SerializeField] private List<ItemSpawnData> _spawnDatas = new List<ItemSpawnData>();
     private List<NetworkObject> _spawnedItems = new List<NetworkObject>();
 
     private void Awake()
@@ -24,23 +29,27 @@ public class ItemSpawner : MonoBehaviour
 
     public void SpawnItems(NetworkRunner runner)
     {
-        if (!runner.IsServer) return; 
+        if (!runner.IsServer) return;
 
-        for (int i = 0; i < _itemCount; i++)
+        _spawnedItems.Clear();
+
+        foreach (var data in _spawnDatas)
         {
-            Transform spawnPoint = _spawnPoints[i % _spawnPoints.Length];
-            Vector3 pos = spawnPoint.position;
+            if (data.Prefab == null || data.SpawnPoints.Length == 0) continue;
 
-            NetworkObject item = runner.Spawn(_itemPrefab, pos, Quaternion.identity);
-
-            if (item != null)
+            for (int i = 0; i < data.Count; i++)
             {
-                _spawnedItems.Add(item);
+                Transform spawnPoint = data.SpawnPoints[i % data.SpawnPoints.Length];
+                Vector3 pos = spawnPoint.position;
 
-                var pickup = item.GetComponent<PickupableItem>();
-                if (pickup != null)
+                NetworkObject item = runner.Spawn(data.Prefab, pos, Quaternion.identity);
+                if (item != null)
                 {
-                    pickup.SetRunner(runner);
+                    _spawnedItems.Add(item);
+
+                    var pickup = item.GetComponent<PickupableItem>();
+                    if (pickup != null)
+                        pickup.SetRunner(runner);
                 }
             }
         }
@@ -53,7 +62,7 @@ public class ItemSpawner : MonoBehaviour
         if (_spawnedItems.Contains(item))
         {
             _spawnedItems.Remove(item);
-            runner.Despawn(item); 
+            runner.Despawn(item);
         }
     }
 }

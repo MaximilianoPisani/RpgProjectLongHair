@@ -2,14 +2,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 
+[System.Serializable]
+public class SpawnData
+{
+    public NetworkObject Prefab;
+    public Transform[] SpawnPoints;
+    public int Count = 1;
+}
+
 public class EnemySpawner : MonoBehaviour
 {
     public static EnemySpawner Instance { get; private set; }
 
-    [SerializeField] private NetworkObject _enemyPrefab;
-    [SerializeField] private Transform[] _spawnPoints;
-    [SerializeField] private int _enemyCount = 3;
-
+    [SerializeField] private List<SpawnData> _spawnDatas = new List<SpawnData>();
     private List<NetworkObject> _spawnedEnemies = new List<NetworkObject>();
 
     private void Awake()
@@ -24,18 +29,22 @@ public class EnemySpawner : MonoBehaviour
 
     public void SpawnEnemies(NetworkRunner runner)
     {
-        if (!runner.IsServer) return; 
+        if (!runner.IsServer) return;
 
-        for (int i = 0; i < _enemyCount; i++)
+        _spawnedEnemies.Clear();
+
+        foreach (var data in _spawnDatas)
         {
-            Transform spawnPoint = _spawnPoints[i % _spawnPoints.Length];
-            Vector3 pos = spawnPoint.position;
+            if (data.Prefab == null || data.SpawnPoints.Length == 0) continue;
 
-            NetworkObject enemy = runner.Spawn(_enemyPrefab, pos, Quaternion.identity);
-
-            if (enemy != null)
+            for (int i = 0; i < data.Count; i++)
             {
-                _spawnedEnemies.Add(enemy);
+                Transform spawnPoint = data.SpawnPoints[i % data.SpawnPoints.Length];
+                Vector3 pos = spawnPoint.position;
+
+                NetworkObject enemy = runner.Spawn(data.Prefab, pos, Quaternion.identity);
+                if (enemy != null)
+                    _spawnedEnemies.Add(enemy);
             }
         }
     }

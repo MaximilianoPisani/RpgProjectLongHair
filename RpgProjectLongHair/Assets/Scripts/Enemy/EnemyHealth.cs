@@ -1,6 +1,5 @@
-using System.Collections;
-using Fusion;
 using UnityEngine;
+using Fusion;
 
 [RequireComponent(typeof(NetworkObject))]
 public class EnemyHealth : NetworkBehaviour
@@ -24,13 +23,19 @@ public class EnemyHealth : NetworkBehaviour
             _originalColor = _meshRenderer.material.color;
     }
 
-    public void TakeDamage(int damage)
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_ApplyDamage(int damage)
+    {
+        TakeDamage(damage);
+    }
+
+    private void TakeDamage(int damage)
     {
         if (!Object.HasStateAuthority) return;
         if (damage <= 0) return;
 
         _currentHealth -= damage;
-        Debug.Log($"{Object.name} received {damage} of damage. Current life: {_currentHealth}");
+        Debug.Log($"{Object.name} recibió {damage}. Vida restante: {_currentHealth}");
 
         RPC_Flash();
 
@@ -42,7 +47,7 @@ public class EnemyHealth : NetworkBehaviour
 
     private void Die()
     {
-        Debug.Log($"{Object.name} has died.");
+        Debug.Log($"{Object.name} murió.");
         if (Runner != null && Object.HasStateAuthority)
             Runner.Despawn(Object);
     }
@@ -58,7 +63,7 @@ public class EnemyHealth : NetworkBehaviour
         _flashCoroutine = StartCoroutine(FlashRoutine());
     }
 
-    private IEnumerator FlashRoutine()
+    private System.Collections.IEnumerator FlashRoutine()
     {
         _meshRenderer.material.color = _flashColor;
         yield return new WaitForSeconds(_flashDuration);

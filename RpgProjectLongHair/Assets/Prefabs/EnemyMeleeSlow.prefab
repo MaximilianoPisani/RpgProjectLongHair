@@ -50,7 +50,7 @@ GameObject:
   - component: {fileID: 1680863857489578343}
   - component: {fileID: -5684874997109495305}
   m_Layer: 3
-  m_Name: Enemy
+  m_Name: EnemyMeleeSlow
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -51,7 +51,7 @@ public class PlayerMeleeAttack : NetworkBehaviour
         {
             if (hit.TryGetComponent<EnemyHealth>(out var enemyHealth))
             {
-                enemyHealth.TakeDamage(_attackData.Damage);
+                enemyHealth.RPC_ApplyDamage(_attackData.Damage);
                 Debug.Log($"[Server] Enemy {hit.name} received {_attackData.Damage} of damage.");
             }
         }
