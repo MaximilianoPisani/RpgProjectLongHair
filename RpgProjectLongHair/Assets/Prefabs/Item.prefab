@@ -127,7 +127,7 @@ MonoBehaviour:
   _itemData:
     name: 
     description: 
-    type: 0
+    type: 2
 --- !u!114 &8920251194860380540
 MonoBehaviour:
   m_ObjectHideFlags: 0

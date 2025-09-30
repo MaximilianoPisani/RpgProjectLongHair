@@ -280,7 +280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb1831ec914348c4c865b76cbcc35007, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pickupRange: 2
+  _pickupRange: 5
 --- !u!136 &5970437305773189019
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -555,11 +555,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxHealth: 100
-  __currentHealth: 0
   _meshRenderer: {fileID: 9027024041521625861}
   _flashColor: {r: 0.42745098, g: 0.07058824, b: 0.03137255, a: 1}
   _flashCount: 3
   _flashDuration: 0.2
-  _respawnPoint: {fileID: 5951394136088473082}
-  _respawnDelay: 1
-  _playerPrefab: {fileID: 7112553827686591942}

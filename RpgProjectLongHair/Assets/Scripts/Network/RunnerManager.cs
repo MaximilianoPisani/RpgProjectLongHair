@@ -10,11 +10,12 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     [Header("Network Prefabs")]
     [SerializeField] private NetworkObject _playerPrefab;
-    [SerializeField] private NetworkObject _itemPrefab;
+    [SerializeField] private ItemSpawner _itemSpawner;
     [SerializeField] private EnemySpawner _enemySpawner;
 
     private NetworkRunner _runner;
     private Dictionary<PlayerRef, NetworkObject> _spawnedPlayers = new();
+    private List<NetworkObject> _spawnedItems = new List<NetworkObject>();
 
     public async void StartRunner(GameMode mode, Action onFail)
     {
@@ -54,9 +55,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (runner.IsServer && _spawnedPlayers.Count == 1)
         {
-            SpawnItem(runner);
-            if (_enemySpawner != null)
-                _enemySpawner.SpawnEnemies(runner);
+            _itemSpawner.SpawnItems(runner);
+            _enemySpawner?.SpawnEnemies(runner);
         }
     }
 
@@ -73,11 +73,19 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (!runner.IsServer) return;
 
-        Vector3 pos = new Vector3(UnityEngine.Random.Range(-5f, 5f), 0.5f, UnityEngine.Random.Range(-5f, 5f));
-        runner.Spawn(_itemPrefab, pos, Quaternion.identity);
-        Debug.Log("[RunnerManager] Item spawned.");
+        ItemSpawner.Instance.SpawnItems(runner);
+
+        Debug.Log("[RunnerManager] SpawnItem called through ItemSpawner.");
     }
 
+    public void RemoveItem(NetworkObject item)
+    {
+        if (_spawnedItems.Contains(item))
+        {
+            _spawnedItems.Remove(item);
+            _runner.Despawn(item);
+        }
+    }
     private Vector3 GetRandomSpawnPosition()
     {
         return new Vector3(UnityEngine.Random.Range(-3, 3), 0, UnityEngine.Random.Range(-3, 3));
