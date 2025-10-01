@@ -5,7 +5,7 @@ using UnityEngine;
 public class PickupableItem : NetworkBehaviour
 {
     [SerializeField] private Item _itemData;
-    private NetworkRunner _runner;
+    private NetworkRunner _localRunner;
 
     public ItemData ToItemData(int id)
     {
@@ -18,7 +18,7 @@ public class PickupableItem : NetworkBehaviour
 
     public void SetRunner(NetworkRunner runner)
     {
-        _runner = runner;
+        _localRunner = runner;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -31,9 +31,9 @@ public class PickupableItem : NetworkBehaviour
         ItemData data = ToItemData(GetInstanceID()); 
         if (inventory.AddItem(data))
         {
-            if (_runner != null)
+            if (_localRunner != null)
             {
-                ItemSpawner.Instance.RemoveItem(_runner, Object);
+                ItemSpawner.Instance.RemoveItem(_localRunner, Object);
             }
         }
     }

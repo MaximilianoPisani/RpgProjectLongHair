@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 154787868988637037}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.004, y: 0.437, z: 0.037}
+  m_LocalPosition: {x: 0.012, y: 0.436, z: 0.076}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -288,7 +288,7 @@ Transform:
   m_GameObject: {fileID: 5665344110674239281}
   serializedVersion: 2
   m_LocalRotation: {x: -0.004813093, y: -0.07768881, z: -0.015251761, w: -0.99684936}
-  m_LocalPosition: {x: -0.169, y: -0.021, z: -0.656}
+  m_LocalPosition: {x: -0.168, y: -0.05, z: -0.656}
   m_LocalScale: {x: 0.11796686, y: 0.12185942, z: 0.10965004}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -331,8 +331,8 @@ Transform:
   m_GameObject: {fileID: 6090477234238928752}
   serializedVersion: 2
   m_LocalRotation: {x: 0.004813093, y: 0.07768881, z: 0.015251761, w: -0.99684936}
-  m_LocalPosition: {x: -0.093637, y: 10.629, z: -9.9883}
-  m_LocalScale: {x: 8.461038, y: 8.20582, z: 9.1362}
+  m_LocalPosition: {x: -0.092858, y: 10.629, z: -9.9692}
+  m_LocalScale: {x: 7.0023384, y: 6.525268, z: 7.9098477}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2504046093254682203}
@@ -570,6 +570,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 352951302219237077}
+        m_TargetAssemblyTypeName: PlayerRangeAttack, Assembly-CSharp
+        m_MethodName: OnAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 073b6026-214d-495f-aaa7-38ef07b2f559
+    m_ActionName: 'Player/Attack1[/Mouse/rightButton,/Keyboard/enter]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player

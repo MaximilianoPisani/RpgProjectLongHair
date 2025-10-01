@@ -1520,9 +1520,33 @@ PrefabInstance:
       propertyPath: '_spawnDatas.Array.data[0].SpawnPoints.Array.data[2]'
       value: 
       objectReference: {fileID: 457225363}
+    - target: {fileID: 4569322173382619969, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 41.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4569322173382619969, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 58.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5419780057005222131, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -27.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5419780057005222131, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 58.700005
+      objectReference: {fileID: 0}
     - target: {fileID: 6117618314225308384, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
       propertyPath: m_Name
       value: ItemSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 6950854433125056883, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6950854433125056883, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 48.4
       objectReference: {fileID: 0}
     - target: {fileID: 8847470558875805212, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1625,6 +1649,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 26.5
       objectReference: {fileID: 0}
+    - target: {fileID: 345068103770906960, guid: 84e2030daba224f4eb14a36c72bd7c2a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 48.2
+      objectReference: {fileID: 0}
     - target: {fileID: 445179844586676213, guid: 84e2030daba224f4eb14a36c72bd7c2a, type: 3}
       propertyPath: m_Name
       value: EnemySpawner
@@ -1632,6 +1660,10 @@ PrefabInstance:
     - target: {fileID: 1102431333352046296, guid: 84e2030daba224f4eb14a36c72bd7c2a, type: 3}
       propertyPath: m_LocalPosition.y
       value: -15.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1102431333352046296, guid: 84e2030daba224f4eb14a36c72bd7c2a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.6
       objectReference: {fileID: 0}
     - target: {fileID: 6929098078885715258, guid: 84e2030daba224f4eb14a36c72bd7c2a, type: 3}
       propertyPath: _spawnDatas.Array.size
@@ -1652,7 +1684,7 @@ PrefabInstance:
     - target: {fileID: 6929098078885715258, guid: 84e2030daba224f4eb14a36c72bd7c2a, type: 3}
       propertyPath: _spawnDatas.Array.data[1].Prefab
       value: 
-      objectReference: {fileID: -164565949365206626, guid: fe6d1e13c2571734fa92a198e69d064a, type: 3}
+      objectReference: {fileID: -164565949365206626, guid: e3d22ec7baed34f4ab2474d3c0bafe89, type: 3}
     - target: {fileID: 6929098078885715258, guid: 84e2030daba224f4eb14a36c72bd7c2a, type: 3}
       propertyPath: _spawnDatas.Array.data[0].SpawnPoints.Array.size
       value: 2
@@ -1681,6 +1713,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 4.6
       objectReference: {fileID: 0}
+    - target: {fileID: 8398042404074866029, guid: 84e2030daba224f4eb14a36c72bd7c2a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 64.9
+      objectReference: {fileID: 0}
     - target: {fileID: 8732564882722028713, guid: 84e2030daba224f4eb14a36c72bd7c2a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 61.6
@@ -1688,6 +1724,10 @@ PrefabInstance:
     - target: {fileID: 8732564882722028713, guid: 84e2030daba224f4eb14a36c72bd7c2a, type: 3}
       propertyPath: m_LocalPosition.y
       value: 18.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8732564882722028713, guid: 84e2030daba224f4eb14a36c72bd7c2a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 48.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -50,7 +50,7 @@ GameObject:
   - component: {fileID: 1680863857489578343}
   - component: {fileID: -5684874997109495305}
   m_Layer: 3
-  m_Name: EnemyMeleeSlow
+  m_Name: EnemyMeleeFast
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,7 +66,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.6, y: 5.79, z: -2.73}
-  m_LocalScale: {x: 9.173326, y: 9.110909, z: 9.005131}
+  m_LocalScale: {x: 6.720184, y: 10.392883, z: 6.7990317}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7505190822256135982}
@@ -103,7 +103,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d84e6b241c0f7d4439c6b16d22338ec3, type: 2}
+  - {fileID: 2100000, guid: 6d8b61cd9e1359d44b689f359cd2f9c0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -158,7 +158,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SortKey: 2556192900
+  SortKey: 1110348328
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -195,8 +195,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 16
-  m_Acceleration: 15
+  m_Speed: 22
+  m_Acceleration: 17
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
@@ -219,7 +219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71014d9ed654ea949bb22a0ff65209f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _updateInterval: 0.5
+  _updateInterval: 0.2
 --- !u!114 &1680863857489578343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248,7 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b428245167cf0f47ab0b48a2fc01f3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _attackData: {fileID: 11400000, guid: d4f40e7ef69ca2543acb5b9093db7ab8, type: 2}
+  _attackData: {fileID: 11400000, guid: dacb16278b6163a48811b9fe7c385860, type: 2}
   _playerLayer:
     serializedVersion: 2
     m_Bits: 64

@@ -1,34 +1,49 @@
 using UnityEngine;
 using Fusion;
+using UnityEngine.InputSystem;
 
 public class PlayerRangeAttack : NetworkBehaviour
 {
     [SerializeField] private RangedAttackData _attackData;
-    [SerializeField] private Transform[] _spawnPoints; 
+    [SerializeField] private Transform[] _spawnPoints;
 
     private bool _canAttack = true;
+    private PlayerInput _playerInput;
 
-    public override void Spawned()
+    private void Awake()
     {
-        if (_attackData == null)
-            Debug.LogWarning("RangedAttackData not assigned!");
-        if (_spawnPoints == null || _spawnPoints.Length == 0)
-            Debug.LogWarning("Spawn points not assigned!");
+        _playerInput = GetComponent<PlayerInput>();
     }
 
-    void Update()
+    private void OnEnable()
+    {
+        if (_playerInput != null)
+            _playerInput.actions["Attack1"].performed += OnAttack;
+    }
+
+    private void OnDisable()
+    {
+        if (_playerInput != null)
+            _playerInput.actions["Attack1"].performed -= OnAttack;
+    }
+
+    public void OnAttack(InputAction.CallbackContext context)
     {
         if (!HasInputAuthority) return;
+        TryAttack();
+    }
 
-        if (Input.GetMouseButtonDown(1) && _canAttack)
-        {
-            Transform spawnPoint = GetClosestSpawnPoint();
-            Vector3 shootDir = transform.forward; 
-            RPC_Shoot(spawnPoint.position, shootDir);
+    private void TryAttack()
+    {
+        if (!_canAttack) return;
 
-            _canAttack = false;
-            Invoke(nameof(ResetAttack), _attackData.Cooldown);
-        }
+        Transform spawnPoint = GetClosestSpawnPoint();
+        Vector3 shootDir = transform.forward;
+
+        RPC_Shoot(spawnPoint.position, shootDir);
+
+        _canAttack = false;
+        Invoke(nameof(ResetAttack), _attackData.Cooldown);
     }
 
     private void ResetAttack() => _canAttack = true;
@@ -57,12 +72,7 @@ public class PlayerRangeAttack : NetworkBehaviour
     [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
     private void RPC_Shoot(Vector3 spawnPos, Vector3 direction)
     {
-        NetworkObject projObj = Runner.Spawn(
-            _attackData.ProjectilePrefab,
-            spawnPos,
-            Quaternion.LookRotation(direction),
-            Object.InputAuthority
-        );
+        NetworkObject projObj = Runner.Spawn(_attackData.ProjectilePrefab, spawnPos, Quaternion.LookRotation(direction), Object.InputAuthority);
 
         var proj = projObj.GetComponent<Projectile>();
         if (proj != null)
