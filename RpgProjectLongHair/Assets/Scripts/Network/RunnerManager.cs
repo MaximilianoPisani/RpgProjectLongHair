@@ -48,7 +48,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         Debug.Log($"[RunnerManager] Player {player} spawned.");
 
-        if (playerObj.HasInputAuthority)
+        if (player == runner.LocalPlayer)
         {
             OnPlayerSpawned?.Invoke(playerObj);
         }
@@ -104,6 +104,15 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         input.Set(data);
     }
+    public void OnConnectedToServer(NetworkRunner runner)
+    {
+        Debug.Log("[RunnerManager] Connected to server, hiding lobby UI.");
+
+        if (runner.LocalPlayer == PlayerRef.None) return;
+
+        OnPlayerSpawned?.Invoke(null);
+    }
+
     public void OnObjectExitAOI(NetworkRunner r, NetworkObject o, PlayerRef p) { }
     public void OnObjectEnterAOI(NetworkRunner r, NetworkObject o, PlayerRef p) { }
     public void OnShutdown(NetworkRunner r, ShutdownReason s) { }
@@ -114,7 +123,6 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnReliableDataReceived(NetworkRunner r, PlayerRef p, ReliableKey k, ArraySegment<byte> d) { }
     public void OnReliableDataProgress(NetworkRunner r, PlayerRef p, ReliableKey k, float pr) { }
     public void OnInputMissing(NetworkRunner r, PlayerRef p, NetworkInput i) { }
-    public void OnConnectedToServer(NetworkRunner r) { }
     public void OnSessionListUpdated(NetworkRunner r, List<SessionInfo> s) { }
     public void OnCustomAuthenticationResponse(NetworkRunner r, Dictionary<string, object> d) { }
     public void OnHostMigration(NetworkRunner r, HostMigrationToken h) { }

@@ -7,7 +7,8 @@ public class PlayerRangeAttack : NetworkBehaviour
     [SerializeField] private RangedAttackData _attackData;
     [SerializeField] private Transform[] _spawnPoints;
 
-    private bool _canAttack = true;
+    [Networked] private TickTimer _cooldownTimer { get; set; }
+
     private PlayerInput _playerInput;
 
     private void Awake()
@@ -27,26 +28,15 @@ public class PlayerRangeAttack : NetworkBehaviour
             _playerInput.actions["Attack1"].performed -= OnAttack;
     }
 
-    public void OnAttack(InputAction.CallbackContext context)
+    private void OnAttack(InputAction.CallbackContext context)
     {
         if (!HasInputAuthority) return;
-        TryAttack();
-    }
-
-    private void TryAttack()
-    {
-        if (!_canAttack) return;
 
         Transform spawnPoint = GetClosestSpawnPoint();
         Vector3 shootDir = transform.forward;
 
-        RPC_Shoot(spawnPoint.position, shootDir);
-
-        _canAttack = false;
-        Invoke(nameof(ResetAttack), _attackData.Cooldown);
+        RPC_RequestShoot(spawnPoint.position, shootDir);
     }
-
-    private void ResetAttack() => _canAttack = true;
 
     private Transform GetClosestSpawnPoint()
     {
@@ -69,15 +59,23 @@ public class PlayerRangeAttack : NetworkBehaviour
         return bestPoint;
     }
 
-    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
-    private void RPC_Shoot(Vector3 spawnPos, Vector3 direction)
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_RequestShoot(Vector3 spawnPos, Vector3 direction)
     {
-        NetworkObject projObj = Runner.Spawn(_attackData.ProjectilePrefab, spawnPos, Quaternion.LookRotation(direction), Object.InputAuthority);
+        if (!_cooldownTimer.ExpiredOrNotRunning(Runner))
+            return; 
+
+        _cooldownTimer = TickTimer.CreateFromSeconds(Runner, _attackData.Cooldown);
+
+        NetworkObject projObj = Runner.Spawn(
+            _attackData.ProjectilePrefab,
+            spawnPos,
+            Quaternion.LookRotation(direction),
+            Object.InputAuthority
+        );
 
         var proj = projObj.GetComponent<Projectile>();
         if (proj != null)
-        {
             proj.InitProjectile(direction, _attackData, gameObject);
-        }
     }
 }
