@@ -67,12 +67,7 @@ public class PlayerRangeAttack : NetworkBehaviour
 
         _cooldownTimer = TickTimer.CreateFromSeconds(Runner, _attackData.Cooldown);
 
-        NetworkObject projObj = Runner.Spawn(
-            _attackData.ProjectilePrefab,
-            spawnPos,
-            Quaternion.LookRotation(direction),
-            Object.InputAuthority
-        );
+        NetworkObject projObj = Runner.Spawn(_attackData.ProjectilePrefab,spawnPos, Quaternion.LookRotation(direction),Object.InputAuthority);
 
         var proj = projObj.GetComponent<Projectile>();
         if (proj != null)
