@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using UnityEngine.AI;
 
 [System.Serializable]
 public class SpawnData
@@ -40,11 +41,28 @@ public class EnemySpawner : MonoBehaviour
             for (int i = 0; i < data.Count; i++)
             {
                 Transform spawnPoint = data.SpawnPoints[i % data.SpawnPoints.Length];
-                Vector3 pos = spawnPoint.position;
+                Vector3 spawnPos = spawnPoint.position;
 
-                NetworkObject enemy = runner.Spawn(data.Prefab, pos, Quaternion.identity);
+                if (NavMesh.SamplePosition(spawnPos, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+                {
+                    spawnPos = hit.position;
+                }
+                else
+                {
+                    Debug.LogWarning($"Spawn point {spawnPoint.name} It is NOT near the NavMesh");
+                    continue;
+                }
+
+                NetworkObject enemy = runner.Spawn(data.Prefab, spawnPos, Quaternion.identity);
                 if (enemy != null)
+                {
                     _spawnedEnemies.Add(enemy);
+
+                    if (enemy.TryGetComponent<EnemyController>(out var controller))
+                    {
+                        controller.InitializeAgent();
+                    }
+                }
             }
         }
     }

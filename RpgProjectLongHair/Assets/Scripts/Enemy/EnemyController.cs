@@ -14,11 +14,22 @@ public class EnemyController : NetworkBehaviour
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
+        _agent.enabled = false; 
+    }
+
+    public void InitializeAgent()
+    {
+        if (_agent != null)
+        {
+            _agent.enabled = true;
+            if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+                _agent.Warp(hit.position); 
+        }
     }
 
     public override void FixedUpdateNetwork()
     {
-        if (!Object.HasStateAuthority) return; 
+        if (!Object.HasStateAuthority) return;
 
         _timer += Runner.DeltaTime;
         if (_timer >= _updateInterval)
@@ -38,9 +49,10 @@ public class EnemyController : NetworkBehaviour
                 }
             }
 
-            if (closestPlayer != null)
+            _targetPlayer = closestPlayer;
+
+            if (_agent != null && _agent.isOnNavMesh && _targetPlayer != null)
             {
-                _targetPlayer = closestPlayer;
                 _agent.SetDestination(_targetPlayer.position);
             }
 

@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
-
 public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     public event Action<NetworkObject> OnPlayerSpawned;
 
-    [Header("Network Prefabs")]
-    [SerializeField] private NetworkObject _playerPrefab;
+    [Header("Spawners")]
     [SerializeField] private ItemSpawner _itemSpawner;
     [SerializeField] private EnemySpawner _enemySpawner;
+    [SerializeField] private PlayerSpawner _playerSpawner; 
 
     private NetworkRunner _runner;
     private Dictionary<PlayerRef, NetworkObject> _spawnedPlayers = new();
@@ -41,11 +40,10 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        Vector3 spawnPos = GetRandomSpawnPosition();
+        var playerObj = _playerSpawner.SpawnPlayer(runner, player); 
+        if (playerObj == null) return;
 
-        var playerObj = runner.Spawn(_playerPrefab, spawnPos, Quaternion.identity, player);
         _spawnedPlayers[player] = playerObj;
-
         Debug.Log($"[RunnerManager] Player {player} spawned.");
 
         if (player == runner.LocalPlayer)
