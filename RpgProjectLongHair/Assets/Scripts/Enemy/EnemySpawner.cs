@@ -1,15 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using UnityEngine.AI;
+
+[System.Serializable]
+public class SpawnData
+{
+    public NetworkObject Prefab;
+    public Transform[] SpawnPoints;
+    public int Count = 1;
+}
 
 public class EnemySpawner : MonoBehaviour
 {
     public static EnemySpawner Instance { get; private set; }
 
-    [SerializeField] private NetworkObject _enemyPrefab;
-    [SerializeField] private Transform[] _spawnPoints;
-    [SerializeField] private int _enemyCount = 3;
-
+    [SerializeField] private List<SpawnData> _spawnDatas = new List<SpawnData>();
     private List<NetworkObject> _spawnedEnemies = new List<NetworkObject>();
 
     private void Awake()
@@ -22,23 +28,43 @@ public class EnemySpawner : MonoBehaviour
         Instance = this;
     }
 
-    public void SpawnEnemies(NetworkRunner runner, NetworkObject targetPlayer)
-    {    
+    public void SpawnEnemies(NetworkRunner runner)
+    {
         if (!runner.IsServer) return;
 
-        for (int i = 0; i < _enemyCount; i++) 
-        { 
-            Transform spawnPoint = _spawnPoints[i % _spawnPoints.Length]; 
+        _spawnedEnemies.Clear();
 
-            Vector3 pos = spawnPoint.position; var enemy = runner.Spawn(_enemyPrefab, pos, Quaternion.identity);
+        foreach (var data in _spawnDatas)
+        {
+            if (data.Prefab == null || data.SpawnPoints.Length == 0) continue;
 
-            _spawnedEnemies.Add(enemy); var enemyController = enemy.GetComponent<EnemyController>();
+            for (int i = 0; i < data.Count; i++)
+            {
+                Transform spawnPoint = data.SpawnPoints[i % data.SpawnPoints.Length];
+                Vector3 spawnPos = spawnPoint.position;
 
-            if (enemyController != null) 
-            { 
-                enemyController.SetTarget(targetPlayer); 
-            } 
-        } 
+                if (NavMesh.SamplePosition(spawnPos, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+                {
+                    spawnPos = hit.position;
+                }
+                else
+                {
+                    Debug.LogWarning($"Spawn point {spawnPoint.name} It is NOT near the NavMesh");
+                    continue;
+                }
+
+                NetworkObject enemy = runner.Spawn(data.Prefab, spawnPos, Quaternion.identity);
+                if (enemy != null)
+                {
+                    _spawnedEnemies.Add(enemy);
+
+                    if (enemy.TryGetComponent<EnemyController>(out var controller))
+                    {
+                        controller.InitializeAgent();
+                    }
+                }
+            }
+        }
     }
 
     public List<NetworkObject> GetEnemies() => _spawnedEnemies;
