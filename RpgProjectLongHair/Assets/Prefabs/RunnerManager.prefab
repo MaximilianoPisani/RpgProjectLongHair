@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7054218279235636449}
   - component: {fileID: 5249535514515101596}
   - component: {fileID: 4762376419519055236}
+  - component: {fileID: 5321107805225145458}
   m_Layer: 0
   m_Name: RunnerManager
   m_TagString: Untagged
@@ -45,9 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f9799c738a7e6f43b3a74d7be831f2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerPrefab: {fileID: 7112553827686591942, guid: 499ab2d360995bb4684d8db4275f339a, type: 3}
-  _itemPrefab: {fileID: 8920251194860380540, guid: a35687a7c34634345ba72ef41fc5d291, type: 3}
-  _enemySpawner: {fileID: 7490433643843102893, guid: 84e2030daba224f4eb14a36c72bd7c2a, type: 3}
+  _itemSpawner: {fileID: 0}
+  _enemySpawner: {fileID: 0}
+  _playerSpawner: {fileID: 0}
 --- !u!114 &4762376419519055236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,3 +64,18 @@ MonoBehaviour:
   IsSceneTakeOverEnabled: 1
   LogSceneLoadErrors: 1
   DestroySpawnedPrefabsOnSceneUnload: 1
+--- !u!114 &5321107805225145458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1181841058513120957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -49887739, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BVHDepth: 0
+  BVHNodes: 0
+  TotalHitboxes: 0

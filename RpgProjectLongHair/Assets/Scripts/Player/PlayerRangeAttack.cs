@@ -2,6 +2,7 @@ using UnityEngine;
 using Fusion;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(PlayerInput))]
 public class PlayerRangeAttack : NetworkBehaviour
 {
     [SerializeField] private RangedAttackData _attackData;
@@ -28,49 +29,69 @@ public class PlayerRangeAttack : NetworkBehaviour
             _playerInput.actions["Attack1"].performed -= OnAttack;
     }
 
-    private void OnAttack(InputAction.CallbackContext context)
+    private void OnAttack(InputAction.CallbackContext ctx)
     {
         if (!HasInputAuthority) return;
+        if (_attackData == null || _attackData.ProjectilePrefab == null) return;
 
-        Transform spawnPoint = GetClosestSpawnPoint();
-        Vector3 shootDir = transform.forward;
+        Transform muzzle = GetBestSpawnPoint();
+        if (muzzle == null) muzzle = transform;
 
-        RPC_RequestShoot(spawnPoint.position, shootDir);
+        Vector3 dir = muzzle.forward;
+        if (dir == Vector3.zero) dir = transform.forward;
+        dir.Normalize();
+
+        // Pedimos al server que dispare (cooldown + spawn + movimiento y daño)
+        RPC_RequestShoot(muzzle.position, dir);
     }
 
-    private Transform GetClosestSpawnPoint()
+    private Transform GetBestSpawnPoint()
     {
+        if (_spawnPoints == null || _spawnPoints.Length == 0) return null;
         if (_spawnPoints.Length == 1) return _spawnPoints[0];
 
-        Transform bestPoint = _spawnPoints[0];
+        Transform best = _spawnPoints[0];
         float bestDot = -1f;
+        Vector3 fwd = transform.forward;
 
-        foreach (var point in _spawnPoints)
+        for (int i = 0; i < _spawnPoints.Length; i++)
         {
-            Vector3 dirToPoint = (point.position - transform.position).normalized;
-            float dot = Vector3.Dot(transform.forward, dirToPoint);
-            if (dot > bestDot)
-            {
-                bestDot = dot;
-                bestPoint = point;
-            }
+            var t = _spawnPoints[i];
+            float dot = Vector3.Dot(fwd, (t.position - transform.position).normalized);
+            if (dot > bestDot) { bestDot = dot; best = t; }
         }
-
-        return bestPoint;
+        return best;
     }
 
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    private void RPC_RequestShoot(Vector3 spawnPos, Vector3 direction)
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    private void RPC_RequestShoot(Vector3 spawnPos, Vector3 direction, RpcInfo info = default)
     {
+        if (!Runner.IsServer) return;
+        if (_attackData == null || _attackData.ProjectilePrefab == null) return;
+
         if (!_cooldownTimer.ExpiredOrNotRunning(Runner))
-            return; 
+            return;
 
-        _cooldownTimer = TickTimer.CreateFromSeconds(Runner, _attackData.Cooldown);
+        float cd = (_attackData is AttackData ad) ? ad.Cooldown : 0f;
+        _cooldownTimer = TickTimer.CreateFromSeconds(Runner, cd > 0f ? cd : 0f);
 
-        NetworkObject projObj = Runner.Spawn(_attackData.ProjectilePrefab,spawnPos, Quaternion.LookRotation(direction),Object.InputAuthority);
+        Runner.Spawn(
+            _attackData.ProjectilePrefab,
+            spawnPos,
+            Quaternion.LookRotation(direction.sqrMagnitude > 0f ? direction.normalized : Vector3.forward),
+            info.Source, // el PlayerRef del que disparó
+            (runner, spawned) =>
+            {
+                var proj = spawned.GetComponent<Projectile>();
+                if (proj == null) return;
 
-        var proj = projObj.GetComponent<Projectile>();
-        if (proj != null)
-            proj.InitProjectile(direction, _attackData, gameObject);
+                proj.InitServer(
+                    direction,
+                    _attackData,
+                    info.Source,   // Attacker
+                    spawnPos
+                );
+            }
+        );
     }
 }
