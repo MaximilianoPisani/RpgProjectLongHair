@@ -1,44 +1,46 @@
-using Fusion;
-using UnityEngine;
-public class PlayerHudBinder : MonoBehaviour
+ï»¿using UnityEngine;
+
+/*public class PlayerHudBinder : MonoBehaviour
 {
-    [SerializeField] private PlayerExpHUD hud;
+    [Header("Tags")]
+    [SerializeField] private string hudTag = "HUD_XP";
+    [SerializeField] private string localPlayerTag = "Player"; // ahora "Player"
 
+    [Header("Debug")]
+    [SerializeField] private bool debugLogs = false;
+
+    private PlayerExpHUD _hud;
     private bool _bound;
-    private NetworkRunner _runner;
-
-    private void Awake()
-    {
-        if (hud == null)
-            hud = FindObjectOfType<PlayerExpHUD>(includeInactive: true);
-    }
 
     private void Start()
     {
-        _runner = FindObjectOfType<NetworkRunner>();
-        // Intentos periódicos hasta encontrar al player local
         InvokeRepeating(nameof(TryBind), 0.1f, 0.25f);
     }
 
     private void TryBind()
     {
-        if (_bound || hud == null || _runner == null) return;
+        if (_bound) return;
 
-        var all = FindObjectsOfType<PlayerProgression>(includeInactive: true);
-        for (int i = 0; i < all.Length; i++)
+        // HUD por tag
+        if (_hud == null)
         {
-            var prog = all[i];
-            var no = prog.Object;
-            if (no == null) continue;
-
-            // Player local: tiene InputAuthority y coincide con LocalPlayer
-            if (no.HasInputAuthority && no.InputAuthority == _runner.LocalPlayer)
-            {
-                prog.BindHUD(hud);   // <-- Aquí se enlaza con tu PlayerProgression
-                _bound = true;
-                CancelInvoke(nameof(TryBind));
-                return;
-            }
+            var hudGo = GameObject.FindWithTag(hudTag);
+            if (hudGo) _hud = hudGo.GetComponent<PlayerExpHUD>();
+            if (debugLogs) Debug.Log(_hud ? "[Binder] HUD ok" : "[Binder] HUD no encontrado");
         }
+        if (_hud == null) return;
+
+        // Player local por tag "Player"
+        var playerGo = GameObject.FindWithTag(localPlayerTag);
+        if (!playerGo) { if (debugLogs) Debug.Log("[Binder] Player (local) no encontrado"); return; }
+
+        var prog = playerGo.GetComponent<PlayerProgression>();
+        if (!prog) { if (debugLogs) Debug.LogWarning("[Binder] Player sin PlayerProgression"); return; }
+
+        prog.BindHUD(_hud);
+        _bound = true;
+        CancelInvoke(nameof(TryBind));
+
+        if (debugLogs) Debug.Log("[Binder] Enlace HUDâ†”PlayerProgression OK (tag=Player).");
     }
-}
+}*/

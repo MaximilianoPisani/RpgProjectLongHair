@@ -629,8 +629,6 @@ GameObject:
   - component: {fileID: 3075019007369046505}
   - component: {fileID: 27165992549200713}
   - component: {fileID: 6975527983024566698}
-  - component: {fileID: 5372041923553341310}
-  - component: {fileID: -6524556725804097371}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -945,8 +943,6 @@ MonoBehaviour:
   - {fileID: 3075019007369046505}
   - {fileID: 27165992549200713}
   - {fileID: 6975527983024566698}
-  - {fileID: 5372041923553341310}
-  - {fileID: -6524556725804097371}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-8506794374674832341
 MonoBehaviour:
@@ -1031,39 +1027,6 @@ MonoBehaviour:
   - {fileID: 8825475421771788117}
   - {fileID: 222724590120980133}
   - {fileID: 2036729066731838848}
---- !u!114 &5372041923553341310
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6090477234238928752}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99372cbe4a4f5844094e4f3223d0595e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _config: {fileID: 11400000, guid: cba863bba89c4384b875ed03cef3bb49, type: 2}
-  _levelUpReceiversRaw: []
-  _Level: 1
-  _CurrentExp: 25
-  _ExpToNext: 0
---- !u!114 &-6524556725804097371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6090477234238928752}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9755ed560402eb149a63a9d7eef2de36, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hitMask:
-    serializedVersion: 2
-    m_Bits: 137
-  stopOnFirstHit: 1
 --- !u!1 &7320835755966407131
 GameObject:
   m_ObjectHideFlags: 0

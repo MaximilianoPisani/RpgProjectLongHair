@@ -5,67 +5,142 @@ using TMPro;
 public class PlayerExpHUD : MonoBehaviour
 {
     [Header("UI")]
-    [SerializeField] private Slider expBar;     // Configurar 0..1 en el inspector
-    [SerializeField] private TMP_Text levelText;
-    [SerializeField] private TMP_Text expText;
+    [SerializeField] private Image expBar;
+    [SerializeField] private TextMeshProUGUI levelText;
+    [SerializeField] private TextMeshProUGUI expText;
+
+    [Header("Exp")]
+    [SerializeField] AnimationCurve expCurve;
+
+    [Header("Comportamiento")]
+    //[SerializeField] private bool normalized = true;
 
     [Header("Animación")]
-    [SerializeField] private float fillLerpSpeed = 8f;
+    //[SerializeField] private float fillLerpSpeed = 8f;
 
-    private float _targetFill;   // 0..1
-    private int _lastLevel = -1;
-    private int _lastCur = -1;
-    private int _lastNext = -1;
+    int currentLevel, totalExp;
+    int previousLevelExp, nextLevelsExp;
 
-    private void Awake()
+    //private float _targetFill01;
+    //private float _targetRaw;
+    //private int _lastLevel = -1, _lastCur = -1, _lastNext = -1;
+
+    private void Start()
     {
-        if (expBar)
-        {
-            expBar.minValue = 0f;
-            expBar.maxValue = 1f;
-            expBar.value = 0f;
-        }
-        if (levelText) levelText.text = "Lv -";
-        if (expText) expText.text = "- / -";
+        UpdateLevel();
     }
 
     private void Update()
     {
-        if (!expBar) return;
-        // Animación suave hacia el objetivo
-        expBar.value = Mathf.MoveTowards(expBar.value, _targetFill, fillLerpSpeed * Time.unscaledDeltaTime);
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            AddExperience(20);
+        }
     }
 
-    /// Llamado por PlayerProgression.BindHUD(...) y/o sus OnChanged
-    public void Set(int level, int current, int toNext)
+    public void AddExperience(int amount)
+    {
+        totalExp += amount;
+        CheckForLevelUp();
+        UpdateInterface();
+    }
+
+    void CheckForLevelUp()
+    {
+        if(totalExp >= nextLevelsExp)
+        {
+            currentLevel++;
+            UpdateLevel();
+        }
+    }
+    void UpdateLevel()
+    {
+        previousLevelExp = (int)expCurve.Evaluate(currentLevel);
+        nextLevelsExp = (int)expCurve.Evaluate(currentLevel + 1);
+        UpdateInterface();
+
+    }
+
+    void UpdateInterface()
+    {
+        int start = totalExp - previousLevelExp;
+        int end = nextLevelsExp - previousLevelExp;
+
+        levelText.text = currentLevel.ToString();
+        expText.text = start + "exp / " + end + "exp";
+        expBar.fillAmount = (float)start / (float)end;
+
+    }
+}
+
+    /*public void Set(int level, int current, int toNext)
     {
         if (toNext <= 0) toNext = 1;
 
-        // Evitar trabajo si no cambió nada
         if (level == _lastLevel && current == _lastCur && toNext == _lastNext)
             return;
-
-        _targetFill = Mathf.Clamp01(current / (float)toNext);
 
         if (levelText) levelText.text = $"Lv {level}";
         if (expText) expText.text = $"{current} / {toNext}";
 
-        _lastLevel = level;
-        _lastCur = current;
-        _lastNext = toNext;
+        if (expBar)
+        {
+            if (normalized)
+            {
+                if (expBar.maxValue != 1f) { expBar.minValue = 0f; expBar.maxValue = 1f; }
+                _targetFill01 = Mathf.Clamp01(current / (float)toNext);
+            }
+            else
+            {
+                if (Mathf.Abs(expBar.maxValue - toNext) > 0.001f)
+                {
+                    expBar.minValue = 0f;
+                    expBar.maxValue = toNext;
+                }
+                _targetRaw = Mathf.Clamp(current, 0, toNext);
+            }
+        }
+
+        if (debugLogs)
+            Debug.Log($"[PlayerExpHUD] Set ? L={level} XP={current}/{toNext} | mode={(normalized ? "norm" : "abs")}");
+
+        _lastLevel = level; _lastCur = current; _lastNext = toNext;
     }
 
-    /// Útil para forzar estado inicial sin animación (opcional).
     public void SetInstant(int level, int current, int toNext)
     {
         Set(level, current, toNext);
-        if (expBar) expBar.value = _targetFill;
+        if (!expBar) return;
+
+        if (toNext <= 0) toNext = 1;
+        if (normalized)
+        {
+            _targetFill01 = Mathf.Clamp01(current / (float)toNext);
+            expBar.value = _targetFill01;
+        }
+        else
+        {
+            expBar.minValue = 0f;
+            expBar.maxValue = toNext;
+            _targetRaw = Mathf.Clamp(current, 0, toNext);
+            expBar.value = _targetRaw;
+        }
+
+        if (debugLogs)
+            Debug.Log($"[PlayerExpHUD] SetInstant ? Slider={expBar.value:0.000}");
     }
 
-    /// Ping visual opcional al subir de nivel.
+    public void ShowXpGain(int amount, Vector3 worldPos)
+    {
+        // TODO: spawn de un texto flotante, animación, etc.
+        // Por ahora, un log para validar que llega:
+        Debug.Log($"[PlayerExpHUD] +{amount} XP at {worldPos}");
+    }
+
     public void FlashLevelUp()
     {
-        // Ejemplo simple: pequeño “punch” al texto de nivel (completar si querés)
-        // StartCoroutine(Punch(levelText.rectTransform));
+        if (debugLogs)
+            Debug.Log("[PlayerExpHUD] FlashLevelUp()");
     }
-}
+}*/
+

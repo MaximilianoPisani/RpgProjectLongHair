@@ -64,21 +64,21 @@ public class EnemyHealth : NetworkBehaviour
         RPC_Flash();
 
         if (currentHealth <= 0)
-            DieServer();
-        
+            Runner.Despawn(Object);
+
+
     }
 
-    private void DieServer()
+    /*private void DieServer()
     {
         if (!Object.HasStateAuthority) return;
 
         int reward = _expConfig ? _expConfig.killExp : 25;
 
-        // Recompensa COMPLETA para cada participante
         if (reward > 0 && _participants.Count > 0)
         {
             foreach (var pRef in _participants)
-                GiveExpTo(pRef, reward);
+                GiveExpTo(pRef, reward); // <-- USARLA ACÁ
         }
 
         Debug.Log($"{Object.name} murió.");
@@ -90,8 +90,11 @@ public class EnemyHealth : NetworkBehaviour
     {
         var playerObj = Runner.GetPlayerObject(playerRef);
         if (playerObj != null && playerObj.TryGetComponent<PlayerProgression>(out var prog))
-            prog.AddExpServer(exp); // autoritativo
-    }
+        {
+            prog.AddExpServer(exp);                        // suma EXP (server)
+            prog.RPC_OnExpGained(exp, transform.position); // notifica al dueño para HUD
+        }
+    }*/
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_Flash()
