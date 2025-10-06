@@ -9,6 +9,7 @@ public class PlayerController : NetworkBehaviour
 {
     [Header("Move")]
     [SerializeField] private float _moveSpeed = 5f;
+    [SerializeField] private float _turnLerp = 0.2f; // rotación suave hacia el movimiento
 
     [Header("Pickup Settings")]
     [SerializeField] private float _pickupRange = 2f;
@@ -16,7 +17,7 @@ public class PlayerController : NetworkBehaviour
     private PlayerInput _playerInput;
     private NetworkCharacterController _characterController;
     private NetworkedInventory _inventory;
-    private Transform _cam;
+    [SerializeField] private Transform _cam; // opcional: asignar desde el inspector
 
     private void Awake()
     {
@@ -28,48 +29,56 @@ public class PlayerController : NetworkBehaviour
     private void OnEnable()
     {
         if (_playerInput != null)
-        {
             _playerInput.actions["Interact"].performed += OnInteract;
-        }
     }
 
     private void OnDisable()
     {
         if (_playerInput != null)
-        {
             _playerInput.actions["Interact"].performed -= OnInteract;
-        }
     }
+
+    // Llamá esto al spawnear si tenés una cámara follow dedicada
+    public void SetCamera(Transform cam) => _cam = cam;
 
     public override void FixedUpdateNetwork()
     {
         if (!GetInput(out NetworkInputData input)) return;
 
-        // 1) Dirección “plana” del input (x = derecha, z = adelante)
+        // 1) Input en plano XZ (x=derecha, z=adelante)
         Vector3 inputDir = new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
 
-        // 2) Cámara relativa (evita el “invertido” percibido)
+        // 2) Resolver cámara (solo una vez para el local), fallback a Camera.main
         if (_cam == null && HasInputAuthority && Camera.main != null)
             _cam = Camera.main.transform;
 
-        Vector3 worldDir = inputDir;
-
+        // 3) Calcular dirección mundo relativa a la cámara (solo yaw)
+        Vector3 worldDir;
         if (_cam != null)
         {
-            Vector3 camF = _cam.forward; camF.y = 0f; camF.Normalize();
-            Vector3 camR = _cam.right; camR.y = 0f; camR.Normalize();
-            worldDir = camF * inputDir.z + camR * inputDir.x; // ¡sin signos menos!
+            Vector3 camF = Vector3.ProjectOnPlane(_cam.forward, Vector3.up).normalized;
+            Vector3 camR = Vector3.ProjectOnPlane(_cam.right, Vector3.up).normalized;
+            worldDir = (camF * inputDir.z + camR * inputDir.x);
         }
         else
         {
-            // Fallback: mover en ejes de mundo
+            // Fallback a ejes de mundo si no hay cámara
             worldDir = inputDir;
         }
 
-        // 3) Mover
-        _characterController.Move(worldDir * _moveSpeed * Runner.DeltaTime);
+        // 4) Mover (normalizar evita más velocidad en diagonales)
+        Vector3 move = worldDir.sqrMagnitude > 1e-4f ? worldDir.normalized : Vector3.zero;
+        _characterController.Move(move * _moveSpeed * Runner.DeltaTime);
 
-        // 4) Interactuar (solo si vino en el input)
+        // 5) Rotar el personaje hacia la dirección de movimiento (suave)
+        if (move.sqrMagnitude > 1e-4f)
+        {
+            Vector3 look = move; look.y = 0f;
+            if (look.sqrMagnitude > 1e-4f)
+                transform.forward = Vector3.Slerp(transform.forward, look, _turnLerp);
+        }
+
+        // 6) Interactuar (si viene flag en el input)
         if (input.interact)
             TryPickupItem();
     }
@@ -77,8 +86,6 @@ public class PlayerController : NetworkBehaviour
     public void OnInteract(InputAction.CallbackContext context)
     {
         if (!HasInputAuthority) return;
-
-        Debug.Log("[Player] Interact pressed via Input System!");
         TryPickupItem();
     }
 
@@ -92,17 +99,8 @@ public class PlayerController : NetworkBehaviour
             if (hit.TryGetComponent<PickupableItem>(out var pickup))
             {
                 int newItemId = Random.Range(1, 999999);
-
                 if (_inventory.AddItem(pickup.ToItemData(newItemId)))
-                {
                     Runner.Despawn(pickup.Object);
-                    Debug.Log($"Item {pickup.name} picked and stored in inventory.");
-                }
-                else
-                {
-                    Debug.Log("Inventory full, cannot be grabbed.");
-                }
-
                 break;
             }
         }
