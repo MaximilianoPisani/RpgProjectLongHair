@@ -6,8 +6,8 @@ public enum ExpEvent : byte { Kill, Chest, Quest, Craft }
 public class ExpConfigSO : ScriptableObject
 {
     [Header("Curva de Nivel")]
-    public int baseLevelThreshold = 100; // EXP de 1->2
-    public float levelCurve = 1.35f;     // umbral *= levelCurve por nivel
+    public int baseLevelThreshold = 100; 
+    public float levelCurve = 1.35f;    
 
     [Header("Recompensas de EXP")]
     public int killExp = 100;
