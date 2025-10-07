@@ -766,6 +766,11 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
+--- !u!4 &516979042 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4569322173382619969, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
+  m_PrefabInstance: {fileID: 4224174942614974059}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &617430384
 GameObject:
   m_ObjectHideFlags: 0
@@ -1689,7 +1694,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 841217724100447575, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
       propertyPath: _spawnDatas.Array.data[0].Count
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 841217724100447575, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
       propertyPath: _spawnDatas.Array.data[1].Count
@@ -1702,7 +1707,7 @@ PrefabInstance:
     - target: {fileID: 841217724100447575, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
       propertyPath: _spawnDatas.Array.data[0].Prefab
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 8920251194860380540, guid: 3b7ee7a61c6f8284e8e3eff0848fbbfb, type: 3}
     - target: {fileID: 841217724100447575, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
       propertyPath: _spawnDatas.Array.data[1].Prefab
       value: 
@@ -1713,7 +1718,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 841217724100447575, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
       propertyPath: _spawnDatas.Array.data[0].SpawnPoints.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 841217724100447575, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
       propertyPath: _spawnDatas.Array.data[1].SpawnPoints.Array.size
@@ -1723,6 +1728,10 @@ PrefabInstance:
       propertyPath: _spawnDatas.Array.data[2].SpawnPoints.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 841217724100447575, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
+      propertyPath: '_spawnDatas.Array.data[0].SpawnPoints.Array.data[0]'
+      value: 
+      objectReference: {fileID: 516979042}
     - target: {fileID: 841217724100447575, guid: 9eecae8742be3a14d9884b56bd891618, type: 3}
       propertyPath: '_spawnDatas.Array.data[1].SpawnPoints.Array.data[0]'
       value: 
