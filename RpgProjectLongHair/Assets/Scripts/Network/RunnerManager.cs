@@ -94,10 +94,17 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         Vector3 move = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         bool interact = Input.GetKey(KeyCode.E);
 
+        int equipSlot = -1;
+        if (Input.GetKeyDown(KeyCode.Alpha1)) equipSlot = 0;
+        else if (Input.GetKeyDown(KeyCode.Alpha2)) equipSlot = 1;
+        else if (Input.GetKeyDown(KeyCode.Alpha3)) equipSlot = 2;
+        else if (Input.GetKeyDown(KeyCode.Alpha4)) equipSlot = 3;
+
         var data = new NetworkInputData
         {
             moveDirection = move,
-            interact = interact
+            interact = interact,
+            equipSlot = equipSlot
         };
 
         input.Set(data);

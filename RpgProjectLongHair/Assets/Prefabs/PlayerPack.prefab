@@ -827,6 +827,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8906761339523662923}
   - {fileID: 7708326073639417842}
   - {fileID: 8323749434277218255}
   - {fileID: 1540970508874694751}
@@ -903,7 +904,7 @@ MonoBehaviour:
   _moveSpeed: 5
   _turnLerp: 0.2
   _pickupRange: 2
-  _cam: {fileID: 0}
+  _equipPoint: {fileID: 8906761339523662923}
 --- !u!136 &5830868449989439837
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1182,6 +1183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b3c77091fde3d47a824e8d9bbee206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EquipPoint: {fileID: 0}
 --- !u!114 &4978027261459691224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1217,3 +1219,34 @@ MonoBehaviour:
   - {fileID: 3287348511645198681}
   - {fileID: 7667982532749510345}
   - {fileID: 5325912075471040042}
+--- !u!1 &9094942778726959297
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8906761339523662923}
+  m_Layer: 0
+  m_Name: EquipPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8906761339523662923
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9094942778726959297}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.28, y: -0.284, z: 0.527}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3898910291807845872}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

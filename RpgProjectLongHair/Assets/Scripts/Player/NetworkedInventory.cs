@@ -6,16 +6,20 @@ public class NetworkedInventory : NetworkBehaviour
     [Networked, Capacity(20)]
     public NetworkArray<ItemData> Items => default;
 
+    [HideInInspector] public Transform EquipPoint; // Se asigna desde PlayerController
+
+    private GameObject _currentEquipped;
+
+    // Agrega item al inventario
     public bool AddItem(ItemData item)
     {
-        if (!Object.HasStateAuthority)
-            return false;
+        if (!Object.HasStateAuthority) return false;
 
         for (int i = 0; i < Items.Length; i++)
         {
-            if (Items[i].id == 0) 
+            if (Items[i].id == 0)
             {
-                Items.Set(i, item); 
+                Items.Set(i, item);
                 Debug.Log($"Item added to slot {i} for {Object.InputAuthority}");
                 return true;
             }
@@ -25,17 +29,34 @@ public class NetworkedInventory : NetworkBehaviour
         return false;
     }
 
-    public void RemoveItem(int itemId)
+    // Equipa item en equipPoint
+    public void EquipItem(int slot, GameObject prefab)
     {
-        if (!Object.HasStateAuthority) return;
-
-        for (int i = 0; i < Items.Length; i++)
+        if (prefab.TryGetComponent<NetworkObject>(out var netObj))
         {
-            if (Items[i].id == itemId)
+            if (Runner != null)
             {
-                Items.Set(i, default); 
-                return;
+                NetworkObject spawned = Runner.Spawn(netObj, EquipPoint.position, EquipPoint.rotation);
+                spawned.transform.SetParent(EquipPoint, worldPositionStays: true);
             }
         }
+        else
+        {
+            GameObject go = Instantiate(prefab, EquipPoint.position, EquipPoint.rotation);
+            go.transform.SetParent(EquipPoint, worldPositionStays: false);
+        }
+
+
     }
+
+    // Verifica si el item ya está en el inventario
+    public bool HasItem(int itemId)
+    {
+        for (int i = 0; i < Items.Length; i++)
+        {
+            if (Items[i].id == itemId) return true;
+        }
+        return false;
+    }
+
 }

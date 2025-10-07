@@ -4,11 +4,17 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class PickupableItem : NetworkBehaviour
 {
-    [SerializeField] private Item _itemData;
+    [SerializeField] private Item _itemData; // ScriptableObject o clase de datos
     private NetworkRunner _localRunner;
 
     public ItemData ToItemData(int id)
     {
+        if (_itemData == null)
+        {
+            Debug.LogError($"PickupableItem {name} not assigned _itemData!");
+            return default;
+        }
+
         return new ItemData
         {
             id = id,
@@ -25,15 +31,28 @@ public class PickupableItem : NetworkBehaviour
     {
         if (!Object.HasInputAuthority) return;
 
-        var inventory = other.GetComponent<NetworkedInventory>();
-        if (inventory == null) return;
-
-        ItemData data = ToItemData(GetInstanceID()); 
-        if (inventory.AddItem(data))
+        if (_itemData == null)
         {
-            if (_localRunner != null)
+            Debug.LogError($"{name} PickupableItem has _itemData not assigned!");
+            return;
+        }
+
+        var inventory = other.GetComponentInParent<NetworkedInventory>();
+        if (inventory == null)
+        {
+            Debug.Log($"{name} collided with {other.name} but no NetworkedInventory found.");
+            return;
+        }
+
+        // Solo agrega si no está
+        if (!inventory.HasItem(GetInstanceID()))
+        {
+            ItemData data = ToItemData(GetInstanceID());
+            if (inventory.AddItem(data))
             {
-                ItemSpawner.Instance.RemoveItem(_localRunner, Object);
+                // Remueve item del mundo
+                if (_localRunner != null && ItemSpawner.Instance != null)
+                    ItemSpawner.Instance.RemoveItem(_localRunner, Object);
             }
         }
     }
