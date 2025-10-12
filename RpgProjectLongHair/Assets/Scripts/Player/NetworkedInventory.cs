@@ -6,11 +6,10 @@ public class NetworkedInventory : NetworkBehaviour
     [Networked, Capacity(20)]
     public NetworkArray<ItemData> Items => default;
 
-    [HideInInspector] public Transform EquipPoint; // Se asigna desde PlayerController
+    [HideInInspector] public Transform EquipPoint; 
 
     private GameObject _currentEquipped;
 
-    // Agrega item al inventario
     public bool AddItem(ItemData item)
     {
         if (!Object.HasStateAuthority) return false;
@@ -29,7 +28,7 @@ public class NetworkedInventory : NetworkBehaviour
         return false;
     }
 
-    // Equipa item en equipPoint
+
     public void EquipItem(int slot, GameObject prefab)
     {
         if (prefab.TryGetComponent<NetworkObject>(out var netObj))
@@ -49,7 +48,7 @@ public class NetworkedInventory : NetworkBehaviour
 
     }
 
-    // Verifica si el item ya está en el inventario
+
     public bool HasItem(int itemId)
     {
         for (int i = 0; i < Items.Length; i++)

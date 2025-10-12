@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class PickupableItem : NetworkBehaviour
 {
-    [SerializeField] private Item _itemData; // ScriptableObject o clase de datos
+    [SerializeField] private Item _itemData; 
     private NetworkRunner _localRunner;
 
     public ItemData ToItemData(int id)
@@ -44,13 +44,11 @@ public class PickupableItem : NetworkBehaviour
             return;
         }
 
-        // Solo agrega si no está
         if (!inventory.HasItem(GetInstanceID()))
         {
             ItemData data = ToItemData(GetInstanceID());
             if (inventory.AddItem(data))
             {
-                // Remueve item del mundo
                 if (_localRunner != null && ItemSpawner.Instance != null)
                     ItemSpawner.Instance.RemoveItem(_localRunner, Object);
             }

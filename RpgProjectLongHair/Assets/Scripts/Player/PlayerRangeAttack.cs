@@ -41,7 +41,6 @@ public class PlayerRangeAttack : NetworkBehaviour
         if (dir == Vector3.zero) dir = transform.forward;
         dir.Normalize();
 
-        // Pedimos al server que dispare (cooldown + spawn + movimiento y daño)
         RPC_RequestShoot(muzzle.position, dir);
     }
 
@@ -79,7 +78,7 @@ public class PlayerRangeAttack : NetworkBehaviour
             _attackData.ProjectilePrefab,
             spawnPos,
             Quaternion.LookRotation(direction.sqrMagnitude > 0f ? direction.normalized : Vector3.forward),
-            info.Source, // el PlayerRef del que disparó
+            info.Source, 
             (runner, spawned) =>
             {
                 var proj = spawned.GetComponent<Projectile>();
@@ -88,7 +87,7 @@ public class PlayerRangeAttack : NetworkBehaviour
                 proj.InitServer(
                     direction,
                     _attackData,
-                    info.Source,   // Attacker
+                    info.Source, 
                     spawnPos
                 );
             }
