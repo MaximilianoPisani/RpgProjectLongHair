@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 4985959513854983216}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.058, y: -0.018, z: 0.52}
+  m_LocalPosition: {x: -0.058, y: -0.23, z: 0.02}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -48,7 +48,6 @@ GameObject:
   - component: {fileID: -1964026567790909735}
   - component: {fileID: -6737000312332604829}
   - component: {fileID: 1680863857489578343}
-  - component: {fileID: -5684874997109495305}
   - component: {fileID: 814898277713001099}
   m_Layer: 3
   m_Name: EnemyMeleeSlow
@@ -168,7 +167,6 @@ MonoBehaviour:
   - {fileID: -6679422955088169947}
   - {fileID: -6737000312332604829}
   - {fileID: 1680863857489578343}
-  - {fileID: -5684874997109495305}
   - {fileID: 814898277713001099}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-6679422955088169947
@@ -198,8 +196,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 50
-  m_Acceleration: 20
+  m_Speed: 20
+  m_Acceleration: 10
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
@@ -222,7 +220,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71014d9ed654ea949bb22a0ff65209f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _updateInterval: 0.2
+  DetectionRadius: 5
+  PlayerLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  MeleeAttackData: {fileID: 11400000, guid: d4f40e7ef69ca2543acb5b9093db7ab8, type: 2}
+  AttackOrigin: {fileID: 7505190822256135982}
 --- !u!114 &1680863857489578343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,23 +244,6 @@ MonoBehaviour:
   _flashColor: {r: 0.4264151, g: 0.068976164, b: 0.031377666, a: 1}
   _flashDuration: 0.2
   _expConfig: {fileID: 11400000, guid: cba863bba89c4384b875ed03cef3bb49, type: 2}
---- !u!114 &-5684874997109495305
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5456948168675829924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b428245167cf0f47ab0b48a2fc01f3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _attackData: {fileID: 11400000, guid: d4f40e7ef69ca2543acb5b9093db7ab8, type: 2}
-  _playerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  _attackOrigin: {fileID: 7505190822256135982}
 --- !u!114 &814898277713001099
 MonoBehaviour:
   m_ObjectHideFlags: 0

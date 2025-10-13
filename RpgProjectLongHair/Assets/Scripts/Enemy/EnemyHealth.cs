@@ -5,23 +5,22 @@ using System.Collections.Generic;
 [RequireComponent(typeof(NetworkObject))]
 public class EnemyHealth : NetworkBehaviour
 {
-    [Header("Vida")]
+    [Header("Life")]
     [SerializeField] private int _maxHealth = 100;
-    [Networked] public int currentHealth { get; set; }
+    [Networked, HideInInspector] public int currentHealth { get; set; }
 
     [Header("Feedback")]
     [SerializeField] private Renderer _meshRenderer;
     [SerializeField] private Color _flashColor = Color.red;
     [SerializeField] private float _flashDuration = 0.1f;
 
-    [Header("Recompensa")]
-    [SerializeField] private ExpConfigSO _expConfig; // asigná tu asset ExpConfig
+    [Header("Reward")]
+    [SerializeField] private ExpConfigSO _expConfig; 
 
 
     private Color _originalColor;
     private Coroutine _flashCoroutine;
 
-    // Solo server: registra quién hizo al menos 1 punto de daño
     private readonly HashSet<PlayerRef> _participants = new();
 
     public override void Spawned()
@@ -36,14 +35,12 @@ public class EnemyHealth : NetworkBehaviour
             _originalColor = _meshRenderer.material.color;
     }
 
-    /// Cliente atacante llama; el server procesa y marca participación.
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
     public void RPC_ApplyDamage(int damage, RpcInfo info = default)
     {
         TakeDamageServer(damage, info.Source);
     }
 
-    /// Para daños 100% server-side (IA, trampas, validaciones):
     public void ApplyDamageServer(int damage, PlayerRef attacker)
     {
         TakeDamageServer(damage, attacker);
@@ -52,14 +49,19 @@ public class EnemyHealth : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
         if (damage <= 0) return;
-        if (currentHealth <= 0) return;
-
+        if (currentHealth <= 0)
+        {
+            if (TryGetComponent<EnemyController>(out var controller))
+                controller.ChangeState(new EnemyDeathState(controller));
+            else
+                Runner.Despawn(Object);
+        }
 
         if (attacker != PlayerRef.None)
             _participants.Add(attacker);
 
         currentHealth = Mathf.Max(0, currentHealth - damage);
-        Debug.Log($"{Object.name} recibió {damage}. Vida restante: {currentHealth}");
+        Debug.Log($"{Object.name} received {damage}. Remaining life: {currentHealth}");
 
         RPC_Flash();
 
@@ -114,7 +116,6 @@ public class EnemyHealth : NetworkBehaviour
         _meshRenderer.material.color = _originalColor;
     }
 
-    /// Aplica daño encontrando EnemyHealth desde un Hitbox (para proyectiles/overlaps server-side).
     public static bool TryApplyFromHitbox(Hitbox hb, int damage, PlayerRef attacker)
     {
         if (hb == null || hb.Root == null) return false;

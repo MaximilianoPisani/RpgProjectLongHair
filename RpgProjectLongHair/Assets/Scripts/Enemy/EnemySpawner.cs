@@ -49,7 +49,7 @@ public class EnemySpawner : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning($"Spawn point {spawnPoint.name} It is NOT near the NavMesh");
+                    Debug.LogWarning($"Spawn point {spawnPoint.name} It is not close to the NavMesh");
                     continue;
                 }
 
@@ -57,11 +57,6 @@ public class EnemySpawner : MonoBehaviour
                 if (enemy != null)
                 {
                     _spawnedEnemies.Add(enemy);
-
-                    if (enemy.TryGetComponent<EnemyController>(out var controller))
-                    {
-                        controller.InitializeAgent();
-                    }
                 }
             }
         }

@@ -2,61 +2,46 @@ using UnityEngine;
 using UnityEngine.AI;
 using Fusion;
 
-[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(NetworkObject), typeof(NavMeshAgent))]
 public class EnemyController : NetworkBehaviour
 {
-    private NavMeshAgent _agent;
+    public NavMeshAgent Agent { get; private set; }
+    public EnemyHealth Health { get; private set; }
+
+    public float DetectionRadius = 10f;
+    public LayerMask PlayerLayer;
+
+    public MeleeAttackData MeleeAttackData;
+    public Transform AttackOrigin;
+
     private Transform _targetPlayer;
-    private float _timer;
+    private EnemyStateMachine _stateMachine;
 
-    [SerializeField] private float _updateInterval = 0.5f;
+    public Transform TargetPlayer => _targetPlayer;
 
-    private void Awake()
+    public override void Spawned()
     {
-        _agent = GetComponent<NavMeshAgent>();
-        _agent.enabled = false; 
-    }
+        Agent = GetComponent<NavMeshAgent>();
+        Health = GetComponent<EnemyHealth>();
+        Agent.enabled = true;
 
-    public void InitializeAgent()
-    {
-        if (_agent != null)
-        {
-            _agent.enabled = true;
-            if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
-                _agent.Warp(hit.position); 
-        }
+        _stateMachine = new EnemyStateMachine();
+        _stateMachine.ChangeState(new EnemyIdleState(this));
     }
 
     public override void FixedUpdateNetwork()
     {
         if (!Object.HasStateAuthority) return;
+        _stateMachine.Update();
+    }
 
-        _timer += Runner.DeltaTime;
-        if (_timer >= _updateInterval)
-        {
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+    public void SetTarget(Transform target)
+    {
+        _targetPlayer = target;
+    }
 
-            Transform closestPlayer = null;
-            float closestDistance = float.MaxValue;
-
-            foreach (var player in players)
-            {
-                float dist = Vector3.Distance(transform.position, player.transform.position);
-                if (dist < closestDistance)
-                {
-                    closestDistance = dist;
-                    closestPlayer = player.transform;
-                }
-            }
-
-            _targetPlayer = closestPlayer;
-
-            if (_agent != null && _agent.isOnNavMesh && _targetPlayer != null)
-            {
-                _agent.SetDestination(_targetPlayer.position);
-            }
-
-            _timer = 0f;
-        }
+    public void ChangeState(IEnemyState newState)
+    {
+        _stateMachine.ChangeState(newState);
     }
 }
