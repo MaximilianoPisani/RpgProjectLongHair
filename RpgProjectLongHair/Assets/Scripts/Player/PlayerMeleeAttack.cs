@@ -45,15 +45,18 @@ public class PlayerMeleeAttack : NetworkBehaviour
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RPC_RequestMeleeAttack(RpcInfo info = default)
     {
-
-        Collider[] hits = Physics.OverlapSphere(_attackOrigin.position, _attackData.AttackRange, _enemyLayer);
+        Collider[] hits = Physics.OverlapSphere(
+            _attackOrigin.position,
+            _attackData.HitRadius,   
+            _enemyLayer
+        );
 
         foreach (var hit in hits)
         {
             var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
             if (enemyHealth != null)
             {
-                enemyHealth.ApplyDamageServer(_attackData.Damage, info.Source); 
+                enemyHealth.ApplyDamageServer(_attackData.Damage, info.Source);
             }
         }
     }

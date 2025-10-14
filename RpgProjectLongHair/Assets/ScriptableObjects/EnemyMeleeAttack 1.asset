@@ -15,4 +15,4 @@ MonoBehaviour:
   _attackRange: 1
   _damage: 10
   _cooldown: 1.5
-  _hitRadius: 0
+  _hitRadius: 1
