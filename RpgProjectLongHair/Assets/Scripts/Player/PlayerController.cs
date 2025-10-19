@@ -4,7 +4,7 @@ using Fusion;
 
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(NetworkCharacterController))]
-[RequireComponent(typeof(NetworkedInventory))]
+[RequireComponent(typeof(Inventory))]
 public class PlayerController : NetworkBehaviour
 {
     [Header("Move")]
@@ -18,13 +18,13 @@ public class PlayerController : NetworkBehaviour
     private Transform _cam;
     private PlayerInput _playerInput;
     private NetworkCharacterController _characterController;
-    private NetworkedInventory _inventory;
+    private Inventory _inventory;
 
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
         _characterController = GetComponent<NetworkCharacterController>();
-        _inventory = GetComponent<NetworkedInventory>();
+        _inventory = GetComponent<Inventory>();
 
         _inventory.EquipPoint = _equipPoint;
     }
@@ -88,16 +88,13 @@ public class PlayerController : NetworkBehaviour
 
     private void TryPickupItem()
     {
-        if (!Object.HasStateAuthority) return;
-
         Collider[] hits = Physics.OverlapSphere(transform.position, _pickupRange);
         foreach (var hit in hits)
         {
             if (hit.TryGetComponent<PickupableItem>(out var pickup))
             {
-                int newItemId = Random.Range(1, 999999);
-                if (_inventory.AddItem(pickup.ToItemData(newItemId)))
-                    Runner.Despawn(pickup.Object);
+                InventoryUiManager.Instance.AddItem(pickup.ItemData);
+                Destroy(pickup.gameObject);
                 break;
             }
         }

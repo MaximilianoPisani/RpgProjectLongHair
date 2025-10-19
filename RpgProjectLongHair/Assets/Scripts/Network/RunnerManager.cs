@@ -53,7 +53,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (runner.IsServer && _spawnedPlayers.Count == 1)
         {
-            _itemSpawner.SpawnItems(runner);
+            _itemSpawner.SpawnItems();
             _enemySpawner?.SpawnEnemies(runner);
         }
     }
@@ -71,7 +71,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (!runner.IsServer) return;
 
-        ItemSpawner.Instance.SpawnItems(runner);
+        _itemSpawner.SpawnItems();
 
         Debug.Log("[RunnerManager] SpawnItem called through ItemSpawner.");
     }

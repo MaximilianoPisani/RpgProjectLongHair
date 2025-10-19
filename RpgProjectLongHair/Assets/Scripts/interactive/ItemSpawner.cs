@@ -27,10 +27,8 @@ public class ItemSpawner : MonoBehaviour
         Instance = this;
     }
 
-    public void SpawnItems(NetworkRunner runner)
+    public void SpawnItems()
     {
-        if (!runner.IsServer) return;
-
         _spawnedItems.Clear();
 
         foreach (var data in _spawnDatas)
@@ -42,15 +40,9 @@ public class ItemSpawner : MonoBehaviour
                 Transform spawnPoint = data.SpawnPoints[i % data.SpawnPoints.Length];
                 Vector3 pos = spawnPoint.position;
 
-                NetworkObject item = runner.Spawn(data.Prefab, pos, Quaternion.identity);
-                if (item != null)
-                {
-                    _spawnedItems.Add(item);
+                GameObject itemObj = Instantiate(data.Prefab.gameObject, pos, Quaternion.identity);
+                _spawnedItems.Add(itemObj.GetComponent<NetworkObject>());
 
-                    var pickup = item.GetComponent<PickupableItem>();
-                    if (pickup != null)
-                        pickup.SetRunner(runner);
-                }
             }
         }
     }

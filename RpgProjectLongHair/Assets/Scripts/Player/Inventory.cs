@@ -1,12 +1,13 @@
+using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
 
-public class NetworkedInventory : NetworkBehaviour
+public class Inventory : NetworkBehaviour
 {
     [Networked, Capacity(20)]
     public NetworkArray<ItemData> Items => default;
 
-    [HideInInspector] public Transform EquipPoint; 
+    [HideInInspector] public Transform EquipPoint;
 
     private GameObject _currentEquipped;
 
