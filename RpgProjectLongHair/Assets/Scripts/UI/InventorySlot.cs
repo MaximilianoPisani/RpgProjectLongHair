@@ -4,15 +4,13 @@ using UnityEngine.UI;
 
 public class InventorySlot : MonoBehaviour
 {
-    [SerializeField] private Image icon;
-    [SerializeField] private TextMeshProUGUI nameText;
+    [SerializeField] private Image iconImage;
+    [SerializeField] private Text nameText;
 
     public void SetData(ItemSO item)
     {
-        if (item == null) return;
-
-        if (icon != null)
-            icon.sprite = item.icon;
+        if (iconImage != null)
+            iconImage.sprite = item.icon;
 
         if (nameText != null)
             nameText.text = item.itemName;

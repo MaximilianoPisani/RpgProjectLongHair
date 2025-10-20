@@ -4,45 +4,41 @@ using UnityEngine.UI;
 
 public class InventoryUiManager : MonoBehaviour
 {
-    public static InventoryUiManager Instance;
-
-    [Header("Referencias")]
-    [SerializeField] private Transform contentParent; 
+    [SerializeField] private Transform contentParent;
 
     private readonly List<ItemSO> collectedItems = new List<ItemSO>();
 
-    private void Awake()
+    public void SetContent(Transform content)
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
+        contentParent = content;
     }
 
     public void AddItem(ItemSO item)
     {
-        if (item == null) return;
-
-        if (collectedItems.Contains(item))
-        {
-            Debug.Log($"Ya tienes el item: {item.itemName}");
-            return;
-        }
+        if (item == null || contentParent == null) return;
+        if (collectedItems.Contains(item)) return;
 
         collectedItems.Add(item);
 
         if (item.slotPrefab == null)
         {
-            Debug.LogWarning($"El item {item.itemName} no tiene un slotPrefab asignado!");
+            Debug.LogWarning($"Item {item.itemName} no tiene slotPrefab asignado!");
             return;
         }
 
         GameObject slotObj = Instantiate(item.slotPrefab, contentParent);
-        var slot = slotObj.GetComponent<InventorySlot>();
-        slot?.SetData(item);
+        slotObj.name = item.itemName + "_Slot";
 
-        Debug.Log($"Item agregado al inventario: {item.itemName}");
+        InventorySlot slot = slotObj.GetComponent<InventorySlot>();
+        if (slot != null)
+            slot.SetData(item);
+    }
+
+    public void Clear()
+    {
+        collectedItems.Clear();
+        if (contentParent == null) return;
+        foreach (Transform child in contentParent)
+            Destroy(child.gameObject);
     }
 }

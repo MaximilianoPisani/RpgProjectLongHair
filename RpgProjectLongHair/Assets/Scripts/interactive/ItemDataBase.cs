@@ -1,40 +1,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemDatabase : MonoBehaviour
+[CreateAssetMenu(fileName = "ItemDatabase", menuName = "Inventory/ItemDatabase")]
+public class ItemDatabase : ScriptableObject
 {
-    public static ItemDatabase Instance { get; private set; }
+    public List<ItemSO> items = new List<ItemSO>();
 
-    [System.Serializable]
-    public class ItemEntry
+    public ItemSO GetItemById(int id)
     {
-        public ItemType type; 
-        public GameObject prefab;  
+        return items.Find(i => i.id == id);
     }
 
-    [SerializeField] private List<ItemEntry> _items = new List<ItemEntry>();
-    private Dictionary<ItemType, GameObject> _lookup = new Dictionary<ItemType, GameObject>();
-
-    private void Awake()
+    private static ItemDatabase _instance;
+    public static ItemDatabase Instance
     {
-        if (Instance != null && Instance != this)
+        get
         {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-
-        foreach (var item in _items)
-        {
-            if (!_lookup.ContainsKey(item.type))
-                _lookup[item.type] = item.prefab;
+            if (_instance == null)
+                _instance = Resources.Load<ItemDatabase>("ItemDatabase"); 
+            return _instance;
         }
     }
 
-    public GameObject GetPrefab(ItemType type)
+    public static ItemSO GetItemByIdStatic(int id)
     {
-        if (_lookup.TryGetValue(type, out var prefab))
-            return prefab;
-        return null;
+        return Instance?.GetItemById(id);
     }
 }

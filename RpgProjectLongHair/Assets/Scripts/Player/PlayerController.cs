@@ -13,20 +13,29 @@ public class PlayerController : NetworkBehaviour
 
     [Header("Pickup")]
     [SerializeField] private float _pickupRange = 2f;
-    [SerializeField] private Transform _equipPoint;
+
+    [Header("UI")]
+    [SerializeField] private InventoryUiManager uiManager;
+    [SerializeField] private Transform _inventoryContent;
 
     private Transform _cam;
     private PlayerInput _playerInput;
     private NetworkCharacterController _characterController;
     private Inventory _inventory;
 
+    // Referencia al runner
+    private NetworkRunner _runner;
+
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
         _characterController = GetComponent<NetworkCharacterController>();
         _inventory = GetComponent<Inventory>();
+    }
 
-        _inventory.EquipPoint = _equipPoint;
+    public void SetRunner(NetworkRunner runner)
+    {
+        _runner = runner;
     }
 
     private void OnEnable()
@@ -66,18 +75,6 @@ public class PlayerController : NetworkBehaviour
 
         if (input.interact)
             TryPickupItem();
-
-        if (input.equipSlot >= 0)
-            EquipSlot(input.equipSlot);
-    }
-
-    private void EquipSlot(int slot)
-    {
-        if (_inventory.Items[slot].id == 0) return;
-
-        GameObject prefab = ItemDatabase.Instance.GetPrefab(_inventory.Items[slot].type);
-        if (prefab != null)
-            _inventory.EquipItem(slot, prefab);
     }
 
     public void OnInteract(InputAction.CallbackContext context)
@@ -88,15 +85,54 @@ public class PlayerController : NetworkBehaviour
 
     private void TryPickupItem()
     {
+        if (!HasInputAuthority) return;
+
         Collider[] hits = Physics.OverlapSphere(transform.position, _pickupRange);
         foreach (var hit in hits)
         {
             if (hit.TryGetComponent<PickupableItem>(out var pickup))
             {
-                InventoryUiManager.Instance.AddItem(pickup.ItemData);
-                Destroy(pickup.gameObject);
+                PickupItemRpc(pickup.Object); 
                 break;
             }
+        }
+    }
+    public override void Spawned()
+    {
+        if (HasInputAuthority)
+        {
+            uiManager.SetContent(_inventoryContent);
+            RefreshInventoryUI();
+        }
+    }
+
+    private void RefreshInventoryUI()
+    {
+        uiManager.Clear(); 
+        for (int i = 0; i < _inventory.Items.Length; i++)
+        {
+            var itemData = _inventory.Items[i];
+            if (itemData.id != 0)
+            {
+                ItemSO itemSO = ItemDatabase.GetItemByIdStatic(itemData.id);
+                if (itemSO != null)
+                    uiManager.AddItem(itemSO);
+            }
+        }
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    private void PickupItemRpc(NetworkObject itemNetObj, RpcInfo info = default)
+    {
+        if (itemNetObj != null && itemNetObj.TryGetComponent<PickupableItem>(out var pickup))
+        {
+            _inventory.AddItem(pickup.ItemData);
+
+            if (HasInputAuthority)
+                uiManager.AddItem(pickup.ItemDataSO);
+
+            Runner.Despawn(itemNetObj);
+            ItemSpawner.Instance.RemoveItem(Runner, itemNetObj);
         }
     }
 }

@@ -10,7 +10,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     [Header("Spawners")]
     [SerializeField] private ItemSpawner _itemSpawner;
     [SerializeField] private EnemySpawner _enemySpawner;
-    [SerializeField] private PlayerSpawner _playerSpawner; 
+    [SerializeField] private PlayerSpawner _playerSpawner;
 
     private NetworkRunner _runner;
     private Dictionary<PlayerRef, NetworkObject> _spawnedPlayers = new();
@@ -40,7 +40,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        var playerObj = _playerSpawner.SpawnPlayer(runner, player); 
+        var playerObj = _playerSpawner.SpawnPlayer(runner, player);
         if (playerObj == null) return;
 
         _spawnedPlayers[player] = playerObj;
@@ -53,7 +53,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (runner.IsServer && _spawnedPlayers.Count == 1)
         {
-            _itemSpawner.SpawnItems();
+            _itemSpawner.SpawnItems(_runner);
             _enemySpawner?.SpawnEnemies(runner);
         }
     }
@@ -67,15 +67,6 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    private void SpawnItem(NetworkRunner runner)
-    {
-        if (!runner.IsServer) return;
-
-        _itemSpawner.SpawnItems();
-
-        Debug.Log("[RunnerManager] SpawnItem called through ItemSpawner.");
-    }
-
     public void RemoveItem(NetworkObject item)
     {
         if (_spawnedItems.Contains(item))
@@ -84,6 +75,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             _runner.Despawn(item);
         }
     }
+
     private Vector3 GetRandomSpawnPosition()
     {
         return new Vector3(UnityEngine.Random.Range(-3, 3), 0, UnityEngine.Random.Range(-3, 3));
@@ -94,21 +86,16 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         Vector3 move = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         bool interact = Input.GetKey(KeyCode.E);
 
-        int equipSlot = -1;
-        if (Input.GetKeyDown(KeyCode.Alpha1)) equipSlot = 0;
-        else if (Input.GetKeyDown(KeyCode.Alpha2)) equipSlot = 1;
-        else if (Input.GetKeyDown(KeyCode.Alpha3)) equipSlot = 2;
-        else if (Input.GetKeyDown(KeyCode.Alpha4)) equipSlot = 3;
-
         var data = new NetworkInputData
         {
             moveDirection = move,
             interact = interact,
-            equipSlot = equipSlot
+            equipSlot = -1 
         };
 
         input.Set(data);
     }
+
     public void OnConnectedToServer(NetworkRunner runner)
     {
         Debug.Log("[RunnerManager] Connected to server, hiding lobby UI.");

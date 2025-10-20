@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using static Unity.Collections.Unicode;
 
 [System.Serializable]
 public class ItemSpawnData
@@ -27,7 +28,7 @@ public class ItemSpawner : MonoBehaviour
         Instance = this;
     }
 
-    public void SpawnItems()
+    public void SpawnItems(NetworkRunner runner)
     {
         _spawnedItems.Clear();
 
@@ -40,9 +41,8 @@ public class ItemSpawner : MonoBehaviour
                 Transform spawnPoint = data.SpawnPoints[i % data.SpawnPoints.Length];
                 Vector3 pos = spawnPoint.position;
 
-                GameObject itemObj = Instantiate(data.Prefab.gameObject, pos, Quaternion.identity);
-                _spawnedItems.Add(itemObj.GetComponent<NetworkObject>());
-
+                NetworkObject itemObj = runner.Spawn(data.Prefab, pos, Quaternion.identity);
+                _spawnedItems.Add(itemObj);
             }
         }
     }

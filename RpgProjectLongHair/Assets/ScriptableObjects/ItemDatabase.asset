@@ -9,7 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00c6b60808ec5194cb3b0c91a3c14e04, type: 3}
-  m_Name: ItemDatabaseUIIcons
+  m_Script: {fileID: 11500000, guid: e0ccaa5943452f34ca42af3555c81cb7, type: 3}
+  m_Name: ItemDatabase
   m_EditorClassIdentifier: 
-  icons: []
+  items:
+  - {fileID: 11400000, guid: 51a804f6a8ca40740b9c36c15b5dc1b0, type: 2}
+  - {fileID: 11400000, guid: 8dcc4a4a8c04e2b4abfdbc0caedce818, type: 2}
