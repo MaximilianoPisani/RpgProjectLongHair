@@ -4,21 +4,23 @@ using UnityEngine;
 
 public class Inventory : NetworkBehaviour
 {
-    [Networked, Capacity(20)]public NetworkArray<ItemData> Items => default; 
-    public bool AddItem(ItemData item) 
-    { 
-        if (!Object.HasStateAuthority) return false; 
+    [Networked, Capacity(20)]
+    public NetworkArray<ItemData> Items => default;
 
-        for (int i = 0; i < Items.Length; i++) 
+    public bool AddItem(ItemData item)
+    {
+        if (!HasStateAuthority) return false;
+
+        for (int i = 0; i < Items.Length; i++)
         {
-            if (Items[i].id == 0) 
-            { 
-                Items.Set(i, item); return true; 
-            } 
-
+            if (Items[i].id == 0)
+            {
+                Items.Set(i, item);
+                return true;
+            }
         }
 
-        Debug.LogWarning("Inventory full"); return false;
-    
-    } 
+        Debug.LogWarning("Inventory full");
+        return false;
+    }
 }

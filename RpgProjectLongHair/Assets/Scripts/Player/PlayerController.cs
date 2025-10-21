@@ -15,27 +15,21 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float _pickupRange = 2f;
 
     [Header("UI")]
-    [SerializeField] private InventoryUiManager uiManager;
-    [SerializeField] private Transform _inventoryContent;
+    [SerializeField] private InventoryUiManager uiManager;          // Panel de inventario local en prefab
+    [SerializeField] private Transform _inventoryContent;           // Contenedor de slots
+    [SerializeField] private UnityEngine.UI.Button _inventoryToggleButton;         // Botón para abrir/cerrar
+    [SerializeField] private UnityEngine.UI.Button _cancelButton;                  // Botón para cerrar
 
     private Transform _cam;
     private PlayerInput _playerInput;
     private NetworkCharacterController _characterController;
     private Inventory _inventory;
 
-    // Referencia al runner
-    private NetworkRunner _runner;
-
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
         _characterController = GetComponent<NetworkCharacterController>();
         _inventory = GetComponent<Inventory>();
-    }
-
-    public void SetRunner(NetworkRunner runner)
-    {
-        _runner = runner;
     }
 
     private void OnEnable()
@@ -48,6 +42,19 @@ public class PlayerController : NetworkBehaviour
     {
         if (_playerInput != null)
             _playerInput.actions["Interact"].performed -= OnInteract;
+    }
+
+    public override void Spawned()
+    {
+        if (HasInputAuthority)
+        {
+            SetupLocalUI();
+        }
+        else
+        {
+            if (uiManager != null)
+                Destroy(uiManager.gameObject);
+        }
     }
 
     public override void FixedUpdateNetwork()
@@ -77,10 +84,44 @@ public class PlayerController : NetworkBehaviour
             TryPickupItem();
     }
 
-    public void OnInteract(InputAction.CallbackContext context)
+    private void OnInteract(InputAction.CallbackContext context)
     {
         if (!HasInputAuthority) return;
         TryPickupItem();
+    }
+
+    private void SetupLocalUI()
+    {
+        if (!HasInputAuthority || uiManager == null) return;
+
+        uiManager.gameObject.SetActive(true);
+        uiManager.SetContent(_inventoryContent);
+
+        if (_inventoryToggleButton != null)
+        {
+            _inventoryToggleButton.onClick.RemoveAllListeners();
+            _inventoryToggleButton.onClick.AddListener(ToggleInventory);
+        }
+
+        if (_cancelButton != null)
+        {
+            _cancelButton.onClick.RemoveAllListeners();
+            _cancelButton.onClick.AddListener(CloseInventory);
+        }
+
+        RefreshInventoryUI();
+    }
+
+    private void ToggleInventory()
+    {
+        if (!HasInputAuthority || uiManager == null) return;
+        uiManager.gameObject.SetActive(!uiManager.gameObject.activeSelf);
+    }
+
+    private void CloseInventory()
+    {
+        if (!HasInputAuthority || uiManager == null) return;
+        uiManager.gameObject.SetActive(false);
     }
 
     private void TryPickupItem()
@@ -92,23 +133,19 @@ public class PlayerController : NetworkBehaviour
         {
             if (hit.TryGetComponent<PickupableItem>(out var pickup))
             {
-                PickupItemRpc(pickup.Object); 
+                PickupItemRpc(pickup.Object);
                 break;
             }
-        }
-    }
-    public override void Spawned()
-    {
-        if (HasInputAuthority)
-        {
-            uiManager.SetContent(_inventoryContent);
-            RefreshInventoryUI();
         }
     }
 
     private void RefreshInventoryUI()
     {
-        uiManager.Clear(); 
+        if (!HasInputAuthority || uiManager == null)
+            return;
+
+        uiManager.Clear();
+
         for (int i = 0; i < _inventory.Items.Length; i++)
         {
             var itemData = _inventory.Items[i];
@@ -121,14 +158,15 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void PickupItemRpc(NetworkObject itemNetObj, RpcInfo info = default)
     {
-        if (itemNetObj != null && itemNetObj.TryGetComponent<PickupableItem>(out var pickup))
+        if (itemNetObj.TryGetComponent<PickupableItem>(out var pickup))
         {
-            _inventory.AddItem(pickup.ItemData);
+            if (_inventory.HasStateAuthority)
+                _inventory.AddItem(pickup.ItemData);
 
-            if (HasInputAuthority)
+            if (HasInputAuthority && uiManager != null)
                 uiManager.AddItem(pickup.ItemDataSO);
 
             Runner.Despawn(itemNetObj);

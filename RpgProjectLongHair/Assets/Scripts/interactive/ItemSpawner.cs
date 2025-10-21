@@ -16,7 +16,7 @@ public class ItemSpawner : MonoBehaviour
     public static ItemSpawner Instance { get; private set; }
 
     [SerializeField] private List<ItemSpawnData> _spawnDatas = new List<ItemSpawnData>();
-    private List<NetworkObject> _spawnedItems = new List<NetworkObject>();
+    private readonly List<NetworkObject> _spawnedItems = new List<NetworkObject>();
 
     private void Awake()
     {
@@ -27,10 +27,9 @@ public class ItemSpawner : MonoBehaviour
         }
         Instance = this;
     }
-
     public void SpawnItems(NetworkRunner runner)
     {
-        _spawnedItems.Clear();
+        if (!runner.IsServer) return;
 
         foreach (var data in _spawnDatas)
         {
@@ -41,8 +40,9 @@ public class ItemSpawner : MonoBehaviour
                 Transform spawnPoint = data.SpawnPoints[i % data.SpawnPoints.Length];
                 Vector3 pos = spawnPoint.position;
 
-                NetworkObject itemObj = runner.Spawn(data.Prefab, pos, Quaternion.identity);
-                _spawnedItems.Add(itemObj);
+                NetworkObject itemObj = runner.Spawn(data.Prefab, pos, Quaternion.identity, null);
+                if (itemObj != null)
+                    _spawnedItems.Add(itemObj);
             }
         }
     }
@@ -51,10 +51,12 @@ public class ItemSpawner : MonoBehaviour
 
     public void RemoveItem(NetworkRunner runner, NetworkObject item)
     {
+        if (item == null) return;
+
         if (_spawnedItems.Contains(item))
-        {
             _spawnedItems.Remove(item);
-            runner.Despawn(item);
-        }
+
+        if (runner != null && item != null && runner.IsServer)
+            runner.Despawn(item); 
     }
 }

@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3323538789113155928}
   - component: {fileID: 449560639134394298}
   - component: {fileID: 3057957952120967177}
-  - component: {fileID: 3267964388561531370}
   m_Layer: 5
   m_Name: InventoryPanel
   m_TagString: Untagged
@@ -103,19 +102,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &3267964388561531370
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 170073323224465721}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e7d7a85c2917a742b1d68f5d263febf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  contentParent: {fileID: 111957101793955881}
 --- !u!1 &941454939208752934
 GameObject:
   m_ObjectHideFlags: 0
@@ -324,6 +310,7 @@ GameObject:
   - component: {fileID: 5281302027440767909}
   - component: {fileID: 1486153408432078111}
   - component: {fileID: 4152818617130913661}
+  - component: {fileID: 831586255468960436}
   m_Layer: 5
   m_Name: Inventory
   m_TagString: Untagged
@@ -419,6 +406,22 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &831586255468960436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3235935023843017806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e7d7a85c2917a742b1d68f5d263febf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contentParent: {fileID: 111957101793955881}
+  toggleButton: {fileID: 2263493787930678873}
+  cancelButton: {fileID: 615494391686306717}
+  panel: {fileID: 3235935023843017806}
 --- !u!1 &3278356446105692752
 GameObject:
   m_ObjectHideFlags: 0
@@ -762,19 +765,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2448188030662586124}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3235935023843017806}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &4922506422574087243
 GameObject:
   m_ObjectHideFlags: 0
@@ -1108,19 +1099,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6318623867580200257}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3235935023843017806}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &6456985491826025047
 GameObject:
   m_ObjectHideFlags: 0
@@ -1750,8 +1729,10 @@ MonoBehaviour:
   _moveSpeed: 5
   _turnLerp: 2
   _pickupRange: 2
-  uiManager: {fileID: 3267964388561531370}
+  uiManager: {fileID: 831586255468960436}
   _inventoryContent: {fileID: 111957101793955881}
+  _inventoryToggleButton: {fileID: 2263493787930678873}
+  _cancelButton: {fileID: 615494391686306717}
 --- !u!136 &5830868449989439837
 CapsuleCollider:
   m_ObjectHideFlags: 0
