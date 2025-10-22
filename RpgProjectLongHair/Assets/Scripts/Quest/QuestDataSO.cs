@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 [CreateAssetMenu(fileName = "QuestDataSO", menuName = "Scriptable Objects/QuestDataSO")]
 public class QuestDataSO : ScriptableObject
@@ -14,4 +15,41 @@ public class QuestDataSO : ScriptableObject
     //para que el otro player vaya directo a la misión si es aceptada!
     public int xp;
     public int coins;
+
+    public bool UpdateProgress(string id, int amount, out bool success)
+    {
+        success = false;
+        var allComplete = true;
+        foreach (var steps in questSteps)
+        {
+            steps.UpdateProgress(id, amount);
+            if (!steps.isComplete)
+            {
+                allComplete = false;
+            }
+        }
+
+        var allFailure = true;
+        foreach (var steps in failureSteps)
+        {
+            steps.UpdateProgress(id, amount);
+            if (!steps.isComplete)
+            {
+                allFailure = false;
+            }
+        }
+
+        if (allFailure)
+        {
+            success = false;
+            return true;
+        }
+
+        if (allComplete)
+        {
+            success = true;
+            return true;
+        }
+        return false;
+    }
 }

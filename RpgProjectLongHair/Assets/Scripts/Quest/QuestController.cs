@@ -3,6 +3,7 @@ using UnityEngine;
 using Fusion;
 using System.Linq;
 using Unity.VisualScripting;
+using System;
 
 public class QuestController : NetworkBehaviour
 {
@@ -12,6 +13,7 @@ public class QuestController : NetworkBehaviour
 
     public void StartNewQuest(QuestDataSO questData)
     {
+        TrackEvents.OnTrackEvent += TrackStep;
         if (_currentQuest != null)
         {
             Destroy(_currentQuest);
@@ -25,17 +27,44 @@ public class QuestController : NetworkBehaviour
         if (_currentQuest == null) return;
 
         //Obtener todos los steps que tengan el id del track que me llegó
-        var steps = _currentQuest.questSteps.Where(step => step.targetId == stepId)!; //Where pertenece a LinQ
+        if (!_currentQuest.UpdateProgress(stepId, progress, out var isSuccess)) return;
 
-        foreach (var step in steps)
+        if (isSuccess)
         {
-            step.currentAmount += progress;
-            if (step.amount >= step.currentAmount)
-            {
-                step.isComplete = true;
-            }
-
+            CompleteQuest();
         }
+        else
+        {
+            FailureQuest();
+        }
+    }
+
+
+    private void FailureQuest()
+    {
+        Destroy(_currentQuest);
+        _currentQuest = null;
+        // llamar a evento de UI
+        TrackEvents.OnTrackEvent -= TrackStep;
+    }
+
+    private void CompleteQuest()
+    {
+        Destroy(_currentQuest);
+        _currentQuest = null;
+        //Actualizar UI
+        //Guardar el estado de las misiones
+        //Obtener recompensas (xp. coins)
+        TrackEvents.OnTrackEvent -= TrackStep;
+    }
+
+    private void OnDestroy()
+    {
+        if (_currentQuest != null)
+        {
+            Destroy(_currentQuest);
+        }
+        TrackEvents.OnTrackEvent -= TrackStep;
     }
 
 }

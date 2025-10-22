@@ -7,6 +7,7 @@ public class ItemSO : ScriptableObject
     public string itemName;
     public Sprite icon;
     public ItemType type;
+    public int amount; // for quest
 
     [Header("UI")]
     public GameObject slotPrefab; 
