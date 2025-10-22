@@ -317,7 +317,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1219549483248033629
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1726,10 +1726,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb1831ec914348c4c865b76cbcc35007, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 5
-  _turnLerp: 2
   _pickupRange: 2
-  uiManager: {fileID: 831586255468960436}
+  _uiManager: {fileID: 831586255468960436}
   _inventoryContent: {fileID: 111957101793955881}
   _inventoryToggleButton: {fileID: 2263493787930678873}
   _cancelButton: {fileID: 615494391686306717}
@@ -1996,9 +1994,9 @@ MonoBehaviour:
   _stateAuthorityChangeErrorCorrectionDelta: 0
   gravity: -40
   jumpImpulse: 8
-  acceleration: 16
+  acceleration: 8
   braking: 27
-  maxSpeed: 15
+  maxSpeed: 10
   rotationSpeed: 15
 --- !u!114 &4321677067424041608
 MonoBehaviour:
@@ -2024,7 +2022,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f1a3bc9ed3017c4891b63ddb57c5688, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 100
+  _maxHealth: 250
   _meshRenderer: {fileID: 7661327429674507699}
   _flashColor: {r: 0.42745098, g: 0.07058824, b: 0.03137255, a: 1}
   _flashCount: 3

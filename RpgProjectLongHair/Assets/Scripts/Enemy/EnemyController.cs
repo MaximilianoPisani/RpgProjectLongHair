@@ -17,6 +17,8 @@ public class EnemyController : NetworkBehaviour
     private Transform _targetPlayer;
     private EnemyStateMachine _stateMachine;
 
+    public float NextAttackTime { get; set; } = 0f;
+
     public Transform TargetPlayer => _targetPlayer;
 
     public override void Spawned()

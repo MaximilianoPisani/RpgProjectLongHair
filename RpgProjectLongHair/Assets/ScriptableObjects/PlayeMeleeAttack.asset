@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: PlayeMeleeAttack
   m_EditorClassIdentifier: 
   _attackRange: 0
-  _damage: 50
+  _damage: 45
   _cooldown: 1
   _hitRadius: 1.8

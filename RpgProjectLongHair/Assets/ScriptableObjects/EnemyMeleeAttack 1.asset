@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: EnemyMeleeAttack 1
   m_EditorClassIdentifier: 
   _attackRange: 1
-  _damage: 10
-  _cooldown: 1.5
+  _damage: 60
+  _cooldown: 2
   _hitRadius: 1

@@ -7,18 +7,14 @@ using Fusion;
 [RequireComponent(typeof(Inventory))]
 public class PlayerController : NetworkBehaviour
 {
-    [Header("Move")]
-    [SerializeField] private float _moveSpeed = 5f;
-    [SerializeField] private float _turnLerp = 0.2f;
-
     [Header("Pickup")]
     [SerializeField] private float _pickupRange = 2f;
 
     [Header("UI")]
-    [SerializeField] private InventoryUiManager uiManager;          // Panel de inventario local en prefab
-    [SerializeField] private Transform _inventoryContent;           // Contenedor de slots
-    [SerializeField] private UnityEngine.UI.Button _inventoryToggleButton;         // Botón para abrir/cerrar
-    [SerializeField] private UnityEngine.UI.Button _cancelButton;                  // Botón para cerrar
+    [SerializeField] private InventoryUiManager _uiManager;
+    [SerializeField] private Transform _inventoryContent;
+    [SerializeField] private UnityEngine.UI.Button _inventoryToggleButton;
+    [SerializeField] private UnityEngine.UI.Button _cancelButton;
 
     private Transform _cam;
     private PlayerInput _playerInput;
@@ -52,33 +48,32 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
-            if (uiManager != null)
-                Destroy(uiManager.gameObject);
+            if (_uiManager != null)
+                Destroy(_uiManager.gameObject);
         }
     }
 
     public override void FixedUpdateNetwork()
     {
-        if (!GetInput(out NetworkInputData input)) return;
+        if (!GetInput(out NetworkInputData input))
+            return;
 
         Vector3 inputDir = new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
 
         if (_cam == null && HasInputAuthority && Camera.main != null)
             _cam = Camera.main.transform;
 
-        Vector3 worldDir = _cam != null
-            ? Vector3.ProjectOnPlane(_cam.forward, Vector3.up).normalized * inputDir.z +
-              Vector3.ProjectOnPlane(_cam.right, Vector3.up).normalized * inputDir.x
+        Vector3 moveDir = _cam != null
+            ? (_cam.forward * inputDir.z + _cam.right * inputDir.x)
             : inputDir;
 
-        Vector3 move = worldDir.sqrMagnitude > 1e-4f ? worldDir.normalized : Vector3.zero;
-        _characterController.Move(move * _moveSpeed * Runner.DeltaTime);
+        moveDir.y = 0;
+        moveDir.Normalize();
 
-        if (move.sqrMagnitude > 1e-4f)
-        {
-            Vector3 look = move; look.y = 0f;
-            transform.forward = Vector3.Slerp(transform.forward, look, _turnLerp);
-        }
+        _characterController.Move(moveDir);
+
+        if (moveDir.sqrMagnitude > 0.001f)
+            transform.forward = moveDir;
 
         if (input.interact)
             TryPickupItem();
@@ -92,10 +87,10 @@ public class PlayerController : NetworkBehaviour
 
     private void SetupLocalUI()
     {
-        if (!HasInputAuthority || uiManager == null) return;
+        if (!HasInputAuthority || _uiManager == null) return;
 
-        uiManager.gameObject.SetActive(true);
-        uiManager.SetContent(_inventoryContent);
+        _uiManager.gameObject.SetActive(true);
+        _uiManager.SetContent(_inventoryContent);
 
         if (_inventoryToggleButton != null)
         {
@@ -114,14 +109,14 @@ public class PlayerController : NetworkBehaviour
 
     private void ToggleInventory()
     {
-        if (!HasInputAuthority || uiManager == null) return;
-        uiManager.gameObject.SetActive(!uiManager.gameObject.activeSelf);
+        if (!HasInputAuthority || _uiManager == null) return;
+        _uiManager.gameObject.SetActive(!_uiManager.gameObject.activeSelf);
     }
 
     private void CloseInventory()
     {
-        if (!HasInputAuthority || uiManager == null) return;
-        uiManager.gameObject.SetActive(false);
+        if (!HasInputAuthority || _uiManager == null) return;
+        _uiManager.gameObject.SetActive(false);
     }
 
     private void TryPickupItem()
@@ -141,10 +136,10 @@ public class PlayerController : NetworkBehaviour
 
     private void RefreshInventoryUI()
     {
-        if (!HasInputAuthority || uiManager == null)
+        if (!HasInputAuthority || _uiManager == null)
             return;
 
-        uiManager.Clear();
+        _uiManager.Clear();
 
         for (int i = 0; i < _inventory.Items.Length; i++)
         {
@@ -153,7 +148,7 @@ public class PlayerController : NetworkBehaviour
             {
                 ItemSO itemSO = ItemDatabase.GetItemByIdStatic(itemData.id);
                 if (itemSO != null)
-                    uiManager.AddItem(itemSO);
+                    _uiManager.AddItem(itemSO);
             }
         }
     }
@@ -166,8 +161,8 @@ public class PlayerController : NetworkBehaviour
             if (_inventory.HasStateAuthority)
                 _inventory.AddItem(pickup.ItemData);
 
-            if (HasInputAuthority && uiManager != null)
-                uiManager.AddItem(pickup.ItemDataSO);
+            if (HasInputAuthority && _uiManager != null)
+                _uiManager.AddItem(pickup.ItemDataSO);
 
             Runner.Despawn(itemNetObj);
             ItemSpawner.Instance.RemoveItem(Runner, itemNetObj);

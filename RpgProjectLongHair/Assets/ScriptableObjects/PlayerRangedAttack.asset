@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: PlayerRangedAttack
   m_EditorClassIdentifier: 
   _attackRange: 19
-  _damage: 25
-  _cooldown: 1
+  _damage: 50
+  _cooldown: 2
   _hitRadius: 1.1
   _projectilePrefab: {fileID: 4028938312772070145, guid: d924951f8e151df4ba90bb00a313339a, type: 3}
   _projectileSpeed: 21
