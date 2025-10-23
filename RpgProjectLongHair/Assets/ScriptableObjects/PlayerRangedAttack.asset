@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: PlayerRangedAttack
   m_EditorClassIdentifier: 
   _attackRange: 15
-  _damage: 25
-  _cooldown: 0.1
-  _hitRadius: 2
+  _damage: 50
+  _cooldown: 1.8
+  _hitRadius: 1
   _projectilePrefab: {fileID: 4028938312772070145, guid: d924951f8e151df4ba90bb00a313339a, type: 3}
-  _projectileSpeed: 25
-  _lifetimeSeconds: 5
+  _projectileSpeed: 22
+  _lifetimeSeconds: 9
   _targetLayer:
     serializedVersion: 2
     m_Bits: 264
