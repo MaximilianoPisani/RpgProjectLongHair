@@ -37,11 +37,13 @@ public class PlayerRangeAttack : NetworkBehaviour
         Transform muzzle = GetBestSpawnPoint();
         if (muzzle == null) muzzle = transform;
 
-        Vector3 dir = muzzle.forward;
-        if (dir == Vector3.zero) dir = transform.forward;
-        dir.Normalize();
+        Vector3 spawnPos = muzzle.position;
 
-        RPC_RequestShoot(muzzle.position, dir);
+        Vector3 forward = transform.forward; 
+        forward.y = 0f; 
+        forward.Normalize();
+
+        RPC_RequestShoot(spawnPos, forward);
     }
 
     private Transform GetBestSpawnPoint()
@@ -75,22 +77,18 @@ public class PlayerRangeAttack : NetworkBehaviour
         _cooldownTimer = TickTimer.CreateFromSeconds(Runner, cd > 0f ? cd : 0f);
 
         Runner.Spawn(
-            _attackData.ProjectilePrefab,
-            spawnPos,
-            Quaternion.LookRotation(direction.sqrMagnitude > 0f ? direction.normalized : Vector3.forward),
-            info.Source, 
-            (runner, spawned) =>
-            {
-                var proj = spawned.GetComponent<Projectile>();
-                if (proj == null) return;
-
-                proj.InitServer(
-                    direction,
-                    _attackData,
-                    info.Source, 
-                    spawnPos
-                );
-            }
-        );
+       _attackData.ProjectilePrefab,
+       spawnPos,
+       Quaternion.LookRotation(direction.normalized),
+       info.Source,
+       (runner, spawned) =>
+       {
+           var proj = spawned.GetComponent<Projectile>();
+           if (proj != null)
+           {
+               proj.InitServer(direction, _attackData, info.Source, spawnPos);
+           }
+       }
+      );
     }
 }
