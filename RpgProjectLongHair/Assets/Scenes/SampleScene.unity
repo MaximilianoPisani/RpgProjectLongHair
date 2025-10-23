@@ -1615,30 +1615,6 @@ PrefabInstance:
       propertyPath: _playerSpawner
       value: 
       objectReference: {fileID: 3188633073303240099}
-    - target: {fileID: 5249535514515101596, guid: 50f4c7fe469cef14e87430f48ed2386c, type: 3}
-      propertyPath: projectilePool
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5249535514515101596, guid: 50f4c7fe469cef14e87430f48ed2386c, type: 3}
-      propertyPath: projectilePrefabs.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5249535514515101596, guid: 50f4c7fe469cef14e87430f48ed2386c, type: 3}
-      propertyPath: 'projectilePrefabs.Array.data[0].RawGuidValue.Array.data[0]'
-      value: -856504653971118887
-      objectReference: {fileID: 0}
-    - target: {fileID: 5249535514515101596, guid: 50f4c7fe469cef14e87430f48ed2386c, type: 3}
-      propertyPath: 'projectilePrefabs.Array.data[0].RawGuidValue.Array.data[1]'
-      value: -7335497777243516742
-      objectReference: {fileID: 0}
-    - target: {fileID: 5249535514515101596, guid: 50f4c7fe469cef14e87430f48ed2386c, type: 3}
-      propertyPath: 'projectilePrefabs.Array.data[1].RawGuidValue.Array.data[0]'
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5249535514515101596, guid: 50f4c7fe469cef14e87430f48ed2386c, type: 3}
-      propertyPath: 'projectilePrefabs.Array.data[1].RawGuidValue.Array.data[1]'
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7054218279235636449, guid: 50f4c7fe469cef14e87430f48ed2386c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
