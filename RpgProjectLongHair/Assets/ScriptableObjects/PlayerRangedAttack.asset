@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _attackRange: 15
   _damage: 50
-  _cooldown: 1.8
+  _cooldown: 1.3
   _hitRadius: 1
   _projectilePrefab: {fileID: 4028938312772070145, guid: d924951f8e151df4ba90bb00a313339a, type: 3}
   _projectileSpeed: 22

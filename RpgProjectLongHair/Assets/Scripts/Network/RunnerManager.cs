@@ -85,12 +85,14 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         Vector3 move = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         bool interact = Input.GetKey(KeyCode.E);
+        bool jump = Input.GetKey(KeyCode.Space); 
 
         var data = new NetworkInputData
         {
             moveDirection = move,
             interact = interact,
-            equipSlot = -1 
+            jump = jump,
+            equipSlot = -1
         };
 
         input.Set(data);

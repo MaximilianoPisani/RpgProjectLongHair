@@ -75,6 +75,9 @@ public class PlayerController : NetworkBehaviour
         if (moveDir.sqrMagnitude > 0.001f)
             transform.forward = moveDir;
 
+        if (input.jump && Mathf.Abs(_characterController.Velocity.y) < 0.05f)
+            _characterController.Jump();
+
         if (input.interact)
             TryPickupItem();
     }
@@ -83,6 +86,16 @@ public class PlayerController : NetworkBehaviour
     {
         if (!HasInputAuthority) return;
         TryPickupItem();
+    }
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (!HasInputAuthority) return;
+
+        if (context.performed)
+        {
+            if (Mathf.Abs(_characterController.Velocity.y) < 0.05f)
+                _characterController.Jump();
+        }
     }
 
     private void SetupLocalUI()

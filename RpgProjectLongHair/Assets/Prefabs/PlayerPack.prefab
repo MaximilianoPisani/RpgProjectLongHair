@@ -317,7 +317,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1219549483248033629
 RectTransform:
   m_ObjectHideFlags: 0
@@ -869,7 +869,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_RecenterTarget: 2
   m_VerticalAxis:
-    Value: 17.144451
+    Value: 1.1558022
     m_SpeedMode: 0
     m_MaxSpeed: 200
     m_AccelTime: 0.1
@@ -893,7 +893,7 @@ MonoBehaviour:
     m_LegacyHeadingDefinition: -1
     m_LegacyVelocityFilterStrength: -1
   m_HorizontalAxis:
-    Value: 3.3830159
+    Value: 16.034071
     m_SpeedMode: 0
     m_MaxSpeed: 300
     m_AccelTime: 0.1
@@ -1295,7 +1295,7 @@ Transform:
   m_GameObject: {fileID: 7641444966884678745}
   serializedVersion: 2
   m_LocalRotation: {x: 0.110350356, y: 0.077410735, z: -0.008621308, w: 0.990836}
-  m_LocalPosition: {x: 0.23548532, y: 4.611516, z: -6.485866}
+  m_LocalPosition: {x: -1.2818029, y: 2.7441638, z: -6.667279}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1837,13 +1837,13 @@ MonoBehaviour:
     m_ActionName: 'Player/Crouch[/Keyboard/c]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 3147017989916857786}
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 1
+        m_MethodName: OnJump
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1992,8 +1992,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stateAuthorityChangeErrorCorrectionDelta: 0
-  gravity: -40
-  jumpImpulse: 8
+  gravity: -32
+  jumpImpulse: 12.3
   acceleration: 8
   braking: 27
   maxSpeed: 10

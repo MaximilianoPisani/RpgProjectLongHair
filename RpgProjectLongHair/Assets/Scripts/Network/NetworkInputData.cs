@@ -5,5 +5,6 @@ public struct NetworkInputData : INetworkInput
 {
     public Vector3 moveDirection;
     public bool interact;
-    public int equipSlot; 
+    public bool jump; 
+    public int equipSlot;
 }
