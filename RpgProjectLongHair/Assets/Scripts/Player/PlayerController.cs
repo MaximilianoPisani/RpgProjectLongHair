@@ -100,7 +100,8 @@ public class PlayerController : NetworkBehaviour
 
     private void SetupLocalUI()
     {
-        if (!HasInputAuthority || _uiManager == null) return;
+        if (!HasInputAuthority || _uiManager == null)
+            return;
 
         _uiManager.gameObject.SetActive(true);
         _uiManager.SetContent(_inventoryContent);
@@ -115,6 +116,14 @@ public class PlayerController : NetworkBehaviour
         {
             _cancelButton.onClick.RemoveAllListeners();
             _cancelButton.onClick.AddListener(CloseInventory);
+        }
+
+        var eventSystem = UnityEngine.EventSystems.EventSystem.current;
+        var uiModule = eventSystem?.GetComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+
+        if (uiModule != null && _playerInput != null)
+        {
+            uiModule.actionsAsset = _playerInput.actions;
         }
 
         RefreshInventoryUI();

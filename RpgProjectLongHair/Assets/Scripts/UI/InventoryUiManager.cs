@@ -4,30 +4,30 @@ using UnityEngine.UI;
 
 public class InventoryUiManager : MonoBehaviour
 {
-    [SerializeField] private Transform contentParent;          // Contenedor de slots
-    [SerializeField] private Button toggleButton;              // Botón para abrir/cerrar
-    [SerializeField] private Button cancelButton;              // Botón para cerrar panel
-    [SerializeField] private GameObject panel;                // Panel completo de inventario
+    [SerializeField] private Transform _contentParent;          // Contenedor de slots
+    [SerializeField] private Button _toggleButton;              // Botón para abrir/cerrar
+    [SerializeField] private Button _cancelButton;              // Botón para cerrar panel
+    [SerializeField] private GameObject _panel;                // Panel completo de inventario
 
     private readonly List<ItemSO> collectedItems = new List<ItemSO>();
 
     private void Awake()
     {
-        if (toggleButton != null)
-            toggleButton.onClick.AddListener(TogglePanel);
+        if (_toggleButton != null)
+            _toggleButton.onClick.AddListener(TogglePanel);
 
-        if (cancelButton != null)
-            cancelButton.onClick.AddListener(ClosePanel);
+        if (_cancelButton != null)
+            _cancelButton.onClick.AddListener(ClosePanel);
     }
 
     public void SetContent(Transform content)
     {
-        contentParent = content;
+        _contentParent = content;
     }
 
     public void AddItem(ItemSO item)
     {
-        if (item == null || contentParent == null) return;
+        if (item == null || _contentParent == null) return;
         if (collectedItems.Contains(item)) return;
 
         collectedItems.Add(item);
@@ -38,7 +38,7 @@ public class InventoryUiManager : MonoBehaviour
             return;
         }
 
-        GameObject slotObj = Instantiate(item.slotPrefab, contentParent);
+        GameObject slotObj = Instantiate(item.slotPrefab, _contentParent);
         slotObj.name = item.itemName + "_Slot";
 
         InventorySlot slot = slotObj.GetComponent<InventorySlot>();
@@ -49,20 +49,20 @@ public class InventoryUiManager : MonoBehaviour
     public void Clear()
     {
         collectedItems.Clear();
-        if (contentParent == null) return;
-        foreach (Transform child in contentParent)
+        if (_contentParent == null) return;
+        foreach (Transform child in _contentParent)
             Destroy(child.gameObject);
     }
 
     private void TogglePanel()
     {
-        if (panel == null) return;
-        panel.SetActive(!panel.activeSelf);
+        if (_panel == null) return;
+        _panel.SetActive(!_panel.activeSelf);
     }
 
     private void ClosePanel()
     {
-        if (panel == null) return;
-        panel.SetActive(false);
+        if (_panel == null) return;
+        _panel.SetActive(false);
     }
 }
