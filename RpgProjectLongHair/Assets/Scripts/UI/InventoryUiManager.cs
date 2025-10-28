@@ -1,13 +1,14 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class InventoryUiManager : MonoBehaviour
 {
-    [SerializeField] private Transform _contentParent;          // Contenedor de slots
-    [SerializeField] private Button _toggleButton;              // Botón para abrir/cerrar
-    [SerializeField] private Button _cancelButton;              // Botón para cerrar panel
-    [SerializeField] private GameObject _panel;                // Panel completo de inventario
+    [SerializeField] private Transform _contentParent;
+    [SerializeField] private Button _toggleButton;
+    [SerializeField] private Button _cancelButton;
+    [SerializeField] private GameObject _panel;
 
     private readonly List<ItemSO> collectedItems = new List<ItemSO>();
 
@@ -25,7 +26,7 @@ public class InventoryUiManager : MonoBehaviour
         _contentParent = content;
     }
 
-    public void AddItem(ItemSO item)
+    public void AddItem(ItemSO item, Action<ItemSO> onClick = null)
     {
         if (item == null || _contentParent == null) return;
         if (collectedItems.Contains(item)) return;
@@ -34,7 +35,7 @@ public class InventoryUiManager : MonoBehaviour
 
         if (item.slotPrefab == null)
         {
-            Debug.LogWarning($"Item {item.itemName} has no slotPrefab assigned!");
+            Debug.LogWarning($"Item {item.itemName} no tiene slotPrefab asignado!");
             return;
         }
 
@@ -44,12 +45,20 @@ public class InventoryUiManager : MonoBehaviour
         InventorySlot slot = slotObj.GetComponent<InventorySlot>();
         if (slot != null)
             slot.SetData(item);
+
+        Button slotButton = slotObj.GetComponent<Button>();
+        if (slotButton != null && onClick != null)
+        {
+            slotButton.onClick.RemoveAllListeners();
+            slotButton.onClick.AddListener(() => onClick.Invoke(item));
+        }
     }
 
     public void Clear()
     {
         collectedItems.Clear();
         if (_contentParent == null) return;
+
         foreach (Transform child in _contentParent)
             Destroy(child.gameObject);
     }

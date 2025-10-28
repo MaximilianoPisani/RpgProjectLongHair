@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewItem", menuName = "Inventory/Item")]
@@ -9,6 +10,6 @@ public class ItemSO : ScriptableObject
     public ItemType type;
     public int amount; // for quest
 
-    [Header("UI")]
-    public GameObject slotPrefab; 
+    public GameObject slotPrefab;
+    public GameObject equipPrefab;
 }

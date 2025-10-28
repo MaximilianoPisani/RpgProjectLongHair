@@ -20,12 +20,14 @@ public class PlayerController : NetworkBehaviour
     private PlayerInput _playerInput;
     private NetworkCharacterController _characterController;
     private Inventory _inventory;
+    private EquipManager _equipManager;
 
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
         _characterController = GetComponent<NetworkCharacterController>();
         _inventory = GetComponent<Inventory>();
+        _equipManager = GetComponentInChildren<EquipManager>();
     }
 
     private void OnEnable()
@@ -87,16 +89,6 @@ public class PlayerController : NetworkBehaviour
         if (!HasInputAuthority) return;
         TryPickupItem();
     }
-    public void OnJump(InputAction.CallbackContext context)
-    {
-        if (!HasInputAuthority) return;
-
-        if (context.performed)
-        {
-            if (Mathf.Abs(_characterController.Velocity.y) < 0.05f)
-                _characterController.Jump();
-        }
-    }
 
     private void SetupLocalUI()
     {
@@ -122,9 +114,7 @@ public class PlayerController : NetworkBehaviour
         var uiModule = eventSystem?.GetComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
 
         if (uiModule != null && _playerInput != null)
-        {
             uiModule.actionsAsset = _playerInput.actions;
-        }
 
         RefreshInventoryUI();
     }
@@ -170,9 +160,32 @@ public class PlayerController : NetworkBehaviour
             {
                 ItemSO itemSO = ItemDatabase.GetItemByIdStatic(itemData.id);
                 if (itemSO != null)
-                    _uiManager.AddItem(itemSO);
+                {
+                    _uiManager.AddItem(itemSO, OnSlotClicked);
+                }
             }
         }
+    }
+
+    private void OnSlotClicked(ItemSO item)
+    {
+        if (!HasInputAuthority) return;
+
+        if (_equipManager == null)
+        {
+            Debug.LogWarning("EquipManager no encontrado en el jugador.");
+            return;
+        }
+
+        if (_equipManager.IsEquipped())
+        {
+            Debug.Log("Ya hay un item equipado, se desequipará primero.");
+            _equipManager.UnequipCurrent();
+        }
+
+        bool equipped = _equipManager.EquipItem(item);
+        if (equipped)
+            Debug.Log($"{item.itemName} equipado correctamente.");
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
@@ -181,10 +194,11 @@ public class PlayerController : NetworkBehaviour
         if (itemNetObj.TryGetComponent<PickupableItem>(out var pickup))
         {
             if (_inventory.HasStateAuthority)
-                _inventory.AddItem(pickup.ItemData);
-
-            if (HasInputAuthority && _uiManager != null)
-                _uiManager.AddItem(pickup.ItemDataSO);
+            {
+                bool added = _inventory.AddItem(pickup.ItemData);
+                if (added && HasInputAuthority && _uiManager != null)
+                    _uiManager.AddItem(pickup.ItemDataSO, OnSlotClicked);
+            }
 
             Runner.Despawn(itemNetObj);
             ItemSpawner.Instance.RemoveItem(Runner, itemNetObj);
