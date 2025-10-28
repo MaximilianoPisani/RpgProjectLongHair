@@ -173,19 +173,19 @@ public class PlayerController : NetworkBehaviour
 
         if (_equipManager == null)
         {
-            Debug.LogWarning("EquipManager no encontrado en el jugador.");
+            Debug.LogWarning("EquipManager not found on player.");
             return;
         }
 
         if (_equipManager.IsEquipped())
         {
-            Debug.Log("Ya hay un item equipado, se desequipará primero.");
+            Debug.Log("An item is already equipped, it will be unequipped first..");
             _equipManager.UnequipCurrent();
         }
 
         bool equipped = _equipManager.EquipItem(item);
         if (equipped)
-            Debug.Log($"{item.itemName} equipado correctamente.");
+            Debug.Log($"{item.itemName} properly equipped.");
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
@@ -196,12 +196,37 @@ public class PlayerController : NetworkBehaviour
             if (_inventory.HasStateAuthority)
             {
                 bool added = _inventory.AddItem(pickup.ItemData);
-                if (added && HasInputAuthority && _uiManager != null)
+
+                if (!HasInputAuthority && added)
+                {
+                    AddItemToOwnerRpc(pickup.ItemData.id);
+                }
+
+                if (HasInputAuthority && added && _uiManager != null)
+                {
                     _uiManager.AddItem(pickup.ItemDataSO, OnSlotClicked);
+                }
             }
 
             Runner.Despawn(itemNetObj);
             ItemSpawner.Instance.RemoveItem(Runner, itemNetObj);
         }
+    }
+
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    private void AddItemToOwnerRpc(int itemId, RpcInfo info = default)
+    {
+        if (!HasInputAuthority) return;
+
+        ItemSO itemSO = ItemDatabase.GetItemByIdStatic(itemId);
+        if (itemSO == null)
+        {
+            Debug.LogWarning($"No ItemSO found with id {itemId}");
+            return;
+        }
+
+        if (_uiManager != null)
+            _uiManager.AddItem(itemSO, OnSlotClicked);
     }
 }

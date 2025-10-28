@@ -35,7 +35,7 @@ public class InventoryUiManager : MonoBehaviour
 
         if (item.slotPrefab == null)
         {
-            Debug.LogWarning($"Item {item.itemName} no tiene slotPrefab asignado!");
+            Debug.LogWarning($"Item {item.itemName} has no slotPrefab assigned!");
             return;
         }
 

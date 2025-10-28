@@ -11,25 +11,25 @@ public class EquipManager : MonoBehaviour
     {
         if (_currentEquipped != null)
         {
-            Debug.Log("Ya hay un item equipado.");
+            Debug.Log("YAn item is already equipped..");
             return false;
         }
 
         if (item == null)
         {
-            Debug.LogWarning("Item nulo pasado a EquipItem!");
+            Debug.LogWarning("Null item passed to EquipItem!");
             return false;
         }
 
         if (item.equipPrefab == null)
         {
-            Debug.LogWarning($"El item {item.itemName} no tiene equipPrefab asignado!");
+            Debug.LogWarning($"The item {item.itemName} has no equipPrefab assigned!");
             return false;
         }
 
         if (_equipPoint == null)
         {
-            Debug.LogError("EquipPoint no asignado!");
+            Debug.LogError("EquipPoint not assigned!");
             return false;
         }
 
@@ -44,7 +44,7 @@ public class EquipManager : MonoBehaviour
         if (col != null)
             col.enabled = false;
 
-        Debug.Log($"Equipado: {item.itemName} en {_equipPoint.name}");
+        Debug.Log($"Equipped: {item.itemName} in {_equipPoint.name}");
 
         return true;
     }
