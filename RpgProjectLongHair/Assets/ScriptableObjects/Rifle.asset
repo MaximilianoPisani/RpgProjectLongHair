@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65f17ab4ef9433a41a8339cf3fda3e4b, type: 3}
   m_Name: Rifle
   m_EditorClassIdentifier: 
+  id: 0
   itemName: Rifle
   icon: {fileID: 21300000, guid: 2c62f70385d03c0489287e3fe4e3388b, type: 3}
+  type: 0
+  amount: 0
   slotPrefab: {fileID: 6399456027509336925, guid: fc6469d6a63518c419f07918ff533ba4, type: 3}
+  equipPrefab: {fileID: 7807835937172801353, guid: d7907ec986535cb46bbbe1bb04e45cc4, type: 3}

@@ -16,4 +16,6 @@ MonoBehaviour:
   itemName: Sword
   icon: {fileID: 21300000, guid: 108b3640a7ea34a41a077fcd896d4a76, type: 3}
   type: 0
+  amount: 0
   slotPrefab: {fileID: 6507808912153291426, guid: 715d95ebb82ffcf4d9bceaeb1576021f, type: 3}
+  equipPrefab: {fileID: 7807835937172801353, guid: e07ee8b40a8e32d4388ecf53d4113ec3, type: 3}
