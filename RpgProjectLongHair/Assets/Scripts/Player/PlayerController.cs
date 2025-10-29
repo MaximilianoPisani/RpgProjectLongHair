@@ -65,17 +65,23 @@ public class PlayerController : NetworkBehaviour
         if (_cam == null && HasInputAuthority && Camera.main != null)
             _cam = Camera.main.transform;
 
-        Vector3 moveDir = _cam != null
-            ? (_cam.forward * inputDir.z + _cam.right * inputDir.x)
-            : inputDir;
+        Vector3 moveDir =  inputDir;
 
         moveDir.y = 0;
         moveDir.Normalize();
 
         _characterController.Move(moveDir);
 
-        if (moveDir.sqrMagnitude > 0.001f)
-            transform.forward = moveDir;
+        if (moveDir.sqrMagnitude > 0.001f && _cam != null)
+        {
+            Vector3 lookDir = _cam.forward;
+            lookDir.y = 0f;
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                Quaternion.LookRotation(lookDir),
+                10f * Runner.DeltaTime // rotación suave
+            );
+        }
 
         if (input.jump && Mathf.Abs(_characterController.Velocity.y) < 0.05f)
             _characterController.Jump();
@@ -193,21 +199,14 @@ public class PlayerController : NetworkBehaviour
     {
         if (itemNetObj.TryGetComponent<PickupableItem>(out var pickup))
         {
-            if (_inventory.HasStateAuthority)
-            {
-                bool added = _inventory.AddItem(pickup.ItemData);
+            if (!_inventory.HasStateAuthority) return;
+            
+            bool added = _inventory.AddItem(pickup.ItemData);
 
-                if (!HasInputAuthority && added)
-                {
-                    AddItemToOwnerRpc(pickup.ItemData.id);
-                }
-
-                if (HasInputAuthority && added && _uiManager != null)
-                {
-                    _uiManager.AddItem(pickup.ItemDataSO, OnSlotClicked);
-                }
-            }
-
+            if (!added) return;
+                
+            AddItemToOwnerRpc(pickup.ItemData.id);
+            
             Runner.Despawn(itemNetObj);
             ItemSpawner.Instance.RemoveItem(Runner, itemNetObj);
         }

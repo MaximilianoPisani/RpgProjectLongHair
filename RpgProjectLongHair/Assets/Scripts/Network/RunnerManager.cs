@@ -83,13 +83,18 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        Vector3 move = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        Vector3 inputMove = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+
+        var cameraTransform = Camera.main.transform;
+
+        var movementDir = cameraTransform.forward * inputMove.z + cameraTransform.right * inputMove.x;
+
         bool interact = Input.GetKey(KeyCode.E);
         bool jump = Input.GetKey(KeyCode.Space); 
 
         var data = new NetworkInputData
         {
-            moveDirection = move,
+            moveDirection = movementDir,
             interact = interact,
             jump = jump,
             equipSlot = -1
