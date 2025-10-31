@@ -81,14 +81,12 @@ public class PlayerController : NetworkBehaviour
 
         _characterController.Move(moveDir);
 
-        if (moveDir.sqrMagnitude > 0.001f && _cam != null)
+        if (moveDir.sqrMagnitude > 0.001f)
         {
-            Vector3 lookDir = _cam.forward;
-            lookDir.y = 0f;
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
-                Quaternion.LookRotation(lookDir),
-                10f * Runner.DeltaTime 
+                Quaternion.LookRotation(moveDir),
+                10f * Runner.DeltaTime
             );
         }
 
