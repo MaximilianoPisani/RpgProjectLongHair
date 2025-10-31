@@ -60,14 +60,21 @@ public class PlayerController : NetworkBehaviour
         if (!GetInput(out NetworkInputData input))
             return;
 
+        if (GetInput(out NetworkInputData data))
+        {
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                data.aimRotation,
+                Runner.DeltaTime * 10f
+            );
+        }
+
         Vector3 inputDir = new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
 
         if (_cam == null && HasInputAuthority && Camera.main != null)
             _cam = Camera.main.transform;
 
-        Vector3 moveDir = _cam != null
-            ? (_cam.forward * inputDir.z + _cam.right * inputDir.x)
-            : inputDir;
+        Vector3 moveDir =  inputDir;
 
         moveDir.y = 0;
         moveDir.Normalize();
@@ -75,7 +82,13 @@ public class PlayerController : NetworkBehaviour
         _characterController.Move(moveDir);
 
         if (moveDir.sqrMagnitude > 0.001f)
-            transform.forward = moveDir;
+        {
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                Quaternion.LookRotation(moveDir),
+                10f * Runner.DeltaTime
+            );
+        }
 
         if (input.jump && Mathf.Abs(_characterController.Velocity.y) < 0.05f)
             _characterController.Jump();
