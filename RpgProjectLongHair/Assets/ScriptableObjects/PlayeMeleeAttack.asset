@@ -16,3 +16,6 @@ MonoBehaviour:
   _damage: 45
   _cooldown: 0.7
   _hitRadius: 1.8
+  _knockbackForce: 0
+  _knockbackForceToTarget: 4
+  _knockbackForceToSelf: 2

@@ -85,19 +85,30 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         Vector3 inputMove = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 
-        var cameraTransform = Camera.main.transform;
+        Transform cameraTransform = Camera.main != null ? Camera.main.transform : null;
 
-        var movementDir = cameraTransform.forward * inputMove.z + cameraTransform.right * inputMove.x;
+        Vector3 movementDir = Vector3.zero;
+        Quaternion aimRot = Quaternion.identity;
+
+        if (cameraTransform != null)
+        {
+            movementDir = cameraTransform.forward * inputMove.z + cameraTransform.right * inputMove.x;
+            movementDir.y = 0f;
+            movementDir.Normalize();
+
+            aimRot = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
+        }
 
         bool interact = Input.GetKey(KeyCode.E);
-        bool jump = Input.GetKey(KeyCode.Space); 
+        bool jump = Input.GetKey(KeyCode.Space);
 
         var data = new NetworkInputData
         {
             moveDirection = movementDir,
             interact = interact,
             jump = jump,
-            equipSlot = -1
+            equipSlot = -1,
+            aimRotation = aimRot 
         };
 
         input.Set(data);

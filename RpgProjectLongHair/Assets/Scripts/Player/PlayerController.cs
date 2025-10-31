@@ -60,6 +60,15 @@ public class PlayerController : NetworkBehaviour
         if (!GetInput(out NetworkInputData input))
             return;
 
+        if (GetInput(out NetworkInputData data))
+        {
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                data.aimRotation,
+                Runner.DeltaTime * 10f
+            );
+        }
+
         Vector3 inputDir = new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
 
         if (_cam == null && HasInputAuthority && Camera.main != null)
@@ -79,7 +88,7 @@ public class PlayerController : NetworkBehaviour
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 Quaternion.LookRotation(lookDir),
-                10f * Runner.DeltaTime // rotación suave
+                10f * Runner.DeltaTime 
             );
         }
 
@@ -199,14 +208,21 @@ public class PlayerController : NetworkBehaviour
     {
         if (itemNetObj.TryGetComponent<PickupableItem>(out var pickup))
         {
-            if (!_inventory.HasStateAuthority) return;
-            
-            bool added = _inventory.AddItem(pickup.ItemData);
+            if (_inventory.HasStateAuthority)
+            {
+                bool added = _inventory.AddItem(pickup.ItemData);
 
-            if (!added) return;
-                
-            AddItemToOwnerRpc(pickup.ItemData.id);
-            
+                if (!HasInputAuthority && added)
+                {
+                    AddItemToOwnerRpc(pickup.ItemData.id);
+                }
+
+                if (HasInputAuthority && added && _uiManager != null)
+                {
+                    _uiManager.AddItem(pickup.ItemDataSO, OnSlotClicked);
+                }
+            }
+
             Runner.Despawn(itemNetObj);
             ItemSpawner.Instance.RemoveItem(Runner, itemNetObj);
         }

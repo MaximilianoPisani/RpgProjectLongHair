@@ -71,6 +71,8 @@ public class EnemyHealth : NetworkBehaviour
 
     }
 
+    //Test
+
     /*private void DieServer()
     {
         if (!Object.HasStateAuthority) return;

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d61aee9732b15bb4fbf6ec6ab93a8047, type: 3}
   m_Name: EnemyMeleeAttack
   m_EditorClassIdentifier: 
-  _attackRange: 1
+  _attackRange: 1.8
   _damage: 60
   _cooldown: 2
   _hitRadius: 1

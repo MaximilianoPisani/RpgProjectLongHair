@@ -7,4 +7,5 @@ public struct NetworkInputData : INetworkInput
     public bool interact;
     public bool jump; 
     public int equipSlot;
+    public Quaternion aimRotation;
 }
