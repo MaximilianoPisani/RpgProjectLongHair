@@ -7,30 +7,15 @@ public class EquipManager : MonoBehaviour
 
     public bool IsEquipped() => _currentEquipped != null;
 
-    public bool EquipItem(ItemSO item)
+    public void EquipItemFromSlot(ItemSO item)
     {
         if (_currentEquipped != null)
-        {
-            Debug.Log("YAn item is already equipped..");
-            return false;
-        }
+            UnequipCurrent();
 
-        if (item == null)
+        if (item == null || item.equipPrefab == null)
         {
-            Debug.LogWarning("Null item passed to EquipItem!");
-            return false;
-        }
-
-        if (item.equipPrefab == null)
-        {
-            Debug.LogWarning($"The item {item.itemName} has no equipPrefab assigned!");
-            return false;
-        }
-
-        if (_equipPoint == null)
-        {
-            Debug.LogError("EquipPoint not assigned!");
-            return false;
+            Debug.LogWarning($"Cannot equip {item?.itemName}");
+            return;
         }
 
         GameObject obj = Instantiate(item.equipPrefab, _equipPoint);
@@ -41,12 +26,9 @@ public class EquipManager : MonoBehaviour
         _currentEquipped = obj;
 
         Collider col = obj.GetComponent<Collider>();
-        if (col != null)
-            col.enabled = false;
+        if (col != null) col.enabled = false;
 
-        Debug.Log($"Equipped: {item.itemName} in {_equipPoint.name}");
-
-        return true;
+        Debug.Log($"Equipped {item.itemName}");
     }
 
     public void UnequipCurrent()

@@ -721,7 +721,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7844579478133768193, guid: 39ba6423644e91745a228b3780fa299b, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.009988279
+      value: 0.009988289
       objectReference: {fileID: 0}
     - target: {fileID: 7844579478133768193, guid: 39ba6423644e91745a228b3780fa299b, type: 3}
       propertyPath: m_LocalRotation.y
@@ -729,7 +729,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7844579478133768193, guid: 39ba6423644e91745a228b3780fa299b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0014067778
+      value: -0.001406779
       objectReference: {fileID: 0}
     - target: {fileID: 7844579478133768193, guid: 39ba6423644e91745a228b3780fa299b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1182,7 +1182,7 @@ GameObject:
   - component: {fileID: 1935056686}
   m_Layer: 0
   m_Name: Plane
-  m_TagString: Ground
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -1590,7 +1590,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6208976358361186946, guid: de786ac3f62021d4e9497fa6b287fc02, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5
+      value: 3.94
       objectReference: {fileID: 0}
     - target: {fileID: 8824734636097693371, guid: de786ac3f62021d4e9497fa6b287fc02, type: 3}
       propertyPath: m_Name

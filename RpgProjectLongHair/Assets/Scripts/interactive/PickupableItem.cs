@@ -19,12 +19,20 @@ public class PickupableItem : NetworkBehaviour
             col.isTrigger = true;
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent<PlayerController>(out var player))
+        {
+    
+        }
+    }
+
     //Test quest
-    //private void OnTriggerEnter(Collider other)
+    // private void OnTriggerEnter(Collider other)
     //{
-    //    if (other.TryGetComponent<ItemSO>(out var item))
-    //    {
-    //        //TrackEvents.OnTrackEvent?.Invoke($"Pick_Item_{item.itemName}, {item.amount}"); error de dato en invoke!
-    //    }
+    //  if (other.TryGetComponent<ItemSO>(out var item))
+    //{
+    //TrackEvents.OnTrackEvent?.Invoke($"Pick_Item_{item.itemName}, {item.amount}"); error de dato en invoke!
+    //}
     //}
 }
