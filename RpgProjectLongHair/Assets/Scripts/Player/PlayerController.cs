@@ -46,7 +46,8 @@ public class PlayerController : NetworkBehaviour
     {
         if (HasInputAuthority)
         {
-            SetupLocalUI();
+            if (_uiManager != null)
+                _uiManager.SetContent(_inventoryContent);
         }
         else
         {
@@ -74,8 +75,7 @@ public class PlayerController : NetworkBehaviour
         if (_cam == null && HasInputAuthority && Camera.main != null)
             _cam = Camera.main.transform;
 
-        Vector3 moveDir =  inputDir;
-
+        Vector3 moveDir = inputDir;
         moveDir.y = 0;
         moveDir.Normalize();
 
@@ -103,143 +103,15 @@ public class PlayerController : NetworkBehaviour
         TryPickupItem();
     }
 
-    private void SetupLocalUI()
-    {
-        if (!HasInputAuthority || _uiManager == null)
-            return;
-
-        _uiManager.gameObject.SetActive(true);
-        _uiManager.SetContent(_inventoryContent);
-
-        if (_inventoryToggleButton != null)
-        {
-            _inventoryToggleButton.onClick.RemoveAllListeners();
-            _inventoryToggleButton.onClick.AddListener(ToggleInventory);
-        }
-
-        if (_cancelButton != null)
-        {
-            _cancelButton.onClick.RemoveAllListeners();
-            _cancelButton.onClick.AddListener(CloseInventory);
-        }
-
-        var eventSystem = UnityEngine.EventSystems.EventSystem.current;
-        var uiModule = eventSystem?.GetComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
-
-        if (uiModule != null && _playerInput != null)
-            uiModule.actionsAsset = _playerInput.actions;
-
-        RefreshInventoryUI();
-    }
-
-    private void ToggleInventory()
-    {
-        if (!HasInputAuthority || _uiManager == null) return;
-        _uiManager.gameObject.SetActive(!_uiManager.gameObject.activeSelf);
-    }
-
-    private void CloseInventory()
-    {
-        if (!HasInputAuthority || _uiManager == null) return;
-        _uiManager.gameObject.SetActive(false);
-    }
-
     private void TryPickupItem()
     {
         if (!HasInputAuthority) return;
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, _pickupRange);
-        foreach (var hit in hits)
+        if (_inventory != null && _equipManager != null && _uiManager != null)
         {
-            if (hit.TryGetComponent<PickupableItem>(out var pickup))
-            {
-                PickupItemRpc(pickup.Object);
-                break;
-            }
+            var inventoryHandler = GetComponent<PlayerInventoryUIHandler>();
+            if (inventoryHandler != null)
+                inventoryHandler.TryPickupItem();
         }
-    }
-
-    private void RefreshInventoryUI()
-    {
-        if (!HasInputAuthority || _uiManager == null)
-            return;
-
-        _uiManager.Clear();
-
-        for (int i = 0; i < _inventory.Items.Length; i++)
-        {
-            var itemData = _inventory.Items[i];
-            if (itemData.id != 0)
-            {
-                ItemSO itemSO = ItemDatabase.GetItemByIdStatic(itemData.id);
-                if (itemSO != null)
-                {
-                    _uiManager.AddItem(itemSO, OnSlotClicked);
-                }
-            }
-        }
-    }
-
-    private void OnSlotClicked(ItemSO item)
-    {
-        if (!HasInputAuthority) return;
-
-        if (_equipManager == null)
-        {
-            Debug.LogWarning("EquipManager not found on player.");
-            return;
-        }
-
-        if (_equipManager.IsEquipped())
-        {
-            Debug.Log("An item is already equipped, it will be unequipped first..");
-            _equipManager.UnequipCurrent();
-        }
-
-        bool equipped = _equipManager.EquipItem(item);
-        if (equipped)
-            Debug.Log($"{item.itemName} properly equipped.");
-    }
-
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    private void PickupItemRpc(NetworkObject itemNetObj, RpcInfo info = default)
-    {
-        if (itemNetObj.TryGetComponent<PickupableItem>(out var pickup))
-        {
-            if (_inventory.HasStateAuthority)
-            {
-                bool added = _inventory.AddItem(pickup.ItemData);
-
-                if (!HasInputAuthority && added)
-                {
-                    AddItemToOwnerRpc(pickup.ItemData.id);
-                }
-
-                if (HasInputAuthority && added && _uiManager != null)
-                {
-                    _uiManager.AddItem(pickup.ItemDataSO, OnSlotClicked);
-                }
-            }
-
-            Runner.Despawn(itemNetObj);
-            ItemSpawner.Instance.RemoveItem(Runner, itemNetObj);
-        }
-    }
-
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
-    private void AddItemToOwnerRpc(int itemId, RpcInfo info = default)
-    {
-        if (!HasInputAuthority) return;
-
-        ItemSO itemSO = ItemDatabase.GetItemByIdStatic(itemId);
-        if (itemSO == null)
-        {
-            Debug.LogWarning($"No ItemSO found with id {itemId}");
-            return;
-        }
-
-        if (_uiManager != null)
-            _uiManager.AddItem(itemSO, OnSlotClicked);
     }
 }

@@ -317,7 +317,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1219549483248033629
 RectTransform:
   m_ObjectHideFlags: 0
@@ -718,8 +718,9 @@ GameObject:
   - component: {fileID: 3209676850969631865}
   - component: {fileID: 4869086035775519750}
   - component: {fileID: 958972710011646437}
+  - component: {fileID: 7770821102749129637}
   m_Layer: 6
-  m_Name: PlayerPack
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -767,6 +768,7 @@ MonoBehaviour:
   - {fileID: 1668454237951780165}
   - {fileID: 5920229052246632806}
   - {fileID: 8882537679618668693}
+  - {fileID: 7770821102749129637}
   - {fileID: 3740953427037766176}
   - {fileID: 1708033624151517764}
   ForceRemoteRenderTimeframe: 0
@@ -1172,6 +1174,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4622189450405338837}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &7770821102749129637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622189450405338837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9904bc5c90177543948af4f78caebdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inventory: {fileID: 863706082529827884}
+  _uiManager: {fileID: 831586255468960436}
+  _equipManager: {fileID: 3209676850969631865}
+  _pickupRange: 2
 --- !u!1 &4787563027710297290
 GameObject:
   m_ObjectHideFlags: 0
@@ -1938,7 +1956,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3898910291807845872}
   m_Layer: 0
-  m_Name: Player
+  m_Name: PlayerPack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

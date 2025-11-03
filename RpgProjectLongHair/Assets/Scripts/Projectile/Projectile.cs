@@ -15,6 +15,8 @@ public class Projectile : NetworkBehaviour
     private int _targetLayerMask;
     private bool _consumed;
 
+    private const string ENVIRONMENT_TAG = "Environment";
+
     public void InitServer(Vector3 direction, RangedAttackData data, PlayerRef attacker, Vector3 spawnPos)
     {
         Dir = direction.sqrMagnitude > 0f ? direction.normalized : Vector3.forward;
@@ -38,8 +40,8 @@ public class Projectile : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (!Runner.IsRunning) return;
-        if (!Object.HasStateAuthority) return;
+        if (!Runner.IsRunning || !Object.HasStateAuthority)
+            return;
 
         if (Speed <= 0f || Dir == Vector3.zero)
         {
@@ -47,7 +49,21 @@ public class Projectile : NetworkBehaviour
             return;
         }
 
-        transform.position += Dir * Speed * Runner.DeltaTime;
+        Vector3 oldPos = transform.position;
+        Vector3 newPos = oldPos + Dir * Speed * Runner.DeltaTime;
+
+        float distance = Vector3.Distance(oldPos, newPos);
+        if (Physics.Raycast(oldPos, Dir, out RaycastHit environmentHit, distance + HitRadius))
+        {
+            if (environmentHit.collider.CompareTag(ENVIRONMENT_TAG))
+            {
+                _consumed = true;
+                DespawnSafe();
+                return;
+            }
+        }
+
+        transform.position = newPos;
 
         if (!_consumed && Damage > 0)
         {
@@ -60,10 +76,10 @@ public class Projectile : NetworkBehaviour
 
             if (hits != null && hits.Length > 0)
             {
-                foreach (var hit in hits)
+                foreach (var col in hits)
                 {
-                    var hb = hit.GetComponentInParent<Hitbox>();
-                    var eh = hit.GetComponentInParent<EnemyHealth>();
+                    var hb = col.GetComponentInParent<Hitbox>();
+                    var eh = col.GetComponentInParent<EnemyHealth>();
 
                     if (hb != null && EnemyHealth.TryApplyFromHitbox(hb, Damage, Attacker))
                     {
@@ -89,7 +105,7 @@ public class Projectile : NetworkBehaviour
 
     private void DespawnSafe()
     {
-        if (Object.HasStateAuthority)
+        if (Object && Object.HasStateAuthority)
             Runner.Despawn(Object);
     }
 }
