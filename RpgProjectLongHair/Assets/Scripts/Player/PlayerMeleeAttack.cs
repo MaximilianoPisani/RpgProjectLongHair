@@ -53,18 +53,24 @@ public class PlayerMeleeAttack : NetworkBehaviour
         Vector3 origin = _attackOrigin != null ? _attackOrigin.position : playerPos + Vector3.up * 1f;
 
         Collider[] hits = Physics.OverlapSphere(
-            origin,
-            _attackData.HitRadius,
-            _enemyLayer,
-            QueryTriggerInteraction.Collide
+          origin,
+          _attackData.HitRadius,
+          _enemyLayer,
+          QueryTriggerInteraction.Collide
         );
 
         foreach (var hit in hits)
         {
-            var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
-            if (enemyHealth != null && enemyHealth.Object != null && enemyHealth.Object.HasStateAuthority)
+            Vector3 dirToTarget = (hit.transform.position - origin).normalized;
+
+            float angle = Vector3.Angle(direction, dirToTarget);
+            if (angle <= 60f) 
             {
-                enemyHealth.ApplyDamageServer(_attackData.Damage, info.Source);
+                var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
+                if (enemyHealth != null && enemyHealth.Object != null && enemyHealth.Object.HasStateAuthority)
+                {
+                    enemyHealth.ApplyDamageServer(_attackData.Damage, info.Source);
+                }
             }
         }
 
