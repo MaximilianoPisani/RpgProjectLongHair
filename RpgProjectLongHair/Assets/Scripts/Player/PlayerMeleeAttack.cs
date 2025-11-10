@@ -4,10 +4,10 @@ using UnityEngine.InputSystem;
 
 public class PlayerMeleeAttack : NetworkBehaviour
 {
-    [Header("Datos del ataque")]
+    [Header("Attack details")]
     [SerializeField] private MeleeAttackData _attackData;
 
-    [Header("Posición y alcance")]
+    [Header("Position and range")]
     [SerializeField] private Transform _attackOrigin;
     [SerializeField] private LayerMask _enemyLayer;
 

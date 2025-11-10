@@ -31,6 +31,13 @@ public class EquipManager : MonoBehaviour
         Debug.Log($"Equipped {item.itemName}");
     }
 
+    public ItemSO GetCurrentEquippedItemSO()
+    {
+        if (_currentEquipped == null) return null;
+        var pickup = _currentEquipped.GetComponent<PickupableItem>();
+        return pickup != null ? pickup.ItemDataSO : null;
+    }
+
     public void UnequipCurrent()
     {
         if (_currentEquipped != null)
