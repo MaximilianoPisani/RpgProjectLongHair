@@ -7,9 +7,6 @@ using Fusion;
 [RequireComponent(typeof(Inventory))]
 public class PlayerController : NetworkBehaviour
 {
-    [Header("Pickup")]
-    [SerializeField] private float _pickupRange = 2f;
-
     [Header("UI")]
     [SerializeField] private InventoryUiManager _uiManager;
     [SerializeField] private Transform _inventoryContent;
