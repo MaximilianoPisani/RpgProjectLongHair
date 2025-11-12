@@ -10,8 +10,6 @@ public class PlayerController : NetworkBehaviour
     [Header("UI")]
     [SerializeField] private InventoryUiManager _uiManager;
     [SerializeField] private Transform _inventoryContent;
-    [SerializeField] private UnityEngine.UI.Button _inventoryToggleButton;
-    [SerializeField] private UnityEngine.UI.Button _cancelButton;
 
     private Transform _cam;
     private PlayerInput _playerInput;
