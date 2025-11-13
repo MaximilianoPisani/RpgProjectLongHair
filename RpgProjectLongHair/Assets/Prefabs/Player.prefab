@@ -999,11 +999,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb1831ec914348c4c865b76cbcc35007, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pickupRange: 2
   _uiManager: {fileID: 831586255468960436}
   _inventoryContent: {fileID: 111957101793955881}
-  _inventoryToggleButton: {fileID: 2263493787930678873}
-  _cancelButton: {fileID: 615494391686306717}
 --- !u!136 &7948201094473934481
 CapsuleCollider:
   m_ObjectHideFlags: 0
