@@ -16,9 +16,7 @@ public class ItemDatabase : ScriptableObject
     {
         get
         {
-            if (_instance == null)
-                _instance = Resources.Load<ItemDatabase>("ItemDatabase"); 
-            return _instance;
+            return _instance ?? Resources.Load<ItemDatabase>("Items/ItemDatabase");
         }
     }
 
