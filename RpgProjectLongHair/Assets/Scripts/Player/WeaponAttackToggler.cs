@@ -22,34 +22,41 @@ public class WeaponAttackToggler : MonoBehaviour
     {
         if (_equipManager == null) return;
 
-        if (_equipManager.IsEquipped())
-        {
-            var equipped = _equipManager.GetCurrentEquippedItemSO();
-            if (equipped == null)
-            {
-                SetAttackScriptsActive(false);
-                return;
-            }
+        int equippedId = _equipManager.EquippedItemId;
 
-            if (equipped.type == ItemType.Weapon)
-            {
-                switch (equipped.weaponCategory)
-                {
-                    case WeaponCategory.Melee:
-                        SetAttackScriptsActive(true, isMelee: true);
-                        break;
-                    case WeaponCategory.Ranged:
-                        SetAttackScriptsActive(true, isMelee: false);
-                        break;
-                    default:
-                        SetAttackScriptsActive(false);
-                        break;
-                }
-            }
-            else
-            {
+        if (equippedId == 0)
+        {
+            SetAttackScriptsActive(false);
+            return;
+        }
+
+        ItemSO equippedItem = ItemDatabase.GetItemByIdStatic(equippedId);
+
+        if (equippedItem == null)
+        {
+            SetAttackScriptsActive(false);
+            return;
+        }
+
+        if (equippedItem.type != ItemType.Weapon)
+        {
+            SetAttackScriptsActive(false);
+            return;
+        }
+
+        switch (equippedItem.weaponCategory)
+        {
+            case WeaponCategory.Melee:
+                SetAttackScriptsActive(true, isMelee: true);
+                break;
+
+            case WeaponCategory.Ranged:
+                SetAttackScriptsActive(true, isMelee: false);
+                break;
+
+            default:
                 SetAttackScriptsActive(false);
-            }
+                break;
         }
     }
 

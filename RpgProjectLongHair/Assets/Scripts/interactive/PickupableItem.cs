@@ -1,38 +1,22 @@
 using UnityEngine;
 using Fusion;
 
+// Componente item que puede ser recogido
 public class PickupableItem : NetworkBehaviour
 {
     [SerializeField] private ItemSO itemDataSO;
     public ItemSO ItemDataSO => itemDataSO;
 
-    public ItemData ItemData => new ItemData
+    public ItemData ItemData => new ItemData // Datos que se envían al inventario (NetworkArray)
     {
-        id = itemDataSO.id,
-        type = itemDataSO.type
+        id = itemDataSO != null ? itemDataSO.id : 0,
+        type = itemDataSO != null ? itemDataSO.type : ItemType.Consumable
     };
 
-    private void Reset()
+    private void Reset() // Asegura que el collider sea trigger si fue agregado al prefab
     {
         var col = GetComponent<Collider>();
         if (col != null)
             col.isTrigger = true;
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.TryGetComponent<PlayerController>(out var player))
-        {
-    
-        }
-    }
-
-    //Test quest
-    // private void OnTriggerEnter(Collider other)
-    //{
-    //  if (other.TryGetComponent<ItemSO>(out var item))
-    //{
-    //TrackEvents.OnTrackEvent?.Invoke($"Pick_Item_{item.itemName}, {item.amount}"); error de dato en invoke!
-    //}
-    //}
 }
