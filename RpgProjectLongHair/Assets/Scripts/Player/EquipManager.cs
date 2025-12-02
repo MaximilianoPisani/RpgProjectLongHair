@@ -1,49 +1,102 @@
 using UnityEngine;
+using Fusion;
 
-public class EquipManager : MonoBehaviour
+[RequireComponent(typeof(PlayerInventoryData))]
+// Componente encargado de manejar qué item está equipado
+public class EquipManager : NetworkBehaviour
 {
     [SerializeField] private Transform _equipPoint;
+
     private GameObject _currentEquipped;
+    private PlayerInventoryData _inventory;
 
-    public bool IsEquipped() => _currentEquipped != null;
+    // ID sincronizado del item equipado
+    [Networked, OnChangedRender(nameof(OnEquippedChangedRender))] public int EquippedItemId { get; set; }
 
-    public void EquipItemFromSlot(ItemSO item)
+    public override void Spawned() // Obtiene inventario y renderiza si ya había un item equipado
     {
-        if (_currentEquipped != null)
-            UnequipCurrent();
+        _inventory = GetComponent<PlayerInventoryData>();
 
-        if (item == null || item.equipPrefab == null)
+        if (EquippedItemId != 0)
+            RenderEquippedItem();
+    }
+
+    public void OnSlotClicked(ItemSO item) // Interpreta clics de UI para equipar o desequipar items
+    {
+        if (!HasInputAuthority || item == null)
+            return;
+
+        if (EquippedItemId == item.id)
+            RPC_RequestEquip(0);
+        else
+            RPC_RequestEquip(item.id);
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)] // Solicita al servidor equipar/desequipar
+    private void RPC_RequestEquip(int id, RpcInfo info = default)
+    {
+        if (_inventory == null)
         {
-            Debug.LogWarning($"Cannot equip {item?.itemName}");
+            Debug.LogWarning("EquipManager: missing inventory reference");
             return;
         }
 
-        GameObject obj = Instantiate(item.equipPrefab, _equipPoint);
-        obj.name = item.itemName + "_Equipped";
-        obj.transform.localPosition = Vector3.zero;
-        obj.transform.localRotation = Quaternion.identity;
+        // Desequipar
+        if (id == 0)
+        {
+            EquippedItemId = 0;
+            return;
+        }
+        if (!_inventory.HasItem(id))
+        {
+            Debug.LogWarning($"Equip rejected: Player does not own item {id}");
+            return;
+        }
 
-        _currentEquipped = obj;
-
-        Collider col = obj.GetComponent<Collider>();
-        if (col != null) col.enabled = false;
-
-        Debug.Log($"Equipped {item.itemName}");
+        EquippedItemId = id;
     }
 
-    public ItemSO GetCurrentEquippedItemSO()
+    public void OnEquippedChangedRender()
     {
-        if (_currentEquipped == null) return null;
-        var pickup = _currentEquipped.GetComponent<PickupableItem>();
-        return pickup != null ? pickup.ItemDataSO : null;
+        RenderEquippedItem();
     }
 
-    public void UnequipCurrent()
+    // Instancia o destruye el prefab del item equipado (para la entrega se hizo, esto luego sera mejorado con una pool) 
+    private void RenderEquippedItem()
     {
         if (_currentEquipped != null)
         {
             Destroy(_currentEquipped);
             _currentEquipped = null;
         }
+
+        if (EquippedItemId == 0)
+            return;
+
+        ItemSO item = ItemDatabase.GetItemByIdStatic(EquippedItemId);
+
+        if (item == null)
+        {
+            Debug.LogWarning($"EquipManager: ItemSO {EquippedItemId} not found");
+            return;
+        }
+
+        if (item.equipPrefab == null)
+        {
+            Debug.LogWarning($"Item {item.itemName} has no equipPrefab!");
+            return;
+        }
+
+        GameObject obj = Instantiate(item.equipPrefab, _equipPoint);
+        obj.transform.localPosition = Vector3.zero;
+        obj.transform.localRotation = Quaternion.identity;
+
+        if (obj.TryGetComponent<Collider>(out var col))
+            col.enabled = false;
+
+        obj.name = item.itemName + "_Equipped";
+
+        _currentEquipped = obj;
     }
 }
+

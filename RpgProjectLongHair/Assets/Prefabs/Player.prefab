@@ -419,9 +419,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _contentParent: {fileID: 111957101793955881}
-  _toggleButton: {fileID: 2263493787930678873}
-  _cancelButton: {fileID: 615494391686306717}
-  _panel: {fileID: 3235935023843017806}
 --- !u!1 &3278356446105692752
 GameObject:
   m_ObjectHideFlags: 0
@@ -762,14 +759,12 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 7688218400672477227}
-  - {fileID: 863706082529827884}
   - {fileID: 7318097617083046576}
   - {fileID: 3077977761483962379}
-  - {fileID: 6374113360797030949}
   - {fileID: 1668454237951780165}
   - {fileID: 5920229052246632806}
   - {fileID: 8882537679618668693}
-  - {fileID: 7770821102749129637}
+  - {fileID: 3209676850969631865}
   - {fileID: 3740953427037766176}
   - {fileID: 1708033624151517764}
   ForceRemoteRenderTimeframe: 0
@@ -999,8 +994,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb1831ec914348c4c865b76cbcc35007, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiManager: {fileID: 831586255468960436}
-  _inventoryContent: {fileID: 111957101793955881}
 --- !u!136 &7948201094473934481
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1092,7 +1085,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   _crosshair: {fileID: 2426758991902941835}
-  _camera: {fileID: 0}
 --- !u!114 &8882537679618668693
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1119,6 +1111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _equipPoint: {fileID: 8906761339523662923}
+  _EquippedItemId: 0
 --- !u!23 &4869086035775519750
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1184,9 +1177,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9904bc5c90177543948af4f78caebdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inventory: {fileID: 863706082529827884}
+  _inventoryData: {fileID: 863706082529827884}
   _uiManager: {fileID: 831586255468960436}
   _equipManager: {fileID: 3209676850969631865}
+  _inventoryContent: {fileID: 111957101793955881}
   _pickupRange: 2
 --- !u!114 &8562146571235227689
 MonoBehaviour:
@@ -1787,9 +1781,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b04ea602c2bb82245b3d723d35356c6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryPanel: {fileID: 3235935023843017806}
-  openButton: {fileID: 2263493787930678873}
-  closeButton: {fileID: 615494391686306717}
+  _inventoryPanel: {fileID: 3235935023843017806}
+  _openButton: {fileID: 2263493787930678873}
+  _closeButton: {fileID: 615494391686306717}
 --- !u!1 &8162447073703031279
 GameObject:
   m_ObjectHideFlags: 0

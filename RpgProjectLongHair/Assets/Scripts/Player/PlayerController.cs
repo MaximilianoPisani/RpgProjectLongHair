@@ -1,28 +1,20 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Fusion;
+using UnityEngine.Windows;
 
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(NetworkCharacterController))]
-[RequireComponent(typeof(Inventory))]
 public class PlayerController : NetworkBehaviour
 {
-    [Header("UI")]
-    [SerializeField] private InventoryUiManager _uiManager;
-    [SerializeField] private Transform _inventoryContent;
-
     private Transform _cam;
     private PlayerInput _playerInput;
     private NetworkCharacterController _characterController;
-    private Inventory _inventory;
-    private EquipManager _equipManager;
 
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
         _characterController = GetComponent<NetworkCharacterController>();
-        _inventory = GetComponent<Inventory>();
-        _equipManager = GetComponentInChildren<EquipManager>();
     }
 
     private void OnEnable()
@@ -35,20 +27,6 @@ public class PlayerController : NetworkBehaviour
     {
         if (_playerInput != null)
             _playerInput.actions["Interact"].performed -= OnInteract;
-    }
-
-    public override void Spawned()
-    {
-        if (HasInputAuthority)
-        {
-            if (_uiManager != null)
-                _uiManager.SetContent(_inventoryContent);
-        }
-        else
-        {
-            if (_uiManager != null)
-                Destroy(_uiManager.gameObject);
-        }
     }
 
     public override void FixedUpdateNetwork()
@@ -89,24 +67,13 @@ public class PlayerController : NetworkBehaviour
             _characterController.Jump();
 
         if (input.interact)
-            TryPickupItem();
+
+            GetComponent<PlayerInventoryController>().TryPickupItem();
     }
 
     private void OnInteract(InputAction.CallbackContext context)
     {
         if (!HasInputAuthority) return;
-        TryPickupItem();
-    }
-
-    private void TryPickupItem()
-    {
-        if (!HasInputAuthority) return;
-
-        if (_inventory != null && _equipManager != null && _uiManager != null)
-        {
-            var inventoryHandler = GetComponent<PlayerInventoryUIHandler>();
-            if (inventoryHandler != null)
-                inventoryHandler.TryPickupItem();
-        }
+        GetComponent<PlayerInventoryController>().TryPickupItem();
     }
 }

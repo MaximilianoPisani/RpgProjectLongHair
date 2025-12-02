@@ -9,12 +9,12 @@ public class PlayerRangeAttack : NetworkBehaviour
     [SerializeField] private Transform[] _spawnPoints;
     [SerializeField] private LayerMask _aimLayerMask = ~0;
     [SerializeField] private RectTransform _crosshair;
-    [SerializeField] private Camera _camera;
 
     [Networked] private TickTimer _cooldownTimer { get; set; }
 
     private PlayerInput _playerInput;
     private Transform _cameraTransform;
+    private Camera _camera;
 
     private void Awake()
     {
