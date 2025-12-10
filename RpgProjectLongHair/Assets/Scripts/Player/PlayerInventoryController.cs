@@ -18,12 +18,18 @@ public class PlayerInventoryController : MonoBehaviour
 
         if (_inventoryData != null)
             _inventoryData.OnInventoryChanged += RefreshInventoryUI;
+
+        if (_equipManager != null)
+            _equipManager.OnEquippedChanged += RefreshEquipState;
     }
 
     private void OnDestroy()
     {
         if (_inventoryData != null)
             _inventoryData.OnInventoryChanged -= RefreshInventoryUI;
+
+        if (_equipManager != null)
+            _equipManager.OnEquippedChanged -= RefreshEquipState;
     }
 
     private void RefreshInventoryUI()
@@ -43,12 +49,18 @@ public class PlayerInventoryController : MonoBehaviour
             if (itemSO != null)
                 _uiManager.AddItem(itemSO, OnInventorySlotClicked);
         }
+
+        RefreshEquipState(_equipManager.EquippedItemId);
     }
 
     private void OnInventorySlotClicked(ItemSO item)
     {
-        if (_equipManager != null)
-            _equipManager.OnSlotClicked(item);
+        _equipManager?.OnSlotClicked(item);
+    }
+
+    private void RefreshEquipState(int equippedId)
+    {
+        _uiManager?.HighlightEquipped(equippedId);
     }
 
     public void TryPickupItem()
