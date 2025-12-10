@@ -8,31 +8,28 @@ public class InventoryUiManager : MonoBehaviour
 {
     [SerializeField] private Transform _contentParent;
 
-    private readonly List<ItemSO> _collected = new List<ItemSO>();
+    private readonly Dictionary<int, InventorySlot> _slotsById = new();
 
     public void SetContent(Transform content)
     {
         _contentParent = content;
     }
 
-    public void AddItem(ItemSO item, Action<ItemSO> onClick) // Crea visualmente el slot en la UI para un item y asigna el callback de click
+    public void AddItem(ItemSO item, Action<ItemSO> onClick)
     {
-        if (item == null || _contentParent == null) return;
-        if (_collected.Contains(item)) return;
-
-        _collected.Add(item);
-
-        if (item.slotPrefab == null)
-        {
-            Debug.LogWarning($"Item {item.itemName} has no slotPrefab!");
+        if (item == null || _contentParent == null)
             return;
-        }
+
+        if (_slotsById.ContainsKey(item.id))
+            return;
 
         GameObject slotObj = Instantiate(item.slotPrefab, _contentParent);
         slotObj.name = item.itemName + "_Slot";
 
         InventorySlot slot = slotObj.GetComponent<InventorySlot>();
-        if (slot != null) slot.SetData(item);
+        slot.SetData(item);
+
+        _slotsById[item.id] = slot;
 
         Button button = slotObj.GetComponent<Button>();
         if (button != null)
@@ -42,9 +39,18 @@ public class InventoryUiManager : MonoBehaviour
         }
     }
 
-    public void Clear() // Limpia todos los slots de la UI
+    public void HighlightEquipped(int equippedId)
     {
-        _collected.Clear();
+        foreach (var kv in _slotsById)
+        {
+            bool isEquipped = kv.Key == equippedId;
+            kv.Value.SetEquipped(isEquipped);
+        }
+    }
+
+    public void Clear()
+    {
+        _slotsById.Clear();
 
         if (_contentParent == null) return;
 
