@@ -3,10 +3,17 @@ using Fusion;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkObject))]
+[RequireComponent(typeof(PlayerCheckpoint))]
 public class PlayerHealth : NetworkBehaviour
 {
+    [Header("Health")]
     [SerializeField] private int _maxHealth = 100;
-    [Networked] private int _currentHealth { get; set; }
+
+    [Networked] private int CurrentHealth { get; set; }
+
+    [Header("Respawn")]
+    [SerializeField] private float _respawnDelay = 2f;
+    [SerializeField] private NetworkPrefabRef _playerPrefab;
 
     [Header("Flash Effect")]
     [SerializeField] private Renderer _meshRenderer;
@@ -16,25 +23,28 @@ public class PlayerHealth : NetworkBehaviour
 
     private Color _originalColor;
     private Coroutine _flashCoroutine;
+    private PlayerCheckpoint _checkpoint;
 
     public override void Spawned()
     {
-        if (Object.HasStateAuthority)
-            _currentHealth = _maxHealth;
+        _checkpoint = GetComponent<PlayerCheckpoint>();
+
+        if (HasStateAuthority)
+            CurrentHealth = _maxHealth;
 
         if (_meshRenderer != null)
             _originalColor = _meshRenderer.material.color;
     }
-
     public void TakeDamage(int damage)
     {
-        if (!Object.HasStateAuthority) return;
+        if (!HasStateAuthority) return;
         if (damage <= 0) return;
+        if (CurrentHealth <= 0) return;
 
-        _currentHealth -= damage;
-        Debug.Log($"[Player] {_currentHealth}/{_maxHealth} HP after taking {damage} damage.");
+        CurrentHealth -= damage;
+        Debug.Log($"[Player] {CurrentHealth}/{_maxHealth} HP");
 
-        if (_currentHealth > 0)
+        if (CurrentHealth > 0)
         {
             RPC_Flash();
         }
@@ -46,27 +56,52 @@ public class PlayerHealth : NetworkBehaviour
 
     private void Die()
     {
-        Debug.Log("[Player] Player has died!");
+        if (!HasStateAuthority) return;
+
+        Debug.Log("[Player] Player died");
+
+        CurrentHealth = 0;
 
         if (_flashCoroutine != null)
-        {
             StopCoroutine(_flashCoroutine);
-            _flashCoroutine = null;
-        }
 
         if (_meshRenderer != null)
             _meshRenderer.material.color = _originalColor;
 
-        if (Object.HasStateAuthority)
-        {
-            Runner.Despawn(Object);
-        }
+        Vector3 respawnPosition = _checkpoint != null
+            ? _checkpoint.LastCheckpoint
+            : transform.position;
+
+        PlayerRef playerRef = Object.InputAuthority;
+
+        StartCoroutine(RespawnRoutine(respawnPosition, playerRef));
     }
+
+    private IEnumerator RespawnRoutine(Vector3 respawnPosition, PlayerRef playerRef)
+    {
+        yield return new WaitForSeconds(_respawnDelay);
+
+        Runner.Spawn(
+            _playerPrefab,
+            respawnPosition,
+            Quaternion.identity,
+            playerRef,
+            (runner, obj) =>
+            {
+                var health = obj.GetComponent<PlayerHealth>();
+                if (health != null)
+                    health.CurrentHealth = health._maxHealth;
+            });
+
+        Runner.Despawn(Object);
+    }
+
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_Flash()
     {
-        if (_meshRenderer == null) return;
+        if (_meshRenderer == null)
+            return;
 
         if (_flashCoroutine != null)
             StopCoroutine(_flashCoroutine);
@@ -80,6 +115,7 @@ public class PlayerHealth : NetworkBehaviour
         {
             _meshRenderer.material.color = _flashColor;
             yield return new WaitForSeconds(_flashDuration);
+
             _meshRenderer.material.color = _originalColor;
             yield return new WaitForSeconds(_flashDuration);
         }
