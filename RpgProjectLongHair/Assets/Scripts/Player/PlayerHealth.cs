@@ -4,6 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(PlayerCheckpoint))]
+[RequireComponent(typeof(NetworkCharacterController))]
 public class PlayerHealth : NetworkBehaviour
 {
     [Header("Health")]
@@ -13,7 +14,6 @@ public class PlayerHealth : NetworkBehaviour
 
     [Header("Respawn")]
     [SerializeField] private float _respawnDelay = 2f;
-    [SerializeField] private NetworkPrefabRef _playerPrefab;
 
     [Header("Flash Effect")]
     [SerializeField] private Renderer _meshRenderer;
@@ -24,10 +24,12 @@ public class PlayerHealth : NetworkBehaviour
     private Color _originalColor;
     private Coroutine _flashCoroutine;
     private PlayerCheckpoint _checkpoint;
+    private NetworkCharacterController _networkCC;
 
     public override void Spawned()
     {
         _checkpoint = GetComponent<PlayerCheckpoint>();
+        _networkCC = GetComponent<NetworkCharacterController>();
 
         if (HasStateAuthority)
             CurrentHealth = _maxHealth;
@@ -35,6 +37,7 @@ public class PlayerHealth : NetworkBehaviour
         if (_meshRenderer != null)
             _originalColor = _meshRenderer.material.color;
     }
+
     public void TakeDamage(int damage)
     {
         if (!HasStateAuthority) return;
@@ -72,30 +75,19 @@ public class PlayerHealth : NetworkBehaviour
             ? _checkpoint.LastCheckpoint
             : transform.position;
 
-        PlayerRef playerRef = Object.InputAuthority;
-
-        StartCoroutine(RespawnRoutine(respawnPosition, playerRef));
+        StartCoroutine(RespawnRoutine(respawnPosition));
     }
 
-    private IEnumerator RespawnRoutine(Vector3 respawnPosition, PlayerRef playerRef)
+    private IEnumerator RespawnRoutine(Vector3 respawnPosition)
     {
         yield return new WaitForSeconds(_respawnDelay);
 
-        Runner.Spawn(
-            _playerPrefab,
-            respawnPosition,
-            Quaternion.identity,
-            playerRef,
-            (runner, obj) =>
-            {
-                var health = obj.GetComponent<PlayerHealth>();
-                if (health != null)
-                    health.CurrentHealth = health._maxHealth;
-            });
+        _networkCC.Teleport(respawnPosition);
 
-        Runner.Despawn(Object);
+        CurrentHealth = _maxHealth;
+
+        Debug.Log("[Player] Revived at checkpoint with inventory intact");
     }
-
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_Flash()
