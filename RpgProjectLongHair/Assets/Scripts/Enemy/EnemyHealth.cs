@@ -9,8 +9,7 @@ public class EnemyHealth : NetworkBehaviour
     [Header("Life")]
     [SerializeField] private int _maxHealth = 100;
 
-    [Networked, HideInInspector]
-    public int currentHealth { get; set; }
+    [Networked, HideInInspector] public int currentHealth { get; set; }
 
     public int MaxHealth => _maxHealth;
 

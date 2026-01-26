@@ -3,40 +3,40 @@ using UnityEngine.UI;
 
 public class EnemyHealthUI : MonoBehaviour
 {
-    [SerializeField] private Slider healthSlider;
+    [SerializeField] private Slider _healthSlider;
 
-    private EnemyHealth enemyHealth;
+    private EnemyHealth _enemyHealth;
 
     private void Awake()
     {
-        if (healthSlider == null)
-            healthSlider = GetComponentInChildren<Slider>();
+        if (_healthSlider == null)
+            _healthSlider = GetComponentInChildren<Slider>();
 
-        enemyHealth = GetComponentInParent<EnemyHealth>();
+        _enemyHealth = GetComponentInParent<EnemyHealth>();
     }
 
     private void OnEnable()
     {
-        if (enemyHealth == null) return;
+        if (_enemyHealth == null) return;
 
-        enemyHealth.OnHealthChanged += UpdateHealth;
-        enemyHealth.OnDeath += HandleDeath;
+        _enemyHealth.OnHealthChanged += UpdateHealth;
+        _enemyHealth.OnDeath += HandleDeath;
 
-        UpdateHealth(enemyHealth.currentHealth, enemyHealth.MaxHealth);
+        UpdateHealth(_enemyHealth.currentHealth, _enemyHealth.MaxHealth);
     }
 
     private void OnDisable()
     {
-        if (enemyHealth == null) return;
+        if (_enemyHealth == null) return;
 
-        enemyHealth.OnHealthChanged -= UpdateHealth;
-        enemyHealth.OnDeath -= HandleDeath;
+        _enemyHealth.OnHealthChanged -= UpdateHealth;
+        _enemyHealth.OnDeath -= HandleDeath;
     }
 
     private void UpdateHealth(int current, int max)
     {
-        healthSlider.maxValue = max;
-        healthSlider.value = current;
+        _healthSlider.maxValue = max;
+        _healthSlider.value = current;
     }
 
     private void HandleDeath()
