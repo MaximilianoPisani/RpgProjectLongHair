@@ -1,5 +1,6 @@
 using UnityEngine;
 using Fusion;
+using System;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(NetworkObject))]
@@ -7,7 +8,10 @@ public class EnemyHealth : NetworkBehaviour
 {
     [Header("Life")]
     [SerializeField] private int _maxHealth = 100;
+
     [Networked, HideInInspector] public int currentHealth { get; set; }
+
+    public int MaxHealth => _maxHealth;
 
     [Header("Feedback")]
     [SerializeField] private Renderer _meshRenderer;
@@ -15,13 +19,17 @@ public class EnemyHealth : NetworkBehaviour
     [SerializeField] private float _flashDuration = 0.1f;
 
     [Header("Reward")]
-    [SerializeField] private ExpConfigSO _expConfig; 
+    [SerializeField] private ExpConfigSO _expConfig;
 
+    public event Action<int, int> OnHealthChanged;
+    public event Action OnDeath;
 
     private Color _originalColor;
     private Coroutine _flashCoroutine;
 
     private readonly HashSet<PlayerRef> _participants = new();
+
+    private ChangeDetector _changeDetector;
 
     public override void Spawned()
     {
@@ -31,8 +39,26 @@ public class EnemyHealth : NetworkBehaviour
             _participants.Clear();
         }
 
+        _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
+
         if (_meshRenderer != null)
             _originalColor = _meshRenderer.material.color;
+
+        OnHealthChanged?.Invoke(currentHealth, _maxHealth);
+    }
+
+    public override void Render()
+    {
+        foreach (var change in _changeDetector.DetectChanges(this))
+        {
+            if (change == nameof(currentHealth))
+            {
+                OnHealthChanged?.Invoke(currentHealth, _maxHealth);
+
+                if (currentHealth <= 0)
+                    OnDeath?.Invoke();
+            }
+        }
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
@@ -45,6 +71,7 @@ public class EnemyHealth : NetworkBehaviour
     {
         TakeDamageServer(damage, attacker);
     }
+
     private void TakeDamageServer(int damage, PlayerRef attacker)
     {
         if (!Object.HasStateAuthority) return;
@@ -55,50 +82,21 @@ public class EnemyHealth : NetworkBehaviour
                 controller.ChangeState(new EnemyDeathState(controller));
             else
                 Runner.Despawn(Object);
+            return;
         }
 
         if (attacker != PlayerRef.None)
             _participants.Add(attacker);
 
         currentHealth = Mathf.Max(0, currentHealth - damage);
+
         Debug.Log($"{Object.name} received {damage}. Remaining life: {currentHealth}");
 
         RPC_Flash();
 
         if (currentHealth <= 0)
             Runner.Despawn(Object);
-
-
     }
-
-    //Test
-
-    /*private void DieServer()
-    {
-        if (!Object.HasStateAuthority) return;
-
-        int reward = _expConfig ? _expConfig.killExp : 25;
-
-        if (reward > 0 && _participants.Count > 0)
-        {
-            foreach (var pRef in _participants)
-                GiveExpTo(pRef, reward); // <-- USARLA ACÁ
-        }
-
-        Debug.Log($"{Object.name} murió.");
-        if (Runner != null && Object.HasStateAuthority)
-            Runner.Despawn(Object);
-    }
-
-    private void GiveExpTo(PlayerRef playerRef, int exp)
-    {
-        var playerObj = Runner.GetPlayerObject(playerRef);
-        if (playerObj != null && playerObj.TryGetComponent<PlayerProgression>(out var prog))
-        {
-            prog.AddExpServer(exp);                        // suma EXP (server)
-            prog.RPC_OnExpGained(exp, transform.position); // notifica al dueño para HUD
-        }
-    }*/
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_Flash()
