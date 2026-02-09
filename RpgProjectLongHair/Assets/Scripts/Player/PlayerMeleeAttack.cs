@@ -43,33 +43,38 @@ public class PlayerMeleeAttack : NetworkBehaviour
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    private void RPC_RequestMeleeAttack(Vector3 playerPos, Vector3 direction, RpcInfo info = default)
+    private void RPC_RequestMeleeAttack(Vector3 playerPos, Vector3 direction)
     {
         if (!Runner.IsServer) return;
         if (!_cooldownTimer.ExpiredOrNotRunning(Runner)) return;
 
         _cooldownTimer = TickTimer.CreateFromSeconds(Runner, _attackData.Cooldown);
 
-        Vector3 origin = _attackOrigin != null ? _attackOrigin.position : playerPos + Vector3.up * 1f;
+        Vector3 origin = _attackOrigin != null
+            ? _attackOrigin.position
+            : playerPos + Vector3.up * 1f;
 
         Collider[] hits = Physics.OverlapSphere(
-          origin,
-          _attackData.HitRadius,
-          _enemyLayer,
-          QueryTriggerInteraction.Collide
+            origin,
+            _attackData.HitRadius,
+            _enemyLayer,
+            QueryTriggerInteraction.Collide
         );
 
         foreach (var hit in hits)
         {
             Vector3 dirToTarget = (hit.transform.position - origin).normalized;
-
             float angle = Vector3.Angle(direction, dirToTarget);
-            if (angle <= 60f) 
+
+            if (angle <= 60f)
             {
                 var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
-                if (enemyHealth != null && enemyHealth.Object != null && enemyHealth.Object.HasStateAuthority)
+                if (enemyHealth != null && enemyHealth.Object.HasStateAuthority)
                 {
-                    enemyHealth.ApplyDamageServer(_attackData.Damage, info.Source);
+                    enemyHealth.ApplyDamageServer(
+                        _attackData.Damage,
+                        Object.InputAuthority  
+                    );
                 }
             }
         }
