@@ -84,27 +84,26 @@ public class PlayerRangeAttack : NetworkBehaviour
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    private void RPC_RequestShoot(Vector3 spawnPos, Vector3 direction, RpcInfo info = default)
+    private void RPC_RequestShoot(Vector3 spawnPos, Vector3 direction)
     {
         if (!Runner.IsServer) return;
-        if (_attackData == null || _attackData.ProjectilePrefab == null) return;
-
-        if (!_cooldownTimer.ExpiredOrNotRunning(Runner))
-            return;
+        if (!_cooldownTimer.ExpiredOrNotRunning(Runner)) return;
 
         float cd = (_attackData is AttackData ad) ? ad.Cooldown : 0f;
-        _cooldownTimer = TickTimer.CreateFromSeconds(Runner, cd > 0f ? cd : 0f);
+        _cooldownTimer = TickTimer.CreateFromSeconds(Runner, cd);
+
+        PlayerRef attacker = Object.InputAuthority;
 
         Runner.Spawn(
             _attackData.ProjectilePrefab,
             spawnPos,
-            Quaternion.LookRotation(direction.normalized),
-            info.Source,
+            Quaternion.LookRotation(direction),
+            attacker,
             (runner, spawned) =>
             {
                 var proj = spawned.GetComponent<Projectile>();
                 if (proj != null)
-                    proj.InitServer(direction, _attackData, info.Source, spawnPos);
+                    proj.InitServer(direction, _attackData, attacker, spawnPos);
             }
         );
     }

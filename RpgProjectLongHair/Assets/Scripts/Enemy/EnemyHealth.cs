@@ -11,6 +11,8 @@ public class EnemyHealth : NetworkBehaviour
 
     [Networked, HideInInspector] public int currentHealth { get; set; }
 
+    private PlayerRef _lastAttacker;
+
     public int MaxHealth => _maxHealth;
 
     [Header("Feedback")]
@@ -74,29 +76,30 @@ public class EnemyHealth : NetworkBehaviour
 
     private void TakeDamageServer(int damage, PlayerRef attacker)
     {
+        Debug.Log($"[EnemyHealth] Damage {damage} from {attacker}, authority={Object.HasStateAuthority}");
+
         if (!Object.HasStateAuthority) return;
+
         if (damage <= 0) return;
-        if (currentHealth <= 0)
-        {
-            if (TryGetComponent<EnemyController>(out var controller))
-                controller.ChangeState(new EnemyDeathState(controller));
-            else
-                Runner.Despawn(Object);
-            return;
-        }
+
+        if (currentHealth <= 0) return;
 
         if (attacker != PlayerRef.None)
-            _participants.Add(attacker);
+        {
+          _participants.Add(attacker);
+          _lastAttacker = attacker; 
+        }
 
         currentHealth = Mathf.Max(0, currentHealth - damage);
-
-        Debug.Log($"{Object.name} received {damage}. Remaining life: {currentHealth}");
 
         RPC_Flash();
 
         if (currentHealth <= 0)
-            Runner.Despawn(Object);
-    }
+        {
+          GiveKillExp();  
+          Runner.Despawn(Object);
+        }
+  }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_Flash()
@@ -126,5 +129,31 @@ public class EnemyHealth : NetworkBehaviour
 
         health.ApplyDamageServer(damage, attacker);
         return true;
+    }
+    private void GiveKillExp()
+    {
+        Debug.Log($"[EnemyHealth] GiveKillExp called. LastAttacker={_lastAttacker}");
+
+        if (_lastAttacker == PlayerRef.None)
+        {
+            Debug.Log("[EnemyHealth] LastAttacker is NONE");
+            return;
+        }
+
+        if (!Runner.TryGetPlayerObject(_lastAttacker, out NetworkObject playerObj))
+        {
+            Debug.Log("[EnemyHealth] PlayerObject NOT FOUND");
+            return;
+        }
+
+        Debug.Log($"[EnemyHealth] PlayerObject found: {playerObj.name}");
+        {
+            var playerExp = playerObj.GetComponent<PlayerExp>();
+            if (playerExp != null)
+            {
+                int exp = _expConfig.GetExp(ExpEvent.Kill);
+                playerExp.AddExperience(exp);
+            }
+        }
     }
 }

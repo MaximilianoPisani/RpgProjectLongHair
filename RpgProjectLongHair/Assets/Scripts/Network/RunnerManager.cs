@@ -43,6 +43,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         var playerObj = _playerSpawner.SpawnPlayer(runner, player);
         if (playerObj == null) return;
 
+        runner.SetPlayerObject(player, playerObj);
+
         _spawnedPlayers[player] = playerObj;
         Debug.Log($"[RunnerManager] Player {player} spawned.");
 

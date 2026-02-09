@@ -1354,6 +1354,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -50
       objectReference: {fileID: 0}
+    - target: {fileID: 4644783634800819032, guid: f3e0ac08219e901408d5cc2dde011e13, type: 3}
+      propertyPath: levelText
+      value: 
+      objectReference: {fileID: 1448430509}
     - target: {fileID: 5206438646870283879, guid: f3e0ac08219e901408d5cc2dde011e13, type: 3}
       propertyPath: m_SizeDelta.x
       value: 33.5
@@ -1379,16 +1383,36 @@ PrefabInstance:
       value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 6413377090751737572, guid: f3e0ac08219e901408d5cc2dde011e13, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.9850687
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413377090751737572, guid: f3e0ac08219e901408d5cc2dde011e13, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.7818158
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413377090751737572, guid: f3e0ac08219e901408d5cc2dde011e13, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6413377090751737572, guid: f3e0ac08219e901408d5cc2dde011e13, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -52
+      value: -50.8
       objectReference: {fileID: 0}
     - target: {fileID: 6683795969252478653, guid: f3e0ac08219e901408d5cc2dde011e13, type: 3}
       propertyPath: m_Name
       value: Canvas Exp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925390804122443236, guid: f3e0ac08219e901408d5cc2dde011e13, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.120758
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925390804122443236, guid: f3e0ac08219e901408d5cc2dde011e13, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.8254774
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925390804122443236, guid: f3e0ac08219e901408d5cc2dde011e13, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1404,6 +1428,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3470ceac91d256c4986c7f493072d573, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1448430509 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1437132291038689555, guid: f3e0ac08219e901408d5cc2dde011e13, type: 3}
+  m_PrefabInstance: {fileID: 1130627987}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1448587391

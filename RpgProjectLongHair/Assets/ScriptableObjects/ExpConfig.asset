@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseLevelThreshold: 100
   levelCurve: 1.35
-  killExp: 25
+  killExp: 30
   chestExp: 15
   questExp: 120
   craftExp: 10
