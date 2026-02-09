@@ -3,13 +3,24 @@ using UnityEngine;
 
 public class PlayerExp : NetworkBehaviour
 {
-    [Networked] public int TotalExp { get; private set; }
+    [Networked] public int Level { get; private set; }
+    [Networked] public int CurrentExp { get; private set; }
+    [Networked] public int ExpToNextLevel { get; private set; }
+
+    [SerializeField] private ExpConfigSO expConfig;
 
     private ChangeDetector _changeDetector;
 
     public override void Spawned()
     {
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
+
+        if (Object.HasStateAuthority)
+        {
+            Level = 1;
+            CurrentExp = 0;
+            ExpToNextLevel = expConfig.CalcExpToNext(Level);
+        }
 
         if (Object.HasInputAuthority)
         {
@@ -23,27 +34,32 @@ public class PlayerExp : NetworkBehaviour
     {
         foreach (var change in _changeDetector.DetectChanges(this))
         {
-            if (change == nameof(TotalExp))
+            if (change == nameof(CurrentExp) || change == nameof(Level))
             {
-                OnExpChanged();
+                if (Object.HasInputAuthority)
+                {
+                    var hud = FindFirstObjectByType<PlayerExpHUD>();
+                    if (hud != null)
+                        hud.OnExpUpdated(CurrentExp, ExpToNextLevel, Level);
+                }
             }
         }
     }
 
-    private void OnExpChanged()
-    {
-        if (!Object.HasInputAuthority) return;
-
-        var hud = FindFirstObjectByType<PlayerExpHUD>();
-        if (hud != null)
-            hud.OnNetworkExpChanged(TotalExp);
-    }
-
     public void AddExperience(int amount)
     {
-        if (!Object.HasStateAuthority) return;
+        if (!Object.HasStateAuthority || amount <= 0) return;
 
-        TotalExp += amount;
-        Debug.Log($"[PlayerExp] Added {amount}. Total={TotalExp}");
+        CurrentExp += amount;
+
+        while (CurrentExp >= ExpToNextLevel)
+        {
+            CurrentExp -= ExpToNextLevel;
+            Level++;
+
+            ExpToNextLevel = expConfig.CalcExpToNext(Level);
+
+            Debug.Log($"[PlayerExp] LEVEL UP ? {Level}");
+        }
     }
 }
