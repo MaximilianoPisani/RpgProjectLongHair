@@ -26,6 +26,12 @@ public class NetworkController : MonoBehaviour
         _joinRoomButton.onClick.AddListener(() => TryStartRunner(GameMode.Client));
     }
 
+    public void EnableConnectionButtons()
+    {
+        _createRoomButton.interactable = true;
+        _joinRoomButton.interactable = true;
+    }
+
     private void TryStartRunner(GameMode mode)
     {
         if (_runnerManagerInstance == null)
