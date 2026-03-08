@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Fusion;
 
 public class CharacterSelection : MonoBehaviour
 {
-    [Header("Botones")]
+    [Header("Buttons")]
     [SerializeField] private Button _player1Button;
     [SerializeField] private Button _player2Button;
     [SerializeField] private Button _player3Button;
@@ -23,12 +24,13 @@ public class CharacterSelection : MonoBehaviour
 
     private void SelectPlayer(int index)
     {
-        Debug.Log("Selected player: Player " + index);
-
         SelectedPlayer = index;
 
-        _selectionCanvas.SetActive(false);
+        PlayerPrefs.SetInt("SelectedCharacter", index);
 
+        Debug.Log("[CharacterSelection] Player selected character: " + index);
+
+        _selectionCanvas.SetActive(false);
         _connectionCanvas.SetActive(true);
     }
 }

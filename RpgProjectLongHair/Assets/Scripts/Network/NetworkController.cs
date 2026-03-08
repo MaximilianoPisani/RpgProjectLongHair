@@ -34,6 +34,12 @@ public class NetworkController : MonoBehaviour
 
     private void TryStartRunner(GameMode mode)
     {
+        if (CharacterSelection.SelectedPlayer <= 0)
+        {
+            Debug.LogWarning("Player must select a character first.");
+            return;
+        }
+
         if (_runnerManagerInstance == null)
         {
             _runnerManagerInstance = Instantiate(_runnerManagerPrefab);
