@@ -17,7 +17,7 @@ public class PlayerExp : NetworkBehaviour
 
         if (Object.HasStateAuthority)
         {
-            Level = 1;
+            Level = 0;
             CurrentExp = 0;
             ExpToNextLevel = expConfig.CalcExpToNext(Level);
         }
