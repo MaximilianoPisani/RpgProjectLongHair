@@ -83,6 +83,11 @@ public class Projectile : NetworkBehaviour
 
                     if (hb != null && EnemyHealth.TryApplyFromHitbox(hb, Damage, Attacker))
                     {
+                        EnemyKnockback.TryApplyProjectileKnockback(
+                            hb.Root.gameObject,
+                            Dir,
+                            Damage
+                        );
                         _consumed = true;
                         DespawnSafe();
                         return;
@@ -91,6 +96,11 @@ public class Projectile : NetworkBehaviour
                     if (eh != null && eh.Object && eh.Object.HasStateAuthority)
                     {
                         eh.ApplyDamageServer(Damage, Attacker);
+                        EnemyKnockback.TryApplyProjectileKnockback(
+                            eh.gameObject,
+                            Dir,
+                            Damage
+                        );
                         _consumed = true;
                         DespawnSafe();
                         return;

@@ -71,9 +71,11 @@ public class PlayerMeleeAttack : NetworkBehaviour
                 var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
                 if (enemyHealth != null && enemyHealth.Object.HasStateAuthority)
                 {
-                    enemyHealth.ApplyDamageServer(
-                        _attackData.Damage,
-                        Object.InputAuthority  
+                    enemyHealth.ApplyDamageServer(_attackData.Damage, Object.InputAuthority);
+                    EnemyKnockback.TryApplyMeleeKnockback(
+                        hit.transform.root.gameObject,   
+                        origin,                          
+                        _attackData.Damage
                     );
                 }
             }
