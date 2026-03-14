@@ -38,7 +38,7 @@ public class PlayerHealth : NetworkBehaviour
             _originalColor = _meshRenderer.material.color;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, Vector3 attackerPosition)
     {
         if (!HasStateAuthority) return;
         if (damage <= 0) return;
@@ -48,13 +48,9 @@ public class PlayerHealth : NetworkBehaviour
         Debug.Log($"[Player] {CurrentHealth}/{_maxHealth} HP");
 
         if (CurrentHealth > 0)
-        {
             RPC_Flash();
-        }
         else
-        {
             Die();
-        }
     }
 
     private void Die()
