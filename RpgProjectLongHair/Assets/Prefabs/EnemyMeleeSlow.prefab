@@ -616,7 +616,7 @@ MonoBehaviour:
   SyncScale: 0
   SyncParent: 0
   _autoAOIOverride: 1
-  DisableSharedModeInterpolation: 0
+  DisableSharedModeInterpolation: 1
 --- !u!195 &-1964026567790909735
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -633,7 +633,7 @@ NavMeshAgent:
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1
   m_BaseOffset: 0.5
@@ -657,6 +657,7 @@ MonoBehaviour:
     m_Bits: 64
   MeleeAttackData: {fileID: 11400000, guid: d4f40e7ef69ca2543acb5b9093db7ab8, type: 2}
   AttackOrigin: {fileID: 7505190822256135982}
+  StoppingDistance: 1.7
 --- !u!114 &1680863857489578343
 MonoBehaviour:
   m_ObjectHideFlags: 0
