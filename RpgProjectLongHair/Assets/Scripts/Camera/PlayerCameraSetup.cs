@@ -1,10 +1,10 @@
 using UnityEngine;
-using Unity.Cinemachine; 
+using Unity.Cinemachine;
 using Fusion;
 
 public class PlayerCameraSetup : NetworkBehaviour
 {
-    [SerializeField] private GameObject _cameraParentPrefab; 
+    [SerializeField] private GameObject _cameraParentPrefab;
 
     private void Start()
     {
@@ -17,16 +17,14 @@ public class PlayerCameraSetup : NetworkBehaviour
         }
 
         GameObject camInstance = Instantiate(_cameraParentPrefab);
-        camInstance.transform.SetParent(null); 
+        camInstance.transform.SetParent(null);
         camInstance.name = $"VCamLocalPlayer_{gameObject.name}";
-
         camInstance.SetActive(true);
 
-
         var vCam = camInstance.GetComponentInChildren<CinemachineVirtualCamera>();
-        if (vCam != null)
-        {
 
-        }
+        var lockOnCam = GetComponent<LockOnCameraController>();
+        if (lockOnCam != null && vCam != null)
+            lockOnCam.Initialize(vCam, transform);
     }
 }

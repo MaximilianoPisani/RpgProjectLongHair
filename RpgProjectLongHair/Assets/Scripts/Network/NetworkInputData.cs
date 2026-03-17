@@ -8,4 +8,5 @@ public struct NetworkInputData : INetworkInput
     public bool jump; 
     public int equipSlot;
     public Quaternion aimRotation;
+    public NetworkBool LockOnPressed;
 }
