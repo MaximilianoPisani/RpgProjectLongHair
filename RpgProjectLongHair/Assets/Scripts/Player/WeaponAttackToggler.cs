@@ -6,11 +6,26 @@ public class WeaponAttackToggler : MonoBehaviour
     private PlayerMeleeAttack _meleeAttack;
     private PlayerRangeAttack _rangeAttack;
 
+    private EnemyLockOnSystem _lockOnSystem;
+
     private void Awake()
     {
         _equipManager = GetComponentInChildren<EquipManager>();
         _meleeAttack = GetComponent<PlayerMeleeAttack>();
         _rangeAttack = GetComponent<PlayerRangeAttack>();
+        _lockOnSystem = GetComponent<EnemyLockOnSystem>(); 
+    }
+
+    private void SetAttackScriptsActive(bool enabled, bool isMelee = false)
+    {
+        bool wasMeleeActive = _meleeAttack != null && _meleeAttack.enabled;
+        bool newMeleeActive = enabled && isMelee;
+
+        if (_meleeAttack != null) _meleeAttack.enabled = newMeleeActive;
+        if (_rangeAttack != null) _rangeAttack.enabled = enabled && !isMelee;
+
+        if (wasMeleeActive && !newMeleeActive)
+            _lockOnSystem?.OnWeaponChanged();
     }
 
     private void Start()
@@ -60,12 +75,4 @@ public class WeaponAttackToggler : MonoBehaviour
         }
     }
 
-    private void SetAttackScriptsActive(bool enabled, bool isMelee = false)
-    {
-        if (_meleeAttack != null)
-            _meleeAttack.enabled = enabled && isMelee;
-
-        if (_rangeAttack != null)
-            _rangeAttack.enabled = enabled && !isMelee;
-    }
 }

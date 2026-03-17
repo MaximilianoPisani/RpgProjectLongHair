@@ -18,6 +18,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     private Dictionary<PlayerRef, NetworkObject> _spawnedPlayers = new();
     private List<NetworkObject> _spawnedItems = new List<NetworkObject>();
 
+    private bool _lockOnQueued;
     public async void StartRunner(GameMode mode, Action onFail)
     {
         _runner = gameObject.AddComponent<NetworkRunner>();
@@ -39,6 +40,11 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             Debug.LogError($"[RunnerManager] Failed to start: {result.ShutdownReason}");
             onFail?.Invoke();
         }
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+            _lockOnQueued = true;
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -104,9 +110,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         Vector3 inputMove = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-
         Transform cameraTransform = Camera.main != null ? Camera.main.transform : null;
-
         Vector3 movementDir = Vector3.zero;
         Quaternion aimRot = Quaternion.identity;
 
@@ -115,7 +119,6 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             movementDir = cameraTransform.forward * inputMove.z + cameraTransform.right * inputMove.x;
             movementDir.y = 0f;
             movementDir.Normalize();
-
             aimRot = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
         }
 
@@ -128,9 +131,11 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             interact = interact,
             jump = jump,
             equipSlot = -1,
-            aimRotation = aimRot 
+            aimRotation = aimRot,
+            LockOnPressed = _lockOnQueued
         };
 
+        _lockOnQueued = false;
         input.Set(data);
     }
 
