@@ -26,8 +26,20 @@ public class NetworkController : MonoBehaviour
         _joinRoomButton.onClick.AddListener(() => TryStartRunner(GameMode.Client));
     }
 
+    public void EnableConnectionButtons()
+    {
+        _createRoomButton.interactable = true;
+        _joinRoomButton.interactable = true;
+    }
+
     private void TryStartRunner(GameMode mode)
     {
+        if (CharacterSelection.SelectedPlayer <= 0)
+        {
+            Debug.LogWarning("Player must select a character first.");
+            return;
+        }
+
         if (_runnerManagerInstance == null)
         {
             _runnerManagerInstance = Instantiate(_runnerManagerPrefab);

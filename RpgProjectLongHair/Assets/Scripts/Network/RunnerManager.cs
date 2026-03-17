@@ -12,6 +12,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private EnemySpawner _enemySpawner;
     [SerializeField] private PlayerSpawner _playerSpawner;
 
+    private Dictionary<PlayerRef, int> _playerCharacters = new();
+
     private NetworkRunner _runner;
     private Dictionary<PlayerRef, NetworkObject> _spawnedPlayers = new();
     private List<NetworkObject> _spawnedItems = new List<NetworkObject>();
@@ -26,7 +28,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             GameMode = mode,
             SessionName = "Room_01",
             Scene = SceneRef.FromIndex(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex),
-            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
+            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
+            ConnectionToken = BitConverter.GetBytes(CharacterSelection.SelectedPlayer)
         };
 
         var result = await _runner.StartGame(startGameArgs);
@@ -40,20 +43,35 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
+        if (!runner.IsServer) return;
+
+        int selectedCharacter = 1;
+
+        byte[] token = runner.GetPlayerConnectionToken(player);
+
+        if (token != null && token.Length >= 4)
+        {
+            selectedCharacter = BitConverter.ToInt32(token, 0);
+        }
+
+        _playerSpawner.SetPlayerSelection(player, selectedCharacter);
+
         var playerObj = _playerSpawner.SpawnPlayer(runner, player);
+
         if (playerObj == null) return;
 
         runner.SetPlayerObject(player, playerObj);
 
         _spawnedPlayers[player] = playerObj;
-        Debug.Log($"[RunnerManager] Player {player} spawned.");
+
+        Debug.Log($"[RunnerManager] Player {player} spawned with character {selectedCharacter}");
 
         if (player == runner.LocalPlayer)
         {
             OnPlayerSpawned?.Invoke(playerObj);
         }
 
-        if (runner.IsServer && _spawnedPlayers.Count == 1)
+        if (_spawnedPlayers.Count == 1)
         {
             _itemSpawner.SpawnItems(_runner);
             _enemySpawner?.SpawnEnemies(runner);
@@ -124,12 +142,14 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         OnPlayerSpawned?.Invoke(null);
     }
-
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
+    {
+        request.Accept();
+    }
     public void OnObjectExitAOI(NetworkRunner r, NetworkObject o, PlayerRef p) { }
     public void OnObjectEnterAOI(NetworkRunner r, NetworkObject o, PlayerRef p) { }
     public void OnShutdown(NetworkRunner r, ShutdownReason s) { }
     public void OnDisconnectedFromServer(NetworkRunner r, NetDisconnectReason reason) { }
-    public void OnConnectRequest(NetworkRunner r, NetworkRunnerCallbackArgs.ConnectRequest req, byte[] token) { }
     public void OnConnectFailed(NetworkRunner r, NetAddress remote, NetConnectFailedReason reason) { }
     public void OnUserSimulationMessage(NetworkRunner r, SimulationMessagePtr msg) { }
     public void OnReliableDataReceived(NetworkRunner r, PlayerRef p, ReliableKey k, ArraySegment<byte> d) { }

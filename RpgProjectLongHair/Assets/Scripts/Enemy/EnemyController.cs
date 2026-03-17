@@ -21,11 +21,17 @@ public class EnemyController : NetworkBehaviour
 
     public Transform TargetPlayer => _targetPlayer;
 
+    public float StoppingDistance = 1f;
+
     public override void Spawned()
     {
         Agent = GetComponent<NavMeshAgent>();
         Health = GetComponent<EnemyHealth>();
+        Agent.enabled = false;
         Agent.enabled = true;
+        Agent.stoppingDistance = StoppingDistance;
+        if (!Object.HasStateAuthority)
+            Agent.enabled = false;
 
         _stateMachine = new EnemyStateMachine();
         _stateMachine.ChangeState(new EnemyIdleState(this));

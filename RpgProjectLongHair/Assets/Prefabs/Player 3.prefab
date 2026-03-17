@@ -720,7 +720,7 @@ GameObject:
   - component: {fileID: 7662554518708329174}
   - component: {fileID: 4508094681526352656}
   m_Layer: 6
-  m_Name: Player
+  m_Name: Player 3
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -755,7 +755,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SortKey: 1716170152
+  SortKey: 1574514421
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -1140,7 +1140,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1a68fc9f835d4e74cb7c8f07ea8f949b, type: 2}
+  - {fileID: 2100000, guid: 49c9a287d6d08904bb19878e2040a725, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
