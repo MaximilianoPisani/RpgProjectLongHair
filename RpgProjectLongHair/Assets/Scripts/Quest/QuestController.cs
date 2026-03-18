@@ -1,9 +1,6 @@
-using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
-using System.Linq;
-using Unity.VisualScripting;
-using System;
+
 
 public class QuestController : NetworkBehaviour
 {
@@ -27,7 +24,7 @@ public class QuestController : NetworkBehaviour
             return;
         }
 
-        var missionData = Resources.Load<QuestDataSO>($"{MISSION_PATH}{missionId}.assets"); //debería estar en la carpeta Resources?  
+        var missionData = Resources.Load<QuestDataSO>($"{MISSION_PATH}{missionId}"); //debería estar en la carpeta Resources?  
         if(missionData == null)
         {
             RPC_ClientHandleError($"No se encontró la misión {missionId}");
@@ -50,11 +47,12 @@ public class QuestController : NetworkBehaviour
 
     #endregion
 
-
-
     public void StartNewQuest(QuestDataSO questData)
     {
-        TrackEvents.OnTrackEvent += TrackStep;
+        //Evitar doble suscripcion
+        TrackEvents.OnTrackEvent -= TrackStep; // si ya estaba, me saco
+        TrackEvents.OnTrackEvent += TrackStep; // me agrego exactamente una vez
+
         if (_currentQuest != null)
         {
             Destroy(_currentQuest);
@@ -68,9 +66,15 @@ public class QuestController : NetworkBehaviour
         // verificación de que haya una misión en curso!
         if (_currentQuest == null) return;
 
-        //Obtener todos los steps que tengan el id del track que me llegó
-        if (!_currentQuest.UpdateProgress(stepId, progress, out var isSuccess)) return;
+        //Obtener todos los steps que tengan el id del track que me llego
+        if (!_currentQuest.UpdateProgress(stepId, progress, out var isSuccess))
+        {
+            MissionEvents.OnUpdateProgress?.Invoke(_currentQuest);
+            return;
+            //UpdateProgress devuelve false  ->  aviso al HUD  ->  return (misión en curso)
+        }
 
+        // UpdateProgress devuelve true   ->  ¿éxito o falla?  ->  Complete o Failure
         if (isSuccess)
         {
             CompleteQuest();

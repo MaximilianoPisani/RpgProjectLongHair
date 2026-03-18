@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System;
 
 [CreateAssetMenu(fileName = "QuestDataSO", menuName = "Scriptable Objects/QuestDataSO")]
 public class QuestDataSO : ScriptableObject
@@ -29,7 +28,7 @@ public class QuestDataSO : ScriptableObject
             }
         }
 
-        var allFailure = true;
+        var allFailure = failureSteps.Count > 0;
         foreach (var steps in failureSteps)
         {
             steps.UpdateProgress(id, amount);
