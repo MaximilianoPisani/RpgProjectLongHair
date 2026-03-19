@@ -99,7 +99,7 @@ public class EnemyHealth : NetworkBehaviour
           GiveKillExp();  
           Runner.Despawn(Object);
         }
-  }
+    }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_Flash()
@@ -154,6 +154,9 @@ public class EnemyHealth : NetworkBehaviour
                 int exp = _expConfig.GetExp(ExpEvent.Kill);
                 playerExp.AddExperience(exp);
             }
+
+            TrackEvents.OnTrackEvent?.Invoke("Kill_Enemy", default); // Disparar evento de tracking para misiones
+
         }
     }
 }

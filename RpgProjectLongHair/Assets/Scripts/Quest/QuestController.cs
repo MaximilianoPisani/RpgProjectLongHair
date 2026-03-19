@@ -25,13 +25,24 @@ public class QuestController : NetworkBehaviour
         }
 
         var missionData = Resources.Load<QuestDataSO>($"{MISSION_PATH}{missionId}"); //debería estar en la carpeta Resources?  
-        if(missionData == null)
+        if (missionData == null)
         {
             RPC_ClientHandleError($"No se encontró la misión {missionId}");
             return;
         }
 
         StartNewQuest(missionData);
+
+        if (missionData.allowTeleportParty)
+        {
+            var runnerManager = FindFirstObjectByType<RunnerManager>();
+            foreach (var playerObj in runnerManager.SpawnedPlayers.Values)
+            {
+                var questController = playerObj.GetComponent<QuestController>();
+                if (questController != null)
+                    questController.RPC_InviteToQuest(missionId);
+            }
+        }
     }
     #endregion
 
@@ -41,6 +52,20 @@ public class QuestController : NetworkBehaviour
     private void RPC_ClientHandleError(string error, RpcInfo info = default)
     {
         //TODO: implementar manejo de errores
+    }
+
+    // inicia misión para TODOS los players
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_InviteToQuest(string missionId)
+    {
+        var missionData = Resources.Load<QuestDataSO>($"{MISSION_PATH}{missionId}");
+        if (missionData == null) return;
+
+        // solo iniciar si este player NO tiene misión activa
+        if (_currentQuest != null) return;
+
+        // iniciar la misión
+        StartNewQuest(missionData);
     }
 
     #endregion
