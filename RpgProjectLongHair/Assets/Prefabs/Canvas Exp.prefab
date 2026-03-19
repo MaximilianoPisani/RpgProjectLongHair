@@ -487,6 +487,7 @@ GameObject:
   - component: {fileID: 6263118392914623302}
   - component: {fileID: 5382768913649435591}
   - component: {fileID: 4644783634800819032}
+  - component: {fileID: -4079944034518037049}
   m_Layer: 5
   m_Name: Canvas Exp
   m_TagString: HUD_XP
@@ -592,7 +593,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   expFill: {fileID: 4958879251253202886}
   expText: {fileID: 5543793086197008164}
-  expToNextLevel: 100
+  levelText: {fileID: 0}
+--- !u!114 &-4079944034518037049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6683795969252478653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b2b81c522ebf4047a53e85182bcd734, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8303004514073809470
 GameObject:
   m_ObjectHideFlags: 0

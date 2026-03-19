@@ -98,11 +98,13 @@ public class QuestController : NetworkBehaviour
     private void CompleteQuest()
     {
         MissionEvents.OnMissionComplete?.Invoke(_currentQuest);
+
+        // Recompensa de XP al completar la misión
+        var playerExp = GetComponent<PlayerExp>();
+        playerExp.AddExperience(_currentQuest.xp);
+
         Destroy(_currentQuest);
         _currentQuest = null;
-        //Actualizar UI - en la 2° clase hace una clase MissionHud  se suscribe al observer
-        //Guardar el estado de las misiones
-        //Obtener recompensas (xp. coins)
         TrackEvents.OnTrackEvent -= TrackStep;
     }
 
