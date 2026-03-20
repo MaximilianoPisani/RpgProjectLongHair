@@ -18,11 +18,12 @@ public class EnemyHealthUI : MonoBehaviour
     private void OnEnable()
     {
         if (_enemyHealth == null) return;
-
         _enemyHealth.OnHealthChanged += UpdateHealth;
         _enemyHealth.OnDeath += HandleDeath;
 
-        UpdateHealth(_enemyHealth.currentHealth, _enemyHealth.MaxHealth);
+        // Solo leer currentHealth si Photon ya inicializó el objeto
+        if (_enemyHealth.Object != null && _enemyHealth.Object.IsValid)
+            UpdateHealth(_enemyHealth.currentHealth, _enemyHealth.MaxHealth);
     }
 
     private void OnDisable()
