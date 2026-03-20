@@ -16,8 +16,6 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private NetworkRunner _runner;
     private Dictionary<PlayerRef, NetworkObject> _spawnedPlayers = new();
-    public Dictionary<PlayerRef, NetworkObject> SpawnedPlayers => _spawnedPlayers; //exponer para sistema de party
-
     private List<NetworkObject> _spawnedItems = new List<NetworkObject>();
 
     private bool _lockOnQueued;
