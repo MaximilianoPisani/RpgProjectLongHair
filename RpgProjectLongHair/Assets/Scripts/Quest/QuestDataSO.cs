@@ -22,6 +22,7 @@ public class QuestDataSO : ScriptableObject
         foreach (var steps in questSteps)
         {
             steps.UpdateProgress(id, amount);
+            Debug.Log($"[QuestDataSO] Step {steps.targetId}: current={steps.currentAmount}/{steps.amount} complete={steps.isComplete}");
             if (!steps.isComplete)
             {
                 allComplete = false;
