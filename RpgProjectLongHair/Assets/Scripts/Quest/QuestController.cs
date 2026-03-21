@@ -49,6 +49,8 @@ public class QuestController : NetworkBehaviour
 
     public void StartNewQuest(QuestDataSO questData)
     {
+        Debug.Log($"[QuestTester] Misión inisiada: {questData.questName}.");
+
         //Evitar doble suscripcion
         TrackEvents.OnTrackEvent -= TrackStep; // si ya estaba, me saco
         TrackEvents.OnTrackEvent += TrackStep; // me agrego exactamente una vez
@@ -64,15 +66,24 @@ public class QuestController : NetworkBehaviour
     public void TrackStep(string stepId, int progress)
     {
         // verificación de que haya una misión en curso!
-        if (_currentQuest == null) return;
+        if (_currentQuest == null)
+        {
+            Debug.Log("[QuestController] TrackStep: _currentQuest es null");
+            return;
+        }
+
+        Debug.Log($"[QuestController] TrackStep recibido: id={stepId}, progress={progress}");
 
         //Obtener todos los steps que tengan el id del track que me llego
         if (!_currentQuest.UpdateProgress(stepId, progress, out var isSuccess))
         {
+            Debug.Log($"[QuestController] Progreso actualizado, mision en curso");
             MissionEvents.OnUpdateProgress?.Invoke(_currentQuest);
             return;
             //UpdateProgress devuelve false  ->  aviso al HUD  ->  return (misión en curso)
         }
+
+        Debug.Log($"[QuestController] Mision terminada, isSuccess={isSuccess}");
 
         // UpdateProgress devuelve true   ->  ¿éxito o falla?  ->  Complete o Failure
         if (isSuccess)
@@ -88,6 +99,8 @@ public class QuestController : NetworkBehaviour
 
     private void FailureQuest()
     {
+        Debug.Log($"[QuestController] ¡Misión fallida!: {_currentQuest.questName}");
+
         MissionEvents.OnMissionFailed?.Invoke(_currentQuest);
         Destroy(_currentQuest);
         _currentQuest = null;
@@ -97,6 +110,8 @@ public class QuestController : NetworkBehaviour
 
     private void CompleteQuest()
     {
+        Debug.Log($"[QuestController] ¡Misión completada!: {_currentQuest.questName}");
+
         MissionEvents.OnMissionComplete?.Invoke(_currentQuest);
 
         // Recompensa de XP al completar la misión

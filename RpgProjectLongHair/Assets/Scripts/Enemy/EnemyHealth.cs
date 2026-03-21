@@ -99,7 +99,7 @@ public class EnemyHealth : NetworkBehaviour
           GiveKillExp();  
           Runner.Despawn(Object);
         }
-  }
+    }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_Flash()
@@ -147,13 +147,16 @@ public class EnemyHealth : NetworkBehaviour
         }
 
         Debug.Log($"[EnemyHealth] PlayerObject found: {playerObj.name}");
+        
+        var playerExp = playerObj.GetComponent<PlayerExp>();
+        if (playerExp != null)
         {
-            var playerExp = playerObj.GetComponent<PlayerExp>();
-            if (playerExp != null)
-            {
-                int exp = _expConfig.GetExp(ExpEvent.Kill);
+            int exp = _expConfig.GetExp(ExpEvent.Kill);
                 playerExp.AddExperience(exp);
-            }
         }
+
+        // Hay alquien suscrito al evento?
+        Debug.Log($"[EnemyHealth] TrackEvents suscriptores: {TrackEvents.OnTrackEvent?.GetInvocationList().Length ?? 0}");
+        TrackEvents.OnTrackEvent?.Invoke("Kill_Enemy", 1); // Disparar evento de tracking para misiones
     }
 }
