@@ -19,13 +19,11 @@ public class EnemyChaseState : IEnemyState
 
         if (_enemy.TargetPlayer == null)
         {
-            Debug.Log("[Chase] TargetPlayer es NULL, volviendo a Idle");
             _enemy.ChangeState(new EnemyIdleState(_enemy));
             return;
         }
 
         float dist = Vector3.Distance(_enemy.transform.position, _enemy.TargetPlayer.position);
-        Debug.Log($"[Chase] dist={dist:F2} | agentEnabled={_enemy.Agent.enabled} | isOnNavMesh={_enemy.Agent.isOnNavMesh} | isStopped={_enemy.Agent.isStopped} | speed={_enemy.Agent.speed}");
 
         if (dist <= _enemy.MeleeAttackData.AttackRange)
         {

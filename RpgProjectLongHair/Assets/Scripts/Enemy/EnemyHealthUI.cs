@@ -21,8 +21,6 @@ public class EnemyHealthUI : MonoBehaviour
 
         _enemyHealth.OnHealthChanged += UpdateHealth;
         _enemyHealth.OnDeath += HandleDeath;
-
-        UpdateHealth(_enemyHealth.currentHealth, _enemyHealth.MaxHealth);
     }
 
     private void OnDisable()
