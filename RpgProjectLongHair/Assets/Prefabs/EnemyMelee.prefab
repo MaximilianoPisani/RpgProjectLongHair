@@ -354,6 +354,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7924625932812613432}
   - component: {fileID: 1879354647650280728}
+  - component: {fileID: 1947792309593442899}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -434,6 +435,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1947792309593442899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3261179959814158301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9727b1e2527bb044a6e5b1a7709fd3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4066059371584677506
 GameObject:
   m_ObjectHideFlags: 0
@@ -672,7 +685,7 @@ GameObject:
   - component: {fileID: -7172902207724428572}
   - component: {fileID: 1448903130190009638}
   m_Layer: 3
-  m_Name: EnemyMeleeSlow
+  m_Name: EnemyMelee
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -821,8 +834,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 26
-  m_Acceleration: 7
+  m_Speed: 32
+  m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
@@ -845,12 +858,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71014d9ed654ea949bb22a0ff65209f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DetectionRadius: 6
+  DetectionRadius: 13
   PlayerLayer:
     serializedVersion: 2
     m_Bits: 64
-  MeleeAttackData: {fileID: 11400000, guid: d4f40e7ef69ca2543acb5b9093db7ab8, type: 2}
   AttackOrigin: {fileID: 7505190822256135982}
+  MeleeAttackData: {fileID: 11400000, guid: d4f40e7ef69ca2543acb5b9093db7ab8, type: 2}
   StoppingDistance: 1.7
 --- !u!114 &1680863857489578343
 MonoBehaviour:

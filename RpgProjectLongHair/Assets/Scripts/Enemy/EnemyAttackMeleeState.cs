@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class EnemyAttackMeleeState : IEnemyState
 {
-    private readonly EnemyController _enemy;
+    private readonly EnemyMeleeController _enemy;
     private float ExitRange => _enemy.MeleeAttackData.AttackRange + 0.6f;
 
-    public EnemyAttackMeleeState(EnemyController enemy)
+    public EnemyAttackMeleeState(EnemyMeleeController enemy)
     {
         _enemy = enemy;
     }
@@ -19,16 +19,21 @@ public class EnemyAttackMeleeState : IEnemyState
 
         if (_enemy.TargetPlayer == null)
         {
-            _enemy.ChangeState(new EnemyIdleState(_enemy));
+            _enemy.ChangeState(new EnemyMeleeIdleState(_enemy));
+            return;
+        }
+
+        if (_enemy.TargetPlayer.TryGetComponent<PlayerHealth>(out var ph) && ph.IsDead)
+        {
+            _enemy.OnTargetDied();
             return;
         }
 
         float dist = Vector3.Distance(_enemy.transform.position, _enemy.TargetPlayer.position);
 
-
         if (dist > ExitRange)
         {
-            _enemy.ChangeState(new EnemyChaseState(_enemy));
+            _enemy.ChangeState(new EnemyMeleeChaseState(_enemy));
             return;
         }
 

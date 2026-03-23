@@ -1,13 +1,10 @@
 using UnityEngine;
 
-public class EnemyIdleState : IEnemyState
+public class EnemyIdleRangedState : IEnemyState
 {
-    private readonly EnemyController _enemy;
+    private readonly EnemyRangedController _enemy;
 
-    public EnemyIdleState(EnemyController enemy)
-    {
-        _enemy = enemy;
-    }
+    public EnemyIdleRangedState(EnemyRangedController enemy) => _enemy = enemy;
 
     public void EnterState() { }
     public void ExitState() { }
@@ -17,12 +14,13 @@ public class EnemyIdleState : IEnemyState
         if (!_enemy.Object.HasStateAuthority) return;
 
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
         Transform closest = null;
         float minDist = float.MaxValue;
 
         foreach (var p in players)
         {
+            if (p.TryGetComponent<PlayerHealth>(out var ph) && ph.IsDead) continue;
+
             float d = Vector3.Distance(_enemy.transform.position, p.transform.position);
             if (d < minDist && d <= _enemy.DetectionRadius)
             {
@@ -34,7 +32,7 @@ public class EnemyIdleState : IEnemyState
         if (closest != null)
         {
             _enemy.SetTarget(closest);
-            _enemy.ChangeState(new EnemyChaseState(_enemy));
+            _enemy.ChangeState(new EnemyChaseRangedState(_enemy));
         }
     }
 }

@@ -26,6 +26,8 @@ public class PlayerHealth : NetworkBehaviour
     private PlayerCheckpoint _checkpoint;
     private NetworkCharacterController _networkCC;
 
+    public bool IsDead => CurrentHealth <= 0;
+
     public override void Spawned()
     {
         _checkpoint = GetComponent<PlayerCheckpoint>();

@@ -11,12 +11,12 @@ GameObject:
   - component: {fileID: 2842622226489426566}
   - component: {fileID: 4731210032356500431}
   - component: {fileID: 2863489791726179016}
-  - component: {fileID: 3780562308783204634}
   - component: {fileID: 4028938312772070145}
   - component: {fileID: -765301121889377569}
   - component: {fileID: 4556694696837617176}
+  - component: {fileID: 6152839914912518811}
   m_Layer: 7
-  m_Name: Projectile
+  m_Name: EnemyProjectile
   m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -90,18 +90,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3780562308783204634
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3687124687727622072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c847ea5ae4f6aa42a809bf2d9703c29, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4028938312772070145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,13 +102,13 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SortKey: 2787345605
+  SortKey: 1635575744
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 3780562308783204634}
   - {fileID: -765301121889377569}
+  - {fileID: 6152839914912518811}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-765301121889377569
 MonoBehaviour:
@@ -160,3 +148,15 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5000003
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6152839914912518811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3687124687727622072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbd90e73e9a858d4a800377f47e58962, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

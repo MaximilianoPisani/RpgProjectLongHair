@@ -4214,7 +4214,7 @@ PrefabInstance:
     - target: {fileID: 6929098078885715258, guid: 84e2030daba224f4eb14a36c72bd7c2a, type: 3}
       propertyPath: _spawnDatas.Array.data[1].Prefab
       value: 
-      objectReference: {fileID: -164565949365206626, guid: 8ef7f7a8728d0cd48966167f51918daf, type: 3}
+      objectReference: {fileID: -164565949365206626, guid: a7b5a912a8d0d614d9afe917228cf9e5, type: 3}
     - target: {fileID: 8732564882722028713, guid: 84e2030daba224f4eb14a36c72bd7c2a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -33.8

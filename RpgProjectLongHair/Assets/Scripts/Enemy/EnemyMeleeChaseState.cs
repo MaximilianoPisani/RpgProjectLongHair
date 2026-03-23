@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class EnemyChaseState : IEnemyState
+public class EnemyMeleeChaseState : IEnemyState
 {
-    private readonly EnemyController _enemy;
+    private readonly EnemyMeleeController _enemy;
 
-    public EnemyChaseState(EnemyController enemy)
+    public EnemyMeleeChaseState(EnemyMeleeController enemy)
     {
         _enemy = enemy;
     }
@@ -19,12 +19,17 @@ public class EnemyChaseState : IEnemyState
 
         if (_enemy.TargetPlayer == null)
         {
-            _enemy.ChangeState(new EnemyIdleState(_enemy));
+            _enemy.ChangeState(new EnemyMeleeIdleState(_enemy));
+            return;
+        }
+
+        if (_enemy.TargetPlayer.TryGetComponent<PlayerHealth>(out var ph) && ph.IsDead)
+        {
+            _enemy.OnTargetDied(); 
             return;
         }
 
         float dist = Vector3.Distance(_enemy.transform.position, _enemy.TargetPlayer.position);
-
         if (dist <= _enemy.MeleeAttackData.AttackRange)
         {
             _enemy.ChangeState(new EnemyAttackMeleeState(_enemy));

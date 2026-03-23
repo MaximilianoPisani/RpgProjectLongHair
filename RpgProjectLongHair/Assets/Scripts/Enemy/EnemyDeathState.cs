@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class EnemyDeathState : IEnemyState
 {
-    private readonly EnemyController _enemy;
+    private readonly EnemyBaseController _enemy;  
 
-    public EnemyDeathState(EnemyController enemy)
+    public EnemyDeathState(EnemyBaseController enemy)
     {
         _enemy = enemy;
     }
