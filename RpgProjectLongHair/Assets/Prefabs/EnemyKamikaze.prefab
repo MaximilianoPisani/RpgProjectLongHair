@@ -683,9 +683,9 @@ GameObject:
   - component: {fileID: 814898277713001099}
   - component: {fileID: -7172902207724428572}
   - component: {fileID: 1448903130190009638}
-  - component: {fileID: 2294630877922104380}
+  - component: {fileID: 584240351165097834}
   m_Layer: 3
-  m_Name: EnemyRanged
+  m_Name: EnemyKamikaze
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -741,7 +741,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9bbd8e1f92cffc640bab5199aedaa256, type: 2}
+  - {fileID: 2100000, guid: d9ed94bbcd264a344ac50133d67b7520, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -796,7 +796,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SortKey: 3663568526
+  SortKey: 3257702743
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -805,7 +805,7 @@ MonoBehaviour:
   - {fileID: 1680863857489578343}
   - {fileID: 814898277713001099}
   - {fileID: -7172902207724428572}
-  - {fileID: 2294630877922104380}
+  - {fileID: 584240351165097834}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-6679422955088169947
 MonoBehaviour:
@@ -834,7 +834,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 30
+  m_Speed: 40
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -858,7 +858,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99d1311fb4a7e5145a5e9003b9b56192, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 200
+  _maxHealth: 45
   _currentHealth: 0
   _meshRenderer: {fileID: 9220746733493959180}
   _flashColor: {r: 0.4264151, g: 0.068976164, b: 0.031377666, a: 1}
@@ -913,7 +913,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _indicatorRoot: {fileID: 2146411602528527919}
---- !u!114 &2294630877922104380
+--- !u!114 &584240351165097834
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -922,17 +922,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 5456948168675829924}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 364010a4ed55aa541ae88a2f33c5aec2, type: 3}
+  m_Script: {fileID: 11500000, guid: fac5c3fbb7f2731419ec394774c72f3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DetectionRadius: 15
+  DetectionRadius: 10
   PlayerLayer:
     serializedVersion: 2
     m_Bits: 64
   AttackOrigin: {fileID: 7505190822256135982}
-  RangedAttackData: {fileID: 11400000, guid: 48ba4edd30233c04ab0a19915691a11b, type: 2}
-  PreferredMinRange: 7
-  PreferredMaxRange: 10
+  KamikazeData: {fileID: 11400000, guid: 4e54a115615814d4e926e15a81ab820e, type: 2}
 --- !u!1 &7177038526544582139
 GameObject:
   m_ObjectHideFlags: 0

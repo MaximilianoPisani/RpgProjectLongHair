@@ -55,14 +55,23 @@ public class EnemyAttackMeleeState : IEnemyState
                 _enemy.PlayerLayer
             );
 
+            _enemy.NextAttackTime = _enemy.Runner.SimulationTime + _enemy.MeleeAttackData.Cooldown;
+
+            var alreadyHit = new System.Collections.Generic.HashSet<PlayerHealth>();
+
             foreach (var hit in hits)
             {
-                if (hit.CompareTag("Player") && hit.TryGetComponent<PlayerHealth>(out var playerHealth))
-                {
-                    playerHealth.TakeDamage(_enemy.MeleeAttackData.Damage, _enemy.transform.position);
-                    Debug.Log($"[Enemy] Hit player for {_enemy.MeleeAttackData.Damage} damage.");
-                    _enemy.NextAttackTime = _enemy.Runner.SimulationTime + _enemy.MeleeAttackData.Cooldown;
-                }
+                if (!hit.CompareTag("Player")) continue;
+
+                var playerHealth = hit.GetComponent<PlayerHealth>()
+                                ?? hit.GetComponentInParent<PlayerHealth>();
+
+                if (playerHealth == null) continue;
+                if (playerHealth.IsDead) continue;
+                if (!alreadyHit.Add(playerHealth)) continue; 
+
+                playerHealth.TakeDamage(_enemy.MeleeAttackData.Damage, _enemy.transform.position);
+                Debug.Log($"[Enemy] Hit player for {_enemy.MeleeAttackData.Damage} damage.");
             }
         }
     }
