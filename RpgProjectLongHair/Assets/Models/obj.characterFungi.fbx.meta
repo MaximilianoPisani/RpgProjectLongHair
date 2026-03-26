@@ -1,0 +1,327 @@
+fileFormatVersion: 2
+guid: 74f9bf8289edc4c4ca188783e54608dd
+ModelImporter:
+  serializedVersion: 22200
+  internalIDToNameTable: []
+  externalObjects: {}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: "\nClip 'arm_playeFungi|axeCombat' has import animation
+      warnings that might lower retargeting quality:\nNote: Activate translation
+      DOF on avatar to improve retargeting quality.\n\t'Clavicula.L' has translation
+      animation that will be discarded.\n\t'Clavicula.R' has translation animation
+      that will be discarded.\n\nClip 'arm_playeFungi|axeCombat.001' has import animation
+      warnings that might lower retargeting quality:\nNote: Activate translation
+      DOF on avatar to improve retargeting quality.\n\t'Clavicula.L' has translation
+      animation that will be discarded.\n\t'Clavicula.R' has translation animation
+      that will be discarded.\n\nClip 'arm_playeFungi|axeCombat.002' has import animation
+      warnings that might lower retargeting quality:\nNote: Activate translation
+      DOF on avatar to improve retargeting quality.\n\t'Clavicula.L' has translation
+      animation that will be discarded.\n\t'Clavicula.R' has translation animation
+      that will be discarded.\n\nClip 'arm_playeFungi|gunReload.001' has import animation
+      warnings that might lower retargeting quality:\nNote: Activate translation
+      DOF on avatar to improve retargeting quality.\n\t'Pulgar.R' has translation
+      animation that will be discarded.\n"
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton:
+    - name: obj.characterFungi(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: arm_playeFungi
+      parentName: obj.characterFungi(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.7071067, y: 5.302452e-33, z: 5.302451e-33, w: 0.7071068}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Ctrol.Pierna.L
+      parentName: arm_playeFungi
+      position: {x: -0.20629248, y: -0.21399252, z: 0.29867858}
+      rotation: {x: 0.061220378, y: -0.007920802, z: 0.9980928, w: -0.00048583932}
+      scale: {x: 1.0000001, y: 0.99999946, z: 1.0000002}
+    - name: Ctrol.Brazo.L
+      parentName: arm_playeFungi
+      position: {x: -0.6701654, y: 0.25813887, z: 1.2728722}
+      rotation: {x: -0, y: 0.7237567, z: -0, w: -0.69005525}
+      scale: {x: 1.0000004, y: 0.9999998, z: 1.0000001}
+    - name: Ctrol.Maetro
+      parentName: arm_playeFungi
+      position: {x: 0.0000012367964, y: 0.0029404126, z: 0.0000044703484}
+      rotation: {x: 0.7071068, y: -0.000000115202276, z: -0.000000053385037, w: 0.7071068}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: Ctrol.Pie.L
+      parentName: Ctrol.Maetro
+      position: {x: -0.22018833, y: 0.04479601, z: -0.17054465}
+      rotation: {x: 0.037358183, y: 0.6902155, z: 0.7217552, w: 0.0357255}
+      scale: {x: 1, y: 1.0000005, z: 1.0000001}
+    - name: Ctrol.Mano.L
+      parentName: Ctrol.Maetro
+      position: {x: -0.9918648, y: 1.2717099, z: -0.06271836}
+      rotation: {x: 0.013382375, y: 0.015199689, z: 0.6639215, w: 0.7475281}
+      scale: {x: 1.0000001, y: 1.0000002, z: 1.0000001}
+    - name: Ctrol.Cadera
+      parentName: Ctrol.Maetro
+      position: {x: 5.8120175e-14, y: 0.8495524, z: -2.3312552e-10}
+      rotation: {x: 0.70710695, y: -0.000000027798823, z: 0.7071067, w: 0.0000000011062937}
+      scale: {x: 1, y: 1, z: 0.99999994}
+    - name: Cadera
+      parentName: Ctrol.Cadera
+      position: {x: 0.000000004264957, y: 0.10680649, z: 0.0000000060167036}
+      rotation: {x: -0.7071069, y: 0.000000027798816, z: -0.70710677, w: 0.0000000011062828}
+      scale: {x: 1.0000002, y: 1.0000005, z: 1.0000001}
+    - name: Columna
+      parentName: Cadera
+      position: {x: 4.3875078e-16, y: 0.23640084, z: -4.656613e-10}
+      rotation: {x: -0, y: -1.3565761e-22, z: 7.1054265e-15, w: 1}
+      scale: {x: 1, y: 0.99999994, z: 1.0000001}
+    - name: Columna.001
+      parentName: Columna
+      position: {x: 5.2232075e-17, y: 0.11192864, z: 0}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Columna.002
+      parentName: Columna.001
+      position: {x: -1.13634606e-13, y: 0.1235075, z: -2.3283064e-10}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Cuello
+      parentName: Columna.002
+      position: {x: -1.13634606e-13, y: 0.2634182, z: -2.3283064e-10}
+      rotation: {x: -0.08496236, y: -0.0000000876704, z: 0.000000011175861, w: 0.99638414}
+      scale: {x: 1, y: 0.9999998, z: 0.9999999}
+    - name: Cabeza
+      parentName: Cuello
+      position: {x: 7.1054274e-15, y: 0.09023436, z: 0.0000000018623503}
+      rotation: {x: 0.22821167, y: -0.000000004999357, z: -0.00000005385961, w: 0.9736116}
+      scale: {x: 1, y: 0.9999996, z: 0.9999996}
+    - name: Clavicula.L
+      parentName: Columna.002
+      position: {x: -0.1301226, y: 0.26653075, z: 2.3283295e-10}
+      rotation: {x: -0.061683588, y: -0.10567197, z: 0.7753945, w: 0.6195095}
+      scale: {x: 1.0000005, y: 1.0000011, z: 0.9999994}
+    - name: Brazo.L
+      parentName: Clavicula.L
+      position: {x: 0.000000053307303, y: 0.20099187, z: 0}
+      rotation: {x: 0.14336777, y: 0.030673478, z: -0.14257, w: 0.978866}
+      scale: {x: 0.9999992, y: 0.9999998, z: 0.9999995}
+    - name: Antebrazo.L
+      parentName: Brazo.L
+      position: {x: 0.000000088475645, y: 0.36411884, z: 0.0000000027939677}
+      rotation: {x: 0.007306483, y: -0.0010509077, z: 0.016517717, w: 0.9998364}
+      scale: {x: 1.0000017, y: 1.000001, z: 1.0000006}
+    - name: Mano.L
+      parentName: Antebrazo.L
+      position: {x: 0.000000040978193, y: 0.32357022, z: 0}
+      rotation: {x: -0.033514317, y: -0.0049198177, z: -0.06410878, w: 0.99736786}
+      scale: {x: 1, y: 1.0000008, z: 1.0000004}
+    - name: Dedos.L
+      parentName: Mano.L
+      position: {x: -0.0023581816, y: 0.18595098, z: -0.00075673877}
+      rotation: {x: -0.020060314, y: -0.000000101048485, z: 0.062514566, w: 0.9978425}
+      scale: {x: 1.0000012, y: 1.0000007, z: 0.99999946}
+    - name: Pulgar.L
+      parentName: Mano.L
+      position: {x: -0.032825034, y: 0.05544865, z: 0.12521927}
+      rotation: {x: 0.057494815, y: -0.00849878, z: 0.13659604, w: 0.9889205}
+      scale: {x: 1.0000008, y: 1.0000004, z: 0.9999996}
+    - name: Pulgar.L.001
+      parentName: Pulgar.L
+      position: {x: 0.00000014295802, y: 0.09905586, z: -0.0000000016298145}
+      rotation: {x: -0.14247443, y: 0.014270785, z: -0.07160405, w: 0.987102}
+      scale: {x: 1.000001, y: 0.9999998, z: 1.000001}
+    - name: Clavicula.R
+      parentName: Columna.002
+      position: {x: 0.1301226, y: 0.26653075, z: 2.3282833e-10}
+      rotation: {x: -0.061683774, y: 0.10567214, z: -0.77539456, w: 0.6195094}
+      scale: {x: 1.0000008, y: 1.0000001, z: 1.0000006}
+    - name: Brazo.R
+      parentName: Clavicula.R
+      position: {x: -0.00000004861431, y: 0.20099193, z: 0.000000014901161}
+      rotation: {x: 0.14336783, y: -0.03067363, z: 0.14256996, w: 0.978866}
+      scale: {x: 1.0000001, y: 1.0000007, z: 0.9999997}
+    - name: Antebrazo.R
+      parentName: Brazo.R
+      position: {x: 0.000000095926225, y: 0.36411875, z: -0.00000001071021}
+      rotation: {x: 0.007306512, y: 0.0010509448, z: -0.016517738, w: 0.9998363}
+      scale: {x: 1.0000007, y: 1.000001, z: 1}
+    - name: Mano.R
+      parentName: Antebrazo.R
+      position: {x: -0.000000011874363, y: 0.32357022, z: -0.000000011175871}
+      rotation: {x: -0.033514295, y: 0.004919781, z: 0.06410895, w: 0.99736786}
+      scale: {x: 1.0000007, y: 1.0000005, z: 0.9999998}
+    - name: Dedos.R
+      parentName: Mano.R
+      position: {x: 0.0023582375, y: 0.18595067, z: -0.0007567377}
+      rotation: {x: -0.020060332, y: 0.00000011082736, z: -0.06251465, w: 0.9978425}
+      scale: {x: 1.0000005, y: 1.0000007, z: 1.0000001}
+    - name: Pulgar.R
+      parentName: Mano.R
+      position: {x: 0.0328252, y: 0.055448458, z: 0.1252193}
+      rotation: {x: 0.057495225, y: 0.008498745, z: -0.13659553, w: 0.98892045}
+      scale: {x: 1.0000002, y: 1.000001, z: 0.9999998}
+    - name: Pulgar.R.001
+      parentName: Pulgar.R
+      position: {x: 0.00000009126961, y: 0.0990559, z: 0.0000000071595423}
+      rotation: {x: -0.14247449, y: -0.014270769, z: 0.07160408, w: 0.9871019}
+      scale: {x: 1.0000007, y: 0.99999946, z: 1.0000012}
+    - name: Pierna.L
+      parentName: Cadera
+      position: {x: -0.1730594, y: 0.081247814, z: -0.060350087}
+      rotation: {x: 0.021028899, y: 0.120283805, z: 0.99162817, w: 0.041990593}
+      scale: {x: 0.9999995, y: 0.9999997, z: 0.99999624}
+    - name: Pierna.L.001
+      parentName: Pierna.L
+      position: {x: 0.000000017462298, y: 0.4161505, z: 0.000000013271347}
+      rotation: {x: -0.34459618, y: 0.017241701, z: 0.023675555, w: 0.93829405}
+      scale: {x: 0.99999994, y: 0.9999995, z: 0.9999998}
+    - name: Pie.L
+      parentName: Pierna.L.001
+      position: {x: -0.000000022118911, y: 0.3650465, z: 0.0000000037252903}
+      rotation: {x: 0.8408323, y: -0.0063354094, z: -0.0011424125, w: 0.5412575}
+      scale: {x: 1.0000001, y: 1.0000051, z: 0.99999565}
+    - name: Pierna.R
+      parentName: Cadera
+      position: {x: 0.1730594, y: 0.081247814, z: -0.060350087}
+      rotation: {x: -0.02102881, y: 0.1202839, z: 0.99162817, w: -0.041990664}
+      scale: {x: 0.99999976, y: 1, z: 0.99999607}
+    - name: Pierna.R.001
+      parentName: Pierna.R
+      position: {x: 0.000000017462298, y: 0.41615057, z: 0.000000003958121}
+      rotation: {x: -0.34459612, y: -0.017241595, z: -0.023675792, w: 0.93829405}
+      scale: {x: 1.0000007, y: 1, z: 0.9999999}
+    - name: Pie.R
+      parentName: Pierna.R.001
+      position: {x: -0.000000010011718, y: 0.36504653, z: -0.000000009313226}
+      rotation: {x: 0.84083235, y: 0.006335552, z: 0.001142828, w: 0.54125744}
+      scale: {x: 1.000002, y: 1.0000063, z: 0.99999636}
+    - name: Ctrol.Pie.R
+      parentName: Ctrol.Maetro
+      position: {x: 0.22018825, y: 0.04479601, z: -0.17054476}
+      rotation: {x: -0.0373548, y: 0.6902157, z: 0.7217555, w: -0.035722625}
+      scale: {x: 1.0000013, y: 1.0000006, z: 1.0000005}
+    - name: Ctrol.Mano.R
+      parentName: Ctrol.Maetro
+      position: {x: 0.9918648, y: 1.2717099, z: -0.06271883}
+      rotation: {x: 0.013382286, y: -0.015199423, z: -0.6639214, w: 0.74752814}
+      scale: {x: 1, y: 1.0000001, z: 1.0000001}
+    - name: Ctrol.Pierna.R
+      parentName: arm_playeFungi
+      position: {x: 0.20629495, y: -0.21399252, z: 0.29867858}
+      rotation: {x: -0.061220467, y: -0.007920802, z: 0.9980928, w: 0.00048584118}
+      scale: {x: 1.0000001, y: 0.99999946, z: 1.0000001}
+    - name: Ctrol.Brazo.R
+      parentName: arm_playeFungi
+      position: {x: 0.6701679, y: 0.25813887, z: 1.2728722}
+      rotation: {x: -0, y: 0.7237567, z: 0.000000059604645, w: 0.6900553}
+      scale: {x: 1.0000002, y: 1.0000002, z: 1}
+    - name: obj_chest
+      parentName: obj.characterFungi(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.7071067, y: -0.000000030908616, z: 0.000000030908623, w: 0.7071068}
+      scale: {x: 1, y: 1, z: 1}
+    - name: obj_legs
+      parentName: obj.characterFungi(Clone)
+      position: {x: -0, y: 0, z: 0.0000000037252903}
+      rotation: {x: -0.7071067, y: -0.000000030908616, z: 0.000000030908623, w: 0.7071068}
+      scale: {x: 1, y: 1, z: 1}
+    - name: obj_playerFungi
+      parentName: obj.characterFungi(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.7071067, y: -0.000000030908616, z: 0.000000030908623, w: 0.7071068}
+      scale: {x: 1, y: 1, z: 1}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 3
+  humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
