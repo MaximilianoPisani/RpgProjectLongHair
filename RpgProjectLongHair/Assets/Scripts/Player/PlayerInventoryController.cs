@@ -22,6 +22,13 @@ public class PlayerInventoryController : MonoBehaviour
         if (_equipManager != null)
             _equipManager.OnEquippedChanged += RefreshEquipState;
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            TryPickupItem();
+        }
+    }
 
     private void OnDestroy()
     {

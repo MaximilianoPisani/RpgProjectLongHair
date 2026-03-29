@@ -1,83 +1,94 @@
 using UnityEngine;
 using Unity.Cinemachine;
-using Fusion;
 
-public class LockOnCameraController : NetworkBehaviour
+public class LockOnCameraController : MonoBehaviour
 {
-    [Header("Lock-On Camera")]
+    [Header("Lock-On")]
     [SerializeField] private Vector3 _lockOnOffset = new Vector3(0f, 1.5f, 0f);
+    [SerializeField] private float _rotationSpeed = 5f;
+
+    [Header("Camera Side Offset")]
+    [SerializeField] private Vector3 _cameraSideOffset = new Vector3(2f, 0f, 0f);
+    [SerializeField] private float _offsetSmooth = 5f;
 
     private CinemachineVirtualCamera _vCam;
-    private CinemachineFramingTransposer _transposer;
+    private CinemachinePOV _pov;
+
+    private Transform _cameraRoot;
+    private Vector3 _originalLocalPos;
+    private Vector3 _targetOffset;
+
+    private Transform _playerTransform;
     private Transform _lockTarget;
+
     private bool _isLocked;
-
-    private float _originalScreenX;
-    private float _originalScreenY;
-
-    private GameObject _lookAtProxy;
 
     public void Initialize(CinemachineVirtualCamera vCam, Transform player)
     {
         _vCam = vCam;
-        _transposer = _vCam?.GetCinemachineComponent<CinemachineFramingTransposer>();
+        _playerTransform = player;
 
-        if (_transposer != null)
-        {
-            _originalScreenX = _transposer.m_ScreenX;
-            _originalScreenY = _transposer.m_ScreenY;
-        }
+        _pov = _vCam.GetComponentInChildren<CinemachinePOV>();
 
-        _lookAtProxy = new GameObject("LockOnLookAtProxy");
-        _lookAtProxy.hideFlags = HideFlags.HideInHierarchy;
+        _cameraRoot = _vCam.transform.parent != null ? _vCam.transform.parent : _vCam.transform;
+
+        _originalLocalPos = _cameraRoot.localPosition;
+
+        Debug.Log($"[LockOnCam] Init OK | root:{_cameraRoot.name}");
     }
 
     public void SetTarget(Transform target, Transform player)
     {
-        if (_vCam == null) return;
-
         _lockTarget = target;
+        _playerTransform = player;
         _isLocked = true;
 
-        _lookAtProxy.transform.position = target.position + _lockOnOffset;
+        _targetOffset = _cameraSideOffset;
 
-        _vCam.Follow = player;
-        _vCam.LookAt = _lookAtProxy.transform; 
-
-        if (_transposer != null)
-        {
-            _transposer.m_ScreenX = 0.35f;
-            _transposer.m_ScreenY = 0.5f;
-        }
+        Debug.Log("[LockOnCam] LOCK");
     }
 
     public void ClearTarget(Transform player)
     {
-        if (_vCam == null) return;
-
         _lockTarget = null;
         _isLocked = false;
 
-        _vCam.Follow = player;
-        _vCam.LookAt = null;
+        _targetOffset = Vector3.zero;
 
-        if (_transposer != null)
-        {
-            _transposer.m_ScreenX = _originalScreenX;
-            _transposer.m_ScreenY = _originalScreenY;
-        }
+        Debug.Log("[LockOnCam] UNLOCK");
     }
 
     private void LateUpdate()
     {
-        if (!_isLocked || _lockTarget == null || _lookAtProxy == null) return;
+        if (_cameraRoot != null)
+        {
+            Vector3 desiredPos = _originalLocalPos + (_isLocked ? _targetOffset : Vector3.zero);
 
-        _lookAtProxy.transform.position = _lockTarget.position + _lockOnOffset;
-    }
+            _cameraRoot.localPosition = Vector3.Lerp(
+                _cameraRoot.localPosition,
+                desiredPos,
+                Time.deltaTime * _offsetSmooth
+            );
+        }
 
-    private void OnDestroy()
-    {
-        if (_lookAtProxy != null)
-            Destroy(_lookAtProxy);
+        if (!_isLocked || _lockTarget == null || _pov == null) return;
+
+        Vector3 targetPos = _lockTarget.position + _lockOnOffset;
+        Vector3 dir = (targetPos - _playerTransform.position).normalized;
+
+        float targetYaw = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+        float targetPitch = -Mathf.Asin(dir.y) * Mathf.Rad2Deg;
+
+        _pov.m_HorizontalAxis.Value = Mathf.LerpAngle(
+            _pov.m_HorizontalAxis.Value,
+            targetYaw,
+            _rotationSpeed * Time.deltaTime
+        );
+
+        _pov.m_VerticalAxis.Value = Mathf.Lerp(
+            _pov.m_VerticalAxis.Value,
+            targetPitch,
+            _rotationSpeed * Time.deltaTime
+        );
     }
 }

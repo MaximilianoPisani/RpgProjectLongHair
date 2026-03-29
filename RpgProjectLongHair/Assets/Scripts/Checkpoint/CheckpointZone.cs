@@ -11,18 +11,18 @@ public class CheckpointZone : NetworkBehaviour
         if (!other.TryGetComponent<PlayerCheckpoint>(out var checkpoint))
             return;
 
+        if (!checkpoint.HasInputAuthority) return;
+
         Vector3 spawnPos = _spawnPoint != null
             ? _spawnPoint.position
             : transform.position;
 
         checkpoint.SetCheckpoint(spawnPos);
-
-        Debug.Log("[CheckpointZone] Checkpoint saved");
     }
+
     private void OnValidate()
     {
         if (_spawnPoint == null)
             Debug.LogWarning($"{name}: SpawnPoint not assigned");
     }
-
 }

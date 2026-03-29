@@ -14,6 +14,7 @@ public class EnemyHealth : NetworkBehaviour
     private PlayerRef _lastAttacker;
 
     public int MaxHealth => _maxHealth;
+    public bool IsDead => currentHealth <= 0;
 
     [Header("Feedback")]
     [SerializeField] private Renderer _meshRenderer;

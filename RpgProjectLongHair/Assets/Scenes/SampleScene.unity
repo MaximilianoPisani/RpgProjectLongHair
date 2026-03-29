@@ -1577,15 +1577,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7844579478133768193, guid: 39ba6423644e91745a228b3780fa299b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -80.678604
+      value: -101.314156
       objectReference: {fileID: 0}
     - target: {fileID: 7844579478133768193, guid: 39ba6423644e91745a228b3780fa299b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 148.31503
+      value: 51.446167
       objectReference: {fileID: 0}
     - target: {fileID: 7844579478133768193, guid: 39ba6423644e91745a228b3780fa299b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -661.9526
+      value: -6.7654715
       objectReference: {fileID: 0}
     - target: {fileID: 7844579478133768193, guid: 39ba6423644e91745a228b3780fa299b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1593,7 +1593,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7844579478133768193, guid: 39ba6423644e91745a228b3780fa299b, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.009988403
+      value: 0.009988427
       objectReference: {fileID: 0}
     - target: {fileID: 7844579478133768193, guid: 39ba6423644e91745a228b3780fa299b, type: 3}
       propertyPath: m_LocalRotation.y
@@ -1601,7 +1601,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7844579478133768193, guid: 39ba6423644e91745a228b3780fa299b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0014067932
+      value: -0.0014067963
       objectReference: {fileID: 0}
     - target: {fileID: 7844579478133768193, guid: 39ba6423644e91745a228b3780fa299b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4048,11 +4048,11 @@ PrefabInstance:
     - target: {fileID: 3719162073112785733, guid: de786ac3f62021d4e9497fa6b287fc02, type: 3}
       propertyPath: _player2Prefab
       value: 
-      objectReference: {fileID: 3509423867252677596, guid: a6c2ccedb3175a0418b8c66ce01d9f28, type: 3}
+      objectReference: {fileID: 3509423867252677596, guid: 20d5df99240f30b4e804a8dd7694e3b1, type: 3}
     - target: {fileID: 3719162073112785733, guid: de786ac3f62021d4e9497fa6b287fc02, type: 3}
       propertyPath: _player3Prefab
       value: 
-      objectReference: {fileID: 3509423867252677596, guid: 1dc431ca185f41f43890d4e3030f6584, type: 3}
+      objectReference: {fileID: 3509423867252677596, guid: df504cd4201e95c41ae263ce9fd2c18e, type: 3}
     - target: {fileID: 5420383089012868443, guid: de786ac3f62021d4e9497fa6b287fc02, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

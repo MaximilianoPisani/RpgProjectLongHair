@@ -3,17 +3,12 @@ using Fusion;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkObject))]
-[RequireComponent(typeof(PlayerCheckpoint))]
-[RequireComponent(typeof(NetworkCharacterController))]
 public class PlayerHealth : NetworkBehaviour
 {
     [Header("Health")]
     [SerializeField] private int _maxHealth = 100;
 
     [Networked] private int CurrentHealth { get; set; }
-
-    [Header("Respawn")]
-    [SerializeField] private float _respawnDelay = 2f;
 
     [Header("Flash Effect")]
     [SerializeField] private Renderer _meshRenderer;
@@ -23,16 +18,11 @@ public class PlayerHealth : NetworkBehaviour
 
     private Color _originalColor;
     private Coroutine _flashCoroutine;
-    private PlayerCheckpoint _checkpoint;
-    private NetworkCharacterController _networkCC;
 
     public bool IsDead => CurrentHealth <= 0;
 
     public override void Spawned()
     {
-        _checkpoint = GetComponent<PlayerCheckpoint>();
-        _networkCC = GetComponent<NetworkCharacterController>();
-
         if (HasStateAuthority)
             CurrentHealth = _maxHealth;
 
@@ -40,51 +30,50 @@ public class PlayerHealth : NetworkBehaviour
             _originalColor = _meshRenderer.material.color;
     }
 
-    public void TakeDamage(int damage, Vector3 attackerPosition)
+    public void TakeDamage(int damage, Vector3 hitPoint)
     {
         if (!HasStateAuthority) return;
         if (damage <= 0) return;
-        if (CurrentHealth <= 0) return;
+        if (IsDead) return;
 
         CurrentHealth -= damage;
+
         Debug.Log($"[Player] {CurrentHealth}/{_maxHealth} HP");
 
-        if (CurrentHealth > 0)
+
+        if (!IsDead)
+        {
             RPC_Flash();
+        }
         else
-            Die();
+        {
+            OnDeath();
+        }
     }
 
-    private void Die()
+    private void OnDeath()
+    {
+        Debug.Log("[Player] Dead");
+        var sm = GetComponent<PlayerStateMachine>();
+        if (sm != null)
+            sm.ChangeState(new PlayerDeadState(sm));
+
+        RPC_OnDeath();
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_OnDeath()
+    {
+        var sm = GetComponent<PlayerStateMachine>();
+        if (sm?.Animator != null)
+            sm.Animator.SetTrigger("Die");
+    }
+
+    public void ResetHealth()
     {
         if (!HasStateAuthority) return;
 
-        Debug.Log("[Player] Player died");
-
-        CurrentHealth = 0;
-
-        if (_flashCoroutine != null)
-            StopCoroutine(_flashCoroutine);
-
-        if (_meshRenderer != null)
-            _meshRenderer.material.color = _originalColor;
-
-        Vector3 respawnPosition = _checkpoint != null
-            ? _checkpoint.LastCheckpoint
-            : transform.position;
-
-        StartCoroutine(RespawnRoutine(respawnPosition));
-    }
-
-    private IEnumerator RespawnRoutine(Vector3 respawnPosition)
-    {
-        yield return new WaitForSeconds(_respawnDelay);
-
-        _networkCC.Teleport(respawnPosition);
-
         CurrentHealth = _maxHealth;
-
-        Debug.Log("[Player] Revived at checkpoint with inventory intact");
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

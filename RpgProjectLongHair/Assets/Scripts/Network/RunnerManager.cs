@@ -19,6 +19,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     private List<NetworkObject> _spawnedItems = new List<NetworkObject>();
 
     private bool _lockOnQueued;
+    private bool _jumpQueued;
     public async void StartRunner(GameMode mode, Action onFail)
     {
         _runner = gameObject.AddComponent<NetworkRunner>();
@@ -45,6 +46,10 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (Input.GetKeyDown(KeyCode.F))
             _lockOnQueued = true;
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+                _jumpQueued = true;
+        }
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -111,8 +116,10 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         Vector3 inputMove = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         Transform cameraTransform = Camera.main != null ? Camera.main.transform : null;
+
         Vector3 movementDir = Vector3.zero;
         Quaternion aimRot = Quaternion.identity;
+        Vector3 shootDir = Vector3.forward;
 
         if (cameraTransform != null)
         {
@@ -120,22 +127,28 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             movementDir.y = 0f;
             movementDir.Normalize();
             aimRot = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
-        }
 
-        bool interact = Input.GetKey(KeyCode.E);
-        bool jump = Input.GetKey(KeyCode.Space);
+            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+            shootDir = Physics.Raycast(ray, out RaycastHit hit, 200f)
+            ? (hit.point - Camera.main.transform.position).normalized
+            : ray.direction.normalized;
+        }
 
         var data = new NetworkInputData
         {
             moveDirection = movementDir,
-            interact = interact,
-            jump = jump,
+            interact = Input.GetKey(KeyCode.E),
+            jump = _jumpQueued,
+            attack = Input.GetMouseButton(0),
+            attackRange = Input.GetMouseButton(1),
             equipSlot = -1,
             aimRotation = aimRot,
-            LockOnPressed = _lockOnQueued
+            LockOnPressed = _lockOnQueued,
+            shootDirection = shootDir 
         };
 
         _lockOnQueued = false;
+        _jumpQueued = false;
         input.Set(data);
     }
 
