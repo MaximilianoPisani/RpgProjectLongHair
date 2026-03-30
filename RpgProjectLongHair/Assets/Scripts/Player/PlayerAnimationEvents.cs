@@ -1,0 +1,58 @@
+using UnityEditor.PackageManager;
+using UnityEngine;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+using UnityEngine.WSA;
+
+public class PlayerAnimationEvents : MonoBehaviour
+{
+    private PlayerStateMachine _sm;
+
+    private void Awake()
+    {
+        _sm = GetComponent<PlayerStateMachine>();
+    }
+
+    // Evento principal - momento de impacto
+    public void OnHitFrame()
+    {
+        if (_sm.CurrentState is IAnimationEventReceiver receiver)
+        {
+            receiver.OnHitFrame();
+        }
+    }
+
+    public void OpenComboWindow()
+    {
+        if (_sm.CurrentState is IAnimationEventReceiver receiver)
+        {
+            receiver.OpenComboWindow();
+        }
+    }
+
+    public void CloseComboWindow()
+    {
+        if (_sm.CurrentState is IAnimationEventReceiver receiver)
+        {
+            receiver.CloseComboWindow();
+        }
+    }
+
+    public void EndAttack()
+    {
+        if (_sm.CurrentState is IAnimationEventReceiver receiver)
+        {
+            receiver.EndAttack();
+        }
+    }
+
+    // Opcional: eventos adicionales
+    public void PlayAttackSound(string soundName)
+    {
+        // Reproducir sonido
+    }
+
+    public void SpawnHitVFX()
+    {
+        // Efectos visuales
+    }
+}

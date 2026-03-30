@@ -5,6 +5,8 @@ public class PlayerMoveState : IPlayerState
 {
     private PlayerStateMachine _sm;
 
+
+
     public PlayerMoveState(PlayerStateMachine sm)
     {
         _sm = sm;
@@ -32,8 +34,17 @@ public class PlayerMoveState : IPlayerState
         if (input.attackRange && weapon != null && weapon.IsRanged)
         { _sm.ChangeState(new PlayerRangeState(_sm)); return; }
 
-        if (input.moveDirection.sqrMagnitude < 0.01f)
-        { _sm.ChangeState(new PlayerIdleState(_sm)); return; }
+        //CALCULAR SPEED
+        float speed = input.moveDirection.magnitude;
 
+        if (_sm.Animator != null)
+            _sm.Animator.SetFloat("speed", speed);
+
+        // CAMBIO A IDLE SI NO SE MUEVE
+        if (speed < 0.01f)
+        {
+            _sm.ChangeState(new PlayerIdleState(_sm));
+            return;
+        }
     }
 }

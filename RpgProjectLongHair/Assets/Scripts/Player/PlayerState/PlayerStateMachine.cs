@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerStateMachine : NetworkBehaviour
 {
     private IPlayerState _currentState;
+    public IPlayerState CurrentState => _currentState;
 
     [Header("References")]
     public Animator Animator;
@@ -15,6 +16,7 @@ public class PlayerStateMachine : NetworkBehaviour
     public float moveSpeed = 5f;
 
     [Networked] public TickTimer AttackCooldown { get; set; }
+    [Networked] public int NetworkedComboIndex { get; set; }
     public bool IsJumping { get; set; } = false;
     public Vector3 LastShootDirection { get; set; } = Vector3.forward;
 
@@ -55,6 +57,11 @@ public class PlayerStateMachine : NetworkBehaviour
         _currentState?.Exit();
         _currentState = newState;
         _currentState.Enter();
+    }
+
+    public void UpdateState(NetworkInputData input)
+    {
+        _currentState?.Tick(input);
     }
 
     public Vector3 GetSpawnPosition()
