@@ -208,4 +208,8 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
     {
         // TODO: Efectos visuales, sonido, vibración, etc.
     }
+
+    public void OnShootFrame() { }
+    public void OnShootAnimationEnd() { }
+    public void OnReloadComplete() { }
 }

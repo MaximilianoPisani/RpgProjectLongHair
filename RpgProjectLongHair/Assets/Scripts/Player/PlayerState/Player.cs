@@ -7,6 +7,9 @@ public class Player : NetworkBehaviour
     private NetworkCharacterController _ncc;
 
     public float rotationSpeed = 10f;
+    [SerializeField] private float walkSpeed = 2f;
+    [SerializeField] private float sprintSpeed = 5f;
+    public float SprintSpeed => sprintSpeed;
 
     public override void Spawned()
     {
@@ -16,6 +19,9 @@ public class Player : NetworkBehaviour
     public override void FixedUpdateNetwork()
     {
         if (!GetInput(out NetworkInputData input)) return;
+
+        float targetSpeed = input.sprint ? sprintSpeed : walkSpeed;
+        _ncc.maxSpeed = targetSpeed;
 
         Vector3 moveDir = new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
         _ncc.Move(moveDir);
@@ -51,7 +57,13 @@ public class Player : NetworkBehaviour
         else
             transform.position = position;
     }
+    public float GetHorizontalSpeed()
+    {
+        if (_ncc == null) return 0f;
 
+        Vector3 vel = _ncc.Velocity;
+        return new Vector3(vel.x, 0, vel.z).magnitude;
+    }
     public void Move(Vector3 dir) { } 
     public void Jump() => _ncc.Jump();
     public bool IsGrounded() => _ncc != null && _ncc.Grounded;

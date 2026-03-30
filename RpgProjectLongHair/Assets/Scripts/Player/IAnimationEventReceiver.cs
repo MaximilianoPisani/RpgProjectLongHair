@@ -4,4 +4,9 @@ public interface IAnimationEventReceiver
     void OpenComboWindow();     // Inicia ventana para encadenar
     void CloseComboWindow();    // Cierra ventana
     void EndAttack();           // Fin de la animación de ataque
+
+    public void OnShootFrame();
+    public void OnShootAnimationEnd();
+    public void OnReloadComplete();
+
 }

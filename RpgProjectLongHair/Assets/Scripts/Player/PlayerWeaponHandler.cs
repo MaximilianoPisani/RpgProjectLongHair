@@ -56,5 +56,11 @@ public class PlayerWeaponHandler : MonoBehaviour
     {
         IsMelee = melee;
         IsRanged = ranged;
+
+        var animator = GetComponentInParent<Animator>();
+        if (animator != null)
+        {
+            animator.SetBool("IsGunEquipped", ranged);
+        }
     }
 }

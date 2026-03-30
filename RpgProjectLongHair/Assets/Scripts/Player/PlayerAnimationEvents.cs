@@ -1,7 +1,6 @@
 using UnityEditor.PackageManager;
 using UnityEngine;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
-using UnityEngine.WSA;
 
 public class PlayerAnimationEvents : MonoBehaviour
 {
@@ -12,6 +11,7 @@ public class PlayerAnimationEvents : MonoBehaviour
         _sm = GetComponent<PlayerStateMachine>();
     }
 
+    // ==================== Melee ====================
     // Evento principal - momento de impacto
     public void OnHitFrame()
     {
@@ -44,8 +44,35 @@ public class PlayerAnimationEvents : MonoBehaviour
             receiver.EndAttack();
         }
     }
+    // ==================== Ranged ====================
 
-    // Opcional: eventos adicionales
+    // ========== EVENTOS DE RANGED ==========
+
+    public void OnShootFrame()
+    {
+        if (_sm.CurrentState is PlayerRangeState rangedState)
+        {
+            rangedState.OnShootFrame();
+        }
+    }
+
+    public void OnShootAnimationEnd()
+    {
+        if (_sm.CurrentState is PlayerRangeState rangedState)
+        {
+            rangedState.OnShootAnimationEnd();
+        }
+    }
+
+    public void OnReloadComplete()
+    {
+        if (_sm.CurrentState is PlayerRangeState rangedState)
+        {
+            rangedState.OnReloadComplete();
+        }
+    }
+
+    // ==================== Extra ====================
     public void PlayAttackSound(string soundName)
     {
         // Reproducir sonido
