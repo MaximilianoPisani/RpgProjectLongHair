@@ -718,7 +718,6 @@ GameObject:
   - component: {fileID: -4126385609122192477}
   - component: {fileID: 7998879721324948185}
   - component: {fileID: 6852972804517011060}
-  - component: {fileID: 7354554320887987913}
   - component: {fileID: 1927787726754105315}
   - component: {fileID: 8385688533634515373}
   - component: {fileID: 7173885553808918142}
@@ -1198,11 +1197,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ff8ac296c3cba34f9a393c7ac5164fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Animator: {fileID: 7354554320887987913}
+  Animator: {fileID: 0}
   Combat: {fileID: 6852972804517011060}
   Health: {fileID: 1668454237951780165}
-  moveSpeed: 5
   Player: {fileID: 8385688533634515373}
+  moveSpeed: 5
 --- !u!114 &6852972804517011060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1226,28 +1225,6 @@ MonoBehaviour:
   - {fileID: 3287348511645198681}
   - {fileID: 7667982532749510345}
   - {fileID: 5325912075471040042}
---- !u!95 &7354554320887987913
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4622189450405338837}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1927787726754105315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1272,11 +1249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 105cc5dfdab00a14fadfd899671c9ffd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 8
   rotationSpeed: 15
-  jumpForce: 7
-  gravity: -9.81
-  fallMultiplier: 2.5
 --- !u!114 &7173885553808918142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1290,9 +1263,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lockOnOffset: {x: 0, y: 1.5, z: 0}
-  _lockedScreenX: 0.35
-  _lockedScreenY: 0.5
   _rotationSpeed: 5
+  _cameraSideOffset: {x: 2, y: 0, z: 0}
+  _offsetSmooth: 5
 --- !u!1 &4787563027710297290
 GameObject:
   m_ObjectHideFlags: 0

@@ -34,9 +34,21 @@ public class NetworkController : MonoBehaviour
 
     private void TryStartRunner(GameMode mode)
     {
+        if (!GameFlowManager.Instance.CanConnect())
+        {
+            Debug.LogError("[Network] Intento inválido de conexión");
+            return;
+        }
+
         if (CharacterSelection.SelectedPlayer <= 0)
         {
-            Debug.LogWarning("Player must select a character first.");
+            Debug.LogError("[Network] No hay personaje seleccionado");
+            return;
+        }
+
+        if (!AuthenticationManager.Instance.IsSessionValid)
+        {
+            Debug.LogError("[Network] No autenticado");
             return;
         }
 
@@ -53,8 +65,11 @@ public class NetworkController : MonoBehaviour
 
     private void HandlePlayerSpawned(NetworkObject playerObj)
     {
-        Debug.Log("[UIController] Player spawned, hiding lobby UI.");
+        Debug.Log("[Network] Player spawned ? iniciar gameplay");
+
         _lobbyPanel.SetActive(false);
+
+        GameFlowManager.Instance.EnterGameplay();
     }
 
     private void OnRunnerFailed()
@@ -66,6 +81,29 @@ public class NetworkController : MonoBehaviour
         }
 
         Debug.Log("[UIController] Runner failed. Ready to retry.");
+        _lobbyPanel.SetActive(true);
+    }
+
+    private void OnSignOutClicked()
+    {
+        Debug.Log("[Network] SignOut manual");
+
+        if (_runnerManagerInstance != null)
+        {
+            Destroy(_runnerManagerInstance.gameObject);
+            _runnerManagerInstance = null;
+        }
+
+        if (AuthenticationManager.Instance != null)
+        {
+            AuthenticationManager.Instance.SignOut();
+        }
+
+        if (GameFlowManager.Instance != null)
+        {
+            GameFlowManager.Instance.ResetToLogin();
+        }
+
         _lobbyPanel.SetActive(true);
     }
 }

@@ -13,7 +13,7 @@ public class PlayerSpawner : MonoBehaviour
 
     [SerializeField] private Transform _spawnPoint;
 
-    private Dictionary<PlayerRef, int> playerSelections = new Dictionary<PlayerRef, int>();
+    private Dictionary<PlayerRef, int> playerSelections = new();
 
     private void Awake()
     {
@@ -29,8 +29,6 @@ public class PlayerSpawner : MonoBehaviour
     public void SetPlayerSelection(PlayerRef player, int characterIndex)
     {
         playerSelections[player] = characterIndex;
-
-        Debug.Log($"[PlayerSpawner] Player {player} selected character {characterIndex}");
     }
 
     public NetworkObject SpawnPlayer(NetworkRunner runner, PlayerRef playerRef)
@@ -41,12 +39,9 @@ public class PlayerSpawner : MonoBehaviour
             return null;
         }
 
-        int selectedCharacter = 1;
-
-        if (playerSelections.TryGetValue(playerRef, out int selection))
-        {
-            selectedCharacter = selection;
-        }
+        int selectedCharacter = playerSelections.TryGetValue(playerRef, out int selection)
+            ? selection
+            : 1;
 
         NetworkObject prefabToSpawn = GetPrefab(selectedCharacter);
 
@@ -57,20 +52,17 @@ public class PlayerSpawner : MonoBehaviour
             playerRef
         );
 
-        Debug.Log($"[PlayerSpawner] Spawned Player {playerRef} with character {selectedCharacter}");
-
         return player;
     }
 
     private NetworkObject GetPrefab(int index)
     {
-        switch (index)
+        return index switch
         {
-            case 1: return _player1Prefab;
-            case 2: return _player2Prefab;
-            case 3: return _player3Prefab;
-        }
-
-        return _player1Prefab;
+            1 => _player1Prefab,
+            2 => _player2Prefab,
+            3 => _player3Prefab,
+            _ => _player1Prefab
+        };
     }
 }

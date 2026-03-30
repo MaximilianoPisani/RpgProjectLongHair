@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Fusion;
 
 public class CharacterSelection : MonoBehaviour
 {
@@ -8,10 +7,6 @@ public class CharacterSelection : MonoBehaviour
     [SerializeField] private Button _player1Button;
     [SerializeField] private Button _player2Button;
     [SerializeField] private Button _player3Button;
-
-    [Header("Canvas")]
-    [SerializeField] private GameObject _selectionCanvas;
-    [SerializeField] private GameObject _connectionCanvas;
 
     public static int SelectedPlayer = -1;
 
@@ -24,13 +19,18 @@ public class CharacterSelection : MonoBehaviour
 
     private void SelectPlayer(int index)
     {
+        if (!GameFlowManager.Instance.IsLoggedIn)
+        {
+            Debug.LogError("[CharacterSelection] No logueado");
+            return;
+        }
+
         SelectedPlayer = index;
 
         PlayerPrefs.SetInt("SelectedCharacter", index);
 
-        Debug.Log("[CharacterSelection] Player selected character: " + index);
+        Debug.Log("[CharacterSelection] Player selected: " + index);
 
-        _selectionCanvas.SetActive(false);
-        _connectionCanvas.SetActive(true);
+        GameFlowManager.Instance.OnCharacterSelected(index);
     }
 }
