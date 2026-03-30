@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
+
 public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     public event Action<NetworkObject> OnPlayerSpawned;
@@ -12,18 +14,27 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private EnemySpawner _enemySpawner;
     [SerializeField] private PlayerSpawner _playerSpawner;
 
-    private Dictionary<PlayerRef, int> _playerCharacters = new();
-
     private NetworkRunner _runner;
+
     private Dictionary<PlayerRef, NetworkObject> _spawnedPlayers = new();
-    private List<NetworkObject> _spawnedItems = new List<NetworkObject>();
+    private HashSet<string> _connectedPlayerIds = new();
 
     private bool _lockOnQueued;
     private bool _jumpQueued;
+
     public async void StartRunner(GameMode mode, Action onFail)
     {
         _runner = gameObject.AddComponent<NetworkRunner>();
         _runner.ProvideInput = true;
+
+        string playerId = AuthenticationManager.Instance.PlayerId;
+
+        if (string.IsNullOrEmpty(playerId))
+        {
+            Debug.LogError("[RunnerManager] PlayerId inválido. ¿No estás logueado?");
+            onFail?.Invoke();
+            return;
+        }
 
         var startGameArgs = new StartGameArgs
         {
@@ -31,7 +42,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             SessionName = "Room_01",
             Scene = SceneRef.FromIndex(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex),
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
-            ConnectionToken = BitConverter.GetBytes(CharacterSelection.SelectedPlayer)
+
+            ConnectionToken = Encoding.UTF8.GetBytes(playerId)
         };
 
         var result = await _runner.StartGame(startGameArgs);
@@ -42,27 +54,49 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             onFail?.Invoke();
         }
     }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F))
             _lockOnQueued = true;
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-                _jumpQueued = true;
-        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+            _jumpQueued = true;
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         if (!runner.IsServer) return;
 
-        int selectedCharacter = 1;
-
         byte[] token = runner.GetPlayerConnectionToken(player);
 
-        if (token != null && token.Length >= 4)
+        if (token == null || token.Length == 0)
         {
-            selectedCharacter = BitConverter.ToInt32(token, 0);
+            Debug.LogError("[RunnerManager] Token inválido");
+            runner.Disconnect(player);
+            return;
+        }
+
+        string playerId = Encoding.UTF8.GetString(token);
+
+        if (_connectedPlayerIds.Contains(playerId))
+        {
+            Debug.LogWarning($"[RunnerManager] Cuenta ya en uso: {playerId}");
+            runner.Disconnect(player);
+            return;
+        }
+
+        _connectedPlayerIds.Add(playerId);
+
+        int selectedCharacter = 1;
+
+        if (token.Length >= 4)
+        {
+            try
+            {
+                selectedCharacter = BitConverter.ToInt32(token, 0);
+            }
+            catch { }
         }
 
         _playerSpawner.SetPlayerSelection(player, selectedCharacter);
@@ -72,15 +106,12 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         if (playerObj == null) return;
 
         runner.SetPlayerObject(player, playerObj);
-
         _spawnedPlayers[player] = playerObj;
 
-        Debug.Log($"[RunnerManager] Player {player} spawned with character {selectedCharacter}");
+        Debug.Log($"[RunnerManager] Player conectado: {playerId}");
 
         if (player == runner.LocalPlayer)
-        {
             OnPlayerSpawned?.Invoke(playerObj);
-        }
 
         if (_spawnedPlayers.Count == 1)
         {
@@ -91,7 +122,19 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.IsServer && _spawnedPlayers.TryGetValue(player, out var obj))
+        if (!runner.IsServer) return;
+
+        byte[] token = runner.GetPlayerConnectionToken(player);
+
+        if (token != null && token.Length > 0)
+        {
+            string playerId = Encoding.UTF8.GetString(token);
+
+            if (_connectedPlayerIds.Contains(playerId))
+                _connectedPlayerIds.Remove(playerId);
+        }
+
+        if (_spawnedPlayers.TryGetValue(player, out var obj))
         {
             runner.Despawn(obj);
             _spawnedPlayers.Remove(player);
@@ -100,16 +143,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void RemoveItem(NetworkObject item)
     {
-        if (_spawnedItems.Contains(item))
-        {
-            _spawnedItems.Remove(item);
-            _runner.Despawn(item);
-        }
-    }
-
-    private Vector3 GetRandomSpawnPosition()
-    {
-        return new Vector3(UnityEngine.Random.Range(-3, 3), 0, UnityEngine.Random.Range(-3, 3));
+        if (item != null && item.Runner != null)
+            item.Runner.Despawn(item);
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
@@ -126,12 +161,13 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             movementDir = cameraTransform.forward * inputMove.z + cameraTransform.right * inputMove.x;
             movementDir.y = 0f;
             movementDir.Normalize();
+
             aimRot = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
 
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
             shootDir = Physics.Raycast(ray, out RaycastHit hit, 200f)
-            ? (hit.point - Camera.main.transform.position).normalized
-            : ray.direction.normalized;
+                ? (hit.point - Camera.main.transform.position).normalized
+                : ray.direction.normalized;
         }
 
         var data = new NetworkInputData
@@ -144,30 +180,52 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             equipSlot = -1,
             aimRotation = aimRot,
             LockOnPressed = _lockOnQueued,
-            shootDirection = shootDir 
+            shootDirection = shootDir
         };
 
         _lockOnQueued = false;
         _jumpQueued = false;
+
         input.Set(data);
     }
 
     public void OnConnectedToServer(NetworkRunner runner)
     {
-        Debug.Log("[RunnerManager] Connected to server, hiding lobby UI.");
-
         if (runner.LocalPlayer == PlayerRef.None) return;
 
         OnPlayerSpawned?.Invoke(null);
     }
+
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
     {
         request.Accept();
     }
+
+    public async void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    {
+        Debug.Log($"[RunnerManager] Desconectado: {reason}");
+
+        if (AuthenticationManager.Instance != null)
+        {
+            AuthenticationManager.Instance.SignOut();
+        }
+
+        if (GameFlowManager.Instance != null)
+        {
+            GameFlowManager.Instance.ResetToLogin();
+        }
+
+        if (runner != null)
+        {
+            await runner.Shutdown();
+        }
+
+        _runner = null;
+    }
+
     public void OnObjectExitAOI(NetworkRunner r, NetworkObject o, PlayerRef p) { }
     public void OnObjectEnterAOI(NetworkRunner r, NetworkObject o, PlayerRef p) { }
     public void OnShutdown(NetworkRunner r, ShutdownReason s) { }
-    public void OnDisconnectedFromServer(NetworkRunner r, NetDisconnectReason reason) { }
     public void OnConnectFailed(NetworkRunner r, NetAddress remote, NetConnectFailedReason reason) { }
     public void OnUserSimulationMessage(NetworkRunner r, SimulationMessagePtr msg) { }
     public void OnReliableDataReceived(NetworkRunner r, PlayerRef p, ReliableKey k, ArraySegment<byte> d) { }
@@ -178,5 +236,4 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnHostMigration(NetworkRunner r, HostMigrationToken h) { }
     public void OnSceneLoadDone(NetworkRunner r) { }
     public void OnSceneLoadStart(NetworkRunner r) { }
-
 }
