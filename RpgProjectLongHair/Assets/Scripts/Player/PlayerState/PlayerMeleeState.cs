@@ -40,8 +40,6 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
         if (_comboTimer <= 0f)
         {
             ResetCombo();
-            _sm.ChangeState(new PlayerIdleState(_sm));
-            return;
         }
 
         // Procesar input de ataque
@@ -63,9 +61,10 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
     {
         // Incrementar combo
         _comboIndex++;
-        _sm.NetworkedComboIndex = _comboIndex;
         if (_comboIndex > MAX_COMBO_COUNT)
             _comboIndex = 1; // Ciclar o podrías resetear a 1
+
+        _sm.NetworkedComboIndex = _comboIndex;
         Debug.Log($"ComboIndex actualizado a: {_comboIndex}");
 
         // Resetear flags

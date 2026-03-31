@@ -69,4 +69,36 @@ public class PlayerStateMachine : NetworkBehaviour
         var checkpoint = GetComponent<PlayerCheckpoint>();
         return checkpoint != null ? checkpoint.LastCheckpoint : Vector3.zero;
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (Combat == null || Combat.meleeData == null)
+            return;
+
+        // IMPORTANTE: dirección correcta (no uses forward si es 2D/izq-der)
+        Vector3 direction = Vector3.right;
+
+        // Si tenés algo como isFacingRight en otro lado, usalo acá
+        // Ejemplo:
+        // direction = IsFacingRight ? Vector3.right : Vector3.left;
+
+        Vector3 origin = Combat.meleeOrigin != null
+            ? Combat.meleeOrigin.position
+            : transform.position + direction * 0.5f + Vector3.up;
+
+        float radius = Combat.meleeData.HitRadius;
+
+        // Color según estado
+        if (_currentState is PlayerMeleeState)
+            Gizmos.color = Color.red;
+        else
+            Gizmos.color = new Color(1, 0, 0, 0.2f);
+
+        Gizmos.DrawWireSphere(origin, radius);
+
+        // Dirección del ataque
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(origin, origin + direction * 1.5f);
+    }
+
 }
