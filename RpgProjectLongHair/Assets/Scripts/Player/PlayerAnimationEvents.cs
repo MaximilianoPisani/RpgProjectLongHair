@@ -1,6 +1,4 @@
-using UnityEditor.PackageManager;
 using UnityEngine;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class PlayerAnimationEvents : MonoBehaviour
 {
