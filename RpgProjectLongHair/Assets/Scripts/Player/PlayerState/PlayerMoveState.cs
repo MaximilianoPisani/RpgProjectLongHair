@@ -35,11 +35,15 @@ public class PlayerMoveState : IPlayerState
         { _sm.ChangeState(new PlayerRangeState(_sm)); return; }
 
         //CALCULAR SPEED
-        float speed = input.moveDirection.magnitude;
+        float speed = _sm.Player.GetHorizontalSpeed();
+
+        float normalizedSpeed = speed / _sm.Player.SprintSpeed;
 
         if (_sm.Animator != null)
-            _sm.Animator.SetFloat("speed", speed);
-
+        {
+            _sm.Animator.SetFloat("speed", normalizedSpeed);
+            _sm.Animator.SetBool("isMoving", speed > 0.05f);
+        }
         // CAMBIO A IDLE SI NO SE MUEVE
         if (speed < 0.01f)
         {

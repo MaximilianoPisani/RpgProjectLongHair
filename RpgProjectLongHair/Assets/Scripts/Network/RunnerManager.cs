@@ -21,6 +21,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private bool _lockOnQueued;
     private bool _jumpQueued;
+    private bool _isSprinting;
 
     public async void StartRunner(GameMode mode, Action onFail)
     {
@@ -62,6 +63,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (Input.GetKeyDown(KeyCode.Space))
             _jumpQueued = true;
+
+        _isSprinting = Input.GetKey(KeyCode.LeftShift);
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -177,7 +180,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             jump = _jumpQueued,
             attack = Input.GetMouseButton(0),
             attackRange = Input.GetMouseButton(1),
-            sprint = Input.GetKey(KeyCode.LeftShift),
+            sprint = _isSprinting,
             equipSlot = -1,
             aimRotation = aimRot,
             LockOnPressed = _lockOnQueued,
