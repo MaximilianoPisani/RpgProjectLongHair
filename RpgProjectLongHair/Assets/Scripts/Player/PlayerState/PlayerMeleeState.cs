@@ -100,11 +100,13 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
         // Actualizar timer con DeltaTime de Fusion
         _comboTimer -= _sm.Runner.DeltaTime;
 
-        // Timeout del combo - volver a locomoción melee (no idle)
         if (_comboTimer <= 0f)
         {
+            Debug.LogWarning("COMBO TIMEOUT - Algo salió mal, forzando reset");
+
+            // Seguridad: Solo forzar reset si realmente pasó mucho tiempo
+            // (esto NO debería pasar normalmente, EndAttack debería manejarlo)
             ResetCombo();
-            _isAttacking = false; // Volver a modo locomoción
             return;
         }
 
