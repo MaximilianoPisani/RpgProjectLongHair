@@ -212,8 +212,13 @@ public class PlayerRangeState : IPlayerState, IAnimationEventReceiver
 
         // Normalizar para tu blend tree (0 , 1)
         float normalized = speed / player.SprintSpeed;
+        float normalizedSpeed = speed / _sm.Player.SprintSpeed;
 
-        _sm.Animator.SetFloat("speed", normalized);
+        if (_sm.Animator != null)
+        {
+            _sm.Animator.SetFloat("speed", normalized);
+            _sm.Animator.SetBool("isMoving", speed > 0.05f);
+        }
     }
     private void PlayShootFeedback()
     {

@@ -61,6 +61,7 @@ public class PlayerWeaponHandler : MonoBehaviour
         if (animator != null)
         {
             animator.SetBool("IsGunEquipped", ranged);
+            animator.SetBool("IsAxeEquipped", melee);
         }
     }
 }

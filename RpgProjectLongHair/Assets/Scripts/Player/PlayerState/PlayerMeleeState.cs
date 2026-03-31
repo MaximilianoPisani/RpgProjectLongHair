@@ -9,6 +9,7 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
     private bool _comboWindowOpen = false;
     private bool _inputBuffered = false;
     private float _comboTimer;
+    private bool _isAttacking = false;
 
     private const float COMBO_RESET_TIME = 0.5f;
     private const int MAX_COMBO_COUNT = 3;
@@ -28,18 +29,83 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
             return;
         }
 
-        StartNextAttack();
+        _isAttacking = false;
     }
 
     public void Tick(NetworkInputData input)
     {
+        if (!_isAttacking)
+        {
+            UpdateLocomotion(input);
+        }
+        else
+        {
+            // Si estamos atacando, actualizar la lógica del combo
+            UpdateComboLogic(input);
+        }
+
+    }
+
+
+    public void Exit()
+    {
+        ResetCombo();
+
+        if (_sm.Animator != null)
+        {
+            _sm.Animator.SetFloat("speed", 0f);
+        }
+    }
+
+    private void UpdateLocomotion(NetworkInputData input)
+    {
+        var weapon = _sm.GetComponent<PlayerWeaponHandler>();
+
+        // Si cambia de arma, salir del estado
+        if (weapon == null || !weapon.IsMelee)
+        {
+            _sm.ChangeState(new PlayerIdleState(_sm));
+            return;
+        }
+
+        // Si ataca, iniciar combo
+        if (input.attack)
+        {
+            _isAttacking = true;
+            StartNextAttack();
+            return;
+        }
+
+        // CALCULAR SPEED (igual que en MoveState)
+        float speed = _sm.Player.GetHorizontalSpeed();
+        float normalizedSpeed = speed / _sm.Player.SprintSpeed;
+
+        if (_sm.Animator != null)
+        {
+            _sm.Animator.SetFloat("speed", normalizedSpeed);
+        }
+
+        // Si no se mueve, volver a idle
+        if (speed < 0.01f)
+        {
+            _sm.ChangeState(new PlayerIdleState(_sm));
+            return;
+        }
+    }
+
+    // ==================== LÓGICA DE COMBO ====================
+
+    private void UpdateComboLogic(NetworkInputData input)
+    {
         // Actualizar timer con DeltaTime de Fusion
         _comboTimer -= _sm.Runner.DeltaTime;
 
-        // Timeout del combo - volver a idle
+        // Timeout del combo - volver a locomoción melee (no idle)
         if (_comboTimer <= 0f)
         {
             ResetCombo();
+            _isAttacking = false; // Volver a modo locomoción
+            return;
         }
 
         // Procesar input de ataque
@@ -49,13 +115,6 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
         }
     }
 
-
-    public void Exit()
-    {
-        ResetCombo();
-    }
-
-    // ==================== LÓGICA DE COMBO ====================
 
     private void StartNextAttack()
     {
@@ -75,6 +134,9 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
         // Actualizar animator
         if (_sm.Animator != null)
         {
+            // IMPORTANTE: Congelar el speed durante el ataque
+            _sm.Animator.SetFloat("speed", 0f);
+
             _sm.Animator.SetInteger("ComboIndex", _comboIndex);
             Debug.Log($"Animator.ComboIndex seteado a: {_sm.Animator.GetInteger("ComboIndex")}");
 
@@ -97,6 +159,11 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
     {
         Debug.Log($"Input de ataque detectado - Ventana abierta: {_comboWindowOpen}");
 
+        if (_comboIndex >= MAX_COMBO_COUNT)
+        {
+            Debug.Log("Attack 3 activo - Input ignorado");
+            return;
+        }
         // Si la ventana está abierta, atacar inmediatamente
         if (_comboWindowOpen)
         {
@@ -158,10 +225,13 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
 
     public void EndAttack()
     {
-        // Si no hay input buffereado, salir del estado
+        Debug.Log($"EndAttack - ComboIndex: {_comboIndex}, Buffered: {_inputBuffered}");
+
+        // Si no hay input buffereado, volver a locomoción melee
         if (!_inputBuffered)
         {
-            _sm.ChangeState(new PlayerIdleState(_sm));
+            _isAttacking = false; // Volver a modo locomoción
+            ResetCombo();
         }
         // Si hay input buffereado, se ejecutará en la siguiente ventana
     }
@@ -195,7 +265,7 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
                     _sm.Object.InputAuthority
                 );
 
-                Debug.Log($"Hit enemy with combo {_comboIndex}");
+                Debug.Log($"Hit enemy with combo {_comboIndex} - Damage: {settings.meleeData.Damage}");
             }
         }
 
