@@ -177,10 +177,12 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             jump = _jumpQueued,
             attack = Input.GetMouseButton(0),
             attackRange = Input.GetMouseButton(1),
+            sprint = Input.GetKey(KeyCode.LeftShift),
             equipSlot = -1,
             aimRotation = aimRot,
             LockOnPressed = _lockOnQueued,
             shootDirection = shootDir
+            
         };
 
         _lockOnQueued = false;
