@@ -20,6 +20,7 @@ public class EnemyHealth : NetworkBehaviour
     [SerializeField] private Renderer _meshRenderer;
     [SerializeField] private Color _flashColor = Color.red;
     [SerializeField] private float _flashDuration = 0.1f;
+    [SerializeField] private EnemyMeleeController enemyController;
 
     [Header("Reward")]
     [SerializeField] private ExpConfigSO _expConfig;
@@ -41,6 +42,9 @@ public class EnemyHealth : NetworkBehaviour
             currentHealth = _maxHealth;
             _participants.Clear();
         }
+
+        if (enemyController == null)
+            enemyController = GetComponent<EnemyMeleeController>();
 
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
 
@@ -92,6 +96,11 @@ public class EnemyHealth : NetworkBehaviour
         }
 
         currentHealth = Mathf.Max(0, currentHealth - damage);
+
+        if (enemyController != null)
+        {
+            enemyController.TriggerHitAnimation();
+        }
 
         RPC_Flash();
 
