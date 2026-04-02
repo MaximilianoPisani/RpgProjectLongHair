@@ -92,4 +92,16 @@ public class GameFlowManager : MonoBehaviour
 
         ShowLogin();
     }
+
+    public void Logout()
+    {
+        Debug.Log("[Flow] Cerrando sesión...");
+
+        if (AuthenticationManager.Instance != null)
+        {
+            AuthenticationManager.Instance.SignOut();
+        }
+
+        ResetToLogin();
+    }
 }

@@ -14,6 +14,19 @@ public class Player : NetworkBehaviour
     public override void Spawned()
     {
         _ncc = GetComponent<NetworkCharacterController>();
+
+        var cam = GetComponentInChildren<PlayerCamera>();
+
+        if (Object.HasInputAuthority)
+        {
+            if (cam != null)
+                cam.Init(transform);
+        }
+        else
+        {
+            if (cam != null)
+                cam.gameObject.SetActive(false);
+        }
     }
 
     public override void FixedUpdateNetwork()
@@ -64,7 +77,7 @@ public class Player : NetworkBehaviour
         Vector3 vel = _ncc.Velocity;
         return new Vector3(vel.x, 0, vel.z).magnitude;
     }
-    public void Move(Vector3 dir) { } 
+    public void Move(Vector3 dir) { }
     public void Jump() => _ncc.Jump();
     public bool IsGrounded() => _ncc != null && _ncc.Grounded;
 }

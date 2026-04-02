@@ -153,7 +153,10 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         Vector3 inputMove = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        Transform cameraTransform = Camera.main != null ? Camera.main.transform : null;
+
+        Transform cameraTransform = PlayerCamera.Local != null
+            ? PlayerCamera.Local.transform
+            : (Camera.main != null ? Camera.main.transform : null);
 
         Vector3 movementDir = Vector3.zero;
         Quaternion aimRot = Quaternion.identity;
@@ -185,7 +188,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             aimRotation = aimRot,
             LockOnPressed = _lockOnQueued,
             shootDirection = shootDir
-            
+
         };
 
         _lockOnQueued = false;
