@@ -4,6 +4,7 @@ using UnityEngine;
 public class EnemyAttackRangedState : IEnemyState
 {
     private readonly EnemyRangedController _enemy;
+    private bool _wasRetreating = false;
 
     public EnemyAttackRangedState(EnemyRangedController enemy) => _enemy = enemy;
 
@@ -38,6 +39,7 @@ public class EnemyAttackRangedState : IEnemyState
         {
             if (dist < _enemy.PreferredMinRange)
             {
+
                 Vector3 retreatDir = (_enemy.transform.position - _enemy.TargetPlayer.position).normalized;
                 Vector3 retreatTarget = _enemy.transform.position + retreatDir * 2f;
                 _enemy.Agent.SetDestination(retreatTarget);
@@ -55,6 +57,8 @@ public class EnemyAttackRangedState : IEnemyState
 
         if (_enemy.Runner.SimulationTime >= _enemy.NextRangedAttackTime)
         {
+            _enemy.TriggerRangedAttackAnimation();
+
             FireProjectile();
             _enemy.NextRangedAttackTime = _enemy.Runner.SimulationTime
                 + _enemy.RangedAttackData.Cooldown;
