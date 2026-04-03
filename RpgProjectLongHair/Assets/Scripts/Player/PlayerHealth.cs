@@ -64,10 +64,9 @@ public class PlayerHealth : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_OnDeath()
     {
-        var sm = GetComponent<PlayerStateMachine>();
-        if (sm?.Animator != null)
-            sm.Animator.SetTrigger("Die");
+        GetComponent<PlayerNetworkSync>()?.TriggerDie();
     }
+
 
     public void ResetHealth()
     {

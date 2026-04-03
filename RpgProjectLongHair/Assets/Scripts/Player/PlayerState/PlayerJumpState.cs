@@ -16,9 +16,7 @@ public class PlayerJumpState : IPlayerState
     {
         _airTime = 0f;
         _sm.Player.Jump();
-
-        if (_sm.Animator != null)
-            _sm.Animator.SetTrigger("Jump");
+        _sm.GetComponent<PlayerNetworkSync>()?.TriggerJump();
     }
 
     public void Exit()

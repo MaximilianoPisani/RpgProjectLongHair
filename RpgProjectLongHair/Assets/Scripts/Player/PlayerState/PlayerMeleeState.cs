@@ -145,8 +145,7 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
             // Solo trigger en el primer ataque
             if (_comboIndex == 1)
             {
-                _sm.Animator.SetTrigger("Melee");
-                Debug.Log("Trigger 'Melee' activado");
+                _sm.GetComponent<PlayerNetworkSync>()?.TriggerMelee();
             }
         }
         else

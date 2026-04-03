@@ -1893,13 +1893,12 @@ GameObject:
   - component: {fileID: 2475146280369022930}
   - component: {fileID: 1975767083011942508}
   - component: {fileID: 5477945803812553738}
-  - component: {fileID: 2743206214930274914}
-  - component: {fileID: 5971903352974859959}
   - component: {fileID: 3144269693680086204}
   - component: {fileID: 5247100580435787750}
   - component: {fileID: 5406402327671719317}
   - component: {fileID: 1059619233003420139}
   - component: {fileID: 3730851367084255050}
+  - component: {fileID: 1290202656488514935}
   m_Layer: 0
   m_Name: Player Fungi
   m_TagString: Player
@@ -2005,10 +2004,10 @@ MonoBehaviour:
   - {fileID: 2475146280369022930}
   - {fileID: 1975767083011942508}
   - {fileID: 5477945803812553738}
-  - {fileID: 2743206214930274914}
   - {fileID: 3144269693680086204}
   - {fileID: 5247100580435787750}
   - {fileID: 1059619233003420139}
+  - {fileID: 1290202656488514935}
   - {fileID: 8511789763993353943}
   ForceRemoteRenderTimeframe: 0
 --- !u!143 &7211342961291623563
@@ -2183,36 +2182,7 @@ MonoBehaviour:
   _lockOnAngle: 60
   _enemyLayer:
     serializedVersion: 2
-    m_Bits: 0
---- !u!114 &2743206214930274914
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6542864224881935982}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6e72c366d10e5a4792dd7d250003229, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _playerCameraRoot: {fileID: 0}
---- !u!114 &5971903352974859959
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6542864224881935982}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53e83b37673d6ea439b7180b9894d178, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _lockOnOffset: {x: 0, y: 1.5, z: 0}
-  _rotationSpeed: 5
-  _cameraSideOffset: {x: 2, y: 0, z: 0}
-  _offsetSmooth: 5
+    m_Bits: 8
 --- !u!114 &3144269693680086204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2289,6 +2259,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 901613516f56c7e4c8b01f173914b5ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1290202656488514935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6542864224881935982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da95790cb84b7c1498408219ce5e3c46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationSpeed: 15
 --- !u!1 &6642145972760778240
 GameObject:
   m_ObjectHideFlags: 0
@@ -3363,7 +3346,7 @@ GameObject:
   - component: {fileID: 8176225052828100595}
   m_Layer: 6
   m_Name: Camera
-  m_TagString: Player
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
