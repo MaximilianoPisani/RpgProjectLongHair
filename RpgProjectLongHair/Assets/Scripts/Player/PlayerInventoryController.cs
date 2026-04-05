@@ -80,8 +80,10 @@ public class PlayerInventoryController : MonoBehaviour
             {
                 bool added = _inventoryData.AddItem(pickup.ItemData);
 
-                if (added)
-                    Destroy(pickup.gameObject);
+                if (added && pickup.Object != null)
+                {
+                    pickup.Object.Runner.Despawn(pickup.Object);
+                }
 
                 return;
             }

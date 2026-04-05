@@ -15,7 +15,7 @@ public class PlayerJumpState : IPlayerState
     public void Enter()
     {
         _airTime = 0f;
-        _sm.Player.Jump();
+        _sm.Player.Jump(); 
         _sm.GetComponent<PlayerNetworkSync>()?.TriggerJump();
     }
 

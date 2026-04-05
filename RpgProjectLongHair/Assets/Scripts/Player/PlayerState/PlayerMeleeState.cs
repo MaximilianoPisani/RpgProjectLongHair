@@ -199,7 +199,10 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
     {
         if (!_sm.Object.HasInputAuthority) return;
 
-        ApplyMeleeDamage();
+        if (_sm.Object.HasStateAuthority)
+            ApplyMeleeDamage();
+        else
+            _sm.RPC_RequestMeleeDamage(_sm.transform.position, _sm.transform.forward);
     }
 
     public void OpenComboWindow()

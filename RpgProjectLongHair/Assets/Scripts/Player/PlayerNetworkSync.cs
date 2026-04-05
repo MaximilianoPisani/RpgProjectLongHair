@@ -42,7 +42,7 @@ public class PlayerNetworkSync : NetworkBehaviour
     public override void FixedUpdateNetwork()
     {
         if (!Object.HasStateAuthority) return;
-
+   
         SyncedPosition = transform.position;
         SyncedRotation = transform.rotation;
 
@@ -57,9 +57,8 @@ public class PlayerNetworkSync : NetworkBehaviour
 
     public override void Render()
     {
-        if (Object.HasStateAuthority) return;
+        if (Object.HasInputAuthority) return;
 
-        transform.position = Vector3.Lerp(transform.position, SyncedPosition, _interpolationSpeed * Time.deltaTime);
         transform.rotation = Quaternion.Lerp(transform.rotation, SyncedRotation, _interpolationSpeed * Time.deltaTime);
 
         if (_animator == null) return;
@@ -69,6 +68,7 @@ public class PlayerNetworkSync : NetworkBehaviour
         _animator.SetBool("isJumping", SyncedIsJumping);
         _animator.SetBool("IsReloading", SyncedIsReloading);
         _animator.SetInteger("ComboIndex", SyncedComboIndex);
+
 
         foreach (var change in _changes.DetectChanges(this, out var prev, out var current))
         {
@@ -95,31 +95,85 @@ public class PlayerNetworkSync : NetworkBehaviour
         }
     }
 
+
     public void TriggerJump()
     {
-        if (!Object.HasStateAuthority) return;
-        SyncedJumpTrigger++;
-        _animator?.SetTrigger("Jump"); 
+        if (Object.HasStateAuthority)
+        {
+            SyncedJumpTrigger++;
+            _animator?.SetTrigger("Jump");
+        }
+        else if (Object.HasInputAuthority)
+        {
+            _animator?.SetTrigger("Jump");
+            RPC_TriggerJump();
+        }
     }
 
     public void TriggerMelee()
     {
-        if (!Object.HasStateAuthority) return;
-        SyncedMeleeTrigger++;
-        _animator?.SetTrigger("Melee");
+        if (Object.HasStateAuthority)
+        {
+            SyncedMeleeTrigger++;
+            _animator?.SetTrigger("Melee");
+        }
+        else if (Object.HasInputAuthority)
+        {
+            _animator?.SetTrigger("Melee");
+            RPC_TriggerMelee();
+        }
     }
 
     public void TriggerShoot()
     {
-        if (!Object.HasStateAuthority) return;
-        SyncedShootTrigger++;
-        _animator?.SetTrigger("Shoot"); 
+        if (Object.HasStateAuthority)
+        {
+            SyncedShootTrigger++;
+            _animator?.SetTrigger("Shoot");
+        }
+        else if (Object.HasInputAuthority)
+        {
+            _animator?.SetTrigger("Shoot");
+            RPC_TriggerShoot();
+        }
     }
 
     public void TriggerDie()
     {
-        if (!Object.HasStateAuthority) return;
+        if (Object.HasStateAuthority)
+        {
+            SyncedDieTrigger++;
+            _animator?.SetTrigger("Die");
+        }
+        else if (Object.HasInputAuthority)
+        {
+            _animator?.SetTrigger("Die");
+            RPC_TriggerDie();
+        }
+    }
+
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    private void RPC_TriggerJump()
+    {
+        SyncedJumpTrigger++;
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    private void RPC_TriggerMelee()
+    {
+        SyncedMeleeTrigger++;
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    private void RPC_TriggerShoot()
+    {
+        SyncedShootTrigger++;
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    private void RPC_TriggerDie()
+    {
         SyncedDieTrigger++;
-        _animator?.SetTrigger("Die"); 
     }
 }

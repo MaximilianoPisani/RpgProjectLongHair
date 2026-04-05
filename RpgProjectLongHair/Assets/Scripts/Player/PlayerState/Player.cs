@@ -16,16 +16,23 @@ public class Player : NetworkBehaviour
         _ncc = GetComponent<NetworkCharacterController>();
 
         var cam = GetComponentInChildren<PlayerCamera>();
+        var cc = GetComponent<CharacterController>();
 
         if (Object.HasInputAuthority)
         {
             if (cam != null)
                 cam.Init(transform);
+
+            if (cc != null)
+                cc.enabled = true;
         }
         else
         {
             if (cam != null)
                 cam.gameObject.SetActive(false);
+
+            if (cc != null)
+                cc.enabled = false;
         }
     }
 
@@ -37,7 +44,14 @@ public class Player : NetworkBehaviour
         _ncc.maxSpeed = targetSpeed;
 
         Vector3 moveDir = new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
-        _ncc.Move(moveDir);
+
+        if (Object.HasStateAuthority)
+        {
+            _ncc.Move(moveDir);
+
+            if (input.jump && _ncc.Grounded)
+                _ncc.Jump();
+        }
 
         if (moveDir.sqrMagnitude > 0.01f)
         {
@@ -48,9 +62,6 @@ public class Player : NetworkBehaviour
             );
         }
 
-        if (input.jump && _ncc.Grounded)
-            _ncc.Jump();
-
         if (input.interact && Object.HasInputAuthority)
             RPC_RequestPickup();
     }
@@ -58,8 +69,9 @@ public class Player : NetworkBehaviour
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RPC_RequestPickup(RpcInfo info = default)
     {
-        GetComponent<PlayerInventoryController>()?.TryPickupItem();
+        GetComponent<PlayerInventoryController>()?.TryPickupItem(); 
     }
+
     public void TeleportTo(Vector3 position)
     {
         if (_ncc != null)
