@@ -10,13 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 65f17ab4ef9433a41a8339cf3fda3e4b, type: 3}
-  m_Name: Sword
+  m_Name: Axes
   m_EditorClassIdentifier: 
   id: 2
-  itemName: Sword
-  icon: {fileID: 21300000, guid: 108b3640a7ea34a41a077fcd896d4a76, type: 3}
+  itemName: Axes
+  icon: {fileID: 21300000, guid: e7d1c149272fd5d4c991a08aa595af28, type: 3}
   type: 0
   weaponCategory: 1
   amount: 0
   slotPrefab: {fileID: 6507808912153291426, guid: 715d95ebb82ffcf4d9bceaeb1576021f, type: 3}
-  equipPrefab: {fileID: 7807835937172801353, guid: e07ee8b40a8e32d4388ecf53d4113ec3, type: 3}
+  isDualWield: 1
+  equipPrefab: {fileID: 9222434869062965706, guid: 7ec76bb74035cc24da604e2828135265, type: 3}
+  rightHandPrefab: {fileID: 9222434869062965706, guid: 4695d39e56f08684090e9909e74e1668, type: 3}
+  leftHandPrefab: {fileID: 782208515926188420, guid: ec46a1861586f9b4c9e0a7f1d03598ec, type: 3}

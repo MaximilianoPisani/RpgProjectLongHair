@@ -2165,7 +2165,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee167ae1343058b49b5a90f2b8c27505, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _equipPoint: {fileID: 936486139023551316}
+  _meleePointA: {fileID: 354814554807873250}
+  _meleePointB: {fileID: 4091714332109994200}
+  _rangedPoint: {fileID: 936486139023551316}
   _EquippedItemId: 0
 --- !u!114 &5477945803812553738
 MonoBehaviour:
@@ -2183,7 +2185,7 @@ MonoBehaviour:
   _lockOnAngle: 60
   _enemyLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
 --- !u!114 &2743206214930274914
 MonoBehaviour:
   m_ObjectHideFlags: 0
