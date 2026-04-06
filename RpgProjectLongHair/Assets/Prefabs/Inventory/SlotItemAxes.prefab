@@ -198,7 +198,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 108b3640a7ea34a41a077fcd896d4a76, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e7d1c149272fd5d4c991a08aa595af28, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -358,7 +358,7 @@ GameObject:
   - component: {fileID: 4304522875232579415}
   - component: {fileID: 2321694444196841645}
   m_Layer: 5
-  m_Name: SlotItemSword
+  m_Name: SlotItemAxes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -558,7 +558,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sword
+  m_text: Axes
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
@@ -18,6 +19,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private Dictionary<PlayerRef, NetworkObject> _spawnedPlayers = new();
     private HashSet<string> _connectedPlayerIds = new();
+
+    private const int MAX_PLAYERS = 4;
 
     private bool _lockOnQueued;
     private bool _jumpQueued;
@@ -41,9 +44,11 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             GameMode = mode,
             SessionName = "Room_01",
+
+            PlayerCount = MAX_PLAYERS,
+
             Scene = SceneRef.FromIndex(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex),
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
-
             ConnectionToken = Encoding.UTF8.GetBytes(playerId)
         };
 
@@ -67,9 +72,28 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         _isSprinting = Input.GetKey(KeyCode.LeftShift);
     }
 
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
+    {
+        if (runner.ActivePlayers.Count() >= MAX_PLAYERS)
+        {
+            Debug.Log("[RunnerManager] Sala llena, rechazando conexión");
+            request.Refuse();
+            return;
+        }
+
+        request.Accept();
+    }
+
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         if (!runner.IsServer) return;
+
+        if (_spawnedPlayers.Count >= MAX_PLAYERS)
+        {
+            Debug.Log("[RunnerManager] Sala llena (fallback), desconectando jugador");
+            runner.Disconnect(player);
+            return;
+        }
 
         byte[] token = runner.GetPlayerConnectionToken(player);
 
@@ -90,19 +114,6 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         _connectedPlayerIds.Add(playerId);
-
-        int selectedCharacter = 1;
-
-        if (token.Length >= 4)
-        {
-            try
-            {
-                selectedCharacter = BitConverter.ToInt32(token, 0);
-            }
-            catch { }
-        }
-
-        _playerSpawner.SetPlayerSelection(player, selectedCharacter);
 
         var playerObj = _playerSpawner.SpawnPlayer(runner, player);
 
@@ -188,7 +199,6 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             aimRotation = aimRot,
             LockOnPressed = _lockOnQueued,
             shootDirection = shootDir
-
         };
 
         _lockOnQueued = false;
@@ -200,13 +210,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnConnectedToServer(NetworkRunner runner)
     {
         if (runner.LocalPlayer == PlayerRef.None) return;
-
         OnPlayerSpawned?.Invoke(null);
-    }
-
-    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
-    {
-        request.Accept();
     }
 
     public async void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
@@ -214,27 +218,25 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         Debug.Log($"[RunnerManager] Desconectado: {reason}");
 
         if (AuthenticationManager.Instance != null)
-        {
             AuthenticationManager.Instance.SignOut();
-        }
 
         if (GameFlowManager.Instance != null)
-        {
             GameFlowManager.Instance.ResetToLogin();
-        }
 
         if (runner != null)
-        {
             await runner.Shutdown();
-        }
 
         _runner = null;
+    }
+
+    public void OnConnectFailed(NetworkRunner runner, NetAddress remote, NetConnectFailedReason reason)
+    {
+        Debug.Log($"[RunnerManager] Conexión fallida: {reason}");
     }
 
     public void OnObjectExitAOI(NetworkRunner r, NetworkObject o, PlayerRef p) { }
     public void OnObjectEnterAOI(NetworkRunner r, NetworkObject o, PlayerRef p) { }
     public void OnShutdown(NetworkRunner r, ShutdownReason s) { }
-    public void OnConnectFailed(NetworkRunner r, NetAddress remote, NetConnectFailedReason reason) { }
     public void OnUserSimulationMessage(NetworkRunner r, SimulationMessagePtr msg) { }
     public void OnReliableDataReceived(NetworkRunner r, PlayerRef p, ReliableKey k, ArraySegment<byte> d) { }
     public void OnReliableDataProgress(NetworkRunner r, PlayerRef p, ReliableKey k, float pr) { }
