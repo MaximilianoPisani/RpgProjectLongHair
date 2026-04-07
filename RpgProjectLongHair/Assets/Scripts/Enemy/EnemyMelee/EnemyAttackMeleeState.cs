@@ -49,6 +49,8 @@ public class EnemyAttackMeleeState : IEnemyState
 
         if (_enemy.Runner.SimulationTime >= _enemy.NextAttackTime)
         {
+            _enemy.TriggerMeleeAttackAnimation();
+
             Collider[] hits = Physics.OverlapSphere(
                 _enemy.AttackOrigin.position,
                 _enemy.MeleeAttackData.HitRadius,

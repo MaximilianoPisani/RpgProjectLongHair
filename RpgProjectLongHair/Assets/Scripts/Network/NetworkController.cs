@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Fusion;
@@ -9,6 +8,7 @@ public class NetworkController : MonoBehaviour
     [SerializeField] private GameObject _lobbyPanel;
     [SerializeField] private Button _createRoomButton;
     [SerializeField] private Button _joinRoomButton;
+    [SerializeField] private Button _logoutButton;
 
     [Header("Prefabs")]
     [SerializeField] private RunnerManager _runnerManagerPrefab;
@@ -24,25 +24,14 @@ public class NetworkController : MonoBehaviour
     {
         _createRoomButton.onClick.AddListener(() => TryStartRunner(GameMode.Host));
         _joinRoomButton.onClick.AddListener(() => TryStartRunner(GameMode.Client));
-    }
-
-    public void EnableConnectionButtons()
-    {
-        _createRoomButton.interactable = true;
-        _joinRoomButton.interactable = true;
+        _logoutButton.onClick.AddListener(OnSignOutClicked);
     }
 
     private void TryStartRunner(GameMode mode)
     {
         if (!GameFlowManager.Instance.CanConnect())
         {
-            Debug.LogError("[Network] Intento inválido de conexión");
-            return;
-        }
-
-        if (CharacterSelection.SelectedPlayer <= 0)
-        {
-            Debug.LogError("[Network] No hay personaje seleccionado");
+            Debug.LogError("[Network] No permitido conectar");
             return;
         }
 
@@ -65,7 +54,7 @@ public class NetworkController : MonoBehaviour
 
     private void HandlePlayerSpawned(NetworkObject playerObj)
     {
-        Debug.Log("[Network] Player spawned ? iniciar gameplay");
+        Debug.Log("[Network] Player spawned");
 
         _lobbyPanel.SetActive(false);
 
@@ -80,30 +69,28 @@ public class NetworkController : MonoBehaviour
             _runnerManagerInstance = null;
         }
 
-        Debug.Log("[UIController] Runner failed. Ready to retry.");
         _lobbyPanel.SetActive(true);
     }
 
-    private void OnSignOutClicked()
+    private async void OnSignOutClicked()
     {
-        Debug.Log("[Network] SignOut manual");
+        Debug.Log("[Network] Logout");
 
         if (_runnerManagerInstance != null)
         {
+            var runner = _runnerManagerInstance.GetComponent<NetworkRunner>();
+
+            if (runner != null)
+            {
+                await runner.Shutdown();
+            }
+
             Destroy(_runnerManagerInstance.gameObject);
             _runnerManagerInstance = null;
         }
 
-        if (AuthenticationManager.Instance != null)
-        {
-            AuthenticationManager.Instance.SignOut();
-        }
+        AuthenticationManager.Instance?.SignOut();
 
-        if (GameFlowManager.Instance != null)
-        {
-            GameFlowManager.Instance.ResetToLogin();
-        }
-
-        _lobbyPanel.SetActive(true);
+        GameFlowManager.Instance?.ResetToLogin();
     }
 }

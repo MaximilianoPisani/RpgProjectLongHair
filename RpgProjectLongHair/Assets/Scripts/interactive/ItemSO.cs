@@ -13,5 +13,13 @@ public class ItemSO : ScriptableObject
     public int amount; // for quest
 
     public GameObject slotPrefab;
+
+    public bool isDualWield;
+
+    [Header("Single")]
     public GameObject equipPrefab;
+
+    [Header("Dual Wield")]
+    public GameObject rightHandPrefab;
+    public GameObject leftHandPrefab;
 }

@@ -5,8 +5,32 @@ using Fusion;
 public class PickupableItem : NetworkBehaviour
 {
     [SerializeField] private ItemSO itemDataSO;
+    [SerializeField] private Transform _visualRoot;
     public ItemSO ItemDataSO => itemDataSO;
 
+    public override void Spawned()
+    {
+        SetupVisual();
+    }
+
+    private void SetupVisual()
+    {
+        if (itemDataSO == null) return;
+
+        // Limpiar hijos
+        foreach (Transform child in _visualRoot)
+            Destroy(child.gameObject);
+
+        if (itemDataSO.isDualWield)
+        {
+            Instantiate(itemDataSO.rightHandPrefab, _visualRoot);
+            Instantiate(itemDataSO.leftHandPrefab, _visualRoot);
+        }
+        else if (itemDataSO.equipPrefab != null)
+        {
+            Instantiate(itemDataSO.equipPrefab, _visualRoot);
+        }
+    }
     public ItemData ItemData => new ItemData // Datos que se envían al inventario (NetworkArray)
     {
         id = itemDataSO != null ? itemDataSO.id : 0,
