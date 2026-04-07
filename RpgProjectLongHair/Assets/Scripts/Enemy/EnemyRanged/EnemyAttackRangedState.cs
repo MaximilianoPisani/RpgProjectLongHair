@@ -4,7 +4,6 @@ using UnityEngine;
 public class EnemyAttackRangedState : IEnemyState
 {
     private readonly EnemyRangedController _enemy;
-    private bool _wasRetreating = false;
 
     public EnemyAttackRangedState(EnemyRangedController enemy) => _enemy = enemy;
 
