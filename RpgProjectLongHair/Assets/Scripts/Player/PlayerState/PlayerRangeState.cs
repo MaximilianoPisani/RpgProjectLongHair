@@ -82,6 +82,8 @@ public class PlayerRangeState : IPlayerState, IAnimationEventReceiver
     private void SpawnProjectile()
     {
         var settings = _sm.Combat;
+        var rangeData = settings.GetCurrentRangeData();
+        if (rangeData == null) return;
 
         Vector3 direction = GetShootDirection();
 
@@ -90,7 +92,6 @@ public class PlayerRangeState : IPlayerState, IAnimationEventReceiver
             : _sm.transform.position + _sm.transform.forward + Vector3.up;
 
         PlayerRef attacker = _sm.Object.InputAuthority;
-        RangedAttackData rangeData = settings.rangeData;
 
         _sm.Runner.Spawn(
             rangeData.ProjectilePrefab,
@@ -119,10 +120,12 @@ public class PlayerRangeState : IPlayerState, IAnimationEventReceiver
     public void OnReloadComplete()
     {
         var settings = _sm.Combat;
+        var rangeData = settings.GetCurrentRangeData();
+        if (rangeData == null) return;
 
         _sm.AttackCooldown = TickTimer.CreateFromSeconds(
             _sm.Runner,
-            settings.rangeData.Cooldown
+            rangeData.Cooldown
         );
 
         _sm.ChangeState(new PlayerIdleState(_sm));

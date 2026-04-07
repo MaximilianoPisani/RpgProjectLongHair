@@ -119,11 +119,13 @@ public class EquipManager : NetworkBehaviour
         {
             switch (item.weaponCategory)
             {
-                case WeaponCategory.Melee:
+                case WeaponCategory.Axe:
+                case WeaponCategory.Hammer:
                     parentPoint = _meleePointA;
                     break;
 
-                case WeaponCategory.Ranged:
+                case WeaponCategory.Rifle:
+                case WeaponCategory.Gatling:
                     parentPoint = _rangedPoint;
                     break;
             }

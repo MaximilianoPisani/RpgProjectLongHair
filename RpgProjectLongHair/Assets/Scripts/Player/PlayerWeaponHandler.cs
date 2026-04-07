@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerWeaponHandler : MonoBehaviour
 {
     private EquipManager _equipManager;
+    private PlayerCombat _combat;
 
     public bool IsMelee { get; private set; }
     public bool IsRanged { get; private set; }
@@ -10,6 +11,10 @@ public class PlayerWeaponHandler : MonoBehaviour
     private void Awake()
     {
         _equipManager = GetComponentInChildren<EquipManager>();
+        _combat = GetComponentInParent<PlayerCombat>();
+
+        if (_combat == null)
+            Debug.LogError("PlayerCombat no encontrado en el padre!");
     }
 
     private void OnEnable()
@@ -42,14 +47,32 @@ public class PlayerWeaponHandler : MonoBehaviour
 
         switch (item.weaponCategory)
         {
-            case WeaponCategory.Melee:
+            case WeaponCategory.Axe:
                 SetWeapon(true, false);
+                SetCurrentWeapon(WeaponCategory.Axe);
                 break;
 
-            case WeaponCategory.Ranged:
+            case WeaponCategory.Hammer:
+                SetWeapon(true, false);
+                SetCurrentWeapon(WeaponCategory.Hammer);
+                break;
+
+            case WeaponCategory.Rifle:
                 SetWeapon(false, true);
+                SetCurrentWeapon(WeaponCategory.Rifle);
+                break;
+
+            case WeaponCategory.Gatling:
+                SetWeapon(false, true);
+                SetCurrentWeapon(WeaponCategory.Gatling);
                 break;
         }
+    }
+
+    private void SetCurrentWeapon(WeaponCategory weapon)
+    {
+        if (_combat != null && _combat.HasStateAuthority)
+            _combat.CurrentWeapon = weapon;
     }
 
     private void SetWeapon(bool melee, bool ranged)

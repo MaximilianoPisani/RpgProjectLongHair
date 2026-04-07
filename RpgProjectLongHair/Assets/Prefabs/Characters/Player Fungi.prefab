@@ -1793,12 +1793,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6615c55b455cefc4b86f67bfb248add3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meleeData: {fileID: 11400000, guid: 42af7a95122dd174a91af0608bd5822c, type: 2}
+  _CurrentWeapon: 0
+  axeMeleeData: {fileID: 11400000, guid: 42af7a95122dd174a91af0608bd5822c, type: 2}
+  hammerMeleeData: {fileID: 11400000, guid: 7a42d5b84b47b4649adcc0e3c6d26908, type: 2}
   meleeOrigin: {fileID: 168181180286158390}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 8
-  rangeData: {fileID: 11400000, guid: 473c77a691b4fe04ca961740bd3d1d0c, type: 2}
+  rifleRangeData: {fileID: 11400000, guid: 473c77a691b4fe04ca961740bd3d1d0c, type: 2}
+  gatlingRangeData: {fileID: 11400000, guid: b42c6b1196c4ad44f9b2081aa5d495b2, type: 2}
   shootPoints: []
 --- !u!114 &5406402327671719317
 MonoBehaviour:

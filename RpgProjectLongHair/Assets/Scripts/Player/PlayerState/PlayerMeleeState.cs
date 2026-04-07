@@ -245,7 +245,8 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
     private void ApplyMeleeDamage()
     {
         var settings = _sm.Combat;
-        if (settings == null || settings.meleeData == null) return;
+        var meleeData = settings.GetCurrentMeleeData();
+        if (settings == null || meleeData == null) return;
 
         Vector3 origin = settings.meleeOrigin != null
             ? settings.meleeOrigin.position
@@ -253,7 +254,7 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
 
         Collider[] hits = Physics.OverlapSphere(
             origin,
-            settings.meleeData.HitRadius,
+            meleeData.HitRadius,
             settings.enemyLayer
         );
 
@@ -261,20 +262,14 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
         {
             var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
 
-            // Solo el StateAuthority aplica daño (servidor)
             if (enemyHealth != null && _sm.Object.HasStateAuthority)
             {
                 enemyHealth.ApplyDamageServer(
-                    settings.meleeData.Damage,
+                    meleeData.Damage,
                     _sm.Object.InputAuthority
                 );
-
-                Debug.Log($"Hit enemy with combo {_comboIndex} - Damage: {settings.meleeData.Damage}");
             }
         }
-
-        // Opcional: Feedback visual/audio
-        PlayHitFeedback();
     }
 
     private void PlayHitFeedback()

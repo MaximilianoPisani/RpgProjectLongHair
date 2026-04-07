@@ -1,6 +1,12 @@
 using UnityEngine;
 
-public enum WeaponCategory { None, Melee, Ranged }
+public enum WeaponCategory
+{
+    Axe,
+    Hammer,
+    Rifle,
+    Gatling
+}
 
 [CreateAssetMenu(fileName = "NewItem", menuName = "Inventory/Item")]
 public class ItemSO : ScriptableObject
