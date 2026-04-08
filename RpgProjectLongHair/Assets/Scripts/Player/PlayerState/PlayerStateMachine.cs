@@ -72,7 +72,7 @@ public class PlayerStateMachine : NetworkBehaviour
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    public void RPC_RequestMeleeDamage(Vector3 origin, Vector3 forward)
+    public void RPC_RequestMeleeDamage(Vector3 origin, Vector3 forward, int damage)
     {
         if (Combat == null || Combat.meleeData == null) return;
 
@@ -92,7 +92,7 @@ public class PlayerStateMachine : NetworkBehaviour
             if (enemyHealth != null && enemyHealth.Object.HasStateAuthority)
             {
                 enemyHealth.ApplyDamageServer(
-                    Combat.meleeData.Damage,
+                    damage,
                     Object.InputAuthority
                 );
             }
