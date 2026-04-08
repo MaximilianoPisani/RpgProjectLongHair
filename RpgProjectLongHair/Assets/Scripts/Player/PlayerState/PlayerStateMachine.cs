@@ -71,10 +71,10 @@ public class PlayerStateMachine : NetworkBehaviour
         return checkpoint != null ? checkpoint.LastCheckpoint : Vector3.zero;
     }
 
-    public void RPC_RequestMeleeDamage(Vector3 origin, Vector3 forward)
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    public void RPC_RequestMeleeDamage(Vector3 origin, Vector3 forward, int damage)
     {
-        var meleeData = Combat.GetCurrentMeleeData();
-        if (Combat == null || meleeData == null) return;
+        if (Combat == null || Combat.meleeData == null) return;
 
         Vector3 attackOrigin = Combat.meleeOrigin != null
             ? Combat.meleeOrigin.position
@@ -82,7 +82,7 @@ public class PlayerStateMachine : NetworkBehaviour
 
         Collider[] hits = Physics.OverlapSphere(
             attackOrigin,
-            meleeData.HitRadius,
+            Combat.meleeData.HitRadius,
             Combat.enemyLayer
         );
 
@@ -92,7 +92,7 @@ public class PlayerStateMachine : NetworkBehaviour
             if (enemyHealth != null && enemyHealth.Object.HasStateAuthority)
             {
                 enemyHealth.ApplyDamageServer(
-                    meleeData.Damage,
+                    damage,
                     Object.InputAuthority
                 );
             }
@@ -101,19 +101,23 @@ public class PlayerStateMachine : NetworkBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        if (Combat == null) return;
+        if (Combat == null || Combat.meleeData == null) return;
 
-        if (!Application.isPlaying || !Combat.Object || !Combat.Object.IsValid)
-            return;
-
-        var meleeData = Combat.GetCurrentMeleeData();
-        if (meleeData == null) return;
-
+        Vector3 direction = Vector3.right;
         Vector3 origin = Combat.meleeOrigin != null
             ? Combat.meleeOrigin.position
-            : transform.position + transform.forward * 0.5f + Vector3.up;
+            : transform.position + direction * 0.5f + Vector3.up;
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(origin, meleeData.HitRadius);
+        float radius = Combat.meleeData.HitRadius;
+
+        if (_currentState is PlayerMeleeState)
+            Gizmos.color = Color.red;
+        else
+            Gizmos.color = new Color(1, 0, 0, 0.2f);
+
+        Gizmos.DrawWireSphere(origin, radius);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(origin, origin + direction * 1.5f);
     }
 }
