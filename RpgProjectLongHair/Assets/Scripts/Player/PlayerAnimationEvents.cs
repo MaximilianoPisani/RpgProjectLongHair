@@ -9,39 +9,6 @@ public class PlayerAnimationEvents : MonoBehaviour
         _sm = GetComponent<PlayerStateMachine>();
     }
 
-    // ==================== Melee ====================
-    // Evento principal - momento de impacto
-    public void OnHitFrame()
-    {
-        if (_sm.CurrentState is IAnimationEventReceiver receiver)
-        {
-            receiver.OnHitFrame();
-        }
-    }
-
-    public void OpenComboWindow()
-    {
-        if (_sm.CurrentState is IAnimationEventReceiver receiver)
-        {
-            receiver.OpenComboWindow();
-        }
-    }
-
-    public void CloseComboWindow()
-    {
-        if (_sm.CurrentState is IAnimationEventReceiver receiver)
-        {
-            receiver.CloseComboWindow();
-        }
-    }
-
-    public void EndAttack()
-    {
-        if (_sm.CurrentState is IAnimationEventReceiver receiver)
-        {
-            receiver.EndAttack();
-        }
-    }
     // ==================== Ranged ====================
 
     // ========== EVENTOS DE RANGED ==========

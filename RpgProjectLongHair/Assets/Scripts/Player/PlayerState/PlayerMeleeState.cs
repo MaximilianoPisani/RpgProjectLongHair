@@ -1,18 +1,28 @@
 using Fusion;
 using UnityEngine;
 
-public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
+public class PlayerMeleeState : IPlayerState
 {
     private PlayerStateMachine _sm;
 
+    // Estado del combo
     private int _comboIndex = 0;
-    private bool _comboWindowOpen = false;
     private bool _inputBuffered = false;
-    private float _comboTimer;
     private bool _isAttacking = false;
 
-    private const float COMBO_RESET_TIME = 0.5f;
-    private const int MAX_COMBO_COUNT = 3;
+    // Timers para el ataque actual
+    private float _attackTimer = 0f;
+    private float _comboResetTimer = 0f;
+
+    // Flags para eventos ya ejecutados
+    private bool _hitFrameExecuted = false;
+    private bool _comboWindowOpened = false;
+    private bool _comboWindowClosed = false;
+    private bool _lastAttackInput = false;
+
+    // Referencia a los datos de melee
+    private MeleeAttackData _meleeData;
+    private ComboAttackConfig _currentAttackConfig;
 
     public PlayerMeleeState(PlayerStateMachine sm)
     {
@@ -29,7 +39,17 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
             return;
         }
 
+        // Obtener referencia a MeleeData
+        _meleeData = _sm.Combat?.meleeData as MeleeAttackData;
+        if (_meleeData == null)
+        {
+            Debug.LogError("MeleeAttackData no configurado!");
+            _sm.ChangeState(new PlayerIdleState(_sm));
+            return;
+        }
+
         _isAttacking = false;
+        _comboResetTimer = 0f;
     }
 
     public void Tick(NetworkInputData input)
@@ -40,12 +60,9 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
         }
         else
         {
-            // Si estamos atacando, actualizar la lógica del combo
-            UpdateComboLogic(input);
+            UpdateAttackLogic(input);
         }
-
     }
-
 
     public void Exit()
     {
@@ -56,6 +73,8 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
             _sm.Animator.SetFloat("speed", 0f);
         }
     }
+
+    // ==================== LOCOMOTION ====================
 
     private void UpdateLocomotion(NetworkInputData input)
     {
@@ -68,15 +87,28 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
             return;
         }
 
+        bool attackPressed = input.attack && !_lastAttackInput;
+        _lastAttackInput = input.attack;
+
         // Si ataca, iniciar combo
-        if (input.attack)
+        if (attackPressed)
         {
             _isAttacking = true;
             StartNextAttack();
             return;
         }
 
-        // CALCULAR SPEED (igual que en MoveState)
+        // Actualizar timer de reset de combo
+        if (_comboResetTimer > 0f)
+        {
+            _comboResetTimer -= _sm.Runner.DeltaTime;
+            if (_comboResetTimer <= 0f)
+            {
+                ResetCombo();
+            }
+        }
+
+        // Calcular velocidad
         float speed = _sm.Player.GetHorizontalSpeed();
         float normalizedSpeed = speed / _sm.Player.SprintSpeed;
 
@@ -93,54 +125,85 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
         }
     }
 
-    // ==================== LÓGICA DE COMBO ====================
+    // ==================== ATTACK LOGIC ====================
 
-    private void UpdateComboLogic(NetworkInputData input)
+    private void UpdateAttackLogic(NetworkInputData input)
     {
-        // Actualizar timer con DeltaTime de Fusion
-        _comboTimer -= _sm.Runner.DeltaTime;
+        if (_currentAttackConfig == null) return;
 
-        if (_comboTimer <= 0f)
-        {
-            Debug.LogWarning("COMBO TIMEOUT - Algo salió mal, forzando reset");
+        // Incrementar timer del ataque
+        _attackTimer += _sm.Runner.DeltaTime;
 
-            // Seguridad: Solo forzar reset si realmente pasó mucho tiempo
-            // (esto NO debería pasar normalmente, EndAttack debería manejarlo)
-            ResetCombo();
-            return;
-        }
+        // Ejecutar eventos basados en tiempo
+        ExecuteTimedEvents();
 
+        bool attackPressed = input.attack && !_lastAttackInput;
+        _lastAttackInput = input.attack;
         // Procesar input de ataque
-        if (input.attack)
+        if (attackPressed && !_inputBuffered)
         {
             HandleAttackInput();
         }
+
+        // Verificar si el ataque terminó
+        if (_attackTimer >= _currentAttackConfig.attackDuration)
+        {
+            EndCurrentAttack();
+        }
     }
 
+    private void ExecuteTimedEvents()
+    {
+        // Hit Frame - Aplicar daño
+        if (!_hitFrameExecuted && _attackTimer >= _currentAttackConfig.hitFrameTime)
+        {
+            _hitFrameExecuted = true;
+            ExecuteHitFrame();
+        }
+
+        // Abrir ventana de combo
+        if (!_comboWindowOpened && _attackTimer >= _currentAttackConfig.comboWindowOpenTime)
+        {
+            _comboWindowOpened = true;
+            OpenComboWindow();
+        }
+
+        // Cerrar ventana de combo
+        if (!_comboWindowClosed && _attackTimer >= _currentAttackConfig.comboWindowCloseTime)
+        {
+            _comboWindowClosed = true;
+            CloseComboWindow();
+        }
+    }
 
     private void StartNextAttack()
     {
         // Incrementar combo
         _comboIndex++;
-        if (_comboIndex > MAX_COMBO_COUNT)
-            _comboIndex = 1; // Ciclar o podrías resetear a 1
+        if (_comboIndex > _meleeData.MaxComboCount)
+        {
+            _comboIndex = 1; // Reiniciar combo
+        }
 
-        _sm.NetworkedComboIndex = _comboIndex;
-        Debug.Log($"ComboIndex actualizado a: {_comboIndex}");
+        // Obtener configuración del ataque actual
+        _currentAttackConfig = _meleeData.ComboAttacks[_comboIndex - 1];
 
-        // Resetear flags
-        _comboWindowOpen = false;
+        // Resetear flags y timers
+        _attackTimer = 0f;
+        _hitFrameExecuted = false;
+        _comboWindowOpened = false;
+        _comboWindowClosed = false;
         _inputBuffered = false;
-        _comboTimer = COMBO_RESET_TIME;
+        _comboResetTimer = _meleeData.ComboResetTime;
+
+        // Sincronizar por red
+        _sm.NetworkedComboIndex = _comboIndex;
 
         // Actualizar animator
         if (_sm.Animator != null)
         {
-            // IMPORTANTE: Congelar el speed durante el ataque
             _sm.Animator.SetFloat("speed", 0f);
-
             _sm.Animator.SetInteger("ComboIndex", _comboIndex);
-            Debug.Log($"Animator.ComboIndex seteado a: {_sm.Animator.GetInteger("ComboIndex")}");
 
             // Solo trigger en el primer ataque
             if (_comboIndex == 1)
@@ -148,104 +211,116 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
                 _sm.GetComponent<PlayerNetworkSync>()?.TriggerMelee();
             }
         }
-        else
-        {
-            Debug.LogError("Animator es NULL!"); 
-        }
 
-        Debug.Log($"Combo Attack {_comboIndex} started");
+        Debug.Log($"[Melee] Combo Attack {_comboIndex} started - Duration: {_currentAttackConfig.attackDuration}s");
     }
 
     private void HandleAttackInput()
     {
-        Debug.Log($"Input de ataque detectado - Ventana abierta: {_comboWindowOpen}");
-
-        if (_comboIndex >= MAX_COMBO_COUNT)
+        if (_comboIndex >= _meleeData.MaxComboCount)
         {
-            Debug.Log("Attack 3 activo - Input ignorado");
+            Debug.Log("[Melee] Max combo reached - Input ignored");
             return;
         }
+
         // Si la ventana está abierta, atacar inmediatamente
-        if (_comboWindowOpen)
+        if (_comboWindowOpened && !_comboWindowClosed)
         {
-            Debug.Log("Ventana abierta, ejecutando ataque inmediato");
+            Debug.Log("[Melee] Combo window open - Executing next attack");
             StartNextAttack();
-            return;
         }
-
-        // Si no, almacenar input para cuando se abra la ventana
-        if (!_inputBuffered)
+        // Si no, almacenar input para cuando se abra
+        else if (!_inputBuffered)
         {
             _inputBuffered = true;
-            Debug.Log("Attack buffered");
+            Debug.Log("[Melee] Attack buffered");
         }
+    }
+
+    private void EndCurrentAttack()
+    {
+        Debug.Log($"[Melee] Attack {_comboIndex} ended - Buffered: {_inputBuffered}");
+
+        // Si hay input buffereado, se ejecutará en la siguiente ventana
+        // pero esto no debería pasar porque ya deberíamos haber iniciado el siguiente ataque
+        if (_inputBuffered)
+        {
+            Debug.LogWarning("[Melee] Attack ended with buffered input - This shouldn't happen!");
+            _inputBuffered = false;
+        }
+
+        // Volver a modo locomoción
+        _isAttacking = false;
+        _currentAttackConfig = null;
     }
 
     private void ResetCombo()
     {
         _comboIndex = 0;
-        _comboWindowOpen = false;
         _inputBuffered = false;
+        _comboResetTimer = 0f;
 
         if (_sm.Animator != null)
         {
             _sm.Animator.SetInteger("ComboIndex", 0);
         }
+
+        Debug.Log("[Melee] Combo reset");
     }
 
-    // ==================== EVENTOS DE ANIMACIÓN ====================
+    // ==================== COMBO WINDOW LOGIC ====================
 
-    public void OnHitFrame()
+    private void OpenComboWindow()
     {
-        if (!_sm.Object.HasInputAuthority) return;
-
-        if (_sm.Object.HasStateAuthority)
-            ApplyMeleeDamage();
-        else
-            _sm.RPC_RequestMeleeDamage(_sm.transform.position, _sm.transform.forward);
-    }
-
-    public void OpenComboWindow()
-    {
-        Debug.Log($"COMBO WINDOW ABIERTA - ComboIndex actual: {_comboIndex}");
-        _comboWindowOpen = true;
+        Debug.Log($"[Melee] Combo window opened (Attack {_comboIndex})");
 
         // Si había input buffereado, ejecutarlo
         if (_inputBuffered)
         {
-            Debug.Log("Input buffereado detectado, ejecutando ataque");
+            Debug.Log("[Melee] Buffered input detected - Executing next attack");
             _inputBuffered = false;
             StartNextAttack();
         }
-
-        Debug.Log($"Combo window opened (Attack {_comboIndex})");
     }
 
-    public void CloseComboWindow()
+    private void CloseComboWindow()
     {
-        _comboWindowOpen = false;
-        Debug.Log($"Combo window closed (Attack {_comboIndex})");
-    }
+        Debug.Log($"[Melee] Combo window closed (Attack {_comboIndex})");
 
-    public void EndAttack()
-    {
-        Debug.Log($"EndAttack - ComboIndex: {_comboIndex}, Buffered: {_inputBuffered}");
-
-        // Si no hay input buffereado, volver a locomoción melee
-        if (!_inputBuffered)
+        // Si había input buffereado pero se cerró la ventana, descartarlo
+        if (_inputBuffered)
         {
-            _isAttacking = false; // Volver a modo locomoción
-            ResetCombo();
+            Debug.Log("[Melee] Input buffered but window closed - Input discarded");
+            _inputBuffered = false;
         }
-        // Si hay input buffereado, se ejecutará en la siguiente ventana
     }
 
-    // ==================== APLICAR DAÑO ====================
+    // ==================== HIT DETECTION ====================
+
+    private void ExecuteHitFrame()
+    {
+        Debug.Log($"[Melee] Hit frame executed (Attack {_comboIndex})");
+
+        if (!_sm.Object.HasInputAuthority) return;
+
+        if (_sm.Object.HasStateAuthority)
+        {
+            ApplyMeleeDamage();
+        }
+        else
+        {
+            _sm.RPC_RequestMeleeDamage(
+                _sm.transform.position,
+                _sm.transform.forward,
+                _currentAttackConfig.damage
+            );
+        }
+    }
 
     private void ApplyMeleeDamage()
     {
         var settings = _sm.Combat;
-        if (settings == null || settings.meleeData == null) return;
+        if (settings == null) return;
 
         Vector3 origin = settings.meleeOrigin != null
             ? settings.meleeOrigin.position
@@ -253,7 +328,7 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
 
         Collider[] hits = Physics.OverlapSphere(
             origin,
-            settings.meleeData.HitRadius,
+            _meleeData.HitRadius,
             settings.enemyLayer
         );
 
@@ -261,19 +336,17 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
         {
             var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
 
-            // Solo el StateAuthority aplica daño (servidor)
             if (enemyHealth != null && _sm.Object.HasStateAuthority)
             {
                 enemyHealth.ApplyDamageServer(
-                    settings.meleeData.Damage,
+                    _currentAttackConfig.damage,
                     _sm.Object.InputAuthority
                 );
 
-                Debug.Log($"Hit enemy with combo {_comboIndex} - Damage: {settings.meleeData.Damage}");
+                Debug.Log($"[Melee] Hit enemy with combo {_comboIndex} - Damage: {_currentAttackConfig.damage}");
             }
         }
 
-        // Opcional: Feedback visual/audio
         PlayHitFeedback();
     }
 
@@ -281,8 +354,4 @@ public class PlayerMeleeState : IPlayerState, IAnimationEventReceiver
     {
         // TODO: Efectos visuales, sonido, vibración, etc.
     }
-
-    public void OnShootFrame() { }
-    public void OnShootAnimationEnd() { }
-    public void OnReloadComplete() { }
 }
