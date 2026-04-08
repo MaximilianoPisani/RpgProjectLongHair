@@ -5,21 +5,15 @@ public class PlayerCombat : NetworkBehaviour
 {
     [Networked] public WeaponCategory CurrentWeapon { get; set; }
 
-    [Header("Melee - Axe")]
-    public MeleeAttackData axeMeleeData;
-
-    [Header("Melee - Hammer")]
-    public MeleeAttackData hammerMeleeData;
+    [Header("Melee")]
+    public MeleeAttackData meleeData;
 
     [Header("Common Melee")]
     public Transform meleeOrigin;
     public LayerMask enemyLayer;
 
-    [Header("Range - Rifle")]
-    public RangedAttackData rifleRangeData;
-
-    [Header("Range - Gatling")]
-    public RangedAttackData gatlingRangeData;
+    [Header("Range")]
+    public RangedAttackData RangeData;
 
     [Header("Common Range")]
     public Transform[] shootPoints;
@@ -29,10 +23,10 @@ public class PlayerCombat : NetworkBehaviour
         switch (CurrentWeapon)
         {
             case WeaponCategory.Axe:
-                return axeMeleeData;
+                return meleeData;
 
             case WeaponCategory.Hammer:
-                return hammerMeleeData;
+                return meleeData;
         }
 
         return null;
@@ -43,10 +37,10 @@ public class PlayerCombat : NetworkBehaviour
         switch (CurrentWeapon)
         {
             case WeaponCategory.Rifle:
-                return rifleRangeData;
+                return RangeData;
 
             case WeaponCategory.Gatling:
-                return gatlingRangeData;
+                return RangeData;
         }
 
         return null;

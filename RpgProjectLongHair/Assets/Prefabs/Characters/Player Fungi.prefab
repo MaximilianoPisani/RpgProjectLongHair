@@ -1794,8 +1794,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _CurrentWeapon: 0
-  axeMeleeData: {fileID: 11400000, guid: 42af7a95122dd174a91af0608bd5822c, type: 2}
-  hammerMeleeData: {fileID: 11400000, guid: 7a42d5b84b47b4649adcc0e3c6d26908, type: 2}
+  meleeData: {fileID: 11400000, guid: 42af7a95122dd174a91af0608bd5822c, type: 2}
   meleeOrigin: {fileID: 168181180286158390}
   enemyLayer:
     serializedVersion: 2
