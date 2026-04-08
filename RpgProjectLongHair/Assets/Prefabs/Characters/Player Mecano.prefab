@@ -1496,9 +1496,9 @@ MonoBehaviour:
   _stateAuthorityChangeErrorCorrectionDelta: 0
   gravity: -20
   jumpImpulse: 8
-  acceleration: 7
+  acceleration: 8
   braking: 15
-  maxSpeed: 10
+  maxSpeed: 8
   rotationSpeed: 5
 --- !u!114 &6989304598263037872
 MonoBehaviour:
@@ -1621,8 +1621,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 10
-  walkSpeed: 5
-  sprintSpeed: 10
+  walkSpeed: 3
+  sprintSpeed: 8
 --- !u!114 &5247100580435787750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1635,7 +1635,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6615c55b455cefc4b86f67bfb248add3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _CurrentWeapon: 0
+  _CurrentWeapon: 1
   meleeData: {fileID: 11400000, guid: 4d6752e7ec9692e408b071f9b3357d87, type: 2}
   meleeOrigin: {fileID: 168181180286158390}
   enemyLayer:
