@@ -33,36 +33,36 @@ public class AuthenticationManager : MonoBehaviour
     }
 
     // Sign Up 
-    public async Task SignUp(string username, string password)
+    public async Task<int?> SignUp(string username, string password)
     {
-
-        if (!ValidateInputs(username, password)) return;
+        if (!ValidateInputs(username, password)) return null;
 
         try
         {
             await AuthenticationService.Instance
                 .SignUpWithUsernamePasswordAsync(username, password);
+
             Debug.Log("[Auth] Registro exitoso");
             LogPlayerId();
+            return null;
         }
         catch (AuthenticationException e)
         {
-            switch (e.ErrorCode)
-            {
-                case 10001:
-                    Debug.LogError("[Auth] Registro fallido: usuario o contraseña no cumplen requisitos de UGS");
-                    break;
-                case 10002:
-                    Debug.LogError("[Auth] El nombre de usuario ya está en uso");
-                    break;
-                default:
-                    Debug.LogError("[Auth] Error en registro: " + e.Message);
-                    break;
-            }
+            Debug.LogError("[Auth] Error en registro: " + e.Message);
+
+            if (e.Message.ToLower().Contains("username already exists"))
+                return 10002;
+
+            return e.ErrorCode;
         }
         catch (RequestFailedException e)
         {
             Debug.LogError("[Auth] Error servidor (registro): " + e.Message);
+
+            if (e.Message.ToLower().Contains("username already exists"))
+                return 10002;
+
+            return e.ErrorCode;
         }
     }
 
