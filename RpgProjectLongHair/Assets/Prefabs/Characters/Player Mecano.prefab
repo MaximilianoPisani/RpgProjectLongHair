@@ -1641,8 +1641,7 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 8
-  rifleRangeData: {fileID: 11400000, guid: 473c77a691b4fe04ca961740bd3d1d0c, type: 2}
-  gatlingRangeData: {fileID: 11400000, guid: b42c6b1196c4ad44f9b2081aa5d495b2, type: 2}
+  RangeData: {fileID: 11400000, guid: b42c6b1196c4ad44f9b2081aa5d495b2, type: 2}
   shootPoints: []
 --- !u!114 &5406402327671719317
 MonoBehaviour:
