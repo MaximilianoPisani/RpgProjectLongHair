@@ -9,6 +9,7 @@ public class PlayerMeleeState : IPlayerState
     private int _comboIndex = 0;
     private bool _inputBuffered = false;
     private bool _isAttacking = false;
+    private bool _queueNextAttack = false;
 
     // Timers para el ataque actual
     private float _attackTimer = 0f;
@@ -227,7 +228,8 @@ public class PlayerMeleeState : IPlayerState
         if (_comboWindowOpened && !_comboWindowClosed)
         {
             Debug.Log("[Melee] Combo window open - Executing next attack");
-            StartNextAttack();
+            _queueNextAttack = true;
+            return;
         }
         // Si no, almacenar input para cuando se abra
         else if (!_inputBuffered)
@@ -243,10 +245,13 @@ public class PlayerMeleeState : IPlayerState
 
         // Si hay input buffereado, se ejecutará en la siguiente ventana
         // pero esto no debería pasar porque ya deberíamos haber iniciado el siguiente ataque
-        if (_inputBuffered)
+        if (_queueNextAttack)
         {
-            Debug.LogWarning("[Melee] Attack ended with buffered input - This shouldn't happen!");
-            _inputBuffered = false;
+            Debug.Log("Ejecutando siguiente ataque DESPUÉS de terminar animación");
+
+            _queueNextAttack = false;
+            StartNextAttack();
+            return;
         }
 
         // Volver a modo locomoción
@@ -279,7 +284,7 @@ public class PlayerMeleeState : IPlayerState
         {
             Debug.Log("[Melee] Buffered input detected - Executing next attack");
             _inputBuffered = false;
-            StartNextAttack();
+            _queueNextAttack = true;
         }
     }
 

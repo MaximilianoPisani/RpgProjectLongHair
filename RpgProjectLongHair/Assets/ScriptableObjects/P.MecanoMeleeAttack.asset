@@ -17,16 +17,16 @@ MonoBehaviour:
   _cooldown: 0.5
   _hitRadius: 1.6
   _comboAttacks:
-  - attackDuration: 0.44
-    hitFrameTime: 0.35
-    comboWindowOpenTime: 0.4
-    comboWindowCloseTime: 0.44
+  - attackDuration: 0.35
+    hitFrameTime: 0.21
+    comboWindowOpenTime: 0.3
+    comboWindowCloseTime: 0.35
     damage: 40
     animationStateName: Attack_1
-  - attackDuration: 0.68
-    hitFrameTime: 0.45
-    comboWindowOpenTime: 0.66
-    comboWindowCloseTime: 0.68
+  - attackDuration: 0.55
+    hitFrameTime: 0.35
+    comboWindowOpenTime: 0.48
+    comboWindowCloseTime: 0.55
     damage: 40
     animationStateName: Attack_2
   - attackDuration: 1.38
@@ -35,4 +35,4 @@ MonoBehaviour:
     comboWindowCloseTime: 1.38
     damage: 80
     animationStateName: Attack_3
-  _comboResetTime: 0.8
+  _comboResetTime: 0.5
