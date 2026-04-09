@@ -43,4 +43,11 @@ public class PickupableItem : NetworkBehaviour
         if (col != null)
             col.isTrigger = true;
     }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_RequestDespawn()
+    {
+        if (Object == null || !Object.IsValid) return;
+        Runner.Despawn(Object);
+    }
 }

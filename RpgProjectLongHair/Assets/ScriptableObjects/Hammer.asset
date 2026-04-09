@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 3
   itemName: Hammer
-  icon: {fileID: 21300000, guid: e7d1c149272fd5d4c991a08aa595af28, type: 3}
+  icon: {fileID: 21300000, guid: 108b3640a7ea34a41a077fcd896d4a76, type: 3}
   type: 0
   weaponCategory: 1
   amount: 0
-  slotPrefab: {fileID: 6507808912153291426, guid: 715d95ebb82ffcf4d9bceaeb1576021f, type: 3}
-  isDualWield: 0
-  equipPrefab: {fileID: 9222434869062965706, guid: 7ec76bb74035cc24da604e2828135265, type: 3}
-  rightHandPrefab: {fileID: 0}
-  leftHandPrefab: {fileID: 0}
+  slotPrefab: {fileID: 6399456027509336925, guid: 0c0d2ece3a9229c44894fc648c1ad8d2, type: 3}
+  isDualWield: 1
+  equipPrefab: {fileID: 5491631660660866000, guid: 480d2697de321b542b2e150b617b60e9, type: 3}
+  rightHandPrefab: {fileID: 5491631660660866000, guid: 480d2697de321b542b2e150b617b60e9, type: 3}
+  leftHandPrefab: {fileID: 5491631660660866000, guid: 480d2697de321b542b2e150b617b60e9, type: 3}

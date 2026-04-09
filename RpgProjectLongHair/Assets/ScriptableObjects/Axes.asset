@@ -20,6 +20,6 @@ MonoBehaviour:
   amount: 0
   slotPrefab: {fileID: 6507808912153291426, guid: 715d95ebb82ffcf4d9bceaeb1576021f, type: 3}
   isDualWield: 1
-  equipPrefab: {fileID: 9222434869062965706, guid: 7ec76bb74035cc24da604e2828135265, type: 3}
+  equipPrefab: {fileID: 9222434869062965706, guid: 4695d39e56f08684090e9909e74e1668, type: 3}
   rightHandPrefab: {fileID: 9222434869062965706, guid: 4695d39e56f08684090e9909e74e1668, type: 3}
   leftHandPrefab: {fileID: 782208515926188420, guid: ec46a1861586f9b4c9e0a7f1d03598ec, type: 3}

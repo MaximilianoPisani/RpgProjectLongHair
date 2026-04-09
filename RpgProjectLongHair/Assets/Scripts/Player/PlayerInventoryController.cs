@@ -73,18 +73,17 @@ public class PlayerInventoryController : MonoBehaviour
     public void TryPickupItem()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, _pickupRange);
-
         foreach (var hit in hits)
         {
             if (hit.TryGetComponent<PickupableItem>(out var pickup))
             {
+                if (pickup.Object == null || !pickup.Object.IsValid) continue;
+
                 bool added = _inventoryData.AddItem(pickup.ItemData);
-
-                if (added && pickup.Object != null)
+                if (added)
                 {
-                    pickup.Object.Runner.Despawn(pickup.Object);
+                    pickup.RPC_RequestDespawn(); 
                 }
-
                 return;
             }
         }
