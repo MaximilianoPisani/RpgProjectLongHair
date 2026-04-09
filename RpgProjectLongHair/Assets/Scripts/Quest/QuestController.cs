@@ -60,6 +60,7 @@ public class QuestController : NetworkBehaviour
             Destroy(_currentQuest);
         }
         _currentQuest = Instantiate(questData);
+        MissionEvents.OnMissionStart?.Invoke(_currentQuest); //  nuevo
     }
 
     // seguimiento (pick_XP, 5) <-- ej: lo que llega de parámetros

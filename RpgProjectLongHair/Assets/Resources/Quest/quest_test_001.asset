@@ -16,10 +16,10 @@ MonoBehaviour:
   questName: Mision de prueba
   questDescription: Eliminar 2 enemigos
   questSteps:
-  - targetId: Kill_Enemy
+  - targetId: Kill_Mission_Enemy
     amount: 2
   failureSteps: []
   allowTeleportParty: 0
   teleportDestination: {x: 0, y: 0, z: 0}
-  xp: 100
-  coins: 50
+  xp: 210
+  coins: 0

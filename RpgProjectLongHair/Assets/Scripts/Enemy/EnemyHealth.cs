@@ -37,6 +37,8 @@ public class EnemyHealth : NetworkBehaviour
 
     private ChangeDetector _changeDetector;
 
+    [SerializeField] private bool _isQuestEnemy = false;
+
     public override void Spawned()
     {
         if (Object.HasStateAuthority)
@@ -91,6 +93,8 @@ public class EnemyHealth : NetworkBehaviour
     {
         Debug.Log($"[EnemyHealth] Damage {damage} from {attacker}, authority={Object.HasStateAuthority}");
 
+        if (!Object.IsValid) return; //  objeto ya despawneado
+
         if (!Object.HasStateAuthority) return;
 
         if (damage <= 0) return;
@@ -118,8 +122,9 @@ public class EnemyHealth : NetworkBehaviour
 
         if (currentHealth <= 0)
         {
-          GiveKillExp();  
-          Runner.Despawn(Object);
+            GiveKillExp();
+            if (Runner != null && Object.IsValid) //  evita despawnear dos veces
+                Runner.Despawn(Object);
         }
     }
 
@@ -178,6 +183,10 @@ public class EnemyHealth : NetworkBehaviour
         }
 
         Debug.Log($"[EnemyHealth] TrackEvents suscriptores: {TrackEvents.OnTrackEvent?.GetInvocationList().Length ?? 0}");
-        TrackEvents.OnTrackEvent?.Invoke("Kill_Enemy", 1); // Disparar evento de tracking para misiones
+
+        if (_isQuestEnemy)
+            TrackEvents.OnTrackEvent?.Invoke(QuestIds.KILL_MISSION_ENEMY, 1);
+        else
+            TrackEvents.OnTrackEvent?.Invoke(QuestIds.KILL_ENEMY, 1);
     }
 }
