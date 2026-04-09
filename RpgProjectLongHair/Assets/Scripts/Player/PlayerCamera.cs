@@ -4,6 +4,10 @@ public class PlayerCamera : MonoBehaviour
 {
     [Header("Target")]
     [SerializeField] private Vector3 offset = new Vector3(0f, 3f, -6f);
+
+    [Header("Look Offset (Shoulder Camera)")]
+    [SerializeField] private Vector3 lookOffset = new Vector3(1.5f, 1.5f, 0f);
+
     [Header("Orbit")]
     [SerializeField] private float mouseSensitivity = 3f;
     [SerializeField] private float minPitch = -20f;
@@ -22,7 +26,9 @@ public class PlayerCamera : MonoBehaviour
     {
         _target = target;
         _yaw = target.eulerAngles.y;
-        Local = this; 
+
+        Local = this;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -36,24 +42,26 @@ public class PlayerCamera : MonoBehaviour
     private void LateUpdate()
     {
         if (_target == null) return;
-
         if (Cursor.lockState == CursorLockMode.Locked)
         {
             _yaw += Input.GetAxis("Mouse X") * mouseSensitivity;
             _pitch -= Input.GetAxis("Mouse Y") * mouseSensitivity;
             _pitch = Mathf.Clamp(_pitch, minPitch, maxPitch);
         }
-
         Quaternion rotation = Quaternion.Euler(_pitch, _yaw, 0f);
         transform.position = _target.position + rotation * offset;
-        transform.LookAt(_target.position + Vector3.up * 1.5f);
-
-        if (Input.GetKeyDown(KeyCode.Escape))
+        Vector3 lookTarget = _target.position + rotation * lookOffset;
+        transform.LookAt(lookTarget);
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            bool locked = Cursor.lockState == CursorLockMode.Locked;
-            Cursor.lockState = locked ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = locked;
+            lookOffset.x *= -1f;
         }
+    }
+
+    public void SetCursorLocked(bool locked)
+    {
+        Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = !locked;
     }
 
     public Quaternion GetHorizontalRotation()

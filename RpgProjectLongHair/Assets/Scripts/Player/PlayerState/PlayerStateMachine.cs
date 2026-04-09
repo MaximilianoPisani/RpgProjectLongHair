@@ -40,8 +40,16 @@ public class PlayerStateMachine : NetworkBehaviour
         }
 
         if (!GetInput(out NetworkInputData input)) return;
-
         LastShootDirection = input.shootDirection;
+
+        if (_currentState is PlayerIdleState || _currentState is PlayerMoveState)
+        {
+            if (PlayerFallState.ShouldFall(this))
+            {
+                ChangeState(new PlayerFallState(this));
+                return;
+            }
+        }
 
         if (input.jump && !IsJumping && Player.IsGrounded())
         {

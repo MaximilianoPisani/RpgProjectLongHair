@@ -2398,7 +2398,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44eb966fec00d8844a73296f2e226494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: {x: 0, y: 3, z: -6}
+  offset: {x: 0.36, y: 2.16, z: -1.96}
+  lookOffset: {x: 0.61, y: 1.74, z: -0.84}
   mouseSensitivity: 3
   minPitch: -20
   maxPitch: 60

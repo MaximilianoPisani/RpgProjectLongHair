@@ -28,8 +28,13 @@ public class PlayerJumpState : IPlayerState
     public void Tick(NetworkInputData input)
     {
         _airTime += _sm.Runner.DeltaTime;
-
         if (_airTime < MinAirTime) return;
+
+        if (PlayerFallState.ShouldFall(_sm))
+        {
+            _sm.ChangeState(new PlayerFallState(_sm));
+            return;
+        }
 
         if (_sm.Player.IsGrounded())
         {
