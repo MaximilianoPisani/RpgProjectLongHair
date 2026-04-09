@@ -1110,7 +1110,7 @@ MonoBehaviour:
   _flashDuration: 0.2
   enemyController: {fileID: 0}
   _expConfig: {fileID: 11400000, guid: cba863bba89c4384b875ed03cef3bb49, type: 2}
-  _isMissionEnemy: 1
+  _isQuestEnemy: 1
 --- !u!114 &814898277713001099
 MonoBehaviour:
   m_ObjectHideFlags: 0

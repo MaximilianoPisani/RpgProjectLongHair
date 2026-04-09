@@ -17,7 +17,7 @@ MonoBehaviour:
   questDescription: Eliminar 2 enemigos
   questSteps:
   - targetId: Kill_Mission_Enemy
-    amount: 3
+    amount: 2
   failureSteps: []
   allowTeleportParty: 0
   teleportDestination: {x: 0, y: 0, z: 0}

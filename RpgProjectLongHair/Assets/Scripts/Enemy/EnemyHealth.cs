@@ -93,6 +93,8 @@ public class EnemyHealth : NetworkBehaviour
     {
         Debug.Log($"[EnemyHealth] Damage {damage} from {attacker}, authority={Object.HasStateAuthority}");
 
+        if (!Object.IsValid) return; //  objeto ya despawneado
+
         if (!Object.HasStateAuthority) return;
 
         if (damage <= 0) return;
@@ -120,8 +122,9 @@ public class EnemyHealth : NetworkBehaviour
 
         if (currentHealth <= 0)
         {
-          GiveKillExp();  
-          Runner.Despawn(Object);
+            GiveKillExp();
+            if (Runner != null && Object.IsValid) //  evita despawnear dos veces
+                Runner.Despawn(Object);
         }
     }
 
