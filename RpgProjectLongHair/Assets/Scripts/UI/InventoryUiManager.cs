@@ -23,12 +23,24 @@ public class InventoryUiManager : MonoBehaviour
         if (_slotsById.ContainsKey(item.id))
             return;
 
+        if (item.slotPrefab == null)
+        {
+            Debug.LogWarning($"[InventoryUiManager] El item '{item.itemName}' (id:{item.id}) no tiene SlotPrefab asignado");
+            return;
+        }
+
         GameObject slotObj = Instantiate(item.slotPrefab, _contentParent);
         slotObj.name = item.itemName + "_Slot";
 
         InventorySlot slot = slotObj.GetComponent<InventorySlot>();
-        slot.SetData(item);
+        if (slot == null)
+        {
+            Debug.LogWarning($"[InventoryUiManager] El prefab '{item.slotPrefab.name}' no tiene componente InventorySlot");
+            Destroy(slotObj);
+            return;
+        }
 
+        slot.SetData(item);
         _slotsById[item.id] = slot;
 
         Button button = slotObj.GetComponent<Button>();
