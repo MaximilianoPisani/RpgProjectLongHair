@@ -19,7 +19,7 @@ MonoBehaviour:
   weaponCategory: 1
   amount: 0
   slotPrefab: {fileID: 6399456027509336925, guid: 0c0d2ece3a9229c44894fc648c1ad8d2, type: 3}
-  isDualWield: 1
-  equipPrefab: {fileID: 5491631660660866000, guid: 480d2697de321b542b2e150b617b60e9, type: 3}
-  rightHandPrefab: {fileID: 5491631660660866000, guid: 480d2697de321b542b2e150b617b60e9, type: 3}
-  leftHandPrefab: {fileID: 5491631660660866000, guid: 480d2697de321b542b2e150b617b60e9, type: 3}
+  isDualWield: 0
+  equipPrefab: {fileID: 9222434869062965706, guid: 01406e3e3d634c643800a099bc0567af, type: 3}
+  rightHandPrefab: {fileID: 0}
+  leftHandPrefab: {fileID: 9222434869062965706, guid: 01406e3e3d634c643800a099bc0567af, type: 3}
