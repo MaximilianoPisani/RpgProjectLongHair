@@ -37,6 +37,8 @@ public class EnemyHealth : NetworkBehaviour
 
     private ChangeDetector _changeDetector;
 
+    [SerializeField] private bool _isQuestEnemy = false;
+
     public override void Spawned()
     {
         if (Object.HasStateAuthority)
@@ -178,6 +180,10 @@ public class EnemyHealth : NetworkBehaviour
         }
 
         Debug.Log($"[EnemyHealth] TrackEvents suscriptores: {TrackEvents.OnTrackEvent?.GetInvocationList().Length ?? 0}");
-        TrackEvents.OnTrackEvent?.Invoke("Kill_Enemy", 1); // Disparar evento de tracking para misiones
+
+        if (_isQuestEnemy)
+            TrackEvents.OnTrackEvent?.Invoke(QuestIds.KILL_MISSION_ENEMY, 1);
+        else
+            TrackEvents.OnTrackEvent?.Invoke(QuestIds.KILL_ENEMY, 1);
     }
 }

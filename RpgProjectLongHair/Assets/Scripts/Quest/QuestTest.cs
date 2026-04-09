@@ -10,7 +10,7 @@ public class QuestTester : MonoBehaviour
             if (questController != null)
             {
                 Debug.Log("[QuestTester] Iniciando misión quest_test_001.");
-                questController.RPC_StartMission("quest_test_001", default);
+                questController.RPC_StartMission(QuestIds.QUEST_TEST, default);
             }
             else
             {
