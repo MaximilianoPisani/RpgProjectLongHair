@@ -16,11 +16,15 @@ public class PlayerNetworkSync : NetworkBehaviour
     [Networked] private int SyncedJumpTrigger { get; set; }
     [Networked] private int SyncedDieTrigger { get; set; }
     [Networked] private int SyncedComboIndex { get; set; }
+    [Networked] private int SyncedFallTrigger { get; set; }
+    [Networked] private NetworkBool SyncedIsFalling { get; set; }
+
 
     private int _lastMelee;
     private int _lastShoot;
     private int _lastJump;
     private int _lastDie;
+    private int _lastFall;
 
     private Animator _animator;
     private ChangeDetector _changes;
@@ -53,6 +57,7 @@ public class PlayerNetworkSync : NetworkBehaviour
         SyncedIsJumping = _animator.GetBool("isJumping");
         SyncedIsReloading = _animator.GetBool("IsReloading");
         SyncedComboIndex = _animator.GetInteger("ComboIndex");
+        SyncedIsFalling = _animator.GetBool("isFalling");
     }
 
     public override void Render()
@@ -68,6 +73,7 @@ public class PlayerNetworkSync : NetworkBehaviour
         _animator.SetBool("isJumping", SyncedIsJumping);
         _animator.SetBool("IsReloading", SyncedIsReloading);
         _animator.SetInteger("ComboIndex", SyncedComboIndex);
+        _animator.SetBool("isFalling", SyncedIsFalling);
 
 
         foreach (var change in _changes.DetectChanges(this, out var prev, out var current))
@@ -91,6 +97,11 @@ public class PlayerNetworkSync : NetworkBehaviour
             {
                 _lastDie = SyncedDieTrigger;
                 _animator.SetTrigger("Die");
+            }
+            if (change == nameof(SyncedFallTrigger) && _lastFall != SyncedFallTrigger)
+            {
+                _lastFall = SyncedFallTrigger;
+                _animator.SetTrigger("Fall");
             }
         }
     }
@@ -151,7 +162,25 @@ public class PlayerNetworkSync : NetworkBehaviour
             RPC_TriggerDie();
         }
     }
+    public void TriggerFall()
+    {
+        if (Object.HasStateAuthority)
+        {
+            SyncedFallTrigger++;
+            _animator?.SetTrigger("Fall");
+        }
+        else if (Object.HasInputAuthority)
+        {
+            _animator?.SetTrigger("Fall");
+            RPC_TriggerFall();
+        }
+    }
 
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    private void RPC_TriggerFall()
+    {
+        SyncedFallTrigger++;
+    }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
     private void RPC_TriggerJump()
