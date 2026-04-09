@@ -87,4 +87,15 @@ public class PlayerWeaponHandler : MonoBehaviour
             animator.SetBool("IsAxeEquipped", melee);
         }
     }
+
+    public IWeaponAnimatable GetCurrentWeaponAnimatable()
+    {
+        if (_equipManager == null) return null;
+
+        // El EquipManager instancia el prefab directamente como hijo de los
+        // equip points (_rangedPoint, _meleePointA, etc.), así que buscamos
+        // en sus hijos con GetComponentInChildren.
+        // includeInactive: false  solo armas activas en escena.
+        return _equipManager.GetComponentInChildren<IWeaponAnimatable>(false);
+    }
 }

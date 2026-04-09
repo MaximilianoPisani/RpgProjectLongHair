@@ -6,6 +6,8 @@ public class PlayerRangeState : IPlayerState
     private PlayerStateMachine _sm;
     private RangedAttackData _rangeData;
 
+    private IWeaponAnimatable _weaponAnim;
+
     // Estado del disparo
     private enum ShootPhase
     {
@@ -58,6 +60,8 @@ public class PlayerRangeState : IPlayerState
             _sm.ChangeState(new PlayerIdleState(_sm));
             return;
         }
+
+        _weaponAnim = weapon.GetCurrentWeaponAnimatable();
 
         _currentPhase = ShootPhase.Idle;
         _needsReload = false;
@@ -140,6 +144,8 @@ public class PlayerRangeState : IPlayerState
         // Trigger de animación
         _sm.GetComponent<PlayerNetworkSync>()?.TriggerShoot();
 
+        _weaponAnim?.PlayShoot();
+
         Debug.Log("[Range] Started shooting");
     }
 
@@ -221,6 +227,9 @@ public class PlayerRangeState : IPlayerState
 
             // Reiniciar el ciclo de disparo
             SpawnProjectile();
+
+            _weaponAnim?.PlayShoot();
+
             Debug.Log($"[Range] Auto-fire shot - Continuous time: {_continuousFireTimer:F2}s");
         }
     }
@@ -235,6 +244,7 @@ public class PlayerRangeState : IPlayerState
         if (_sm.Animator != null)
         {
             _sm.Animator.SetBool("IsReloading", true);
+            _weaponAnim?.PlayReload();
         }
 
         Debug.Log($"[Range] Started reloading - Duration: {_rangeData.ReloadDuration}s");
