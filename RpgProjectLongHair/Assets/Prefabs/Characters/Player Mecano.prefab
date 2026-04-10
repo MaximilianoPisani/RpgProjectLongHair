@@ -1455,9 +1455,9 @@ CharacterController:
   serializedVersion: 3
   m_Height: 2
   m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SlopeLimit: 60
+  m_StepOffset: 0.5
+  m_SkinWidth: 0.1
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1.1, z: 0}
 --- !u!136 &-6551859019695016956
@@ -1467,7 +1467,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6542864224881935982}
-  m_Material: {fileID: 13400000, guid: da1db389ea6168943b4e5c3ef815a901, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1496,10 +1496,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stateAuthorityChangeErrorCorrectionDelta: 0
-  gravity: -20
-  jumpImpulse: 8
-  acceleration: 8
-  braking: 15
+  gravity: -30
+  jumpImpulse: 11
+  acceleration: 25
+  braking: 80
   maxSpeed: 8
   rotationSpeed: 5
 --- !u!114 &6989304598263037872
@@ -1623,7 +1623,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 10
-  walkSpeed: 3
+  walkSpeed: 5
   sprintSpeed: 8
 --- !u!114 &5247100580435787750
 MonoBehaviour:
