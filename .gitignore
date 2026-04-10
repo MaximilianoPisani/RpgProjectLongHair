@@ -103,3 +103,4 @@ InitTestScene*.unity*
 # Temp specific file in RpgProjectLongHair (Unity temporary file)
 RpgProjectLongHair/Temp/FSTimeGet-49807200a7310004cbf39fbecd1fd259
 
+.vscode/
