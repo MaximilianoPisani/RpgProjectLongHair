@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7759986554935951242}
   - component: {fileID: 4507827183060901697}
   - component: {fileID: -3787148468971896006}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Maulhammer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
