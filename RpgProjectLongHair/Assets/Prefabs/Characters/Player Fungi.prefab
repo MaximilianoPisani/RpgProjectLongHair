@@ -1481,7 +1481,7 @@ GameObject:
   - component: {fileID: 3730851367084255050}
   - component: {fileID: 1290202656488514935}
   - component: {fileID: -6668896433345507029}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player Fungi
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -1731,7 +1731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f1a3bc9ed3017c4891b63ddb57c5688, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 100
+  _maxHealth: 250
   _meshRenderer: {fileID: 0}
   _flashColor: {r: 1, g: 0, b: 0, a: 1}
   _flashCount: 3

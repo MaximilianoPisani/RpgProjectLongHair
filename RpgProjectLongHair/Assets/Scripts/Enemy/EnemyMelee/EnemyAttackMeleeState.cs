@@ -49,32 +49,8 @@ public class EnemyAttackMeleeState : IEnemyState
 
         if (_enemy.Runner.SimulationTime >= _enemy.NextAttackTime)
         {
-            _enemy.TriggerMeleeAttackAnimation();
-
-            Collider[] hits = Physics.OverlapSphere(
-                _enemy.AttackOrigin.position,
-                _enemy.MeleeAttackData.HitRadius,
-                _enemy.PlayerLayer
-            );
-
             _enemy.NextAttackTime = _enemy.Runner.SimulationTime + _enemy.MeleeAttackData.Cooldown;
-
-            var alreadyHit = new System.Collections.Generic.HashSet<PlayerHealth>();
-
-            foreach (var hit in hits)
-            {
-                if (!hit.CompareTag("Player")) continue;
-
-                var playerHealth = hit.GetComponent<PlayerHealth>()
-                                ?? hit.GetComponentInParent<PlayerHealth>();
-
-                if (playerHealth == null) continue;
-                if (playerHealth.IsDead) continue;
-                if (!alreadyHit.Add(playerHealth)) continue; 
-
-                playerHealth.TakeDamage(_enemy.MeleeAttackData.Damage, _enemy.transform.position);
-                Debug.Log($"[Enemy] Hit player for {_enemy.MeleeAttackData.Damage} damage.");
-            }
+            _enemy.TriggerMeleeAttackAnimation();
         }
     }
 }
