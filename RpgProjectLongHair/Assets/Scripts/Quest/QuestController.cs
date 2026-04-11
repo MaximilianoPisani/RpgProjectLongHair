@@ -98,7 +98,7 @@ public class QuestController : NetworkBehaviour
     }
 
 
-    private void FailureQuest()
+    public void FailureQuest()
     {
         Debug.Log($"[QuestController] ¡Misión fallida!: {_currentQuest.questName}");
 
