@@ -24,8 +24,8 @@ MonoBehaviour:
     m_Bits: 264
   _fireMode: 1
   _requireReleaseToShootAgain: 0
-  _shootFrameTime: 0
-  _shootDuration: 0.2
+  _shootFrameTime: 0.5
+  _shootDuration: 0.6
   _reloadDuration: 3.5
   _fireRate: 0.15
   _maxContinuousFireTime: 5
