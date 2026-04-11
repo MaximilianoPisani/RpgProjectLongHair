@@ -315,7 +315,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 4296771059038050453, guid: 74f9bf8289edc4c4ca188783e54608dd, type: 3}
+  - {fileID: 2100000, guid: 4055e1ecf8d04b645b611ffcc5fc637e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1056,7 +1056,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 4296771059038050453, guid: 74f9bf8289edc4c4ca188783e54608dd, type: 3}
+  - {fileID: 2100000, guid: 4055e1ecf8d04b645b611ffcc5fc637e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1611,13 +1611,13 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 2
+  m_Height: 1.87
   m_Radius: 0.5
   m_SlopeLimit: 60
   m_StepOffset: 0.5
   m_SkinWidth: 0.1
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1.1, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!136 &-6551859019695016956
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1638,9 +1638,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 2
+  m_Height: 1.87
   m_Direction: 1
-  m_Center: {x: 0, y: 1.1, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &2371474720591061133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1989,7 +1989,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 4296771059038050453, guid: 74f9bf8289edc4c4ca188783e54608dd, type: 3}
+  - {fileID: 2100000, guid: 4055e1ecf8d04b645b611ffcc5fc637e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
