@@ -7,16 +7,15 @@ public class PlayerHealth : NetworkBehaviour
 {
     [Header("Health")]
     [SerializeField] private int _maxHealth = 100;
-
     [Networked] private int CurrentHealth { get; set; }
 
     [Header("Flash Effect")]
-    [SerializeField] private Renderer _meshRenderer;
     [SerializeField] private Color _flashColor = Color.red;
     [SerializeField] private int _flashCount = 3;
     [SerializeField] private float _flashDuration = 0.1f;
 
-    private Color _originalColor;
+    private SkinnedMeshRenderer[] _skinnedRenderers;
+    private Color[] _originalColors;
     private Coroutine _flashCoroutine;
 
     public bool IsDead => CurrentHealth <= 0;
@@ -26,8 +25,13 @@ public class PlayerHealth : NetworkBehaviour
         if (HasStateAuthority)
             CurrentHealth = _maxHealth;
 
-        if (_meshRenderer != null)
-            _originalColor = _meshRenderer.material.color;
+        _skinnedRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+        _originalColors = new Color[_skinnedRenderers.Length];
+
+        for (int i = 0; i < _skinnedRenderers.Length; i++)
+            _originalColors[i] = _skinnedRenderers[i].material.color;
+
+        Debug.Log($"[PlayerHealth] Encontró {_skinnedRenderers.Length} SkinnedMeshRenderers");
     }
 
     public void TakeDamage(int damage, Vector3 hitPoint)
@@ -37,18 +41,12 @@ public class PlayerHealth : NetworkBehaviour
         if (IsDead) return;
 
         CurrentHealth -= damage;
-
         Debug.Log($"[Player] {CurrentHealth}/{_maxHealth} HP");
 
-
         if (!IsDead)
-        {
             RPC_Flash();
-        }
         else
-        {
             OnDeath();
-        }
     }
 
     private void OnDeath()
@@ -57,7 +55,6 @@ public class PlayerHealth : NetworkBehaviour
         var sm = GetComponent<PlayerStateMachine>();
         if (sm != null)
             sm.ChangeState(new PlayerDeadState(sm));
-
         RPC_OnDeath();
     }
 
@@ -67,23 +64,19 @@ public class PlayerHealth : NetworkBehaviour
         GetComponent<PlayerNetworkSync>()?.TriggerDie();
     }
 
-
     public void ResetHealth()
     {
         if (!HasStateAuthority) return;
-
         CurrentHealth = _maxHealth;
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_Flash()
     {
-        if (_meshRenderer == null)
-            return;
+        if (_skinnedRenderers == null || _skinnedRenderers.Length == 0) return;
 
         if (_flashCoroutine != null)
             StopCoroutine(_flashCoroutine);
-
         _flashCoroutine = StartCoroutine(FlashRoutine());
     }
 
@@ -91,10 +84,14 @@ public class PlayerHealth : NetworkBehaviour
     {
         for (int i = 0; i < _flashCount; i++)
         {
-            _meshRenderer.material.color = _flashColor;
+            foreach (var r in _skinnedRenderers)
+                r.material.color = _flashColor;
+
             yield return new WaitForSeconds(_flashDuration);
 
-            _meshRenderer.material.color = _originalColor;
+            for (int j = 0; j < _skinnedRenderers.Length; j++)
+                _skinnedRenderers[j].material.color = _originalColors[j];
+
             yield return new WaitForSeconds(_flashDuration);
         }
     }
