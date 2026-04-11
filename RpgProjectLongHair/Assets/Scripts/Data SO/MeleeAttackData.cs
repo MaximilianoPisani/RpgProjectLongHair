@@ -41,4 +41,11 @@ public class ComboAttackConfig
     [Header("Animation")]
     [Tooltip("Nombre del estado de animación (opcional, para debugging)")]
     public string animationStateName = "";
+
+    [Header("VFX")]
+    [Tooltip("Prefab del efecto visual para este ataque")]
+    public GameObject slashVFXPrefab;
+
+    [Tooltip("Tiempo desde el inicio para spawner el VFX (usualmente igual al hitFrameTime)")]
+    public float vfxSpawnTime = 0.25f;
 }

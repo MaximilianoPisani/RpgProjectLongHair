@@ -12,6 +12,13 @@ public class PlayerCombat : NetworkBehaviour
     public Transform meleeOrigin;
     public LayerMask enemyLayer;
 
+    [Header("VFX Settings")]
+    [Tooltip("Punto de spawn para los efectos visuales (si es null, usa meleeOrigin)")]
+    public Transform vfxSpawnPoint;
+
+    [Tooltip("Offset local para el spawn de VFX")]
+    public Vector3 vfxOffset = Vector3.zero;
+
     [Header("Range")]
     public RangedAttackData RangeData;
 
@@ -44,5 +51,34 @@ public class PlayerCombat : NetworkBehaviour
         }
 
         return null;
+    }
+
+    public void SpawnSlashVFX(GameObject vfxPrefab)
+    {
+        if (vfxPrefab == null)
+        {
+            Debug.LogWarning("[PlayerCombat] No VFX prefab assigned for this attack");
+            return;
+        }
+
+        // Determinar punto de spawn
+        Transform spawnTransform = vfxSpawnPoint != null ? vfxSpawnPoint : meleeOrigin;
+
+        if (spawnTransform == null)
+        {
+            spawnTransform = transform;
+        }
+
+        // Calcular posición y rotación
+        Vector3 spawnPosition = spawnTransform.position + spawnTransform.TransformDirection(vfxOffset);
+        Quaternion spawnRotation = spawnTransform.rotation;
+
+        // Instanciar VFX
+        GameObject vfxInstance = Instantiate(vfxPrefab, spawnPosition, spawnRotation);
+
+        // Opcional: hacer que el VFX siga al jugador si tiene un componente específico
+        // vfxInstance.transform.SetParent(spawnTransform);
+
+        Debug.Log($"[PlayerCombat] Spawned slash VFX: {vfxPrefab.name}");
     }
 }

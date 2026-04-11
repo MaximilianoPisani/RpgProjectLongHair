@@ -17,6 +17,7 @@ public class PlayerMeleeState : IPlayerState
 
     // Flags para eventos ya ejecutados
     private bool _hitFrameExecuted = false;
+    private bool _vfxSpawned = false;
     private bool _comboWindowOpened = false;
     private bool _comboWindowClosed = false;
     private bool _lastAttackInput = false;
@@ -155,6 +156,13 @@ public class PlayerMeleeState : IPlayerState
 
     private void ExecuteTimedEvents()
     {
+        // VFX Spawn - Ejecutar ANTES del hit frame para mejor feedback visual
+        if (!_vfxSpawned && _attackTimer >= _currentAttackConfig.vfxSpawnTime)
+        {
+            _vfxSpawned = true;
+            SpawnSlashVFX();
+        }
+
         // Hit Frame - Aplicar daño
         if (!_hitFrameExecuted && _attackTimer >= _currentAttackConfig.hitFrameTime)
         {
@@ -192,6 +200,7 @@ public class PlayerMeleeState : IPlayerState
         // Resetear flags y timers
         _attackTimer = 0f;
         _hitFrameExecuted = false;
+        _vfxSpawned = false;
         _comboWindowOpened = false;
         _comboWindowClosed = false;
         _inputBuffered = false;
@@ -298,6 +307,22 @@ public class PlayerMeleeState : IPlayerState
             Debug.Log("[Melee] Input buffered but window closed - Input discarded");
             _inputBuffered = false;
         }
+    }
+
+    // ==================== VFX ====================
+
+    private void SpawnSlashVFX()
+    {
+        if (_currentAttackConfig == null || _currentAttackConfig.slashVFXPrefab == null)
+        {
+            return;
+        }
+
+        // Solo spawner VFX localmente (no es necesario sincronizar por red)
+        // Cada cliente spawneará su propio VFX
+        _sm.Combat?.SpawnSlashVFX(_currentAttackConfig.slashVFXPrefab);
+
+        Debug.Log($"[Melee] VFX spawned for combo {_comboIndex}");
     }
 
     // ==================== HIT DETECTION ====================
