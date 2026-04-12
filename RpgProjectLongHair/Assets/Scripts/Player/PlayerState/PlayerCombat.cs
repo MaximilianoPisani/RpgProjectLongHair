@@ -25,6 +25,13 @@ public class PlayerCombat : NetworkBehaviour
     [Header("Common Range")]
     public Transform[] shootPoints;
 
+    [Header("VFX Settings - Ranged")]
+    [Tooltip("Punto de spawn para los casquillos/balas expulsados (normalmente en el lado del arma)")]
+    public Transform shellEjectionPoint;
+
+    [Tooltip("Offset local para el spawn de casquillos")]
+    public Vector3 shellEjectionOffset = Vector3.zero;
+
     public MeleeAttackData GetCurrentMeleeData()
     {
         switch (CurrentWeapon)
@@ -80,5 +87,40 @@ public class PlayerCombat : NetworkBehaviour
         // vfxInstance.transform.SetParent(spawnTransform);
 
         Debug.Log($"[PlayerCombat] Spawned slash VFX: {vfxPrefab.name}");
+    }
+
+    public void SpawnShellEjectionVFX(GameObject vfxPrefab)
+    {
+        if (vfxPrefab == null)
+        {
+            Debug.LogWarning("[PlayerCombat] No shell ejection VFX prefab assigned");
+            return;
+        }
+
+        // Determinar punto de spawn - preferir shellEjectionPoint, luego shootPoints
+        Transform spawnTransform = shellEjectionPoint;
+
+        if (spawnTransform == null && shootPoints != null && shootPoints.Length > 0)
+        {
+            spawnTransform = shootPoints[0];
+        }
+
+        if (spawnTransform == null)
+        {
+            spawnTransform = transform;
+        }
+
+        // Calcular posición y rotación
+        Vector3 spawnPosition = spawnTransform.position + spawnTransform.TransformDirection(shellEjectionOffset);
+        Quaternion spawnRotation = spawnTransform.rotation;
+
+        // Instanciar VFX
+        GameObject vfxInstance = Instantiate(vfxPrefab, spawnPosition, spawnRotation);
+
+        // Opcional: hacer que el VFX siga al arma durante un frame
+        // Esto es útil si el jugador se mueve mientras dispara
+        // vfxInstance.transform.SetParent(spawnTransform, true);
+
+        Debug.Log($"[PlayerCombat] Spawned shell ejection VFX: {vfxPrefab.name}");
     }
 }

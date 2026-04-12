@@ -1,9 +1,7 @@
 fileFormatVersion: 2
-guid: ce47b9045a7a3214ca1379e605f54d9f
-ShaderImporter:
+guid: f464d66e3305c6a448020813bd473e3b
+PrefabImporter:
   externalObjects: {}
-  defaultTextures: []
-  nonModifiableTextures: []
   userData: 
   assetBundleName: 
   assetBundleVariant: 
@@ -12,5 +10,5 @@ AssetOrigin:
   productId: 345212
   packageName: Free Game VFX Collection(URP)
   packageVersion: 1.02
-  assetPath: Assets/Shaders/AdditiveFlow.shader
+  assetPath: Assets/Eric VFX Studio/Free Game VFX/Prefab/Mesh/Eric_Cylinder002.prefab
   uploadId: 845446

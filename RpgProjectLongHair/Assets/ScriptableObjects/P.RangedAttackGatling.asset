@@ -29,3 +29,5 @@ MonoBehaviour:
   _reloadDuration: 3.5
   _fireRate: 0.15
   _maxContinuousFireTime: 5
+  _shellEjectionVFX: {fileID: 763799897560185588, guid: 798157bad7358b04499c9d71cd3c0d9b, type: 3}
+  _shellEjectionTime: 0

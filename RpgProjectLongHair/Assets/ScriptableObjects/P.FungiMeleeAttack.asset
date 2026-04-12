@@ -40,5 +40,5 @@ MonoBehaviour:
     damage: 60
     animationStateName: Attack3
     slashVFXPrefab: {fileID: 3346239866509697871, guid: 9928a027f2ece6c48bb1fe6ab2a37bac, type: 3}
-    vfxSpawnTime: 0.65
+    vfxSpawnTime: 0.85
   _comboResetTime: 0.5

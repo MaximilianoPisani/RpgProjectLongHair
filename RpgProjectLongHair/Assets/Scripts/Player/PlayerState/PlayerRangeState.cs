@@ -27,6 +27,7 @@ public class PlayerRangeState : IPlayerState
 
     // Flags
     private bool _projectileSpawned = false;
+    private bool _shellEjectionSpawned = false; 
     private bool _attackButtonReleased = true;
     private bool _needsReload = false;
 
@@ -137,6 +138,7 @@ public class PlayerRangeState : IPlayerState
         _currentPhase = ShootPhase.Shooting;
         _shootTimer = 0f;
         _projectileSpawned = false;
+        _shellEjectionSpawned = false;
         _attackButtonReleased = false;
 
         RotateToShootDirection();
@@ -152,6 +154,8 @@ public class PlayerRangeState : IPlayerState
     private void UpdateShootingPhase(NetworkInputData input)
     {
         _shootTimer += _sm.Runner.DeltaTime;
+
+        ExecuteShootTimedEvents();
 
         // Spawn del proyectil en el momento exacto
         if (!_projectileSpawned && _shootTimer >= _rangeData.ShootFrameTime)
@@ -193,6 +197,24 @@ public class PlayerRangeState : IPlayerState
         }
     }
 
+    private void ExecuteShootTimedEvents()
+    {
+        // Shell Ejection VFX - Normalmente ocurre al mismo tiempo o ligeramente después del disparo
+        if (!_shellEjectionSpawned && _shootTimer >= _rangeData.ShellEjectionTime)
+        {
+            _shellEjectionSpawned = true;
+            SpawnShellEjectionVFX();
+        }
+
+        // Spawn del proyectil en el momento exacto
+        if (!_projectileSpawned && _shootTimer >= _rangeData.ShootFrameTime)
+        {
+            _projectileSpawned = true;
+            SpawnProjectile();
+        }
+    }
+
+
     // ==================== AUTOMATIC FIRE PHASE ====================
 
     private void UpdateAutomaticFirePhase(NetworkInputData input)
@@ -223,10 +245,12 @@ public class PlayerRangeState : IPlayerState
         {
             _fireRateTimer = 0f;
             _projectileSpawned = false;
+            _shellEjectionSpawned = false;
             _shootTimer = 0f;
 
             // Reiniciar el ciclo de disparo
             SpawnProjectile();
+            SpawnShellEjectionVFX();
 
             _weaponAnim?.PlayShoot();
 
@@ -286,6 +310,22 @@ public class PlayerRangeState : IPlayerState
             // Volver a idle
             _sm.ChangeState(new PlayerIdleState(_sm));
         }
+    }
+
+    // ==================== VFX ====================
+
+    
+    private void SpawnShellEjectionVFX()
+    {
+        if (_rangeData == null || _rangeData.ShellEjectionVFX == null)
+        {
+            return;
+        }
+
+        // Solo spawner VFX localmente (no sincronizar por red)
+        _sm.Combat?.SpawnShellEjectionVFX(_rangeData.ShellEjectionVFX);
+
+        Debug.Log("[Range] Shell ejection VFX spawned");
     }
 
     // ==================== PROJECTILE SPAWNING ====================

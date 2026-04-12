@@ -19569,6 +19569,7 @@ GameObject:
   - component: {fileID: 6193526585558461340}
   - component: {fileID: 6404671995572646759}
   - component: {fileID: 6186718961912340402}
+  - component: {fileID: 2221213242688897236}
   m_Layer: 0
   m_Name: FX_Orange_Slash_1 1
   m_TagString: Untagged
@@ -24404,6 +24405,20 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &2221213242688897236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8608929957820813075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02fcd7f87891d2148a64d63c6efebaa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifetime: 5
+  useParticleSystemDuration: 1
 --- !u!1 &8635047889623892941
 GameObject:
   m_ObjectHideFlags: 0

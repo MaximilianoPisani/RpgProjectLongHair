@@ -33,6 +33,13 @@ public class RangedAttackData : AttackData
     [Tooltip("Tiempo máximo que puede disparar antes de recargar (0 = infinito mientras tenga munición)")]
     [SerializeField] private float _maxContinuousFireTime = 3f;
 
+    [Header("VFX")]
+    [Tooltip("Sistema de partículas para casquillos/balas expulsados")]
+    [SerializeField] private GameObject _shellEjectionVFX;
+
+    [Tooltip("Tiempo desde el inicio del disparo hasta que se eyectan los casquillos (normalmente igual o ligeramente después del shootFrameTime)")]
+    [SerializeField] private float _shellEjectionTime = 0.2f;
+
     public NetworkObject ProjectilePrefab => _projectilePrefab;
     public float ProjectileSpeed => _projectileSpeed;
     public float LifetimeSeconds => _lifetimeSeconds;
@@ -45,6 +52,10 @@ public class RangedAttackData : AttackData
     public float ReloadDuration => _reloadDuration;
     public float FireRate => _fireRate;
     public float MaxContinuousFireTime => _maxContinuousFireTime;
+
+    //VFX
+    public GameObject ShellEjectionVFX => _shellEjectionVFX;
+    public float ShellEjectionTime => _shellEjectionTime;
 
     protected override void OnValidate()
     {
@@ -60,6 +71,10 @@ public class RangedAttackData : AttackData
         // Validar que shootFrameTime no sea mayor que shootDuration
         if (_shootFrameTime > _shootDuration)
             _shootFrameTime = _shootDuration * 0.5f;
+
+        // Validar que shellEjectionTime no sea mayor que shootDuration
+        if (_shellEjectionTime > _shootDuration)
+            _shellEjectionTime = _shootDuration * 0.5f;
     }
 }
 
