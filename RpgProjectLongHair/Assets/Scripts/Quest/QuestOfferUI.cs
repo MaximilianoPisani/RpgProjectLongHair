@@ -46,6 +46,10 @@ public class QuestOfferUI : MonoBehaviour
         // Ocultar cursor y devolver el control
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        // Forzar el foco al juego
+        UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+
     }
 
     private void OnCancel()
