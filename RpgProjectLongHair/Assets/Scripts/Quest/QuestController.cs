@@ -101,6 +101,7 @@ public class QuestController : NetworkBehaviour
     public void FailureQuest()
     {
         Debug.Log($"[QuestController] ¡Misión fallida!: {_currentQuest.questName}");
+        Debug.Log("[QuestController] FailureQuest llamado");
 
         MissionEvents.OnMissionFailed?.Invoke(_currentQuest);
         Destroy(_currentQuest);

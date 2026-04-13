@@ -3,6 +3,7 @@ using UnityEngine;
 public class MissionHud : MonoBehaviour
 {
     [SerializeField] private QuestProgressUI _questProgressUI;
+    [SerializeField] private QuestFailedUI _questFailedUI;
 
     private void OnEnable()
     {
@@ -35,8 +36,13 @@ public class MissionHud : MonoBehaviour
 
     private void OnMissionFailed(QuestDataSO data)
     {
+        Debug.Log($"[MissionHud] OnMissionFailed llamado. _questProgressUI={_questProgressUI}, _questFailedUI={_questFailedUI}");
         if (_questProgressUI == null) return;
+        if (_questFailedUI == null) return;
+
         _questProgressUI.Hide();
+
+        _questFailedUI.Show();
         //TODO Mostrar popup de Mission fallida
         // stg_defeat
     }
