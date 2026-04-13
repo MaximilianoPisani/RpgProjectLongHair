@@ -4,6 +4,7 @@ public class MissionHud : MonoBehaviour
 {
     [SerializeField] private QuestProgressUI _questProgressUI;
     [SerializeField] private QuestFailedUI _questFailedUI;
+    [SerializeField] private QuestCompleteUI _questCompletedUI;
 
     private void OnEnable()
     {
@@ -22,8 +23,13 @@ public class MissionHud : MonoBehaviour
     private void OnMissionComplete(QuestDataSO data)
     {
         if (_questProgressUI == null) return;
+        if (_questCompletedUI == null) return;
+
         _questProgressUI.Hide();
+
         //Mostrar un popup de victoria
+        _questCompletedUI.Show(data);
+
         //stg_victory 
     }
 
