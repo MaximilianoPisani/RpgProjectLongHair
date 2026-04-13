@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 255e96c449d52e24eb78ac0ad131bc74, type: 3}
   m_Name: P.RangedAttackRifle
   m_EditorClassIdentifier: 
-  _attackRange: 26
+  _attackRange: 50
   _damage: 90
   _cooldown: 0.3
   _hitRadius: 0.86
   _projectilePrefab: {fileID: 4028938312772070145, guid: d924951f8e151df4ba90bb00a313339a, type: 3}
-  _projectileSpeed: 19
-  _lifetimeSeconds: 26
+  _projectileSpeed: 40
+  _lifetimeSeconds: 50
   _targetLayer:
     serializedVersion: 2
     m_Bits: 264
@@ -29,3 +29,7 @@ MonoBehaviour:
   _reloadDuration: 2
   _fireRate: 0.3
   _maxContinuousFireTime: 7
+  _shellEjectionVFX: {fileID: 8194992990867289339, guid: f47997b3e1a50cd4497951592aa7e75b, type: 3}
+  _fireEjectionVFX: {fileID: 0}
+  _shellEjectionTime: 0.2
+  _fireEjectionTime: 0.2
