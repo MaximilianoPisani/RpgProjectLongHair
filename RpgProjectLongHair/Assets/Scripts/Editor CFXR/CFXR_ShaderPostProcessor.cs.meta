@@ -1,8 +1,7 @@
 fileFormatVersion: 2
-guid: 26306333afc273640814fd7a7b3968e0
-timeCreated: 1501149213
-licenseType: Store
+guid: 29d46695388f9a84d9ae71b5140727a3
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
   defaultReferences: []
   executionOrder: 0
@@ -15,5 +14,5 @@ AssetOrigin:
   productId: 109565
   packageName: Cartoon FX Remaster Free
   packageVersion: R 1.5.0
-  assetPath: Assets/JMO Assets/Cartoon FX Remaster/CFXR Assets/Editor/CFXR_Styles.cs
+  assetPath: Assets/Scripts/Editor CFXR/CFXR_ShaderPostProcessor.cs
   uploadId: 836238
