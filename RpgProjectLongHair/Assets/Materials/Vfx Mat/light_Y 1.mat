@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: light_Y
+  m_Name: light_Y 1
   m_Shader: {fileID: 4800000, guid: ce47b9045a7a3214ca1379e605f54d9f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -32,7 +32,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: a4a404c5126761d44b95d25c52dfdc32, type: 3}
+        m_Texture: {fileID: 2800000, guid: 59f45bb38d072b04e852abfb59818944, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Mask:
