@@ -314,10 +314,14 @@ public class PlayerMeleeState : IPlayerState
         }
         else
         {
+            var rage = _sm.GetComponent<PlayerRageHandler>();
+            float multiplier = rage != null ? rage.GetDamageMultiplier() : 1f;
+            int finalDamage = Mathf.RoundToInt(_currentAttackConfig.damage * multiplier);
+
             _sm.RPC_RequestMeleeDamage(
                 _sm.transform.position,
                 _sm.transform.forward,
-                _currentAttackConfig.damage
+                finalDamage  
             );
         }
     }
@@ -327,30 +331,32 @@ public class PlayerMeleeState : IPlayerState
         var settings = _sm.Combat;
         if (settings == null) return;
 
+        var rage = _sm.GetComponent<PlayerRageHandler>();
+        float multiplier = rage != null ? rage.GetDamageMultiplier() : 1f;
+
         Vector3 origin = settings.meleeOrigin != null
             ? settings.meleeOrigin.position
             : _sm.transform.position + _sm.transform.forward * 0.5f + Vector3.up;
 
-        Collider[] hits = Physics.OverlapSphere(
-            origin,
-            _meleeData.HitRadius,
-            settings.enemyLayer
-        );
+        Collider[] hits = Physics.OverlapSphere(origin, _meleeData.HitRadius, settings.enemyLayer);
+
+        int totalDamageDealt = 0;
 
         foreach (var hit in hits)
         {
             var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
-
             if (enemyHealth != null && _sm.Object.HasStateAuthority)
             {
-                enemyHealth.ApplyDamageServer(
-                    _currentAttackConfig.damage,
-                    _sm.Object.InputAuthority
-                );
+                int finalDamage = Mathf.RoundToInt(_currentAttackConfig.damage * multiplier);
+                enemyHealth.ApplyDamageServer(finalDamage, _sm.Object.InputAuthority);
+                totalDamageDealt += finalDamage;
 
-                Debug.Log($"[Melee] Hit enemy with combo {_comboIndex} - Damage: {_currentAttackConfig.damage}");
+                Debug.Log($"[Melee] Hit enemy - Damage: {finalDamage} (x{multiplier})");
             }
         }
+
+        if (totalDamageDealt > 0)
+            PlayerRageHandler.NotifyDamageDealt(_sm.Object.InputAuthority, totalDamageDealt);
 
         PlayHitFeedback();
     }

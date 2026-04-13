@@ -52,7 +52,7 @@ public class PlayerCamera : MonoBehaviour
         transform.position = _target.position + rotation * offset;
         Vector3 lookTarget = _target.position + rotation * lookOffset;
         transform.LookAt(lookTarget);
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && !RunnerManager.IsInventoryOpen)
         {
             lookOffset.x *= -1f;
         }

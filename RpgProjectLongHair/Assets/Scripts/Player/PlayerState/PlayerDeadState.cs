@@ -14,9 +14,16 @@ public class PlayerDeadState : IPlayerState
     {
         if (!_sm.Object.HasStateAuthority) return;
         _timer = 0f;
+
+        if (_sm.Object.HasInputAuthority)
+            RunnerManager.SetInventoryOpen(true); 
     }
 
-    public void Exit() { }
+    public void Exit()
+    {
+        if (_sm.Object.HasInputAuthority)
+            RunnerManager.SetInventoryOpen(false);
+    }
 
     public void Tick(NetworkInputData input)
     {

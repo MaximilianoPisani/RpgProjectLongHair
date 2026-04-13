@@ -25,7 +25,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     private bool _lockOnQueued;
     private bool _jumpQueued;
     private bool _isSprinting;
-
+    public static bool IsInputBlocked { get; private set; } = false;
+    public static bool IsInventoryOpen { get; private set; } = false;
     public async void StartRunner(GameMode mode, Action onFail)
     {
         _runner = gameObject.AddComponent<NetworkRunner>();
@@ -61,15 +62,18 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    public static void SetInventoryOpen(bool open)
+    {
+        IsInventoryOpen = open;
+        Cursor.lockState = open ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = open;
+    }
+
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
-            _lockOnQueued = true;
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            _jumpQueued = true;
-
-        _isSprinting = Input.GetKey(KeyCode.LeftShift);
+        if (Input.GetKeyDown(KeyCode.F) && !IsInventoryOpen) _lockOnQueued = true;
+        if (Input.GetKeyDown(KeyCode.Space) && !IsInventoryOpen) _jumpQueued = true;
+        _isSprinting = Input.GetKey(KeyCode.LeftShift) && !IsInventoryOpen;
     }
 
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
@@ -163,6 +167,12 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
+        if (IsInventoryOpen || IsInputBlocked)
+        {
+            input.Set(new NetworkInputData());
+            return;
+        }
+
         Vector3 inputMove = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 
         Transform cameraTransform = PlayerCamera.Local != null
@@ -205,6 +215,10 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         _jumpQueued = false;
 
         input.Set(data);
+    }
+    public static void SetInputBlocked(bool blocked)
+    {
+        IsInputBlocked = blocked;
     }
 
     public void OnConnectedToServer(NetworkRunner runner)

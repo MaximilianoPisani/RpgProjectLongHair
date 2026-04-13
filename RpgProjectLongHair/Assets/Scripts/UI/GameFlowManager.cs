@@ -7,7 +7,8 @@ public class GameFlowManager : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject _loginPanel;
     [SerializeField] private GameObject _lobbyPanel;
-    [SerializeField] private GameObject _gameplayPanel;
+    [SerializeField] private GameObject _gameplayMainCanvas;
+    [SerializeField] private GameObject _rageCanvas;
 
     private bool _isLoggedIn = false;
 
@@ -34,25 +35,29 @@ public class GameFlowManager : MonoBehaviour
 
         _loginPanel.SetActive(false);
         _lobbyPanel.SetActive(true);
-        _gameplayPanel.SetActive(false);
+
+        _gameplayMainCanvas.SetActive(false); 
+        _rageCanvas.SetActive(false);         
     }
 
     public void EnterGameplay()
     {
         _loginPanel.SetActive(false);
         _lobbyPanel.SetActive(false);
-        _gameplayPanel.SetActive(true);
+
+        _gameplayMainCanvas.SetActive(true); 
+        _rageCanvas.SetActive(true);         
     }
 
     public void ResetToLogin()
     {
-        Debug.Log("[GameFlow] Logout ? Volviendo a login");
-
         _isLoggedIn = false;
 
         _loginPanel.SetActive(false);
         _lobbyPanel.SetActive(false);
-        _gameplayPanel.SetActive(false);
+
+        _gameplayMainCanvas.SetActive(false);
+        _rageCanvas.SetActive(false);
 
         _loginPanel.SetActive(true);
     }
@@ -60,7 +65,9 @@ public class GameFlowManager : MonoBehaviour
     {
         _loginPanel.SetActive(true);
         _lobbyPanel.SetActive(false);
-        _gameplayPanel.SetActive(false);
+
+        _gameplayMainCanvas.SetActive(false);
+        _rageCanvas.SetActive(false);
     }
     public bool CanConnect()
     {
