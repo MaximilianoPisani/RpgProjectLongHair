@@ -11,22 +11,34 @@ public class PlayerExp : NetworkBehaviour
 
     private ChangeDetector _changeDetector;
 
-    public override void Spawned()
+    public override async void Spawned()
     {
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
 
         if (Object.HasStateAuthority)
         {
-            Level = 0;
-            CurrentExp = 0;
+            var cloud = FindFirstObjectByType<PlayerCloudSave>();
+
+            if (cloud != null)
+            {
+                var data = await cloud.LoadPlayerData();
+                Level = data.level;
+                CurrentExp = data.exp;
+            }
+            else
+            {
+                Debug.LogWarning("[PlayerExp] PlayerCloudSave no encontrado en escena");
+                Level = 0;
+                CurrentExp = 0;
+            }
+
             ExpToNextLevel = expConfig.CalcExpToNext(Level);
         }
 
         if (Object.HasInputAuthority)
         {
             var hud = FindFirstObjectByType<PlayerExpHUD>();
-            if (hud != null)
-                hud.Bind(this);
+            if (hud != null) hud.Bind(this);
         }
     }
 
@@ -39,14 +51,13 @@ public class PlayerExp : NetworkBehaviour
                 if (Object.HasInputAuthority)
                 {
                     var hud = FindFirstObjectByType<PlayerExpHUD>();
-                    if (hud != null)
-                        hud.OnExpUpdated(CurrentExp, ExpToNextLevel, Level);
+                    if (hud != null) hud.OnExpUpdated(CurrentExp, ExpToNextLevel, Level);
                 }
             }
         }
     }
 
-    public void AddExperience(int amount)
+    public async void AddExperience(int amount)
     {
         if (!Object.HasStateAuthority || amount <= 0) return;
 
@@ -56,10 +67,13 @@ public class PlayerExp : NetworkBehaviour
         {
             CurrentExp -= ExpToNextLevel;
             Level++;
-
             ExpToNextLevel = expConfig.CalcExpToNext(Level);
-
-            Debug.Log($"[PlayerExp] LEVEL UP ? {Level}");
         }
+
+        var cloud = FindFirstObjectByType<PlayerCloudSave>();
+        if (cloud != null)
+            await cloud.SavePlayerData(Level, CurrentExp);
+        else
+            Debug.LogWarning("[PlayerExp] PlayerCloudSave no encontrado, no se guardó");
     }
 }
