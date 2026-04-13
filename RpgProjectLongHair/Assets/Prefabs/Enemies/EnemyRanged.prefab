@@ -804,13 +804,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4605711838475608612}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.05739766, y: 0.0028519286, z: 0.99766, w: -0.037040643}
-  m_LocalPosition: {x: -0.18694443, y: -0.027824763, z: -0.2847035}
+  m_LocalRotation: {x: -0.5458622, y: 0.46461815, z: 0.07083101, w: 0.693648}
+  m_LocalPosition: {x: -0.012, y: 0.225, z: -0.084}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4954823653642690762}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -55.395, y: 92.793, z: -46.066}
 --- !u!1 &4642243682246243553
 GameObject:
   m_ObjectHideFlags: 0
@@ -1255,6 +1255,9 @@ MonoBehaviour:
   idleVariationsCount: 2
   minIdleChangeTime: 3
   maxIdleChangeTime: 8
+  thrusterVfxPrefab: {fileID: 3842843122365348168, guid: 7acf683eeb610b14497566ed1f91057b, type: 3}
+  thrusterSpawnPoint: {fileID: 5306045900975265999}
+  thrusterActivationSpeed: 0.1
   agent: {fileID: -1964026567790909735}
 --- !u!1 &5835113331965107001
 GameObject:
