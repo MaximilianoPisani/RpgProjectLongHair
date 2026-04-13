@@ -17,7 +17,7 @@ MonoBehaviour:
   _cooldown: 0.1
   _hitRadius: 0.86
   _projectilePrefab: {fileID: 4028938312772070145, guid: d924951f8e151df4ba90bb00a313339a, type: 3}
-  _projectileSpeed: 27
+  _projectileSpeed: 40
   _lifetimeSeconds: 26
   _targetLayer:
     serializedVersion: 2
@@ -29,5 +29,7 @@ MonoBehaviour:
   _reloadDuration: 3.5
   _fireRate: 0.15
   _maxContinuousFireTime: 5
-  _shellEjectionVFX: {fileID: 763799897560185588, guid: 798157bad7358b04499c9d71cd3c0d9b, type: 3}
-  _shellEjectionTime: 0
+  _shellEjectionVFX: {fileID: 763799897560185588, guid: 7ab02189de34bcb42aa2bb69b98f9507, type: 3}
+  _fireEjectionVFX: {fileID: 2574898397583427364, guid: eb6d326ce04a828408f3c03db64db6dc, type: 3}
+  _shellEjectionTime: 0.5
+  _fireEjectionTime: 0.5

@@ -27,7 +27,8 @@ public class PlayerRangeState : IPlayerState
 
     // Flags
     private bool _projectileSpawned = false;
-    private bool _shellEjectionSpawned = false; 
+    private bool _shellEjectionSpawned = false;
+    private bool _fireEjectionSpawned = false;
     private bool _attackButtonReleased = true;
     private bool _needsReload = false;
 
@@ -139,6 +140,7 @@ public class PlayerRangeState : IPlayerState
         _shootTimer = 0f;
         _projectileSpawned = false;
         _shellEjectionSpawned = false;
+        _fireEjectionSpawned = false;
         _attackButtonReleased = false;
 
         RotateToShootDirection();
@@ -206,6 +208,13 @@ public class PlayerRangeState : IPlayerState
             SpawnShellEjectionVFX();
         }
 
+        // Fire Ejection VFX - Normalmente ocurre al mismo tiempo o ligeramente después del disparo
+        if (!_fireEjectionSpawned && _shootTimer >= _rangeData.FireEjectionTime)
+        {
+            _fireEjectionSpawned = true;
+            SpawnFireEjectionVFX();
+        }
+
         // Spawn del proyectil en el momento exacto
         if (!_projectileSpawned && _shootTimer >= _rangeData.ShootFrameTime)
         {
@@ -246,11 +255,13 @@ public class PlayerRangeState : IPlayerState
             _fireRateTimer = 0f;
             _projectileSpawned = false;
             _shellEjectionSpawned = false;
+            _fireEjectionSpawned = false;
             _shootTimer = 0f;
 
             // Reiniciar el ciclo de disparo
             SpawnProjectile();
             SpawnShellEjectionVFX();
+            SpawnFireEjectionVFX();
 
             _weaponAnim?.PlayShoot();
 
@@ -326,6 +337,19 @@ public class PlayerRangeState : IPlayerState
         _sm.Combat?.SpawnShellEjectionVFX(_rangeData.ShellEjectionVFX);
 
         Debug.Log("[Range] Shell ejection VFX spawned");
+    }
+
+    private void SpawnFireEjectionVFX()
+    {
+        if (_rangeData == null || _rangeData.FireEjectionVFX == null)  //Usar FireEjectionVFX
+        {
+            return;
+        }
+
+        // Solo spawner VFX localmente (no sincronizar por red)
+        _sm.Combat?.SpawnFireEjectionVFX(_rangeData.FireEjectionVFX);  //Llamar al método correcto
+
+        Debug.Log("[Range] Fire ejection VFX spawned");  //Mensaje correcto
     }
 
     // ==================== PROJECTILE SPAWNING ====================

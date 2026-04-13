@@ -36,10 +36,10 @@ public class RangedAttackData : AttackData
     [Header("VFX")]
     [Tooltip("Sistema de partículas para casquillos/balas expulsados")]
     [SerializeField] private GameObject _shellEjectionVFX;
-
+    [SerializeField] private GameObject _fireEjectionVFX;
     [Tooltip("Tiempo desde el inicio del disparo hasta que se eyectan los casquillos (normalmente igual o ligeramente después del shootFrameTime)")]
     [SerializeField] private float _shellEjectionTime = 0.2f;
-
+    [SerializeField] private float _fireEjectionTime = 0.2f;
     public NetworkObject ProjectilePrefab => _projectilePrefab;
     public float ProjectileSpeed => _projectileSpeed;
     public float LifetimeSeconds => _lifetimeSeconds;
@@ -55,7 +55,9 @@ public class RangedAttackData : AttackData
 
     //VFX
     public GameObject ShellEjectionVFX => _shellEjectionVFX;
+    public GameObject FireEjectionVFX => _fireEjectionVFX;
     public float ShellEjectionTime => _shellEjectionTime;
+    public float FireEjectionTime => _fireEjectionTime;
 
     protected override void OnValidate()
     {
@@ -75,6 +77,9 @@ public class RangedAttackData : AttackData
         // Validar que shellEjectionTime no sea mayor que shootDuration
         if (_shellEjectionTime > _shootDuration)
             _shellEjectionTime = _shootDuration * 0.5f;
+
+        if (_fireEjectionTime > _shootDuration)
+            _fireEjectionTime = _shootDuration * 0.5f;
     }
 }
 

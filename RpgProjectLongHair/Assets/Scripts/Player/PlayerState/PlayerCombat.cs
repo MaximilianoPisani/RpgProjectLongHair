@@ -32,6 +32,12 @@ public class PlayerCombat : NetworkBehaviour
     [Tooltip("Offset local para el spawn de casquillos")]
     public Vector3 shellEjectionOffset = Vector3.zero;
 
+    [Tooltip("Punto de spawn para el fuego expulsado del cañon")]
+    public Transform fireEjectionPoint;
+
+    [Tooltip("Offset local para el spawn de cadencia de fuego")]
+    public Vector3 fireEjectionOffset = Vector3.zero;
+
     public MeleeAttackData GetCurrentMeleeData()
     {
         switch (CurrentWeapon)
@@ -112,6 +118,41 @@ public class PlayerCombat : NetworkBehaviour
 
         // Calcular posición y rotación
         Vector3 spawnPosition = spawnTransform.position + spawnTransform.TransformDirection(shellEjectionOffset);
+        Quaternion spawnRotation = spawnTransform.rotation;
+
+        // Instanciar VFX
+        GameObject vfxInstance = Instantiate(vfxPrefab, spawnPosition, spawnRotation);
+
+        // Opcional: hacer que el VFX siga al arma durante un frame
+        // Esto es útil si el jugador se mueve mientras dispara
+        // vfxInstance.transform.SetParent(spawnTransform, true);
+
+        Debug.Log($"[PlayerCombat] Spawned shell ejection VFX: {vfxPrefab.name}");
+    }
+
+    public void SpawnFireEjectionVFX(GameObject vfxPrefab)
+    {
+        if (vfxPrefab == null)
+        {
+            Debug.LogWarning("[PlayerCombat] No fire cadence ejection VFX prefab assigned");
+            return;
+        }
+
+        // Determinar punto de spawn - preferir fireEjectionPoint, luego shootPoints
+        Transform spawnTransform = fireEjectionPoint;
+
+        if (spawnTransform == null && shootPoints != null && shootPoints.Length > 0)
+        {
+            spawnTransform = shootPoints[0];
+        }
+
+        if (spawnTransform == null)
+        {
+            spawnTransform = transform;
+        }
+
+        // Calcular posición y rotación
+        Vector3 spawnPosition = spawnTransform.position + spawnTransform.TransformDirection(fireEjectionOffset);
         Quaternion spawnRotation = spawnTransform.rotation;
 
         // Instanciar VFX
