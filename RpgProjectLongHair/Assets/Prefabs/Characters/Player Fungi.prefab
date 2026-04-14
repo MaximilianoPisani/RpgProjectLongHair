@@ -1867,11 +1867,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   vfxSpawnPoint: {fileID: 1899694744837599787}
-  vfxOffset: {x: 0, y: 0, z: 0}
   RangeData: {fileID: 11400000, guid: b42c6b1196c4ad44f9b2081aa5d495b2, type: 2}
   shootPoints: []
   shellEjectionPoint: {fileID: 3729135848879202249}
-  shellEjectionOffset: {x: 0, y: 0, z: 0}
+  fireEjectionPoint: {fileID: 3729135848879202249}
 --- !u!114 &5406402327671719317
 MonoBehaviour:
   m_ObjectHideFlags: 0

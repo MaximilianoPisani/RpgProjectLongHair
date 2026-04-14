@@ -752,7 +752,7 @@ Transform:
   m_GameObject: {fileID: 4985959513854983216}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.011, z: 0.327}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -955,7 +955,8 @@ GameObject:
   - component: {fileID: -7172902207724428572}
   - component: {fileID: 1448903130190009638}
   - component: {fileID: -7959826532971654791}
-  - component: {fileID: 8792570438650109827}
+  - component: {fileID: 5886125173034358410}
+  - component: {fileID: -8914437699861995711}
   m_Layer: 3
   m_Name: enemyMinionMecano
   m_TagString: Enemy
@@ -1086,7 +1087,7 @@ MonoBehaviour:
   AttackOrigin: {fileID: 7505190822256135982}
   MeleeAttackData: {fileID: 11400000, guid: d4f40e7ef69ca2543acb5b9093db7ab8, type: 2}
   StoppingDistance: 1
-  animationController: {fileID: 8792570438650109827}
+  animationController: {fileID: 5886125173034358410}
 --- !u!114 &1680863857489578343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1178,7 +1179,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8792570438650109827
+--- !u!114 &5886125173034358410
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1187,21 +1188,44 @@ MonoBehaviour:
   m_GameObject: {fileID: 5456948168675829924}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab8c75f4dcaf71e4498f9717781193ab, type: 3}
+  m_Script: {fileID: 11500000, guid: e6dbadef8392f1242aa59aa8c1a5f38e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: -7959826532971654791}
   speedParameter: Speed
   meleeAttackTrigger: MeleeAttack
+  rangedAttackTrigger: RangedAttack
   hitTrigger: Hit
-  idleIndexParameter: IdleIndex
+  deathTrigger: Death
   idleVariationsCount: 2
   minIdleChangeTime: 4
   maxIdleChangeTime: 8
-  thrusterVfxPrefab: {fileID: 3842843122365348168, guid: 7acf683eeb610b14497566ed1f91057b, type: 3}
-  thrusterSpawnPoint: {fileID: 2421744618897059630}
-  thrusterActivationSpeed: 0.1
+  idleIndexParameter: IdleIndex
   agent: {fileID: -1964026567790909735}
+  vfxController: {fileID: -8914437699861995711}
+--- !u!114 &-8914437699861995711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5456948168675829924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c82cfa97959445448931a9e619d98e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackVfxPoint: {fileID: 7505190822256135982}
+  muzzlePoint: {fileID: 0}
+  thrusterPoint: {fileID: 2421744618897059630}
+  thrusterVfxPrefab: {fileID: 3842843122365348168, guid: 7acf683eeb610b14497566ed1f91057b, type: 3}
+  thrusterActivationSpeed: 0.1
+  hitReactionVFX:
+    vfxPrefab: {fileID: 2504214343621411470, guid: 14520186abc0978409d00f27f6b05262, type: 3}
+    vfxSpawnTime: 0.1
+    localOffset: {x: 0, y: 0, z: 0}
+    followTransform: 1
+    customDuration: 0
 --- !u!1 &5780365246860821373
 GameObject:
   m_ObjectHideFlags: 0

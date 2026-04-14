@@ -1,5 +1,5 @@
+using Fusion;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class EnemyMeleeController : EnemyBaseController
 {
@@ -7,8 +7,10 @@ public class EnemyMeleeController : EnemyBaseController
     public MeleeAttackData MeleeAttackData;
     public float StoppingDistance = 1f;
 
-    [SerializeField] private EnemyMinionAnimationController animationController;
-    public EnemyMinionAnimationController AnimationController => animationController;
+    [SerializeField] private EnemyAnimationController animationController; // Cambiado
+    public EnemyAnimationController AnimationController => animationController;
+
+    private int currentComboIndex = 0;
 
     public override void Spawned()
     {
@@ -17,7 +19,7 @@ public class EnemyMeleeController : EnemyBaseController
             Agent.stoppingDistance = StoppingDistance;
 
         if (animationController == null)
-            animationController = GetComponent<EnemyMinionAnimationController>();
+            animationController = GetComponent<EnemyAnimationController>();
     }
 
     protected override void InitStateMachine()
@@ -29,9 +31,19 @@ public class EnemyMeleeController : EnemyBaseController
 
     public void TriggerMeleeAttackAnimation()
     {
-        if (animationController != null)
-            animationController.PlayMeleeAttack();
+        if (animationController == null || MeleeAttackData == null) return;
+
+        // Obtener VFX del combo actual
+        AttackVFXConfig vfxConfig = null;
+        if (MeleeAttackData.ComboAttacks != null && MeleeAttackData.ComboAttacks.Length > 0)
+        {
+            int index = Mathf.Clamp(currentComboIndex, 0, MeleeAttackData.ComboAttacks.Length - 1);
+            vfxConfig = MeleeAttackData.ComboAttacks[index].attackVFX;
+        }
+
+        animationController.PlayMeleeAttack(vfxConfig);
     }
+
     public void TriggerHitAnimation()
     {
         if (animationController != null)
@@ -63,12 +75,12 @@ public class EnemyMeleeController : EnemyBaseController
             if (!alreadyHit.Add(playerHealth)) continue;
 
             playerHealth.TakeDamage(MeleeAttackData.Damage, transform.position);
-            Debug.Log($"[Enemy] Hit frame ? {MeleeAttackData.Damage} dmg");
         }
     }
+
     private void OnValidate()
     {
         if (animationController == null)
-            animationController = GetComponent<EnemyMinionAnimationController>();
+            animationController = GetComponent<EnemyAnimationController>();
     }
 }

@@ -12,12 +12,9 @@ public class PlayerCombat : NetworkBehaviour
     public Transform meleeOrigin;
     public LayerMask enemyLayer;
 
-    [Header("VFX Settings")]
+    [Header("VFX Settings - Melee")]
     [Tooltip("Punto de spawn para los efectos visuales (si es null, usa meleeOrigin)")]
     public Transform vfxSpawnPoint;
-
-    [Tooltip("Offset local para el spawn de VFX")]
-    public Vector3 vfxOffset = Vector3.zero;
 
     [Header("Range")]
     public RangedAttackData RangeData;
@@ -26,29 +23,20 @@ public class PlayerCombat : NetworkBehaviour
     public Transform[] shootPoints;
 
     [Header("VFX Settings - Ranged")]
-    [Tooltip("Punto de spawn para los casquillos/balas expulsados (normalmente en el lado del arma)")]
+    [Tooltip("Punto de spawn para los casquillos/balas expulsados")]
     public Transform shellEjectionPoint;
 
-    [Tooltip("Offset local para el spawn de casquillos")]
-    public Vector3 shellEjectionOffset = Vector3.zero;
-
-    [Tooltip("Punto de spawn para el fuego expulsado del cañon")]
+    [Tooltip("Punto de spawn para el fuego expulsado del cañón")]
     public Transform fireEjectionPoint;
-
-    [Tooltip("Offset local para el spawn de cadencia de fuego")]
-    public Vector3 fireEjectionOffset = Vector3.zero;
 
     public MeleeAttackData GetCurrentMeleeData()
     {
         switch (CurrentWeapon)
         {
             case WeaponCategory.Axe:
-                return meleeData;
-
             case WeaponCategory.Hammer:
                 return meleeData;
         }
-
         return null;
     }
 
@@ -57,111 +45,92 @@ public class PlayerCombat : NetworkBehaviour
         switch (CurrentWeapon)
         {
             case WeaponCategory.Rifle:
-                return RangeData;
-
             case WeaponCategory.Gatling:
                 return RangeData;
         }
-
         return null;
     }
 
-    public void SpawnSlashVFX(GameObject vfxPrefab)
+    // ==================== VFX MELEE ====================
+
+    /// <summary>
+    /// Spawnea el VFX de slash usando la config del combo actual.
+    /// El offset viene del AttackVFXConfig, no del inspector.
+    /// </summary>
+    public void SpawnSlashVFX(AttackVFXConfig config)
     {
-        if (vfxPrefab == null)
+        if (config == null || config.vfxPrefab == null)
         {
-            Debug.LogWarning("[PlayerCombat] No VFX prefab assigned for this attack");
+            Debug.LogWarning("[PlayerCombat] SpawnSlashVFX: config o prefab nulo");
             return;
         }
 
-        // Determinar punto de spawn
         Transform spawnTransform = vfxSpawnPoint != null ? vfxSpawnPoint : meleeOrigin;
+        if (spawnTransform == null) spawnTransform = transform;
 
-        if (spawnTransform == null)
-        {
-            spawnTransform = transform;
-        }
-
-        // Calcular posición y rotación
-        Vector3 spawnPosition = spawnTransform.position + spawnTransform.TransformDirection(vfxOffset);
-        Quaternion spawnRotation = spawnTransform.rotation;
-
-        // Instanciar VFX
-        GameObject vfxInstance = Instantiate(vfxPrefab, spawnPosition, spawnRotation);
-
-        // Opcional: hacer que el VFX siga al jugador si tiene un componente específico
-        // vfxInstance.transform.SetParent(spawnTransform);
-
-        Debug.Log($"[PlayerCombat] Spawned slash VFX: {vfxPrefab.name}");
+        SpawnVFX(config, spawnTransform);
+        Debug.Log($"[PlayerCombat] Slash VFX spawned: {config.vfxPrefab.name}");
     }
 
-    public void SpawnShellEjectionVFX(GameObject vfxPrefab)
+    // ==================== VFX RANGED ====================
+
+    /// <summary>
+    /// Spawnea el VFX de expulsión de casquillo.
+    /// </summary>
+    public void SpawnShellEjectionVFX(AttackVFXConfig config)
     {
-        if (vfxPrefab == null)
+        if (config == null || config.vfxPrefab == null)
         {
-            Debug.LogWarning("[PlayerCombat] No shell ejection VFX prefab assigned");
+            Debug.LogWarning("[PlayerCombat] SpawnShellEjectionVFX: config o prefab nulo");
             return;
         }
 
-        // Determinar punto de spawn - preferir shellEjectionPoint, luego shootPoints
         Transform spawnTransform = shellEjectionPoint;
-
         if (spawnTransform == null && shootPoints != null && shootPoints.Length > 0)
-        {
             spawnTransform = shootPoints[0];
-        }
+        if (spawnTransform == null) spawnTransform = transform;
 
-        if (spawnTransform == null)
-        {
-            spawnTransform = transform;
-        }
-
-        // Calcular posición y rotación
-        Vector3 spawnPosition = spawnTransform.position + spawnTransform.TransformDirection(shellEjectionOffset);
-        Quaternion spawnRotation = spawnTransform.rotation;
-
-        // Instanciar VFX
-        GameObject vfxInstance = Instantiate(vfxPrefab, spawnPosition, spawnRotation);
-
-        // Opcional: hacer que el VFX siga al arma durante un frame
-        // Esto es útil si el jugador se mueve mientras dispara
-        // vfxInstance.transform.SetParent(spawnTransform, true);
-
-        Debug.Log($"[PlayerCombat] Spawned shell ejection VFX: {vfxPrefab.name}");
+        SpawnVFX(config, spawnTransform);
+        Debug.Log($"[PlayerCombat] Shell ejection VFX spawned: {config.vfxPrefab.name}");
     }
 
-    public void SpawnFireEjectionVFX(GameObject vfxPrefab)
+    /// <summary>
+    /// Spawnea el VFX de fogonazo/fire ejection.
+    /// </summary>
+    public void SpawnFireEjectionVFX(AttackVFXConfig config)
     {
-        if (vfxPrefab == null)
+        if (config == null || config.vfxPrefab == null)
         {
-            Debug.LogWarning("[PlayerCombat] No fire cadence ejection VFX prefab assigned");
+            Debug.LogWarning("[PlayerCombat] SpawnFireEjectionVFX: config o prefab nulo");
             return;
         }
 
-        // Determinar punto de spawn - preferir fireEjectionPoint, luego shootPoints
         Transform spawnTransform = fireEjectionPoint;
-
         if (spawnTransform == null && shootPoints != null && shootPoints.Length > 0)
-        {
             spawnTransform = shootPoints[0];
-        }
+        if (spawnTransform == null) spawnTransform = transform;
 
-        if (spawnTransform == null)
-        {
-            spawnTransform = transform;
-        }
+        SpawnVFX(config, spawnTransform);
+        Debug.Log($"[PlayerCombat] Fire ejection VFX spawned: {config.vfxPrefab.name}");
+    }
 
-        // Calcular posición y rotación
-        Vector3 spawnPosition = spawnTransform.position + spawnTransform.TransformDirection(fireEjectionOffset);
+    // ==================== HELPERS ====================
+
+    /// <summary>
+    /// Lógica común de spawn: aplica offset del config, respeta followTransform y customDuration.
+    /// </summary>
+    private void SpawnVFX(AttackVFXConfig config, Transform spawnTransform)
+    {
+        Vector3 spawnPosition = spawnTransform.position
+            + spawnTransform.TransformDirection(config.localOffset);
         Quaternion spawnRotation = spawnTransform.rotation;
 
-        // Instanciar VFX
-        GameObject vfxInstance = Instantiate(vfxPrefab, spawnPosition, spawnRotation);
+        GameObject vfxInstance = Instantiate(config.vfxPrefab, spawnPosition, spawnRotation);
 
-        // Opcional: hacer que el VFX siga al arma durante un frame
-        // Esto es útil si el jugador se mueve mientras dispara
-        // vfxInstance.transform.SetParent(spawnTransform, true);
+        if (config.followTransform)
+            vfxInstance.transform.SetParent(spawnTransform, true);
 
-        Debug.Log($"[PlayerCombat] Spawned shell ejection VFX: {vfxPrefab.name}");
+        if (config.customDuration > 0f)
+            Destroy(vfxInstance, config.customDuration);
     }
 }

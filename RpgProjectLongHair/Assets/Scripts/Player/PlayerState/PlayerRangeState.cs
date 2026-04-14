@@ -5,16 +5,14 @@ public class PlayerRangeState : IPlayerState
 {
     private PlayerStateMachine _sm;
     private RangedAttackData _rangeData;
-
     private IWeaponAnimatable _weaponAnim;
 
-    // Estado del disparo
     private enum ShootPhase
     {
-        Idle,           // Esperando input
-        Shooting,       // Ejecutando animación de disparo
-        Reloading,      // Recargando
-        AutomaticFire   // Disparando en modo automático (loop)
+        Idle,
+        Shooting,
+        Reloading,
+        AutomaticFire
     }
 
     private ShootPhase _currentPhase = ShootPhase.Idle;
@@ -46,9 +44,7 @@ public class PlayerRangeState : IPlayerState
             return;
         }
 
-        var settings = _sm.Combat;
-        _rangeData = settings?.GetCurrentRangeData();
-
+        _rangeData = _sm.Combat?.GetCurrentRangeData();
         if (_rangeData == null)
         {
             Debug.LogError("[Range] RangedAttackData no configurado!");
@@ -56,7 +52,6 @@ public class PlayerRangeState : IPlayerState
             return;
         }
 
-        // Verificar cooldown
         if (!_sm.AttackCooldown.ExpiredOrNotRunning(_sm.Runner))
         {
             _sm.ChangeState(new PlayerIdleState(_sm));
@@ -64,7 +59,6 @@ public class PlayerRangeState : IPlayerState
         }
 
         _weaponAnim = weapon.GetCurrentWeaponAnimatable();
-
         _currentPhase = ShootPhase.Idle;
         _needsReload = false;
 
@@ -75,21 +69,10 @@ public class PlayerRangeState : IPlayerState
     {
         switch (_currentPhase)
         {
-            case ShootPhase.Idle:
-                UpdateIdlePhase(input);
-                break;
-
-            case ShootPhase.Shooting:
-                UpdateShootingPhase(input);
-                break;
-
-            case ShootPhase.AutomaticFire:
-                UpdateAutomaticFirePhase(input);
-                break;
-
-            case ShootPhase.Reloading:
-                UpdateReloadingPhase(input);
-                break;
+            case ShootPhase.Idle: UpdateIdlePhase(input); break;
+            case ShootPhase.Shooting: UpdateShootingPhase(input); break;
+            case ShootPhase.AutomaticFire: UpdateAutomaticFirePhase(input); break;
+            case ShootPhase.Reloading: UpdateReloadingPhase(input); break;
         }
 
         UpdateMovement();
@@ -106,33 +89,22 @@ public class PlayerRangeState : IPlayerState
         Debug.Log("[Range] Exited");
     }
 
-    // ==================== IDLE PHASE ====================
+    // ==================== IDLE ====================
 
     private void UpdateIdlePhase(NetworkInputData input)
     {
-        // Detectar si se soltó el botón
         if (!input.attackRange)
-        {
             _attackButtonReleased = true;
-        }
 
-        // Verificar si puede disparar
-        bool canShoot = _rangeData.RequireReleaseToShootAgain
-            ? _attackButtonReleased
-            : true;
+        bool canShoot = _rangeData.RequireReleaseToShootAgain ? _attackButtonReleased : true;
 
         if (input.attackRange && canShoot)
-        {
             StartShooting();
-        }
         else if (!input.attackRange)
-        {
-            // Si no hay input, volver a idle
             _sm.ChangeState(new PlayerIdleState(_sm));
-        }
     }
 
-    // ==================== SHOOTING PHASE ====================
+    // ==================== SHOOTING ====================
 
     private void StartShooting()
     {
@@ -144,10 +116,7 @@ public class PlayerRangeState : IPlayerState
         _attackButtonReleased = false;
 
         RotateToShootDirection();
-
-        // Trigger de animación
         _sm.GetComponent<PlayerNetworkSync>()?.TriggerShoot();
-
         _weaponAnim?.PlayShoot();
 
         Debug.Log("[Range] Started shooting");
@@ -159,28 +128,14 @@ public class PlayerRangeState : IPlayerState
 
         ExecuteShootTimedEvents();
 
-        // Spawn del proyectil en el momento exacto
-        if (!_projectileSpawned && _shootTimer >= _rangeData.ShootFrameTime)
-        {
-            _projectileSpawned = true;
-            SpawnProjectile();
-        }
-
-        // Fin de la animación de disparo
         if (_shootTimer >= _rangeData.ShootDuration)
-        {
             OnShootAnimationEnd(input);
-        }
     }
 
     private void OnShootAnimationEnd(NetworkInputData input)
     {
-        Debug.Log($"[Range] Shoot animation ended - Mode: {_rangeData.Mode}");
-
-        // Decidir qué hacer según el modo de fuego
         if (_rangeData.Mode == FireMode.Automatic)
         {
-            // Si sigue presionado, continuar disparando
             if (input.attackRange)
             {
                 _currentPhase = ShootPhase.AutomaticFire;
@@ -193,29 +148,36 @@ public class PlayerRangeState : IPlayerState
                 StartReloading();
             }
         }
-        else // SingleShot
+        else
         {
             StartReloading();
         }
     }
 
+    /// <summary>
+    /// Ejecuta los eventos de VFX y proyectil según los tiempos embebidos en cada AttackVFXConfig.
+    /// </summary>
     private void ExecuteShootTimedEvents()
     {
-        // Shell Ejection VFX - Normalmente ocurre al mismo tiempo o ligeramente después del disparo
-        if (!_shellEjectionSpawned && _shootTimer >= _rangeData.ShellEjectionTime)
+        // Shell ejection — tiempo viene de ShellEjectionVFX.vfxSpawnTime
+        if (!_shellEjectionSpawned
+            && _rangeData.ShellEjectionVFX != null
+            && _shootTimer >= _rangeData.ShellEjectionVFX.vfxSpawnTime)
         {
             _shellEjectionSpawned = true;
             SpawnShellEjectionVFX();
         }
 
-        // Fire Ejection VFX - Normalmente ocurre al mismo tiempo o ligeramente después del disparo
-        if (!_fireEjectionSpawned && _shootTimer >= _rangeData.FireEjectionTime)
+        // Fire ejection — tiempo viene de FireEjectionVFX.vfxSpawnTime
+        if (!_fireEjectionSpawned
+            && _rangeData.FireEjectionVFX != null
+            && _shootTimer >= _rangeData.FireEjectionVFX.vfxSpawnTime)
         {
             _fireEjectionSpawned = true;
             SpawnFireEjectionVFX();
         }
 
-        // Spawn del proyectil en el momento exacto
+        // Proyectil — tiempo propio del data
         if (!_projectileSpawned && _shootTimer >= _rangeData.ShootFrameTime)
         {
             _projectileSpawned = true;
@@ -223,15 +185,13 @@ public class PlayerRangeState : IPlayerState
         }
     }
 
-
-    // ==================== AUTOMATIC FIRE PHASE ====================
+    // ==================== AUTOMATIC FIRE ====================
 
     private void UpdateAutomaticFirePhase(NetworkInputData input)
     {
         _fireRateTimer += _sm.Runner.DeltaTime;
         _continuousFireTimer += _sm.Runner.DeltaTime;
 
-        // Verificar si se soltó el botón
         if (!input.attackRange)
         {
             Debug.Log("[Range] Button released - Starting reload");
@@ -239,9 +199,8 @@ public class PlayerRangeState : IPlayerState
             return;
         }
 
-        // Verificar tiempo máximo de disparo continuo
-        if (_rangeData.MaxContinuousFireTime > 0f &&
-            _continuousFireTimer >= _rangeData.MaxContinuousFireTime)
+        if (_rangeData.MaxContinuousFireTime > 0f
+            && _continuousFireTimer >= _rangeData.MaxContinuousFireTime)
         {
             Debug.Log("[Range] Max continuous fire time reached - Forcing reload");
             _needsReload = true;
@@ -249,27 +208,24 @@ public class PlayerRangeState : IPlayerState
             return;
         }
 
-        // Disparar según la cadencia
         if (_fireRateTimer >= _rangeData.FireRate)
         {
             _fireRateTimer = 0f;
+            _shootTimer = 0f;
             _projectileSpawned = false;
             _shellEjectionSpawned = false;
             _fireEjectionSpawned = false;
-            _shootTimer = 0f;
 
-            // Reiniciar el ciclo de disparo
             SpawnProjectile();
             SpawnShellEjectionVFX();
             SpawnFireEjectionVFX();
-
             _weaponAnim?.PlayShoot();
 
             Debug.Log($"[Range] Auto-fire shot - Continuous time: {_continuousFireTimer:F2}s");
         }
     }
 
-    // ==================== RELOADING PHASE ====================
+    // ==================== RELOADING ====================
 
     private void StartReloading()
     {
@@ -290,9 +246,7 @@ public class PlayerRangeState : IPlayerState
         _reloadTimer += _sm.Runner.DeltaTime;
 
         if (_reloadTimer >= _rangeData.ReloadDuration)
-        {
             OnReloadComplete(input);
-        }
     }
 
     private void OnReloadComplete(NetworkInputData input)
@@ -300,17 +254,10 @@ public class PlayerRangeState : IPlayerState
         Debug.Log("[Range] Reload complete");
 
         if (_sm.Animator != null)
-        {
             _sm.Animator.SetBool("IsReloading", false);
-        }
 
-        // Setear cooldown
-        _sm.AttackCooldown = TickTimer.CreateFromSeconds(
-            _sm.Runner,
-            _rangeData.Cooldown
-        );
+        _sm.AttackCooldown = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.Cooldown);
 
-        // Si es automático y sigue presionado (y no necesita reload forzado), continuar disparando
         if (_rangeData.Mode == FireMode.Automatic && input.attackRange && !_needsReload)
         {
             Debug.Log("[Range] Reload complete - Resuming automatic fire");
@@ -318,55 +265,37 @@ public class PlayerRangeState : IPlayerState
         }
         else
         {
-            // Volver a idle
             _sm.ChangeState(new PlayerIdleState(_sm));
         }
     }
 
     // ==================== VFX ====================
 
-    
     private void SpawnShellEjectionVFX()
     {
-        if (_rangeData == null || _rangeData.ShellEjectionVFX == null)
-        {
-            return;
-        }
-
-        // Solo spawner VFX localmente (no sincronizar por red)
+        if (_rangeData.ShellEjectionVFX == null) return;
         _sm.Combat?.SpawnShellEjectionVFX(_rangeData.ShellEjectionVFX);
-
         Debug.Log("[Range] Shell ejection VFX spawned");
     }
 
     private void SpawnFireEjectionVFX()
     {
-        if (_rangeData == null || _rangeData.FireEjectionVFX == null)  //Usar FireEjectionVFX
-        {
-            return;
-        }
-
-        // Solo spawner VFX localmente (no sincronizar por red)
-        _sm.Combat?.SpawnFireEjectionVFX(_rangeData.FireEjectionVFX);  //Llamar al método correcto
-
-        Debug.Log("[Range] Fire ejection VFX spawned");  //Mensaje correcto
+        if (_rangeData.FireEjectionVFX == null) return;
+        _sm.Combat?.SpawnFireEjectionVFX(_rangeData.FireEjectionVFX);
+        Debug.Log("[Range] Fire ejection VFX spawned");
     }
 
-    // ==================== PROJECTILE SPAWNING ====================
+    // ==================== PROJECTILE ====================
 
     private void SpawnProjectile()
     {
         Debug.Log("[Range] Spawning projectile");
 
         if (_sm.Object.HasInputAuthority && !_sm.Object.HasStateAuthority)
-        {
             RPC_SpawnProjectile();
-        }
 
         if (_sm.Object.HasStateAuthority)
-        {
             ExecuteSpawnProjectile();
-        }
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
@@ -397,9 +326,7 @@ public class PlayerRangeState : IPlayerState
             {
                 var projectile = obj.GetComponent<Projectile>();
                 if (projectile != null)
-                {
                     projectile.InitServer(direction, _rangeData, attacker, spawnPos);
-                }
             }
         );
 
@@ -412,15 +339,11 @@ public class PlayerRangeState : IPlayerState
     {
         if (_sm.Animator == null) return;
 
-        // Durante disparo y recarga, permitir movimiento pero reducido
         float speed = _sm.Player.GetHorizontalSpeed();
         float normalized = speed / _sm.Player.SprintSpeed;
 
-        // Reducir velocidad durante disparo
         if (_currentPhase == ShootPhase.Shooting || _currentPhase == ShootPhase.AutomaticFire)
-        {
-            normalized *= 0.5f; // Reducir a la mitad durante disparo
-        }
+            normalized *= 0.5f;
 
         _sm.Animator.SetFloat("speed", normalized);
         _sm.Animator.SetBool("isMoving", speed > 0.05f);
@@ -435,9 +358,7 @@ public class PlayerRangeState : IPlayerState
         Vector3 flatDir = new Vector3(direction.x, 0f, direction.z).normalized;
 
         if (flatDir.sqrMagnitude > 0.01f)
-        {
             _sm.transform.rotation = Quaternion.LookRotation(flatDir);
-        }
     }
 
     private Vector3 GetShootDirection()
@@ -446,8 +367,7 @@ public class PlayerRangeState : IPlayerState
             return _sm.LastShootDirection.normalized;
 
         Camera cam = Camera.main;
-        if (cam == null)
-            return _sm.transform.forward;
+        if (cam == null) return _sm.transform.forward;
 
         Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
 

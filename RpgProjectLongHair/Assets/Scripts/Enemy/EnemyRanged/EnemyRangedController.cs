@@ -5,27 +5,20 @@ public class EnemyRangedController : EnemyBaseController
 {
     [Header("Ranged Settings")]
     public RangedAttackData RangedAttackData;
-
-    [Tooltip("Distancia mínima que mantiene del player")]
     public float PreferredMinRange = 4f;
-
-    [Tooltip("Distancia máxima antes de acercarse")]
     public float PreferredMaxRange = 7f;
-
     public float NextRangedAttackTime { get; set; } = 0f;
 
     [Header("Animation")]
-    [SerializeField] private EnemyRangedAnimationController animationController;
-
-    public EnemyRangedAnimationController AnimationController => animationController;
+    [SerializeField] private EnemyAnimationController animationController;
+    public EnemyAnimationController AnimationController => animationController;
 
     public override void Spawned()
     {
         base.Spawned();
 
-        // Auto-encontrar el controlador de animaciones si no está asignado
         if (animationController == null)
-            animationController = GetComponent<EnemyRangedAnimationController>();
+            animationController = GetComponent<EnemyAnimationController>();
     }
 
     protected override void InitStateMachine()
@@ -35,20 +28,29 @@ public class EnemyRangedController : EnemyBaseController
 
     protected override IEnemyState GetIdleState() => new EnemyIdleRangedState(this);
 
+    /// <summary>
+    /// Dispara la animación ranged pasando ambos VFX configs desde el data.
+    /// El timing de cada VFX viene embebido en su AttackVFXConfig.
+    /// </summary>
     public void TriggerRangedAttackAnimation()
     {
-        if (animationController != null)
-            animationController.PlayRangedAttack();
+        if (animationController == null || RangedAttackData == null) return;
+
+        animationController.PlayRangedAttack(
+            RangedAttackData.FireEjectionVFX,
+            RangedAttackData.ShellEjectionVFX
+        );
     }
+
     public void TriggerHitAnimation()
     {
         if (animationController != null)
             animationController.PlayHitReaction();
     }
+
     private void OnValidate()
     {
         if (animationController == null)
-            animationController = GetComponent<EnemyRangedAnimationController>();
+            animationController = GetComponent<EnemyAnimationController>();
     }
-
 }

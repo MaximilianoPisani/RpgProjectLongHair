@@ -1,15 +1,24 @@
 using UnityEngine;
 using Fusion;
 
+public enum FireMode
+{
+    SingleShot,  // Un disparo por click (Mosquete)
+    Automatic    // Disparo continuo mientras se mantiene presionado (Gatling)
+}
+
 [CreateAssetMenu(fileName = "RangedAttack_Data", menuName = "Data/RangedAttack")]
 public class RangedAttackData : AttackData
 {
     [Header("Projectile")]
     [SerializeField] private NetworkObject _projectilePrefab;
+
     [Min(0f)]
     [SerializeField] private float _projectileSpeed = 25f;
+
     [Min(0f)]
     [SerializeField] private float _lifetimeSeconds = 5f;
+
     [SerializeField] private LayerMask _targetLayer;
 
     [Header("Fire Mode")]
@@ -17,7 +26,7 @@ public class RangedAttackData : AttackData
     [SerializeField] private bool _requireReleaseToShootAgain = true;
 
     [Header("Timing")]
-    [Tooltip("Tiempo desde el inicio del disparo hasta que se spawea el proyectil")]
+    [Tooltip("Tiempo desde el inicio del disparo hasta que se spawnea el proyectil")]
     [SerializeField] private float _shootFrameTime = 0.2f;
 
     [Tooltip("Duración total de la animación de disparo")]
@@ -34,17 +43,17 @@ public class RangedAttackData : AttackData
     [SerializeField] private float _maxContinuousFireTime = 3f;
 
     [Header("VFX")]
-    [Tooltip("Sistema de partículas para casquillos/balas expulsados")]
-    [SerializeField] private GameObject _shellEjectionVFX;
-    [SerializeField] private GameObject _fireEjectionVFX;
-    [Tooltip("Tiempo desde el inicio del disparo hasta que se eyectan los casquillos (normalmente igual o ligeramente después del shootFrameTime)")]
-    [SerializeField] private float _shellEjectionTime = 0.2f;
-    [SerializeField] private float _fireEjectionTime = 0.2f;
+    [Tooltip("VFX del fogonazo / disparo. El timing está incluido en el config.")]
+    [SerializeField] private AttackVFXConfig _fireEjectionVFX;
+
+    [Tooltip("VFX de expulsión de casquillo. El timing está incluido en el config.")]
+    [SerializeField] private AttackVFXConfig _shellEjectionVFX;
+
+    // Propiedades públicas
     public NetworkObject ProjectilePrefab => _projectilePrefab;
     public float ProjectileSpeed => _projectileSpeed;
     public float LifetimeSeconds => _lifetimeSeconds;
     public LayerMask TargetLayer => _targetLayer;
-
     public FireMode Mode => _fireMode;
     public bool RequireReleaseToShootAgain => _requireReleaseToShootAgain;
     public float ShootFrameTime => _shootFrameTime;
@@ -53,15 +62,14 @@ public class RangedAttackData : AttackData
     public float FireRate => _fireRate;
     public float MaxContinuousFireTime => _maxContinuousFireTime;
 
-    //VFX
-    public GameObject ShellEjectionVFX => _shellEjectionVFX;
-    public GameObject FireEjectionVFX => _fireEjectionVFX;
-    public float ShellEjectionTime => _shellEjectionTime;
-    public float FireEjectionTime => _fireEjectionTime;
+    // VFX — ahora devuelven AttackVFXConfig completo (timing incluido)
+    public AttackVFXConfig FireEjectionVFX => _fireEjectionVFX;
+    public AttackVFXConfig ShellEjectionVFX => _shellEjectionVFX;
 
     protected override void OnValidate()
     {
         base.OnValidate();
+
         if (_projectileSpeed < 0f) _projectileSpeed = 0f;
         if (_lifetimeSeconds < 0f) _lifetimeSeconds = 0f;
         if (_shootFrameTime < 0f) _shootFrameTime = 0f;
@@ -70,21 +78,7 @@ public class RangedAttackData : AttackData
         if (_fireRate < 0.1f) _fireRate = 0.1f;
         if (_maxContinuousFireTime < 0f) _maxContinuousFireTime = 0f;
 
-        // Validar que shootFrameTime no sea mayor que shootDuration
         if (_shootFrameTime > _shootDuration)
             _shootFrameTime = _shootDuration * 0.5f;
-
-        // Validar que shellEjectionTime no sea mayor que shootDuration
-        if (_shellEjectionTime > _shootDuration)
-            _shellEjectionTime = _shootDuration * 0.5f;
-
-        if (_fireEjectionTime > _shootDuration)
-            _fireEjectionTime = _shootDuration * 0.5f;
     }
-}
-
-public enum FireMode
-{
-    SingleShot,  // Un disparo por click (Mosquete)
-    Automatic    // Disparo continuo mientras se mantiene presionado (Gatling)
 }

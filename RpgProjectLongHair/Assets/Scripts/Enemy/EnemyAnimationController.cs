@@ -1,189 +1,232 @@
 using UnityEngine;
 
 /// <summary>
-/// Controlador de animaciones para el enemigo de Rango.
-/// Maneja las transiciones de animación basadas en estados incluyendo ataque ranged.
+/// Controlador de animaciones genérico para enemigos (Melee y Ranged).
 /// </summary>
-public class EnemyRangedAnimationController : MonoBehaviour
+public class EnemyAnimationController : MonoBehaviour
 {
     [Header("Animator")]
     [SerializeField] private Animator animator;
-    
+
     [Header("Animation Parameters")]
-    [Tooltip("Nombre del parámetro float para la velocidad")]
     [SerializeField] private string speedParameter = "Speed";
-    
-    [Tooltip("Nombre del trigger para ataque ranged")]
+
+    [Header("Attack Triggers")]
+    [Tooltip("Trigger para ataque melee")]
+    [SerializeField] private string meleeAttackTrigger = "MeleeAttack";
+
+    [Tooltip("Trigger para ataque ranged")]
     [SerializeField] private string rangedAttackTrigger = "RangedAttack";
-    
-    [Tooltip("Nombre del trigger para recibir daño")]
+
+    [Tooltip("Trigger para recibir daño")]
     [SerializeField] private string hitTrigger = "Hit";
-    
-    [Tooltip("Nombre del parámetro int para idle variations")]
-    [SerializeField] private string idleIndexParameter = "IdleIndex";
-    
+
+    [Tooltip("Trigger para muerte")]
+    [SerializeField] private string deathTrigger = "Death";
+
     [Header("Idle Settings")]
     [Tooltip("Cantidad de animaciones idle disponibles (0 = solo una idle)")]
     [SerializeField] private int idleVariationsCount = 2;
-    
+
     [Tooltip("Tiempo mínimo antes de cambiar idle animation")]
     [SerializeField] private float minIdleChangeTime = 3f;
-    
+
     [Tooltip("Tiempo máximo antes de cambiar idle animation")]
     [SerializeField] private float maxIdleChangeTime = 8f;
-    
+
+    [SerializeField] private string idleIndexParameter = "IdleIndex";
+
     [Header("References")]
     [SerializeField] private UnityEngine.AI.NavMeshAgent agent;
-    
+    [SerializeField] private EnemyVFXController vfxController;
+
     // Control interno
     private float nextIdleChangeTime;
     private int currentIdleIndex = 0;
     private bool isAttacking = false;
+    private bool isDead = false;
     private float lastSpeed = 0f;
-    
+
     // Hash de parámetros para optimización
     private int speedHash;
+    private int meleeAttackHash;
     private int rangedAttackHash;
     private int hitHash;
+    private int deathHash;
     private int idleIndexHash;
 
     private void Awake()
     {
-        // Auto-encontrar componentes si no están asignados
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
-        
+
         if (agent == null)
             agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        
-        // Precalcular hashes para mejor performance
+
+        if (vfxController == null)
+            vfxController = GetComponent<EnemyVFXController>();
+
         speedHash = Animator.StringToHash(speedParameter);
+        meleeAttackHash = Animator.StringToHash(meleeAttackTrigger);
         rangedAttackHash = Animator.StringToHash(rangedAttackTrigger);
         hitHash = Animator.StringToHash(hitTrigger);
+        deathHash = Animator.StringToHash(deathTrigger);
         idleIndexHash = Animator.StringToHash(idleIndexParameter);
-        
-        // Inicializar el tiempo para el primer cambio de idle
+
         ScheduleNextIdleChange();
     }
 
     private void Update()
     {
-        if (animator == null) return;
-        
+        if (animator == null || isDead) return;
+
         UpdateMovementAnimation();
         UpdateIdleVariation();
+        UpdateVFX();
     }
 
-    /// <summary>
-    /// Actualiza la animación de movimiento basada en la velocidad del NavMeshAgent
-    /// </summary>
     private void UpdateMovementAnimation()
     {
         if (agent == null || !agent.isOnNavMesh) return;
-        
-        // Obtener la velocidad actual del agente
+
         float currentSpeed = agent.velocity.magnitude;
-        
-        // Suavizar la transición de velocidad
         lastSpeed = Mathf.Lerp(lastSpeed, currentSpeed, Time.deltaTime * 10f);
-        
-        // Actualizar el parámetro de velocidad en el animator
         animator.SetFloat(speedHash, lastSpeed);
     }
 
-    /// <summary>
-    /// Cambia aleatoriamente entre las variaciones de idle
-    /// </summary>
+    private void UpdateVFX()
+    {
+        if (vfxController == null) return;
+        vfxController.UpdateThrusters(lastSpeed);
+    }
+
     private void UpdateIdleVariation()
     {
-        // Solo cambiar idle si no estamos atacando y tenemos variaciones
         if (isAttacking || idleVariationsCount <= 1) return;
-        
-        // Verificar si estamos en idle (velocidad casi cero)
+
         if (lastSpeed < 0.1f && Time.time >= nextIdleChangeTime)
         {
-            // Seleccionar una nueva idle diferente a la actual
             int newIdleIndex;
             do
             {
                 newIdleIndex = Random.Range(0, idleVariationsCount);
-            } while (newIdleIndex == currentIdleIndex && idleVariationsCount > 1);
-            
+            }
+            while (newIdleIndex == currentIdleIndex && idleVariationsCount > 1);
+
             currentIdleIndex = newIdleIndex;
             animator.SetInteger(idleIndexHash, currentIdleIndex);
-            
+
             ScheduleNextIdleChange();
         }
     }
 
-    /// <summary>
-    /// Programa el próximo cambio de idle animation
-    /// </summary>
     private void ScheduleNextIdleChange()
     {
         nextIdleChangeTime = Time.time + Random.Range(minIdleChangeTime, maxIdleChangeTime);
     }
 
+    #region Attack Animations
+
     /// <summary>
-    /// Ejecuta la animación de ataque ranged
+    /// Ejecuta animación de ataque melee con VFX opcional.
     /// </summary>
-    public void PlayRangedAttack()
+    public void PlayMeleeAttack(AttackVFXConfig vfxConfig = null)
     {
-        if (animator == null) return;
-        
-        animator.SetTrigger(rangedAttackHash);
+        if (animator == null || isDead) return;
+
+        animator.SetTrigger(meleeAttackHash);
         isAttacking = true;
-        
-        // Resetear el flag después de un frame
+
+        if (vfxConfig != null && vfxController != null)
+            vfxController.SpawnVFXDelayed(vfxConfig, vfxConfig.vfxSpawnTime);
+
         Invoke(nameof(ResetAttackFlag), 0.1f);
     }
 
     /// <summary>
-    /// Ejecuta la animación de recibir daño
+    /// Ejecuta animación de ataque ranged con VFX de disparo y/o casquillo.
+    /// Ambos configs son opcionales; el timing viene embebido en cada AttackVFXConfig.
     /// </summary>
-    public void PlayHitReaction()
+    public void PlayRangedAttack(AttackVFXConfig fireVFX = null, AttackVFXConfig shellVFX = null)
     {
-        if (animator == null) return;
-        
-        animator.SetTrigger(hitHash);
+        if (animator == null || isDead) return;
+
+        animator.SetTrigger(rangedAttackHash);
+        isAttacking = true;
+
+        if (vfxController != null)
+        {
+            if (fireVFX != null)
+                vfxController.SpawnVFXDelayed(fireVFX, fireVFX.vfxSpawnTime);
+
+            if (shellVFX != null)
+                vfxController.SpawnVFXDelayed(shellVFX, shellVFX.vfxSpawnTime);
+        }
+
+        Invoke(nameof(ResetAttackFlag), 0.1f);
     }
 
-    /// <summary>
-    /// Resetea el flag de ataque
-    /// </summary>
     private void ResetAttackFlag()
     {
         isAttacking = false;
     }
 
+    #endregion
+
+    #region Hit & Death
+
     /// <summary>
-    /// Fuerza un idle específico (útil para debugging)
+    /// Ejecuta animación de recibir daño.
+    /// </summary>
+    public void PlayHitReaction()
+    {
+        if (animator == null || isDead) return;
+        animator.SetTrigger(hitHash);
+    }
+
+    /// <summary>
+    /// Ejecuta animación de muerte y detiene propulsores.
+    /// </summary>
+    public void PlayDeath()
+    {
+        if (animator == null || isDead) return;
+
+        isDead = true;
+        animator.SetTrigger(deathHash);
+
+        if (vfxController != null)
+            vfxController.ForceStopThrusters();
+    }
+
+    #endregion
+
+    #region Utility
+
+    /// <summary>
+    /// Fuerza un idle específico (útil para debugging).
     /// </summary>
     public void SetIdleVariation(int index)
     {
-        if (index < 0 || index >= idleVariationsCount) return;
-        
+        if (index < 0 || index >= idleVariationsCount || isDead) return;
+
         currentIdleIndex = index;
         animator.SetInteger(idleIndexHash, currentIdleIndex);
     }
 
-    /// <summary>
-    /// Obtiene el índice actual de idle
-    /// </summary>
     public int GetCurrentIdleIndex() => currentIdleIndex;
+    public bool IsDead => isDead;
 
-    /// <summary>
-    /// Obtiene la velocidad actual
-    /// </summary>
-    public float GetCurrentSpeed() => lastSpeed;
-
+    #endregion
 
     private void OnValidate()
     {
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
-        
+
         if (agent == null)
             agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+
+        if (vfxController == null)
+            vfxController = GetComponent<EnemyVFXController>();
     }
 }
