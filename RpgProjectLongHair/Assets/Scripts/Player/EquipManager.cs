@@ -31,32 +31,36 @@ public class EquipManager : NetworkBehaviour
 
     public void OnSlotClicked(ItemSO item)
     {
-        if (!HasInputAuthority || item == null)
+        if (!HasInputAuthority || item == null) return;
+
+        var sm = GetComponent<PlayerStateMachine>();
+        if (sm != null && sm.IsBusy)
+        {
+            Debug.Log("[Equip] Player ocupado, no se puede equipar ahora");
             return;
+        }
 
         if (EquippedItemId == item.id)
-            RPC_RequestEquip(0); // Desequipar
+            RPC_RequestEquip(0);
         else
-            RPC_RequestEquip(item.id); // Equipar
+            RPC_RequestEquip(item.id);
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RPC_RequestEquip(int id, RpcInfo info = default)
     {
-        if (_inventory == null)
+        if (_inventory == null) return;
+
+        // Validar en servidor también
+        var sm = GetComponent<PlayerStateMachine>();
+        if (sm != null && sm.IsBusy)
         {
-            Debug.LogWarning("EquipManager: missing inventory reference");
+            Debug.LogWarning("[Equip] Servidor rechazó equip: player ocupado");
             return;
         }
 
-        // Desequipar
-        if (id == 0)
-        {
-            EquippedItemId = 0;
-            return;
-        }
+        if (id == 0) { EquippedItemId = 0; return; }
 
-        // Validación de propiedad
         if (!_inventory.HasItem(id))
         {
             Debug.LogWarning($"Equip rejected: Player does not own item {id}");

@@ -31,15 +31,25 @@ public class Player : NetworkBehaviour
     public override void FixedUpdateNetwork()
     {
         if (!GetInput(out NetworkInputData input)) return;
+
+        var sm = GetComponent<PlayerStateMachine>();
+        bool inputLocked = sm != null && sm.IsInputLocked;
+
         float targetSpeed = input.sprint ? sprintSpeed : walkSpeed;
         _ncc.maxSpeed = targetSpeed;
-        Vector3 moveDir = new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
+
+        Vector3 moveDir = inputLocked
+            ? Vector3.zero  
+            : new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
+
         if (Object.HasStateAuthority)
         {
             _ncc.Move(moveDir);
-            if (input.jump && _ncc.Grounded)
+
+            if (!inputLocked && input.jump && _ncc.Grounded)
                 _ncc.Jump();
         }
+
         if (moveDir.sqrMagnitude > 0.01f)
         {
             transform.rotation = Quaternion.Slerp(
@@ -48,6 +58,7 @@ public class Player : NetworkBehaviour
                 rotationSpeed * Runner.DeltaTime
             );
         }
+
         if (input.interact && Object.HasInputAuthority)
             GetComponent<PlayerInventoryController>()?.TryPickupItem();
     }

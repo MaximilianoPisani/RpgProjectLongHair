@@ -14,12 +14,13 @@ public class PlayerStateMachine : NetworkBehaviour
 
     [Header("Config")]
     public float moveSpeed = 5f;
-
+    public bool IsBusy =>_currentState is PlayerMeleeState || _currentState is PlayerRangeState;
     [Networked] public TickTimer AttackCooldown { get; set; }
     [Networked] public int NetworkedComboIndex { get; set; }
 
     public bool IsJumping { get; set; } = false;
     public Vector3 LastShootDirection { get; set; } = Vector3.forward;
+    public bool IsInputLocked => _currentState is PlayerRangeState rangeState && rangeState.IsLockingInput;
 
     public override void Spawned()
     {
