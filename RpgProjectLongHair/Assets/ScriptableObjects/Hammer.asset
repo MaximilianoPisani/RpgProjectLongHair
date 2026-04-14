@@ -23,3 +23,4 @@ MonoBehaviour:
   equipPrefab: {fileID: 9222434869062965706, guid: 01406e3e3d634c643800a099bc0567af, type: 3}
   rightHandPrefab: {fileID: 0}
   leftHandPrefab: {fileID: 9222434869062965706, guid: 01406e3e3d634c643800a099bc0567af, type: 3}
+  vfxConfig: {fileID: 11400000, guid: 2bcc8fdfb49b3794bad6c9232a57d3b4, type: 2}

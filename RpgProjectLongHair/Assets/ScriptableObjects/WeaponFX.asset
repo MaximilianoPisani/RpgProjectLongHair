@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8536ada8a6a0e2a4097af506ecaee2d5, type: 3}
   m_Name: WeaponFX
   m_EditorClassIdentifier: 
-  vfxPrefab: {fileID: 0}
+  vfxPrefab: {fileID: 4968917852853964046, guid: c18a1d2bb69df294a8faef683d929a18, type: 3}
   vfxOffset: {x: 0, y: 0, z: 0}
   vfxScale: {x: 1, y: 1, z: 1}
-  enableFloating: 1
+  enableFloating: 0
   floatingSpeed: 1
   floatingHeight: 0.3
-  enableRotation: 1
+  enableRotation: 0
   rotationSpeed: {x: 0, y: 50, z: 0}
   enablePulse: 0
   pulseSpeed: 2
