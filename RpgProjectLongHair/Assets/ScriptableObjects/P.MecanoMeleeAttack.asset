@@ -23,16 +23,22 @@ MonoBehaviour:
     comboWindowCloseTime: 0.35
     damage: 40
     animationStateName: Attack_1
+    slashVFXPrefab: {fileID: 4892191690312840257, guid: 3710508a1c97986469c911bb2360413f, type: 3}
+    vfxSpawnTime: 0.28
   - attackDuration: 0.55
     hitFrameTime: 0.35
     comboWindowOpenTime: 0.48
     comboWindowCloseTime: 0.55
     damage: 40
     animationStateName: Attack_2
+    slashVFXPrefab: {fileID: 660411333210349344, guid: bae6fbbcd87331b44b92a6402ddbdf12, type: 3}
+    vfxSpawnTime: 0.35
   - attackDuration: 1.38
     hitFrameTime: 1.32
     comboWindowOpenTime: 1.34
     comboWindowCloseTime: 1.38
     damage: 80
     animationStateName: Attack_3
+    slashVFXPrefab: {fileID: 5078917322838046068, guid: 975cd191841cb12489f1777e56b5305b, type: 3}
+    vfxSpawnTime: 1.3
   _comboResetTime: 0.5

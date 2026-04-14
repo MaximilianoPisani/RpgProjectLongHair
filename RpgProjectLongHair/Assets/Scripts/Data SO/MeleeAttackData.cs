@@ -41,4 +41,8 @@ public class ComboAttackConfig
     [Header("Animation")]
     [Tooltip("Nombre del estado de animación (opcional, para debugging)")]
     public string animationStateName = "";
+
+    [Header("VFX")]
+    [Tooltip("Config de VFX para este ataque del combo (prefab, timing y offset en un solo lugar)")]
+    public AttackVFXConfig attackVFX;
 }
