@@ -34,7 +34,10 @@ public class PlayerRangeState : IPlayerState
     {
         _sm = sm;
     }
-
+    public bool IsLockingInput =>
+    _currentPhase == ShootPhase.Shooting ||
+    _currentPhase == ShootPhase.Reloading ||
+    _currentPhase == ShootPhase.AutomaticFire;
     public void Enter()
     {
         var weapon = _sm.GetComponent<PlayerWeaponHandler>();
@@ -347,6 +350,12 @@ public class PlayerRangeState : IPlayerState
 
         _sm.Animator.SetFloat("speed", normalized);
         _sm.Animator.SetBool("isMoving", speed > 0.05f);
+        if (IsLockingInput)
+        {
+            _sm.Animator.SetFloat("speed", 0f);
+            _sm.Animator.SetBool("isMoving", false);
+            return;
+        }
     }
 
     private void RotateToShootDirection()
