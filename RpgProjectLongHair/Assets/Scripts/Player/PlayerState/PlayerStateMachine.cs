@@ -52,7 +52,7 @@ public class PlayerStateMachine : NetworkBehaviour
             }
         }
 
-        if (input.jump && !IsJumping && Player.IsGrounded())
+        if (input.jump && !IsJumping && Player.IsGrounded() && !IsInputLocked)
         {
             IsJumping = true;
             ChangeState(new PlayerJumpState(this));
