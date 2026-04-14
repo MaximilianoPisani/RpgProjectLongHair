@@ -8,6 +8,12 @@ public class PlayerRangeState : IPlayerState
 
     private IWeaponAnimatable _weaponAnim;
 
+    public bool IsLockingInput =>
+    _currentPhase == ShootPhase.Shooting ||
+    _currentPhase == ShootPhase.Reloading ||
+    _currentPhase == ShootPhase.AutomaticFire;
+
+
     // Estado del disparo
     private enum ShootPhase
     {
@@ -348,16 +354,15 @@ public class PlayerRangeState : IPlayerState
     {
         if (_sm.Animator == null) return;
 
-        // Durante disparo y recarga, permitir movimiento pero reducido
-        float speed = _sm.Player.GetHorizontalSpeed();
-        float normalized = speed / _sm.Player.SprintSpeed;
-
-        // Reducir velocidad durante disparo
-        if (_currentPhase == ShootPhase.Shooting || _currentPhase == ShootPhase.AutomaticFire)
+        if (IsLockingInput)
         {
-            normalized *= 0.5f; // Reducir a la mitad durante disparo
+            _sm.Animator.SetFloat("speed", 0f);
+            _sm.Animator.SetBool("isMoving", false);
+            return;
         }
 
+        float speed = _sm.Player.GetHorizontalSpeed();
+        float normalized = speed / _sm.Player.SprintSpeed;
         _sm.Animator.SetFloat("speed", normalized);
         _sm.Animator.SetBool("isMoving", speed > 0.05f);
     }
