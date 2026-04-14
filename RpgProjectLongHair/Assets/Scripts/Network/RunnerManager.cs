@@ -18,6 +18,9 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     private NetworkRunner _runner;
 
     private Dictionary<PlayerRef, NetworkObject> _spawnedPlayers = new();
+   //lectura de players para Quest, la expone como solo-lectura hacia afuera
+    public IReadOnlyDictionary<PlayerRef, NetworkObject> SpawnedPlayers => _spawnedPlayers;
+
     private HashSet<string> _connectedPlayerIds = new();
 
     private const int MAX_PLAYERS = 4;

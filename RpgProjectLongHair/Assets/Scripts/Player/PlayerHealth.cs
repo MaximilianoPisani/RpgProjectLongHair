@@ -52,6 +52,12 @@ public class PlayerHealth : NetworkBehaviour
     private void OnDeath()
     {
         Debug.Log("[Player] Dead");
+        Debug.Log("[PlayerHealth] OnDeath llamado");
+        // Avisar al sistema de misiones que el player murió
+        var questController = GetComponent<QuestController>();
+        if (questController != null && questController.CurrentQuest != null)
+            questController.FailureQuest();
+
         var sm = GetComponent<PlayerStateMachine>();
         if (sm != null)
             sm.ChangeState(new PlayerDeadState(sm));

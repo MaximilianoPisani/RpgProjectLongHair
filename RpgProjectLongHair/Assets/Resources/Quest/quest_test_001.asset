@@ -19,7 +19,7 @@ MonoBehaviour:
   - targetId: Kill_Mission_Enemy
     amount: 2
   failureSteps: []
-  allowTeleportParty: 0
+  allowTeleportParty: 1
   teleportDestination: {x: 0, y: 0, z: 0}
   xp: 210
   coins: 0

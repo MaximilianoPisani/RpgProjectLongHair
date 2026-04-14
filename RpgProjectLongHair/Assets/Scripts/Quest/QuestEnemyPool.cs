@@ -27,6 +27,11 @@ public class QuestEnemyPool : MonoBehaviour
         // Solo activar si es MI mision
         if (data.questId != _missionId) return;
 
+        // Si ya hay enemigos spawneados, no duplicar
+        if (_spawnedEnemies.Count > 0) return; 
+
+        Debug.Log($"[QuestEnemyPool] OnMissionStart llamado - enemigos actuales={_spawnedEnemies.Count}");
+
         // Buscar el NetworkRunner en la escena
         var runner = FindFirstObjectByType<NetworkRunner>();
         if (runner == null || !runner.IsServer) return;
@@ -59,12 +64,13 @@ public class QuestEnemyPool : MonoBehaviour
 
     private void DespawnEnemies()
     {
+        Debug.Log($"[QuestEnemyPool] DespawnEnemies llamado. IsServer={FindFirstObjectByType<NetworkRunner>()?.IsServer}");
         var runner = FindFirstObjectByType<NetworkRunner>();
-        if (runner == null) return;
+        if (runner == null || !runner.IsServer) return;
 
         foreach (var enemy in _spawnedEnemies)
         {
-            if (enemy != null)
+            if (enemy != null && enemy.IsValid)
                 runner.Despawn(enemy);
         }
         _spawnedEnemies.Clear();
