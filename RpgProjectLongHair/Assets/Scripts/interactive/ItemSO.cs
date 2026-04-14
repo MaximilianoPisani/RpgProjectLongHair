@@ -28,4 +28,7 @@ public class ItemSO : ScriptableObject
     [Header("Dual Wield")]
     public GameObject rightHandPrefab;
     public GameObject leftHandPrefab;
+
+    [Header("VFX")]
+    public ItemVFXConfig vfxConfig;
 }
