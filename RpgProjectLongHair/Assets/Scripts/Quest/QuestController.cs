@@ -1,10 +1,11 @@
 using UnityEngine;
 using Fusion;
-
+using System.Collections.Generic;
 
 public class QuestController : NetworkBehaviour
 {
-    private QuestDataSO _currentQuest; // en el caso que se acepte más de una se hace con lista!
+    private QuestDataSO _currentQuest;
+    private List<QuestController> _partyMembers = new(); //  nueva lista
 
     public QuestDataSO CurrentQuest => _currentQuest;
 
@@ -24,18 +25,65 @@ public class QuestController : NetworkBehaviour
             return;
         }
 
-        var missionData = Resources.Load<QuestDataSO>($"{MISSION_PATH}{missionId}"); //debería estar en la carpeta Resources?  
-        if(missionData == null)
+        var missionData = Resources.Load<QuestDataSO>($"{MISSION_PATH}{missionId}");
+        if (missionData == null)
         {
             RPC_ClientHandleError($"No se encontró la misión {missionId}");
             return;
         }
 
         StartNewQuest(missionData);
+        RPC_NotifyMissionStarted(missionId);
+
+        if (missionData.allowTeleportParty)
+        {
+            var runnerManager = FindFirstObjectByType<RunnerManager>();
+            foreach (var playerObj in runnerManager.SpawnedPlayers.Values)
+            {
+                var questController = playerObj.GetComponent<QuestController>();
+                if (questController == null) continue;
+                if (questController == this) continue;
+
+                _partyMembers.Add(questController); //  guardar invitado
+                questController.RPC_InviteToQuest(missionId);
+            }
+        }
     }
     #endregion
 
     #region Client
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    private void RPC_NotifyMissionFailed()
+    {
+        Debug.Log("[QuestController] RPC_NotifyMissionFailed recibido");
+        if (_currentQuest == null) return;
+        MissionEvents.OnMissionFailed?.Invoke(_currentQuest);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    private void RPC_NotifyMissionStarted(string missionId)
+    {
+        Debug.Log($"[QuestController] RPC_NotifyMissionStarted recibido");
+        if (_currentQuest != null) return;
+
+        var missionData = Resources.Load<QuestDataSO>($"{MISSION_PATH}{missionId}");
+        if (missionData == null) return;
+
+        StartNewQuest(missionData);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    private void RPC_InviteToQuest(string missionId)
+    {
+        Debug.Log($"[QuestController] RPC_InviteToQuest llegó al cliente");
+        if (_currentQuest != null) return;
+
+        var missionData = Resources.Load<QuestDataSO>($"{MISSION_PATH}{missionId}");
+        if (missionData == null) return;
+
+        MissionEvents.OnQuestInviteReceived?.Invoke(missionData);
+    }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority, Channel = RpcChannel.Unreliable)]
     private void RPC_ClientHandleError(string error, RpcInfo info = default)
@@ -51,22 +99,18 @@ public class QuestController : NetworkBehaviour
     {
         Debug.Log($"[QuestTester] Misión inisiada: {questData.questName}.");
 
-        //Evitar doble suscripcion
-        TrackEvents.OnTrackEvent -= TrackStep; // si ya estaba, me saco
-        TrackEvents.OnTrackEvent += TrackStep; // me agrego exactamente una vez
+        TrackEvents.OnTrackEvent -= TrackStep;
+        TrackEvents.OnTrackEvent += TrackStep;
 
         if (_currentQuest != null)
-        {
             Destroy(_currentQuest);
-        }
+
         _currentQuest = Instantiate(questData);
-        MissionEvents.OnMissionStart?.Invoke(_currentQuest); //  nuevo
+        MissionEvents.OnMissionStart?.Invoke(_currentQuest);
     }
 
-    // seguimiento (pick_XP, 5) <-- ej: lo que llega de parámetros
     public void TrackStep(string stepId, int progress)
     {
-        // verificación de que haya una misión en curso!
         if (_currentQuest == null)
         {
             Debug.Log("[QuestController] TrackStep: _currentQuest es null");
@@ -75,38 +119,38 @@ public class QuestController : NetworkBehaviour
 
         Debug.Log($"[QuestController] TrackStep recibido: id={stepId}, progress={progress}");
 
-        //Obtener todos los steps que tengan el id del track que me llego
         if (!_currentQuest.UpdateProgress(stepId, progress, out var isSuccess))
         {
             Debug.Log($"[QuestController] Progreso actualizado, mision en curso");
             MissionEvents.OnUpdateProgress?.Invoke(_currentQuest);
             return;
-            //UpdateProgress devuelve false  ->  aviso al HUD  ->  return (misión en curso)
         }
 
         Debug.Log($"[QuestController] Mision terminada, isSuccess={isSuccess}");
 
-        // UpdateProgress devuelve true   ->  ¿éxito o falla?  ->  Complete o Failure
         if (isSuccess)
-        {
             CompleteQuest();
-        }
         else
-        {
             FailureQuest();
-        }
     }
-
 
     public void FailureQuest()
     {
         Debug.Log($"[QuestController] ¡Misión fallida!: {_currentQuest.questName}");
-        Debug.Log("[QuestController] FailureQuest llamado");
+        Debug.Log($"[QuestController] FailureQuest - partyMembers={_partyMembers.Count}");
 
-        MissionEvents.OnMissionFailed?.Invoke(_currentQuest);
+        RPC_NotifyMissionFailed(); // avisa al dueño
+
+        //  avisa a todos los invitados
+        foreach (var member in _partyMembers)
+        {
+            if (member != null)
+                member.RPC_NotifyMissionFailed();
+        }
+        _partyMembers.Clear();
+
         Destroy(_currentQuest);
         _currentQuest = null;
-        //Actualizar UI - en la 2° clase hace una clase MissionHud  se suscribe al observer
         TrackEvents.OnTrackEvent -= TrackStep;
     }
 
@@ -116,7 +160,6 @@ public class QuestController : NetworkBehaviour
 
         MissionEvents.OnMissionComplete?.Invoke(_currentQuest);
 
-        // Recompensa de XP al completar la misión
         var playerExp = GetComponent<PlayerExp>();
         playerExp.AddExperience(_currentQuest.xp);
 
@@ -128,10 +171,8 @@ public class QuestController : NetworkBehaviour
     private void OnDestroy()
     {
         if (_currentQuest != null)
-        {
             Destroy(_currentQuest);
-        }
+
         TrackEvents.OnTrackEvent -= TrackStep;
     }
-
 }

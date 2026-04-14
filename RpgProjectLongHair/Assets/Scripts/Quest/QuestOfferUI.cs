@@ -27,6 +27,8 @@ public class QuestOfferUI : MonoBehaviour
 
     public void Show(QuestDataSO data, QuestController controller)
     {
+        Debug.Log($"[QuestOfferUI] Show - panel={_panel != null} - txtName={_txtQuestName != null} - btnAccept={_btnAccept != null}");
+
         _questData = data;
         _questController = controller;
         _txtQuestName.text = data.questName;

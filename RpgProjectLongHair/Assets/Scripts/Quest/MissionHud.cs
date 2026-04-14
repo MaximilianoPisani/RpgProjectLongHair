@@ -5,6 +5,7 @@ public class MissionHud : MonoBehaviour
     [SerializeField] private QuestProgressUI _questProgressUI;
     [SerializeField] private QuestFailedUI _questFailedUI;
     [SerializeField] private QuestCompleteUI _questCompletedUI;
+    [SerializeField] private QuestInviteUI _questInviteUI;
 
     private void OnEnable()
     {
@@ -12,6 +13,7 @@ public class MissionHud : MonoBehaviour
         MissionEvents.OnUpdateProgress += OnUpdateMissionData;
         MissionEvents.OnMissionFailed += OnMissionFailed;
         MissionEvents.OnMissionStart += OnMissionStart;
+        MissionEvents.OnQuestInviteReceived += OnQuestInviteReceived;
     }
 
     private void OnMissionStart(QuestDataSO data)
@@ -53,11 +55,27 @@ public class MissionHud : MonoBehaviour
         // stg_defeat
     }
 
+    private void OnQuestInviteReceived(QuestDataSO data)
+    {
+        if (_questInviteUI == null) return;
+
+        // Buscar solo el QuestController del player local
+        foreach (var qc in FindObjectsByType<QuestController>(FindObjectsSortMode.None))
+        {
+            if (qc.HasInputAuthority) //  solo el player local
+            {
+                _questInviteUI.Show(data, qc);
+                return;
+            }
+        }
+    }
+
     private void OnDisable()
     {
         MissionEvents.OnMissionComplete -= OnMissionComplete;
         MissionEvents.OnUpdateProgress -= OnUpdateMissionData;
         MissionEvents.OnMissionFailed -= OnMissionFailed;
         MissionEvents.OnMissionStart -= OnMissionStart;
+        MissionEvents.OnQuestInviteReceived -= OnQuestInviteReceived;
     }
 }
