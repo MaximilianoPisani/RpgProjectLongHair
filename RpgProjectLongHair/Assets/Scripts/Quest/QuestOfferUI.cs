@@ -54,6 +54,15 @@ public class QuestOfferUI : MonoBehaviour
 
     }
 
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.Escape))
+    //    {
+    //        _panel.SetActive(false);
+    //        Cursor.lockState = CursorLockMode.Locked;
+    //        Cursor.visible = false;
+    //    }
+    //}
     private void OnCancel()
     {
         _panel.SetActive(false);

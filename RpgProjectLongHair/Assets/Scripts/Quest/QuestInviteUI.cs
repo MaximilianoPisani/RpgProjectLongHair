@@ -36,6 +36,14 @@ public class QuestInviteUI : MonoBehaviour
     private void OnAccept()
     {
         _questController.RPC_StartMission(_missionId, default);
+
+        var questData = Resources.Load<QuestDataSO>($"Quest/{_missionId}");
+        if (questData != null && questData.teleportDestination != Vector3.zero)
+        {
+            _questController.RPC_RequestTeleport(questData.teleportDestination);
+            Debug.Log($"[QuestInviteUI] Teleport solicitado a {questData.teleportDestination}");
+        }
+
         Hide();
     }
 
