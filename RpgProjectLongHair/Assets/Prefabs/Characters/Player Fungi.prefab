@@ -1546,6 +1546,7 @@ GameObject:
   - component: {fileID: 1290202656488514935}
   - component: {fileID: -6668896433345507029}
   - component: {fileID: 6150348916230871467}
+  - component: {fileID: 5209128995767928058}
   m_Layer: 6
   m_Name: Player Fungi
   m_TagString: Player
@@ -1957,6 +1958,18 @@ MonoBehaviour:
   _CurrentCharge: 0
   _IsRageActive: 0
   _RageTimeLeft: 0
+--- !u!114 &5209128995767928058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6542864224881935982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05fa2e24a2d3f884294cdb47c62b510c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6700123565622896750
 GameObject:
   m_ObjectHideFlags: 0

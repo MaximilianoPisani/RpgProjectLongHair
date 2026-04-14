@@ -1453,6 +1453,7 @@ GameObject:
   - component: {fileID: 1290202656488514935}
   - component: {fileID: 9205252404363716578}
   - component: {fileID: 3655203288333280099}
+  - component: {fileID: -4384836936088713229}
   m_Layer: 6
   m_Name: Player Mecano
   m_TagString: Player
@@ -1863,6 +1864,18 @@ MonoBehaviour:
   _CurrentCharge: 0
   _IsRageActive: 0
   _RageTimeLeft: 0
+--- !u!114 &-4384836936088713229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6542864224881935982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05fa2e24a2d3f884294cdb47c62b510c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6921007751941972638
 GameObject:
   m_ObjectHideFlags: 0
