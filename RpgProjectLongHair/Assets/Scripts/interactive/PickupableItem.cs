@@ -6,11 +6,14 @@ public class PickupableItem : NetworkBehaviour
 {
     [SerializeField] private ItemSO itemDataSO;
     [SerializeField] private Transform _visualRoot;
+
+    private PickupVFXController _vfxController;
     public ItemSO ItemDataSO => itemDataSO;
 
     public override void Spawned()
     {
         SetupVisual();
+        SetupVFX();
     }
 
     private void SetupVisual()
@@ -31,6 +34,15 @@ public class PickupableItem : NetworkBehaviour
             Instantiate(itemDataSO.equipPrefab, _visualRoot);
         }
     }
+
+    private void SetupVFX()
+    {
+        if (itemDataSO == null || itemDataSO.vfxConfig == null) return;
+
+        // Crear el controlador de VFX
+        _vfxController = gameObject.AddComponent<PickupVFXController>();
+        _vfxController.Initialize(_visualRoot, itemDataSO.vfxConfig);
+    }
     public ItemData ItemData => new ItemData // Datos que se envían al inventario (NetworkArray)
     {
         id = itemDataSO != null ? itemDataSO.id : 0,
@@ -48,6 +60,12 @@ public class PickupableItem : NetworkBehaviour
     public void RPC_RequestDespawn()
     {
         if (Object == null || !Object.IsValid) return;
+
+        if (_vfxController != null)
+        {
+            _vfxController.DestroyVFX();
+        }
+
         Runner.Despawn(Object);
     }
 }
