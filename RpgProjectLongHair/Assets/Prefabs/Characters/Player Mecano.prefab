@@ -1452,6 +1452,7 @@ GameObject:
   - component: {fileID: 3730851367084255050}
   - component: {fileID: 1290202656488514935}
   - component: {fileID: 9205252404363716578}
+  - component: {fileID: 3655203288333280099}
   m_Layer: 6
   m_Name: Player Mecano
   m_TagString: Player
@@ -1562,6 +1563,7 @@ MonoBehaviour:
   - {fileID: 1059619233003420139}
   - {fileID: 1290202656488514935}
   - {fileID: 9205252404363716578}
+  - {fileID: 3655203288333280099}
   - {fileID: 8511789763993353943}
   ForceRemoteRenderTimeframe: 0
 --- !u!143 &7211342961291623563
@@ -1647,6 +1649,7 @@ MonoBehaviour:
   _uiManager: {fileID: 6826533433884348797}
   _equipManager: {fileID: 1975767083011942508}
   _inventoryContent: {fileID: 1681230185456817796}
+  _inventoryPanel: {fileID: 0}
   _pickupRange: 2
 --- !u!114 &2856937399264218972
 MonoBehaviour:
@@ -1772,14 +1775,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   vfxSpawnPoint: {fileID: 3682047438861906956}
-  vfxOffset: {x: 0, y: 0, z: 0}
   RangeData: {fileID: 11400000, guid: 473c77a691b4fe04ca961740bd3d1d0c, type: 2}
   shootPoints:
   - {fileID: 168181180286158390}
   shellEjectionPoint: {fileID: 8753025977005764114}
-  shellEjectionOffset: {x: 0, y: 0, z: 0}
   fireEjectionPoint: {fileID: 2596254764854971430}
-  fireEjectionOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &5406402327671719317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1847,6 +1847,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b2d6089a70ef9b4da08eeebdb379adc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3655203288333280099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6542864224881935982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79060d957aa06ab4cb6a4b627183964b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rageData: {fileID: 11400000, guid: e817d0f29492bb04996d103e875e2de2, type: 2}
+  _CurrentCharge: 0
+  _IsRageActive: 0
+  _RageTimeLeft: 0
 --- !u!1 &6921007751941972638
 GameObject:
   m_ObjectHideFlags: 0

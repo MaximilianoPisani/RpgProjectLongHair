@@ -1545,6 +1545,7 @@ GameObject:
   - component: {fileID: 3730851367084255050}
   - component: {fileID: 1290202656488514935}
   - component: {fileID: -6668896433345507029}
+  - component: {fileID: 6150348916230871467}
   m_Layer: 6
   m_Name: Player Fungi
   m_TagString: Player
@@ -1657,6 +1658,7 @@ MonoBehaviour:
   - {fileID: 1059619233003420139}
   - {fileID: 1290202656488514935}
   - {fileID: -6668896433345507029}
+  - {fileID: 6150348916230871467}
   - {fileID: 8511789763993353943}
   ForceRemoteRenderTimeframe: 0
 --- !u!143 &7211342961291623563
@@ -1742,6 +1744,7 @@ MonoBehaviour:
   _uiManager: {fileID: 6826533433884348797}
   _equipManager: {fileID: 1975767083011942508}
   _inventoryContent: {fileID: 1681230185456817796}
+  _inventoryPanel: {fileID: 0}
   _pickupRange: 2
 --- !u!114 &2856937399264218972
 MonoBehaviour:
@@ -1938,6 +1941,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b2d6089a70ef9b4da08eeebdb379adc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6150348916230871467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6542864224881935982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79060d957aa06ab4cb6a4b627183964b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rageData: {fileID: 11400000, guid: e817d0f29492bb04996d103e875e2de2, type: 2}
+  _CurrentCharge: 0
+  _IsRageActive: 0
+  _RageTimeLeft: 0
 --- !u!1 &6700123565622896750
 GameObject:
   m_ObjectHideFlags: 0
