@@ -7,9 +7,12 @@ public class PlayerInventoryController : MonoBehaviour
     [SerializeField] private InventoryUiManager _uiManager;
     [SerializeField] private EquipManager _equipManager;
     [SerializeField] private Transform _inventoryContent;
+    [SerializeField] private GameObject _inventoryPanel;
 
     [Header("Pickup")]
     [SerializeField] private float _pickupRange = 2f;
+
+    private bool _isOpen = false;
 
     private void Start()
     {
@@ -24,9 +27,11 @@ public class PlayerInventoryController : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.I))
         {
-            TryPickupItem();
+            _isOpen = !_isOpen;
+            RunnerManager.SetInventoryOpen(_isOpen);
+            _inventoryPanel.SetActive(_isOpen);
         }
     }
 

@@ -81,26 +81,25 @@ public class Projectile : NetworkBehaviour
                     var hb = col.GetComponentInParent<Hitbox>();
                     var eh = col.GetComponentInParent<EnemyHealth>();
 
-                    if (hb != null && EnemyHealth.TryApplyFromHitbox(hb, Damage, Attacker))
+                    if (hb != null)
                     {
-                        EnemyKnockback.TryApplyProjectileKnockback(
-                            hb.Root.gameObject,
-                            Dir,
-                            Damage
-                        );
-                        _consumed = true;
-                        DespawnSafe();
-                        return;
+                        int finalDamage = GetFinalDamage();
+                        if (EnemyHealth.TryApplyFromHitbox(hb, finalDamage, Attacker))
+                        {
+                            PlayerRageHandler.NotifyDamageDealt(Attacker, finalDamage);
+                            EnemyKnockback.TryApplyProjectileKnockback(hb.Root.gameObject, Dir, finalDamage);
+                            _consumed = true;
+                            DespawnSafe();
+                            return;
+                        }
                     }
 
                     if (eh != null && eh.Object && eh.Object.HasStateAuthority)
                     {
-                        eh.ApplyDamageServer(Damage, Attacker);
-                        EnemyKnockback.TryApplyProjectileKnockback(
-                            eh.gameObject,
-                            Dir,
-                            Damage
-                        );
+                        int finalDamage = GetFinalDamage();
+                        eh.ApplyDamageServer(finalDamage, Attacker);
+                        PlayerRageHandler.NotifyDamageDealt(Attacker, finalDamage);
+                        EnemyKnockback.TryApplyProjectileKnockback(eh.gameObject, Dir, finalDamage);
                         _consumed = true;
                         DespawnSafe();
                         return;
@@ -111,6 +110,19 @@ public class Projectile : NetworkBehaviour
 
         if (Life.Expired(Runner) || Vector3.Distance(StartPos, transform.position) >= MaxRange)
             DespawnSafe();
+    }
+
+    private int GetFinalDamage()
+    {
+        float multiplier = 1f;
+
+        if (Runner.TryGetPlayerObject(Attacker, out NetworkObject playerObj))
+        {
+            var rage = playerObj.GetComponent<PlayerRageHandler>();
+            if (rage != null) multiplier = rage.GetDamageMultiplier();
+        }
+
+        return Mathf.RoundToInt(Damage * multiplier);
     }
 
     private void DespawnSafe()
