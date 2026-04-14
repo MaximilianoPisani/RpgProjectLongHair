@@ -23,22 +23,34 @@ MonoBehaviour:
     comboWindowCloseTime: 0.35
     damage: 30
     animationStateName: Attack1
-    slashVFXPrefab: {fileID: 1402268366991796481, guid: 9714e9bf8e9a0534a8f3e2c5755c6020, type: 3}
-    vfxSpawnTime: 0.05
+    attackVFX:
+      vfxPrefab: {fileID: 1402268366991796481, guid: 9714e9bf8e9a0534a8f3e2c5755c6020, type: 3}
+      vfxSpawnTime: 0.15
+      localOffset: {x: 0, y: 0, z: 0}
+      followTransform: 1
+      customDuration: 0
   - attackDuration: 0.55
     hitFrameTime: 0.22
     comboWindowOpenTime: 0.44
     comboWindowCloseTime: 0.55
     damage: 30
     animationStateName: Attack2
-    slashVFXPrefab: {fileID: 6345871846994825729, guid: c97b06f3bb122ba4292cac62ec68d5ad, type: 3}
-    vfxSpawnTime: 0.2
+    attackVFX:
+      vfxPrefab: {fileID: 6345871846994825729, guid: c97b06f3bb122ba4292cac62ec68d5ad, type: 3}
+      vfxSpawnTime: 0.22
+      localOffset: {x: 0, y: 0, z: 0}
+      followTransform: 1
+      customDuration: 0
   - attackDuration: 1
     hitFrameTime: 0.61
     comboWindowOpenTime: 0.8
     comboWindowCloseTime: 1
     damage: 60
     animationStateName: Attack3
-    slashVFXPrefab: {fileID: 2653763631966760495, guid: 0da4201115bcd1043b9032f1f6211418, type: 3}
-    vfxSpawnTime: 0.85
+    attackVFX:
+      vfxPrefab: {fileID: 2653763631966760495, guid: 0da4201115bcd1043b9032f1f6211418, type: 3}
+      vfxSpawnTime: 0.7
+      localOffset: {x: 0, y: 0, z: 0}
+      followTransform: 1
+      customDuration: 0
   _comboResetTime: 0.5
