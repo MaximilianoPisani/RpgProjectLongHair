@@ -37,6 +37,8 @@ public class QuestController : NetworkBehaviour
 
         if (missionData.allowTeleportParty)
         {
+            Debug.Log($"[QuestController] allowTeleportParty=true - players={FindFirstObjectByType<RunnerManager>()?.SpawnedPlayers.Count}");
+
             var runnerManager = FindFirstObjectByType<RunnerManager>();
             foreach (var playerObj in runnerManager.SpawnedPlayers.Values)
             {
@@ -44,6 +46,7 @@ public class QuestController : NetworkBehaviour
                 if (questController == null) continue;
                 if (questController == this) continue;
 
+                Debug.Log($"[QuestController] Invitando a: {playerObj.name}");
                 _partyMembers.Add(questController); //  guardar invitado
                 questController.RPC_InviteToQuest(missionId);
             }
@@ -52,6 +55,29 @@ public class QuestController : NetworkBehaviour
     #endregion
 
     #region Client
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_RequestTeleport(Vector3 destination)
+    {
+        if (!Object.HasStateAuthority) return;
+
+        var cc = Object.GetComponent<CharacterController>();
+        if (cc != null) cc.enabled = false;
+
+        Object.transform.position = destination;
+
+        if (cc != null) cc.enabled = true;
+
+        Debug.Log($"[QuestController] Teleport ejecutado a {destination}");
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    private void RPC_NotifyMissionComplete()
+    {
+        Debug.Log("[QuestController] RPC_NotifyMissionComplete recibido");
+        if (_currentQuest == null) return;
+        MissionEvents.OnMissionComplete?.Invoke(_currentQuest);
+    }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
     private void RPC_NotifyMissionFailed()
@@ -158,7 +184,14 @@ public class QuestController : NetworkBehaviour
     {
         Debug.Log($"[QuestController] ¡Misión completada!: {_currentQuest.questName}");
 
-        MissionEvents.OnMissionComplete?.Invoke(_currentQuest);
+        RPC_NotifyMissionComplete(); //  avisa al dueño
+
+        foreach (var member in _partyMembers) //  avisa a los invitados
+        {
+            if (member != null)
+                member.RPC_NotifyMissionComplete();
+        }
+        _partyMembers.Clear();
 
         var playerExp = GetComponent<PlayerExp>();
         playerExp.AddExperience(_currentQuest.xp);
