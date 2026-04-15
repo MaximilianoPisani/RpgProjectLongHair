@@ -10,24 +10,26 @@ public class PlayerExp : NetworkBehaviour
     [SerializeField] private ExpConfigSO expConfig;
 
     private ChangeDetector _changeDetector;
+    private PlayerCloudSave _cloud;
 
     public override async void Spawned()
     {
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
+        _cloud = FindFirstObjectByType<PlayerCloudSave>();
+
+        if (_cloud == null)
+            Debug.LogWarning("[PlayerExp] PlayerCloudSave no encontrado en escena");
 
         if (Object.HasStateAuthority)
         {
-            var cloud = FindFirstObjectByType<PlayerCloudSave>();
-
-            if (cloud != null)
+            if (_cloud != null)
             {
-                var data = await cloud.LoadPlayerData();
+                var data = await _cloud.LoadPlayerData();
                 Level = data.level;
                 CurrentExp = data.exp;
             }
             else
             {
-                Debug.LogWarning("[PlayerExp] PlayerCloudSave no encontrado en escena");
                 Level = 0;
                 CurrentExp = 0;
             }
@@ -70,9 +72,8 @@ public class PlayerExp : NetworkBehaviour
             ExpToNextLevel = expConfig.CalcExpToNext(Level);
         }
 
-        var cloud = FindFirstObjectByType<PlayerCloudSave>();
-        if (cloud != null)
-            await cloud.SavePlayerData(Level, CurrentExp);
+        if (_cloud != null)
+            await _cloud.SavePlayerData(new PlayerSaveData { level = Level, exp = CurrentExp });
         else
             Debug.LogWarning("[PlayerExp] PlayerCloudSave no encontrado, no se guardó");
     }

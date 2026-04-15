@@ -8,10 +8,9 @@ using Unity.Services.Authentication;
 
 public class PlayerCloudSave : MonoBehaviour
 {
-    private const string LEVEL_KEY = "player_level";
-    private const string EXP_KEY = "player_exp";
+    private const string SAVE_KEY = "player_data";
 
-    public async Task SavePlayerData(int level, int currentExp)
+    public async Task SavePlayerData(PlayerSaveData saveData)
     {
         try
         {
@@ -21,14 +20,21 @@ public class PlayerCloudSave : MonoBehaviour
                 return;
             }
 
+            if (saveData == null)
+            {
+                Debug.LogWarning("[CloudSave] saveData es null");
+                return;
+            }
+
+            string json = JsonUtility.ToJson(saveData);
+
             var data = new Dictionary<string, object>
             {
-                { LEVEL_KEY, level },
-                { EXP_KEY,   currentExp }
+                { SAVE_KEY, json }
             };
 
             await CloudSaveService.Instance.Data.Player.SaveAsync(data);
-            Debug.Log($"[CloudSave] Guardado -> Level: {level} | Exp: {currentExp}");
+            Debug.Log($"[CloudSave] Guardado -> Level: {saveData.level} | Exp: {saveData.exp}");
         }
         catch (Exception e)
         {
@@ -36,35 +42,40 @@ public class PlayerCloudSave : MonoBehaviour
         }
     }
 
-    public async Task<(int level, int exp)> LoadPlayerData()
+    public async Task<PlayerSaveData> LoadPlayerData()
     {
-        int level = 0;
-        int exp = 0;
-
         try
         {
             if (!AuthenticationService.Instance.IsSignedIn)
             {
                 Debug.LogWarning("[CloudSave] No está logueado");
-                return (level, exp);
+                return new PlayerSaveData();
             }
 
-            var keys = new HashSet<string> { LEVEL_KEY, EXP_KEY };
+            var keys = new HashSet<string> { SAVE_KEY };
             var result = await CloudSaveService.Instance.Data.Player.LoadAsync(keys);
 
-            if (result.TryGetValue(LEVEL_KEY, out Item levelItem))
-                level = levelItem.Value.GetAs<int>();
+            if (result.TryGetValue(SAVE_KEY, out Item item))
+            {
+                string json = item.Value.GetAs<string>();
+                var playerData = JsonUtility.FromJson<PlayerSaveData>(json);
 
-            if (result.TryGetValue(EXP_KEY, out Item expItem))
-                exp = expItem.Value.GetAs<int>();
+                if (playerData == null)
+                {
+                    Debug.LogWarning("[CloudSave] JSON inválido, devolviendo datos por defecto");
+                    return new PlayerSaveData();
+                }
 
-            Debug.Log($"[CloudSave] Cargado -> Level: {level} | Exp: {exp}");
+                Debug.Log($"[CloudSave] Cargado -> Level: {playerData.level} | Exp: {playerData.exp}");
+                return playerData;
+            }
         }
         catch (Exception e)
         {
             Debug.LogError("[CloudSave] Error al cargar: " + e.Message);
         }
 
-        return (level, exp);
+        Debug.Log("[CloudSave] Sin datos previos, iniciando desde cero");
+        return new PlayerSaveData();
     }
 }
