@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4170592426572721460}
   - component: {fileID: 6105954493349887935}
   - component: {fileID: 8093540832655130418}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6716704075404500338}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Mapa
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,6 +182,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 3f05dd0e511e2374aa7bd40d4acdc921, type: 3}
       propertyPath: m_Name
       value: env_cuevaTutorial
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3f05dd0e511e2374aa7bd40d4acdc921, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -287,6 +291,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: env_woodhousePlaceholder (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 48efcdc66782bdc459df0d7b72defd82, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -390,6 +398,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 48efcdc66782bdc459df0d7b72defd82, type: 3}
       propertyPath: m_Name
       value: env_woodhousePlaceholder (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 48efcdc66782bdc459df0d7b72defd82, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -495,6 +507,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: env_fungiTower
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 005d3c9a9934fc54291a95999d22383f, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -599,6 +615,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: hubBase
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: bccd8343699462c49939cb3c354730c8, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -687,6 +707,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: fcc17b62b29e98046b83e80ad8f5923a, type: 3}
       propertyPath: m_Name
       value: obj_blockoutC
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: fcc17b62b29e98046b83e80ad8f5923a, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: fcc17b62b29e98046b83e80ad8f5923a, type: 3}
       propertyPath: m_IsActive
@@ -796,6 +820,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: env_fungiTowerB
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f930dbd2d556ef24e9e8f66d70cc1a16, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -903,6 +931,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: env_woodhousePlaceholder (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 48efcdc66782bdc459df0d7b72defd82, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1003,6 +1035,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: env_estructura_puenteROTO
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 98c5f956014f84c4b86bf69498b489fe, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1054,6 +1090,10 @@ PrefabInstance:
     - target: {fileID: 5581950028992490900, guid: 39ba6423644e91745a228b3780fa299b, type: 3}
       propertyPath: m_Name
       value: MainCamera
+      objectReference: {fileID: 0}
+    - target: {fileID: 5581950028992490900, guid: 39ba6423644e91745a228b3780fa299b, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 5581950028992490900, guid: 39ba6423644e91745a228b3780fa299b, type: 3}
       propertyPath: m_IsActive
@@ -1177,6 +1217,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: env_woodhousePlaceholder
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 48efcdc66782bdc459df0d7b72defd82, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1280,6 +1324,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 00ea76aa72b6bc843ab8f40d9fa532ea, type: 3}
       propertyPath: m_Name
       value: env_entranceCueva
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 00ea76aa72b6bc843ab8f40d9fa532ea, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
