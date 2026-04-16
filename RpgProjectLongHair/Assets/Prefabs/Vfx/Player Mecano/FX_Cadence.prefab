@@ -193,7 +193,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.3
+      scalar: 0.4
       minScalar: 0.6
       maxCurve:
         serializedVersion: 2
@@ -643,7 +643,7 @@ ParticleSystem:
     serializedVersion: 6
     enabled: 1
     type: 4
-    angle: 30
+    angle: 60
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 0
@@ -1308,8 +1308,8 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.96981126, g: 0.71759576, b: 0.41537198, a: 1}
-        key1: {r: 1, g: 0.92208636, b: 0.2924527, a: 1}
+        key0: {r: 0.32224822, g: 0.10361691, b: 0.554717, a: 1}
+        key1: {r: 0.6210802, g: 0.4406478, b: 0.7509433, a: 1}
         key2: {r: 1, g: 0.2313726, b: 0.4623967, a: 0.039215688}
         key3: {r: 1, g: 0, b: 0.027116394, a: 0.039215688}
         key4: {r: 0, g: 1, b: 0.017601522, a: 0.039215688}
@@ -4834,9 +4834,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 2
-  m_Color: {r: 1, g: 0.80784315, b: 0.4117647, a: 1}
-  m_Intensity: 15
-  m_Range: 1.5
+  m_Color: {r: 0.33608115, g: 0.050980378, b: 0.56078434, a: 1}
+  m_Intensity: 0
+  m_Range: 0
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -4959,7 +4959,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7514278403953073456}
   serializedVersion: 8
-  lengthInSec: 3
+  lengthInSec: 1
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -6293,20 +6293,20 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 0.8815345, b: 0.6556604, a: 1}
-        key1: {r: 1, g: 0.7058824, b: 0.14509805, a: 1}
-        key2: {r: 0.8941177, g: 0.5372549, b: 0.039215688, a: 0}
-        key3: {r: 0.3962264, g: 0.15613267, b: 0.1439124, a: 0}
+        key0: {r: 0.8227322, g: 0.654902, b: 1, a: 1}
+        key1: {r: 0.6601577, g: 0.14509803, b: 1, a: 1}
+        key2: {r: 0.5199484, g: 0.039215695, b: 0.89411765, a: 0}
+        key3: {r: 0.24451308, g: 0.14509808, b: 0.39607844, a: 0}
         key4: {r: 0.5921569, g: 0.5921569, b: 0.5921569, a: 0}
-        key5: {r: 0.06666667, g: 0.06666667, b: 0.06666667, a: 0}
+        key5: {r: 0.5921569, g: 0.5921569, b: 0.5921569, a: 0}
         key6: {r: 0, g: 0, b: 0, a: 0}
         key7: {r: 0, g: 0, b: 0, a: 0}
         ctime0: 0
-        ctime1: 5236
+        ctime1: 5474
         ctime2: 9830
         ctime3: 26214
         ctime4: 55705
-        ctime5: 53006
+        ctime5: 55705
         ctime6: 0
         ctime7: 0
         atime0: 13107
@@ -6318,7 +6318,7 @@ ParticleSystem:
         atime6: 0
         atime7: 0
         m_Mode: 0
-        m_ColorSpace: -1
+        m_ColorSpace: 0
         m_NumColorKeys: 5
         m_NumAlphaKeys: 3
       minGradient:
@@ -9844,13 +9844,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clearBehavior: 2
   cameraShake:
-    enabled: 0
+    enabled: 1
     useMainCamera: 1
     cameras: []
     delay: 0
     duration: 0.5
     shakeSpace: 0
-    shakeStrength: {x: 0, y: 0.2, z: 0}
+    shakeStrength: {x: 0.03, y: 0.03, z: 0.03}
     shakeCurve:
       serializedVersion: 2
       m_Curve:
@@ -9875,12 +9875,12 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    shakesDelay: 0
+    shakesDelay: 0.02
   animatedLights:
   - light: {fileID: 7514278403672127493}
     loop: 0
     animateIntensity: 1
-    intensityStart: 15
+    intensityStart: 18
     intensityEnd: 0
     intensityDuration: 1
     intensityCurve:
@@ -9964,9 +9964,9 @@ MonoBehaviour:
     animateColor: 1
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 0.80784315, b: 0.4117647, a: 1}
-      key1: {r: 0.77647066, g: 0.4039216, b: 0.050980397, a: 1}
-      key2: {r: 0.559, g: 0.17468749, b: 0.05240625, a: 0}
+      key0: {r: 0.69049627, g: 0.41176474, b: 1, a: 1}
+      key1: {r: 0.41097078, g: 0.050980374, b: 0.7764706, a: 1}
+      key2: {r: 0.33608115, g: 0.050980378, b: 0.56078434, a: 0}
       key3: {r: 0.559, g: 0.17468749, b: 0.05240625, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
@@ -9989,7 +9989,7 @@ MonoBehaviour:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: -1
+      m_ColorSpace: 0
       m_NumColorKeys: 3
       m_NumAlphaKeys: 2
     colorDuration: 1
@@ -10032,7 +10032,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02fcd7f87891d2148a64d63c6efebaa9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifetime: 2
+  lifetime: 1
   useParticleSystemDuration: 1
 --- !u!1 &7514278404335769966
 GameObject:
@@ -10256,8 +10256,8 @@ ParticleSystem:
     startColor:
       serializedVersion: 2
       minMaxState: 2
-      minColor: {r: 1, g: 0.8135849, b: 0.53396225, a: 0.8}
-      maxColor: {r: 0.93207544, g: 0.74847776, b: 0.5539693, a: 0.5019608}
+      minColor: {r: 0.59304845, g: 0.3501673, b: 0.9924528, a: 0.8}
+      maxColor: {r: 0.71831244, g: 0.35126364, b: 0.9547169, a: 0.5019608}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -10699,7 +10699,7 @@ ParticleSystem:
     serializedVersion: 6
     enabled: 1
     type: 4
-    angle: 30
+    angle: 45
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 0
@@ -15200,8 +15200,8 @@ ParticleSystem:
     startColor:
       serializedVersion: 2
       minMaxState: 2
-      minColor: {r: 1, g: 0.5911432, b: 0.36037737, a: 1}
-      maxColor: {r: 0.9245283, g: 0.7701803, b: 0.3541117, a: 1}
+      minColor: {r: 0.42044467, g: 0.096197866, b: 0.86415094, a: 1}
+      maxColor: {r: 0.47288194, g: 0.12549019, b: 0.7647059, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 0.851366, b: 0.48113203, a: 1}
@@ -15265,7 +15265,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.1
+      scalar: 0.12
       minScalar: 3.8
       maxCurve:
         serializedVersion: 2

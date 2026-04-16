@@ -16,7 +16,7 @@ MonoBehaviour:
   _damage: 90
   _cooldown: 0.3
   _hitRadius: 0.86
-  _projectilePrefab: {fileID: 4028938312772070145, guid: d924951f8e151df4ba90bb00a313339a, type: 3}
+  _projectilePrefab: {fileID: 4028938312772070145, guid: cd96fcd1ca6e1ba45b2bfb24fd576021, type: 3}
   _projectileSpeed: 40
   _lifetimeSeconds: 50
   _targetLayer:

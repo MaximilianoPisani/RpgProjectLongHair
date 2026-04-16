@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8536ada8a6a0e2a4097af506ecaee2d5, type: 3}
-  m_Name: WeaponFX
+  m_Name: WeaponMecanoFX
   m_EditorClassIdentifier: 
   vfxPrefab: {fileID: 4968917852853964046, guid: c18a1d2bb69df294a8faef683d929a18, type: 3}
   vfxOffset: {x: 0, y: 0, z: 0}
