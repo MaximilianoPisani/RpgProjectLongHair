@@ -5,7 +5,6 @@ public class PlayerFallState : IPlayerState
 {
     private PlayerStateMachine _sm;
     private float _fallTime;
-
     private const float FallVelocityThreshold = -0.5f;
 
     public PlayerFallState(PlayerStateMachine sm)
@@ -16,9 +15,13 @@ public class PlayerFallState : IPlayerState
     public void Enter()
     {
         _fallTime = 0f;
-        _sm.GetComponent<PlayerNetworkSync>()?.TriggerFall(); 
+        _sm.GetComponent<PlayerNetworkSync>()?.TriggerFall();
+
         if (_sm.Animator != null)
+        {
             _sm.Animator.SetBool("isFalling", true);
+            _sm.Animator.SetBool("isJumping", false);
+        }
     }
 
     public void Exit()
@@ -31,15 +34,11 @@ public class PlayerFallState : IPlayerState
     {
         _fallTime += _sm.Runner.DeltaTime;
 
-        if (_sm.Player.IsGrounded())
+        if (_sm.Player.IsPhysicallyGroundedPublic())
         {
-            if (input.moveDirection.sqrMagnitude > 0.01f)
-                _sm.ChangeState(new PlayerMoveState(_sm));
-            else
-                _sm.ChangeState(new PlayerIdleState(_sm));
+            _sm.ChangeState(new PlayerLandState(_sm));
             return;
         }
-
     }
 
     public static bool ShouldFall(PlayerStateMachine sm)

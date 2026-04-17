@@ -10,6 +10,8 @@ public class PlayerNetworkSync : NetworkBehaviour
     [Networked] private NetworkBool SyncedIsMoving { get; set; }
     [Networked] private NetworkBool SyncedIsJumping { get; set; }
     [Networked] private NetworkBool SyncedIsReloading { get; set; }
+    [Networked] private NetworkBool SyncedIsFalling { get; set; }
+    [Networked] private NetworkBool SyncedIsLanding { get; set; }  
 
     [Networked] private int SyncedMeleeTrigger { get; set; }
     [Networked] private int SyncedShootTrigger { get; set; }
@@ -17,14 +19,14 @@ public class PlayerNetworkSync : NetworkBehaviour
     [Networked] private int SyncedDieTrigger { get; set; }
     [Networked] private int SyncedComboIndex { get; set; }
     [Networked] private int SyncedFallTrigger { get; set; }
-    [Networked] private NetworkBool SyncedIsFalling { get; set; }
-
+    [Networked] private int SyncedLandTrigger { get; set; }     
 
     private int _lastMelee;
     private int _lastShoot;
     private int _lastJump;
     private int _lastDie;
     private int _lastFall;
+    private int _lastLand;  
 
     private Animator _animator;
     private ChangeDetector _changes;
@@ -46,7 +48,7 @@ public class PlayerNetworkSync : NetworkBehaviour
     public override void FixedUpdateNetwork()
     {
         if (!Object.HasStateAuthority) return;
-   
+
         SyncedPosition = transform.position;
         SyncedRotation = transform.rotation;
 
@@ -58,13 +60,18 @@ public class PlayerNetworkSync : NetworkBehaviour
         SyncedIsReloading = _animator.GetBool("IsReloading");
         SyncedComboIndex = _animator.GetInteger("ComboIndex");
         SyncedIsFalling = _animator.GetBool("isFalling");
+        SyncedIsLanding = _animator.GetBool("isLanding"); 
     }
 
     public override void Render()
     {
         if (Object.HasInputAuthority) return;
 
-        transform.rotation = Quaternion.Lerp(transform.rotation, SyncedRotation, _interpolationSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Lerp(
+            transform.rotation,
+            SyncedRotation,
+            _interpolationSpeed * Time.deltaTime
+        );
 
         if (_animator == null) return;
 
@@ -74,7 +81,7 @@ public class PlayerNetworkSync : NetworkBehaviour
         _animator.SetBool("IsReloading", SyncedIsReloading);
         _animator.SetInteger("ComboIndex", SyncedComboIndex);
         _animator.SetBool("isFalling", SyncedIsFalling);
-
+        _animator.SetBool("isLanding", SyncedIsLanding);   
 
         foreach (var change in _changes.DetectChanges(this, out var prev, out var current))
         {
@@ -103,9 +110,27 @@ public class PlayerNetworkSync : NetworkBehaviour
                 _lastFall = SyncedFallTrigger;
                 _animator.SetTrigger("Fall");
             }
+            if (change == nameof(SyncedLandTrigger) && _lastLand != SyncedLandTrigger)
+            {
+                _lastLand = SyncedLandTrigger;
+                _animator.SetTrigger("Land");
+            }
         }
     }
 
+    public void TriggerLand()
+    {
+        if (Object.HasStateAuthority)
+        {
+            SyncedLandTrigger++;
+            _animator?.SetTrigger("Land");
+        }
+        else if (Object.HasInputAuthority)
+        {
+            _animator?.SetTrigger("Land");
+            RPC_TriggerLand();
+        }
+    }
 
     public void TriggerJump()
     {
@@ -162,6 +187,7 @@ public class PlayerNetworkSync : NetworkBehaviour
             RPC_TriggerDie();
         }
     }
+
     public void TriggerFall()
     {
         if (Object.HasStateAuthority)
@@ -177,32 +203,20 @@ public class PlayerNetworkSync : NetworkBehaviour
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    private void RPC_TriggerFall()
-    {
-        SyncedFallTrigger++;
-    }
+    private void RPC_TriggerLand() => SyncedLandTrigger++;  
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    private void RPC_TriggerJump()
-    {
-        SyncedJumpTrigger++;
-    }
+    private void RPC_TriggerFall() => SyncedFallTrigger++;
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    private void RPC_TriggerMelee()
-    {
-        SyncedMeleeTrigger++;
-    }
+    private void RPC_TriggerJump() => SyncedJumpTrigger++;
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    private void RPC_TriggerShoot()
-    {
-        SyncedShootTrigger++;
-    }
+    private void RPC_TriggerMelee() => SyncedMeleeTrigger++;
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    private void RPC_TriggerDie()
-    {
-        SyncedDieTrigger++;
-    }
+    private void RPC_TriggerShoot() => SyncedShootTrigger++;
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    private void RPC_TriggerDie() => SyncedDieTrigger++;
 }

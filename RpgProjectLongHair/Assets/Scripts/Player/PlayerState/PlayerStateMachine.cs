@@ -31,7 +31,7 @@ public class PlayerStateMachine : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (Player.IsGrounded())
+        if (Player.IsPhysicallyGroundedPublic())
             IsJumping = false;
 
         if (_currentState is PlayerDeadState)
@@ -41,6 +41,7 @@ public class PlayerStateMachine : NetworkBehaviour
         }
 
         if (!GetInput(out NetworkInputData input)) return;
+
         LastShootDirection = input.shootDirection;
 
         if (_currentState is PlayerIdleState || _currentState is PlayerMoveState)
@@ -52,7 +53,9 @@ public class PlayerStateMachine : NetworkBehaviour
             }
         }
 
-        if (input.jump && !IsJumping && Player.IsGrounded() && !IsInputLocked)
+        bool canJump = _currentState is PlayerIdleState || _currentState is PlayerMoveState;
+
+        if (input.jump && canJump && Player.IsGrounded() && !IsInputLocked)
         {
             IsJumping = true;
             ChangeState(new PlayerJumpState(this));
