@@ -2608,11 +2608,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44eb966fec00d8844a73296f2e226494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: {x: 0.36, y: 2.16, z: -1.96}
-  lookOffset: {x: 0.61, y: 1.74, z: -0.84}
-  mouseSensitivity: 3
-  minPitch: -20
-  maxPitch: 60
+  offset: {x: 0, y: 2, z: -4}
+  lookOffset: {x: 1.8, y: 2, z: 0}
+  mouseSensitivity: 2
+  minPitch: -25
+  maxPitch: 50
+  collisionLayers:
+    serializedVersion: 2
+    m_Bits: 3072
+  collisionPadding: 0.6
+  smoothSpeed: 10
+  returnSpeed: 5
+  debugMode: 1
 --- !u!1 &9206606978995586723
 GameObject:
   m_ObjectHideFlags: 0
