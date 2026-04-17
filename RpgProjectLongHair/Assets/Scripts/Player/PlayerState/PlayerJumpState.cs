@@ -1,22 +1,26 @@
-using Fusion;
-using UnityEngine;
-
 public class PlayerJumpState : IPlayerState
 {
     private PlayerStateMachine _sm;
     private float _airTime;
-    private const float MinAirTime = 0.15f;
+    private const float MinAirTime = 0.2f;
 
-    public PlayerJumpState(PlayerStateMachine sm)
-    {
-        _sm = sm;
-    }
+    public PlayerJumpState(PlayerStateMachine sm) => _sm = sm;
 
     public void Enter()
     {
         _airTime = 0f;
-        _sm.Player.Jump(); 
+        _sm.IsJumping = true;
+
+        if (_sm.Player.IsPhysicallyGroundedPublic())
+            _sm.Player.Jump();
+
         _sm.GetComponent<PlayerNetworkSync>()?.TriggerJump();
+
+        if (_sm.Animator != null)
+        {
+            _sm.Animator.SetBool("isJumping", true);
+            _sm.Animator.SetBool("isFalling", false);
+        }
     }
 
     public void Exit()
@@ -36,12 +40,9 @@ public class PlayerJumpState : IPlayerState
             return;
         }
 
-        if (_sm.Player.IsGrounded())
+        if (_sm.Player.IsPhysicallyGroundedPublic())
         {
-            if (input.moveDirection.sqrMagnitude > 0.01f)
-                _sm.ChangeState(new PlayerMoveState(_sm));
-            else
-                _sm.ChangeState(new PlayerIdleState(_sm));
+            _sm.ChangeState(new PlayerLandState(_sm));
         }
     }
 }
