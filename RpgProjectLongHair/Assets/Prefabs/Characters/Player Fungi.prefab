@@ -2622,14 +2622,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44eb966fec00d8844a73296f2e226494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: {x: 0, y: 1.8, z: -3.5}
-  lookOffset: {x: 2, y: 2, z: 1}
-  mouseSensitivity: 3
-  minPitch: -20
-  maxPitch: 40
+  offset: {x: 0, y: 2, z: -4}
+  lookOffset: {x: 1.8, y: 2, z: 1}
+  mouseSensitivity: 2
+  minPitch: -25
+  maxPitch: 50
   collisionLayers:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 3072
   collisionPadding: 0.6
   smoothSpeed: 16
   returnSpeed: 5

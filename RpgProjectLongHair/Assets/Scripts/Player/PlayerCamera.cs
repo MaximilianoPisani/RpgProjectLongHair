@@ -3,15 +3,15 @@ using UnityEngine;
 public class PlayerCamera : MonoBehaviour
 {
     [Header("Target")]
-    [SerializeField] private Vector3 offset = new Vector3(0f, 3f, -6f);
+    [SerializeField] private Vector3 offset = new Vector3(0f, 2f, -4f);
 
     [Header("Look Offset (Shoulder Camera)")]
-    [SerializeField] private Vector3 lookOffset = new Vector3(1.5f, 1.5f, 0f);
+    [SerializeField] private Vector3 lookOffset = new Vector3(1.8f, 2f, 0f);
 
     [Header("Orbit")]
-    [SerializeField] private float mouseSensitivity = 3f;
-    [SerializeField] private float minPitch = -20f;
-    [SerializeField] private float maxPitch = 60f;
+    [SerializeField] private float mouseSensitivity = 2f;
+    [SerializeField] private float minPitch = -26.1f;
+    [SerializeField] private float maxPitch = 50f;
 
     [Header("Collision")]
     [SerializeField] private LayerMask collisionLayers = -1; // Todo por defecto
