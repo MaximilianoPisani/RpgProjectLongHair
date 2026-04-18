@@ -751,7 +751,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 1.7
+      value: 2.9
       mode: 0
       spread: 0
       speed:
@@ -5254,7 +5254,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1.6
+      scalar: 2.5
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -9740,13 +9740,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clearBehavior: 2
   cameraShake:
-    enabled: 0
+    enabled: 1
     useMainCamera: 1
     cameras: []
     delay: 0
     duration: 1
     shakeSpace: 0
-    shakeStrength: {x: 0.1, y: 0.1, z: 0.1}
+    shakeStrength: {x: 0.3, y: 0.3, z: 0.3}
     shakeCurve:
       serializedVersion: 2
       m_Curve:
@@ -9771,7 +9771,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    shakesDelay: 0
+    shakesDelay: 0.06
   animatedLights:
   - light: {fileID: 6615135258833364870}
     loop: 0
@@ -10136,7 +10136,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1.6
+      scalar: 2.5
       minScalar: 1
       maxCurve:
         serializedVersion: 2

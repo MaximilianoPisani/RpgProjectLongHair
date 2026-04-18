@@ -25,8 +25,8 @@ MonoBehaviour:
     animationStateName: Attack_1
     attackVFX:
       vfxPrefab: {fileID: 802242170397950454, guid: b54a0f927d2f04a4d9f6a949652ad2dd, type: 3}
-      vfxSpawnTime: 0.21
-      localOffset: {x: 0, y: 0, z: 0}
+      vfxSpawnTime: 0.26
+      localOffset: {x: 0, y: 0.2, z: 0.5}
       followTransform: 1
       customDuration: 0
   - attackDuration: 0.55
@@ -38,7 +38,7 @@ MonoBehaviour:
     attackVFX:
       vfxPrefab: {fileID: 802242170397950454, guid: e30f5d12591e1ee4cbbf0552b5bb7412, type: 3}
       vfxSpawnTime: 0.35
-      localOffset: {x: 0, y: 0, z: 0}
+      localOffset: {x: 0, y: 0.4, z: 0.5}
       followTransform: 1
       customDuration: 0
   - attackDuration: 1.38
@@ -49,8 +49,8 @@ MonoBehaviour:
     animationStateName: Attack_3
     attackVFX:
       vfxPrefab: {fileID: 802242170397950454, guid: 0bae66f16fbd47147ac27cb941b5c843, type: 3}
-      vfxSpawnTime: 1.32
-      localOffset: {x: 0, y: 0, z: 0}
+      vfxSpawnTime: 1.34
+      localOffset: {x: 0, y: 0.1, z: 0.2}
       followTransform: 1
       customDuration: 0
   _comboResetTime: 0.5

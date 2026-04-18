@@ -13,29 +13,29 @@ MonoBehaviour:
   m_Name: RageData
   m_EditorClassIdentifier: 
   maxCharge: 100
-  chargePerDamage: 1
+  chargePerDamage: 100
   useHitsInsteadOfDamage: 1
-  chargePerHit: 5
+  chargePerHit: 50
   extraChargeFromDamage: 0.2
   damageMultiplier: 1.75
-  activeDuration: 8
+  activeDuration: 20
   activationKey: 104
   weaponVFXConfigs:
   - weapon: 0
     comboVFX:
     - vfxPrefab: {fileID: 1402268366991796481, guid: 9714e9bf8e9a0534a8f3e2c5755c6020, type: 3}
       vfxSpawnTime: 0.15
-      localOffset: {x: 0, y: 0, z: 0}
+      localOffset: {x: 0, y: 0, z: 0.5}
       followTransform: 1
       customDuration: 0
     - vfxPrefab: {fileID: 6345871846994825729, guid: c97b06f3bb122ba4292cac62ec68d5ad, type: 3}
       vfxSpawnTime: 0.22
-      localOffset: {x: 0, y: 0, z: 0}
+      localOffset: {x: 0, y: 0, z: 0.5}
       followTransform: 1
       customDuration: 0
     - vfxPrefab: {fileID: 2653763631966760495, guid: 0da4201115bcd1043b9032f1f6211418, type: 3}
       vfxSpawnTime: 0.7
-      localOffset: {x: 0, y: 0, z: 0}
+      localOffset: {x: 0, y: 0, z: 0.6}
       followTransform: 1
       customDuration: 0
     rageFireEjectionVFX:
@@ -53,7 +53,7 @@ MonoBehaviour:
   - weapon: 2
     comboVFX: []
     rageFireEjectionVFX:
-      vfxPrefab: {fileID: 8194992990867289339, guid: f47997b3e1a50cd4497951592aa7e75b, type: 3}
+      vfxPrefab: {fileID: 8194992990867289339, guid: f76fc811ca333c4409baa69ca54712d4, type: 3}
       vfxSpawnTime: 0.15
       localOffset: {x: 0, y: 0, z: 0}
       followTransform: 1
@@ -68,22 +68,22 @@ MonoBehaviour:
     comboVFX:
     - vfxPrefab: {fileID: 4892191690312840257, guid: 3710508a1c97986469c911bb2360413f, type: 3}
       vfxSpawnTime: 0.21
-      localOffset: {x: 0, y: 0, z: 0}
+      localOffset: {x: 0, y: 0.2, z: 0.5}
       followTransform: 1
       customDuration: 0
     - vfxPrefab: {fileID: 660411333210349344, guid: bae6fbbcd87331b44b92a6402ddbdf12, type: 3}
       vfxSpawnTime: 0.35
-      localOffset: {x: 0, y: 0, z: 0}
+      localOffset: {x: 0, y: 0.2, z: 0.5}
       followTransform: 1
       customDuration: 0
     - vfxPrefab: {fileID: 5078917322838046068, guid: 975cd191841cb12489f1777e56b5305b, type: 3}
       vfxSpawnTime: 1.32
-      localOffset: {x: 0, y: 0, z: 0}
+      localOffset: {x: 0, y: 0.1, z: 0.3}
       followTransform: 1
       customDuration: 0
     rageFireEjectionVFX:
       vfxPrefab: {fileID: 0}
-      vfxSpawnTime: 0.25
+      vfxSpawnTime: 0
       localOffset: {x: 0, y: 0, z: 0}
       followTransform: 0
       customDuration: 0
@@ -96,10 +96,10 @@ MonoBehaviour:
   - weapon: 3
     comboVFX: []
     rageFireEjectionVFX:
-      vfxPrefab: {fileID: 0}
-      vfxSpawnTime: 0.25
+      vfxPrefab: {fileID: 2574898397583427364, guid: a8aed67a2afa69d4f827e373ec2061ad, type: 3}
+      vfxSpawnTime: 0.6
       localOffset: {x: 0, y: 0, z: 0}
-      followTransform: 0
+      followTransform: 1
       customDuration: 0
     rageShellEjectionVFX:
       vfxPrefab: {fileID: 0}
