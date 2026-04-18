@@ -9734,7 +9734,7 @@ GameObject:
   - component: {fileID: 140703034091799966}
   - component: {fileID: 4355950713726879764}
   m_Layer: 0
-  m_Name: FX_Attack1
+  m_Name: FX_Attack2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9831,7 +9831,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 1
+  moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
   randomSeed: 0

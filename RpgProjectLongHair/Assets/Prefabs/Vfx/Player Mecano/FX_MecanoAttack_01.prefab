@@ -76,7 +76,7 @@ Light:
   serializedVersion: 11
   m_Type: 2
   m_Color: {r: 0.48567426, g: 0.35294116, b: 1, a: 1}
-  m_Intensity: 0.7257599
+  m_Intensity: 0
   m_Range: 7
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -9831,7 +9831,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 1
+  moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
   randomSeed: 0
