@@ -6,6 +6,7 @@ using System;
 public class PlayerRageHandler : NetworkBehaviour
 {
     [SerializeField] private RageData _rageData;
+    public RageData RageData => _rageData; 
 
     [Networked, HideInInspector] public float CurrentCharge { get; private set; }
     [Networked, HideInInspector] public bool IsRageActive { get; private set; }
@@ -97,13 +98,9 @@ public class PlayerRageHandler : NetworkBehaviour
         float amount = _rageData.chargePerHit;
 
         if (!_rageData.useHitsInsteadOfDamage)
-        {
             amount = damage * _rageData.chargePerDamage;
-        }
         else
-        {
             amount += damage * _rageData.extraChargeFromDamage;
-        }
 
         AddCharge(amount);
     }
@@ -111,13 +108,10 @@ public class PlayerRageHandler : NetworkBehaviour
     private void AddCharge(float amount)
     {
         float previous = CurrentCharge;
-
         CurrentCharge = Mathf.Min(CurrentCharge + amount, _rageData.maxCharge);
 
         if (Object.HasInputAuthority && !Mathf.Approximately(previous, CurrentCharge))
-        {
             OnChargeChanged?.Invoke(CurrentCharge, _rageData.maxCharge);
-        }
     }
 
     private void ActivateRage()
@@ -127,7 +121,6 @@ public class PlayerRageHandler : NetworkBehaviour
         CurrentCharge = _rageData.maxCharge;
 
         OnRageActivated?.Invoke();
-
         Debug.Log("[Rage] Activada");
     }
 
@@ -139,20 +132,15 @@ public class PlayerRageHandler : NetworkBehaviour
 
         OnRageDeactivated?.Invoke();
         OnChargeChanged?.Invoke(CurrentCharge, _rageData.maxCharge);
-
         Debug.Log("[Rage] Desactivada");
     }
 
     public bool IsChargeFull() => CurrentCharge >= _rageData.maxCharge;
-
-    public float GetDamageMultiplier() =>
-        IsRageActive ? _rageData.damageMultiplier : 1f;
+    public float GetDamageMultiplier() => IsRageActive ? _rageData.damageMultiplier : 1f;
 
     public float GetNormalizedBar()
     {
-        if (IsRageActive)
-            return RageTimeLeft / _rageData.activeDuration;
-
+        if (IsRageActive) return RageTimeLeft / _rageData.activeDuration;
         return CurrentCharge / _rageData.maxCharge;
     }
 }
