@@ -270,8 +270,22 @@ public class PlayerMeleeState : IPlayerState
     {
         if (_currentAttackConfig?.attackVFX == null) return;
 
-        _sm.Combat?.SpawnSlashVFX(_currentAttackConfig.attackVFX);
+        var rage = _sm.GetComponent<PlayerRageHandler>();
 
+        if (rage != null && rage.IsRageActive)
+        {
+            var rageConfig = rage.RageData?.GetConfigForWeapon(_sm.Combat.CurrentWeapon);
+            var rageVFX = rageConfig?.GetComboVFX(_comboIndex);
+
+            if (rageVFX != null)
+                _sm.Combat?.SpawnSlashVFX(rageVFX);
+            else
+                Debug.LogWarning($"[Melee][Rage] No rage VFX for combo {_comboIndex}");
+
+            return;
+        }
+
+        _sm.Combat?.SpawnSlashVFX(_currentAttackConfig.attackVFX);
         Debug.Log($"[Melee] VFX spawned for combo {_comboIndex}");
     }
 
@@ -310,8 +324,17 @@ public class PlayerMeleeState : IPlayerState
 
             if (enemyHealth != null && _sm.Object.HasStateAuthority)
             {
-                enemyHealth.ApplyDamageServer(_currentAttackConfig.damage, _sm.Object.InputAuthority);
-                Debug.Log($"[Melee] Hit enemy - Damage: {_currentAttackConfig.damage}");
+                int damage = _currentAttackConfig.damage;
+
+                var rage = _sm.GetComponent<PlayerRageHandler>();
+                if (rage != null)
+                    damage = Mathf.RoundToInt(damage * rage.GetDamageMultiplier());
+
+                enemyHealth.ApplyDamageServer(damage, _sm.Object.InputAuthority);
+
+                PlayerRageHandler.NotifyDamageDealt(_sm.Object.InputAuthority, damage);
+
+                Debug.Log($"[Melee] Hit enemy - Damage: {damage}");
             }
         }
 
