@@ -24,12 +24,12 @@ public class InventoryUIPanelController : NetworkBehaviour
     {
         if (!HasInputAuthority) return;
 
-        if (Input.GetKeyDown(KeyCode.I))
+        bool togglePressed = Input.GetKeyDown(KeyCode.I) || (Input.GetKeyDown(KeyCode.Escape) && _isOpen);
+        if (togglePressed)
         {
-            _isOpen = !_isOpen;
+            _isOpen = Input.GetKeyDown(KeyCode.I) ? !_isOpen : false;
             if (_inventoryPanel != null)
                 _inventoryPanel.SetActive(_isOpen);
-
             PlayerCamera.Local?.SetCursorLocked(!_isOpen);
         }
     }
