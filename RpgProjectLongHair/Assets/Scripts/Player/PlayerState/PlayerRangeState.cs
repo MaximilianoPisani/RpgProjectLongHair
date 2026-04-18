@@ -277,6 +277,19 @@ public class PlayerRangeState : IPlayerState
     private void SpawnShellEjectionVFX()
     {
         if (_rangeData.ShellEjectionVFX == null) return;
+
+        var rage = _sm.GetComponent<PlayerRageHandler>();
+
+        if (rage != null && rage.IsRageActive)
+        {
+            var rageConfig = rage.RageData?.GetConfigForWeapon(_sm.Combat.CurrentWeapon);
+            if (rageConfig?.rageShellEjectionVFX != null)
+                _sm.Combat?.SpawnShellEjectionVFX(rageConfig.rageShellEjectionVFX);
+            else
+                Debug.LogWarning("[Range][Rage] No rage shell ejection VFX configured");
+            return;
+        }
+
         _sm.Combat?.SpawnShellEjectionVFX(_rangeData.ShellEjectionVFX);
         Debug.Log("[Range] Shell ejection VFX spawned");
     }
@@ -284,16 +297,29 @@ public class PlayerRangeState : IPlayerState
     private void SpawnFireEjectionVFX()
     {
         if (_rangeData.FireEjectionVFX == null) return;
+
+        var rage = _sm.GetComponent<PlayerRageHandler>();
+
+        if (rage != null && rage.IsRageActive)
+        {
+            var rageConfig = rage.RageData?.GetConfigForWeapon(_sm.Combat.CurrentWeapon);
+            if (rageConfig?.rageFireEjectionVFX != null)
+                _sm.Combat?.SpawnFireEjectionVFX(rageConfig.rageFireEjectionVFX);
+            else
+                Debug.LogWarning("[Range][Rage] No rage fire ejection VFX configured");
+            return;
+        }
+
         _sm.Combat?.SpawnFireEjectionVFX(_rangeData.FireEjectionVFX);
         Debug.Log("[Range] Fire ejection VFX spawned");
     }
 
     // ==================== PROJECTILE ====================
-
     private void SpawnProjectile()
     {
         Debug.Log("[Range] Spawning projectile");
 
+        // El proyectil siempre se spawnea, rage no lo afecta
         if (_sm.Object.HasInputAuthority && !_sm.Object.HasStateAuthority)
             RPC_SpawnProjectile();
 

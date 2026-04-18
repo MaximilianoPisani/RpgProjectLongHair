@@ -20,3 +20,75 @@ MonoBehaviour:
   damageMultiplier: 1.75
   activeDuration: 8
   activationKey: 104
+  weaponVFXConfigs:
+  - weapon: 0
+    comboVFX:
+    - vfxPrefab: {fileID: 1402268366991796481, guid: 9714e9bf8e9a0534a8f3e2c5755c6020, type: 3}
+      vfxSpawnTime: 0.15
+      localOffset: {x: 0, y: 0, z: 0}
+      followTransform: 1
+      customDuration: 0
+    - vfxPrefab: {fileID: 6345871846994825729, guid: c97b06f3bb122ba4292cac62ec68d5ad, type: 3}
+      vfxSpawnTime: 0.22
+      localOffset: {x: 0, y: 0, z: 0}
+      followTransform: 1
+      customDuration: 0
+    - vfxPrefab: {fileID: 2653763631966760495, guid: 0da4201115bcd1043b9032f1f6211418, type: 3}
+      vfxSpawnTime: 0.7
+      localOffset: {x: 0, y: 0, z: 0}
+      followTransform: 1
+      customDuration: 0
+    rageFireEjectionVFX:
+      vfxPrefab: {fileID: 0}
+      vfxSpawnTime: 0.25
+      localOffset: {x: 0, y: 0, z: 0}
+      followTransform: 0
+      customDuration: 0
+    rageShellEjectionVFX:
+      vfxPrefab: {fileID: 0}
+      vfxSpawnTime: 0.25
+      localOffset: {x: 0, y: 0, z: 0}
+      followTransform: 0
+      customDuration: 0
+  - weapon: 2
+    comboVFX: []
+    rageFireEjectionVFX:
+      vfxPrefab: {fileID: 8194992990867289339, guid: f47997b3e1a50cd4497951592aa7e75b, type: 3}
+      vfxSpawnTime: 0.15
+      localOffset: {x: 0, y: 0, z: 0}
+      followTransform: 1
+      customDuration: 0
+    rageShellEjectionVFX:
+      vfxPrefab: {fileID: 0}
+      vfxSpawnTime: 0.25
+      localOffset: {x: 0, y: 0, z: 0}
+      followTransform: 0
+      customDuration: 0
+  - weapon: 1
+    comboVFX: []
+    rageFireEjectionVFX:
+      vfxPrefab: {fileID: 0}
+      vfxSpawnTime: 0.25
+      localOffset: {x: 0, y: 0, z: 0}
+      followTransform: 0
+      customDuration: 0
+    rageShellEjectionVFX:
+      vfxPrefab: {fileID: 0}
+      vfxSpawnTime: 0.25
+      localOffset: {x: 0, y: 0, z: 0}
+      followTransform: 0
+      customDuration: 0
+  - weapon: 3
+    comboVFX: []
+    rageFireEjectionVFX:
+      vfxPrefab: {fileID: 0}
+      vfxSpawnTime: 0.25
+      localOffset: {x: 0, y: 0, z: 0}
+      followTransform: 0
+      customDuration: 0
+    rageShellEjectionVFX:
+      vfxPrefab: {fileID: 0}
+      vfxSpawnTime: 0.25
+      localOffset: {x: 0, y: 0, z: 0}
+      followTransform: 0
+      customDuration: 0

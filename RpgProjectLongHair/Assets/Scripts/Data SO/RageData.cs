@@ -16,4 +16,16 @@ public class RageData : ScriptableObject
     public float damageMultiplier = 1.75f;
     public float activeDuration = 8f;
     public KeyCode activationKey = KeyCode.Q;
+
+    [Header("VFX - Per Weapon")]
+    public RageWeaponVFXConfig[] weaponVFXConfigs;
+
+    public RageWeaponVFXConfig GetConfigForWeapon(WeaponCategory weapon)
+    {
+        if (weaponVFXConfigs == null) return null;
+        foreach (var config in weaponVFXConfigs)
+            if (config.weapon == weapon)
+                return config;
+        return null;
+    }
 }
