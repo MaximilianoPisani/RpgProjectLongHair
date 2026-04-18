@@ -16,25 +16,24 @@ public class PlayerDeadState : IPlayerState
         _timer = 0f;
 
         if (_sm.Object.HasInputAuthority)
-            RunnerManager.SetInventoryOpen(true); 
+            RunnerManager.SetInputBlocked(true);
     }
 
     public void Exit()
     {
-        if (_sm.Object.HasInputAuthority)
-            RunnerManager.SetInventoryOpen(false);
+        if (!_sm.Object.HasInputAuthority) return;
+        RunnerManager.SetInputBlocked(false);
     }
 
     public void Tick(NetworkInputData input)
     {
         if (!_sm.Object.HasStateAuthority) return;
-
         _timer += _sm.Runner.DeltaTime;
+
         if (_timer > 2f)
         {
             var checkpoint = _sm.GetComponent<PlayerCheckpoint>();
             Vector3 spawnPos = checkpoint != null ? checkpoint.LastCheckpoint : _sm.transform.position;
-
             _sm.Player.TeleportTo(spawnPos);
 
             if (_sm.Health != null)

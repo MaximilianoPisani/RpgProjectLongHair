@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _attackRange: 0
   _damage: 45
-  _cooldown: 0.5
+  _cooldown: 0.8
   _hitRadius: 1.6
   _comboAttacks:
   - attackDuration: 0.35
