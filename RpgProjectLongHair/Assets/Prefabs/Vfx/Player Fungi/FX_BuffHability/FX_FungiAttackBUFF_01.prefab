@@ -4917,7 +4917,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02fcd7f87891d2148a64d63c6efebaa9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifetime: 2
+  lifetime: 0
   useParticleSystemDuration: 1
 --- !u!1 &4138283181747406743
 GameObject:

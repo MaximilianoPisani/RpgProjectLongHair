@@ -1542,7 +1542,6 @@ GameObject:
   - component: {fileID: 5247100580435787750}
   - component: {fileID: 5406402327671719317}
   - component: {fileID: 1059619233003420139}
-  - component: {fileID: 3730851367084255050}
   - component: {fileID: 1290202656488514935}
   - component: {fileID: -6668896433345507029}
   - component: {fileID: 6150348916230871467}
@@ -1852,6 +1851,12 @@ MonoBehaviour:
   rotationSpeed: 10
   walkSpeed: 5
   sprintSpeed: 10
+  groundCheckRadius: 0.35
+  groundCheckDistance: 0.3
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 1024
+  coyoteTime: 0.1
 --- !u!114 &5247100580435787750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1905,18 +1910,6 @@ MonoBehaviour:
   Player: {fileID: 3144269693680086204}
   moveSpeed: 5
   _NetworkedComboIndex: 0
---- !u!114 &3730851367084255050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6542864224881935982}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 901613516f56c7e4c8b01f173914b5ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1290202656488514935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2623,14 +2616,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offset: {x: 0, y: 2, z: -4}
-  lookOffset: {x: 1.8, y: 2, z: 1}
+  lookOffset: {x: 1.8, y: 2, z: 0}
   mouseSensitivity: 2
   minPitch: -25
   maxPitch: 50
   collisionLayers:
     serializedVersion: 2
-    m_Bits: 3072
-  collisionPadding: 0.6
+    m_Bits: 1024
+  collisionPadding: 0.8
   smoothSpeed: 16
   returnSpeed: 5
   debugMode: 1

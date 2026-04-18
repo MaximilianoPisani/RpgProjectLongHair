@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WeaponMecanoFX
   m_EditorClassIdentifier: 
   vfxPrefab: {fileID: 4968917852853964046, guid: c18a1d2bb69df294a8faef683d929a18, type: 3}
-  vfxOffset: {x: 0, y: 0, z: 0}
+  vfxOffset: {x: 0, y: -0.4, z: 0}
   vfxScale: {x: 1, y: 1, z: 1}
   enableFloating: 0
   floatingSpeed: 1
