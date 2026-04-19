@@ -13,7 +13,7 @@ public class PlayerIdleState : IPlayerState
     public void Enter()
     {
         if (_sm.Animator != null)
-            _sm.Animator.SetBool("isMoving", false);
+            _sm.Animator.SetFloat("speed", 0f);
     }
 
     public void Exit() { }

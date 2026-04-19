@@ -10,6 +10,11 @@ public class Player : NetworkBehaviour
     [SerializeField] private float sprintSpeed = 5f;
     public float SprintSpeed => sprintSpeed;
 
+    [Header("Jump Settings")]
+    [SerializeField] private float baseJumpImpulse = 8f;      // Salto base
+    [SerializeField] private float runningJumpBonus = 2f;     // Bonus al correr
+    [SerializeField] private float airControl = 0.3f;
+
     [Header("Ground Detection")]
     [SerializeField] private float groundCheckRadius = 0.25f;
     [SerializeField] private float groundCheckDistance = 0.2f;
@@ -45,6 +50,7 @@ public class Player : NetworkBehaviour
 
         var sm = GetComponent<PlayerStateMachine>();
         bool inputLocked = sm != null && sm.IsInputLocked;
+        bool isInAir = sm != null && (sm.CurrentState is PlayerJumpState || sm.CurrentState is PlayerFallState);
 
         float targetSpeed = input.sprint ? sprintSpeed : walkSpeed;
         _ncc.maxSpeed = targetSpeed;
@@ -55,7 +61,19 @@ public class Player : NetworkBehaviour
 
         if (Object.HasStateAuthority)
         {
-            _ncc.Move(moveDir);
+            // Aplicar control reducido en el aire
+            if (isInAir)
+            {
+                // Control en el aire más suave
+                _ncc.acceleration = _ncc.acceleration * airControl;
+                _ncc.Move(moveDir);
+                // Restaurar aceleración original
+                _ncc.acceleration = 10f; // Tu valor por defecto
+            }
+            else
+            {
+                _ncc.Move(moveDir);
+            }
         }
 
         if (moveDir.sqrMagnitude > 0.01f)
@@ -119,5 +137,38 @@ public class Player : NetworkBehaviour
     }
 
     public void Move(Vector3 dir) { }
-    public void Jump() => _ncc.Jump();
+    public void Jump()
+    {
+        if (_ncc != null)
+        {
+            bool useCoyoteTime = _coyoteTimer > 0f;
+
+            // Calcular impulso dinámico basado en velocidad actual
+            float currentSpeed = GetHorizontalSpeed();
+            float speedRatio = Mathf.Clamp01(currentSpeed / sprintSpeed);
+
+            // Más impulso si está corriendo
+            float jumpImpulse = baseJumpImpulse + (runningJumpBonus * speedRatio);
+
+            // Agregar impulso horizontal en la dirección del movimiento
+            Vector3 currentVelocity = _ncc.Velocity;
+            Vector3 horizontalVel = new Vector3(currentVelocity.x, 0, currentVelocity.z);
+
+            // Preservar momentum horizontal (hace el salto más dinámico)
+            if (horizontalVel.magnitude > 0.1f)
+            {
+                Vector3 jumpDirection = horizontalVel.normalized;
+                // Pequeño boost horizontal en la dirección del movimiento
+                _ncc.Velocity = new Vector3(
+                    currentVelocity.x * 1.1f, // 10% boost horizontal
+                    currentVelocity.y,
+                    currentVelocity.z * 1.1f
+                );
+            }
+
+            _ncc.Jump(ignoreGrounded: useCoyoteTime, overrideImpulse: jumpImpulse);
+
+            Debug.Log($"[JUMP PHYSICS] Impulse: {jumpImpulse:F1}, Speed: {currentSpeed:F1}, Grounded: {_ncc.Grounded}, FinalVel: {_ncc.Velocity}");
+        }
+    }
 }

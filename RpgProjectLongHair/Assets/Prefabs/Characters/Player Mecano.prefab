@@ -1628,9 +1628,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stateAuthorityChangeErrorCorrectionDelta: 0
   gravity: -30
-  jumpImpulse: 11
-  acceleration: 25
-  braking: 80
+  jumpImpulse: 8
+  acceleration: 30
+  braking: 100
   maxSpeed: 8
   rotationSpeed: 5
 --- !u!114 &6989304598263037872
@@ -1756,6 +1756,9 @@ MonoBehaviour:
   rotationSpeed: 10
   walkSpeed: 5
   sprintSpeed: 8
+  baseJumpImpulse: 8
+  runningJumpBonus: 3
+  airControl: 0.3
   groundCheckRadius: 0.35
   groundCheckDistance: 0.3
   groundLayers:
