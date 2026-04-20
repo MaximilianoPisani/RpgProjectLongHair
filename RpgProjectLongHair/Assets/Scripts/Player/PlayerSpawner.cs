@@ -11,15 +11,16 @@ public class PlayerSpawner : MonoBehaviour
 
     public NetworkObject SpawnPlayer(NetworkRunner runner, PlayerRef playerRef, int characterIndex)
     {
-        int prefabIndex = Mathf.Clamp(characterIndex - 1, 0, _characterPrefabs.Length - 1);
-
         if (_characterPrefabs == null || _characterPrefabs.Length == 0)
         {
             Debug.LogError("[PlayerSpawner] No hay prefabs asignados.");
             return null;
         }
 
+        int prefabIndex = Mathf.Clamp(characterIndex - 1, 0, _characterPrefabs.Length - 1);
+
         NetworkObject prefab = _characterPrefabs[prefabIndex];
+
         if (prefab == null)
         {
             Debug.LogError($"[PlayerSpawner] Prefab en índice {prefabIndex} es null.");
@@ -35,12 +36,14 @@ public class PlayerSpawner : MonoBehaviour
             playerRef
         );
 
-        Debug.Log($"[PlayerSpawner] Spawneado personaje {characterIndex} para {playerRef}");
+        Debug.Log($"[PlayerSpawner] Spawneado personaje {characterIndex} (prefab índice {prefabIndex}) para {playerRef}");
         return spawned;
     }
 
     public NetworkObject SpawnPlayer(NetworkRunner runner, PlayerRef playerRef)
     {
+        Debug.LogWarning("[PlayerSpawner] Llamado sin characterIndex — usando selección local del host. " +
+                         "En multijugador esto causa que todos los jugadores spawneen el mismo personaje.");
         return SpawnPlayer(runner, playerRef, CharacterSelection.SelectedCharacter);
     }
 
@@ -48,9 +51,10 @@ public class PlayerSpawner : MonoBehaviour
     {
         if (_spawnPoints == null || _spawnPoints.Length == 0)
         {
-            Debug.LogWarning("[PlayerSpawner] Sin spawn points, usando posición (0,0,0).");
-            return transform; 
+            Debug.LogWarning("[PlayerSpawner] Sin spawn points, usando posición del transform.");
+            return transform;
         }
+
         int idx = (playerRef.RawEncoded - 1) % _spawnPoints.Length;
         return _spawnPoints[idx];
     }
