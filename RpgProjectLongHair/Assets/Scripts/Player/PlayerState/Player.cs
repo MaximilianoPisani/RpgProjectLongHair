@@ -61,30 +61,32 @@ public class Player : NetworkBehaviour
 
         if (Object.HasStateAuthority)
         {
-            // Aplicar control reducido en el aire
+            // Guardar aceleración original
+            float originalAcceleration = _ncc.acceleration;
+
             if (isInAir)
             {
-                // Control en el aire más suave
-                _ncc.acceleration = _ncc.acceleration * airControl;
+                _ncc.acceleration = originalAcceleration * airControl;
                 _ncc.Move(moveDir);
-                // Restaurar aceleración original
-                _ncc.acceleration = 10f; // Tu valor por defecto
+                _ncc.acceleration = originalAcceleration; // Restaurar el valor real
             }
             else
             {
                 _ncc.Move(moveDir);
             }
+
+            // SOLO ROTAR SI TIENES STATE AUTHORITY
+            if (moveDir.sqrMagnitude > 0.01f)
+            {
+                transform.rotation = Quaternion.Slerp(
+                    transform.rotation,
+                    Quaternion.LookRotation(moveDir),
+                    rotationSpeed * Runner.DeltaTime
+                );
+            }
         }
 
-        if (moveDir.sqrMagnitude > 0.01f)
-        {
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                Quaternion.LookRotation(moveDir),
-                rotationSpeed * Runner.DeltaTime
-            );
-        }
-
+        // Esto está bien, solo se ejecuta en el cliente con input authority
         if (input.interact && Object.HasInputAuthority)
             GetComponent<PlayerInventoryController>()?.TryPickupItem();
     }

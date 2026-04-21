@@ -65,6 +65,13 @@ public class PlayerNetworkSync : NetworkBehaviour
     {
         if (Object.HasInputAuthority) return;
 
+        // Interpolar POSICIÓN Y ROTACIÓN
+        transform.position = Vector3.Lerp(
+            transform.position,
+            SyncedPosition,
+            _interpolationSpeed * Time.deltaTime
+        );
+
         transform.rotation = Quaternion.Lerp(
             transform.rotation,
             SyncedRotation,
