@@ -20,6 +20,7 @@ public class EnemyHealth : NetworkBehaviour
     [SerializeField] private Renderer _meshRenderer;
     [SerializeField] private Color _flashColor = Color.red;
     [SerializeField] private float _flashDuration = 0.1f;
+    [SerializeField] private EnemyVFXController _vfxController;
 
     [Header("Enemy Controller")]
     [SerializeField] private EnemyBaseController enemyController;
@@ -47,8 +48,8 @@ public class EnemyHealth : NetworkBehaviour
             _participants.Clear();
         }
 
-        if(enemyController == null)
-{
+        if (enemyController == null)
+        {
             enemyController = GetComponent<EnemyMeleeController>();
 
             if (enemyController == null)
@@ -103,11 +104,24 @@ public class EnemyHealth : NetworkBehaviour
 
         if (attacker != PlayerRef.None)
         {
-          _participants.Add(attacker);
-          _lastAttacker = attacker; 
+            _participants.Add(attacker);
+            _lastAttacker = attacker;
         }
 
         currentHealth = Mathf.Max(0, currentHealth - damage);
+
+        if (Runner.TryGetPlayerObject(attacker, out NetworkObject playerObj))
+        {
+            Vector3 playerPos = playerObj.transform.position;
+            Vector3 enemyPos = transform.position;
+
+            // Dirección desde el PLAYER hacia el ENEMIGO (hacia afuera)
+            Vector3 hitNormal = (enemyPos - playerPos).normalized;
+
+            // No necesitamos modificar la posición aquí, 
+            // el VFXController ahora usa transform.position del enemigo
+            RPC_SpawnHitVFX(enemyPos, hitNormal);
+        }
 
         if (enemyController is EnemyMeleeController meleeController)
         {
@@ -137,6 +151,15 @@ public class EnemyHealth : NetworkBehaviour
             StopCoroutine(_flashCoroutine);
 
         _flashCoroutine = StartCoroutine(FlashRoutine());
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_SpawnHitVFX(Vector3 pos, Vector3 normal)
+    {
+        if (_vfxController != null)
+        {
+            _vfxController.SpawnHitVFX(pos, normal);
+        }
     }
 
     private System.Collections.IEnumerator FlashRoutine()
@@ -174,12 +197,12 @@ public class EnemyHealth : NetworkBehaviour
         }
 
         Debug.Log($"[EnemyHealth] PlayerObject found: {playerObj.name}");
-        
+
         var playerExp = playerObj.GetComponent<PlayerExp>();
         if (playerExp != null)
         {
             int exp = _expConfig.GetExp(ExpEvent.Kill);
-                playerExp.AddExperience(exp);
+            playerExp.AddExperience(exp);
         }
 
         Debug.Log($"[EnemyHealth] TrackEvents suscriptores: {TrackEvents.OnTrackEvent?.GetInvocationList().Length ?? 0}");
