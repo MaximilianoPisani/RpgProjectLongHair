@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7509b862d7d3784099463d4fd0681b8, type: 3}
+  m_Name: Quest_HUB
+  m_EditorClassIdentifier: 
+  questId: Quest_HUB
+  questName: "Manada de \xD3xido"
+  questDescription: Eliminar 20 enemigos.
+  questSteps:
+  - targetId: Kill_Mission_Enemy
+    amount: 20
+  failureSteps: []
+  allowTeleportParty: 1
+  teleportDestination: {x: 5, y: -1.4, z: -5}
+  xp: 0
+  coins: 420

@@ -2,6 +2,7 @@ public static class QuestIds
 {
     // IDs de misiones
     public const string QUEST_TEST = "quest_test_001";
+    public const string QUEST_HUB = "Quest_HUB";
 
     // IDs de tracking
     public const string KILL_ENEMY = "Kill_Enemy";

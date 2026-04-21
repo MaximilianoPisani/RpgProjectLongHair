@@ -1,10 +1,13 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
+
 
 public class QuestTrigger : MonoBehaviour
 {
     [SerializeField] private string _missionId = QuestIds.QUEST_TEST;
-    [SerializeField]private QuestOfferUI _questOfferUI;
+    [SerializeField] private QuestOfferUI _questOfferUI;
+    [SerializeField] private GameObject _canvasNPC;     
 
     private bool _isPlayerInZone;
     private QuestController _questController;
@@ -14,6 +17,7 @@ public class QuestTrigger : MonoBehaviour
         Debug.Log($"[QuestTrigger] OnTriggerEnter: {other.name} tag={other.tag}");
 
         if (!other.CompareTag("Player")) return;
+        //_canvasNPC.SetActive(true);  
         _questController = other.GetComponent<QuestController>();
         _isPlayerInZone = true;
 
@@ -24,6 +28,7 @@ public class QuestTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            Debug.Log("[QuestTrigger] Player sale del collider");
             _isPlayerInZone = false;
             _questController = null;
         }
@@ -31,9 +36,18 @@ public class QuestTrigger : MonoBehaviour
 
     private void Update()
     {
+        // Mostrar panel NPC solo si el player está cerca Y no tiene misión activa
+        if (_questController != null)
+        {
+            float dist = Vector3.Distance(transform.position, _questController.transform.position);
+            bool mostrar = dist <= 3f
+                        && _questController.CurrentQuest == null  // sin misión activa
+                        && !_questOfferUI.IsOpen;                 // sin UI offer abierta
+            _canvasNPC.SetActive(mostrar);
+        }
+
         if (!_isPlayerInZone) return;        // no hay player cerca -> ignorar
         if (!Input.GetKeyDown(KeyCode.E)) return;  // no presionó E -> ignorar
-
         Debug.Log($"[QuestTrigger] E presionado - controller={_questController != null} - questActiva={_questController?.CurrentQuest != null}");
 
 
@@ -51,6 +65,7 @@ public class QuestTrigger : MonoBehaviour
 
         if (questData != null)
         {
+            _canvasNPC.SetActive(false); // - forzar ocultado inmediato
             _questOfferUI.Show(questData, _questController);
         }
 
