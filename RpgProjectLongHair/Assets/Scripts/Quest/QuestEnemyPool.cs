@@ -4,7 +4,7 @@ using Fusion;
 
 public class QuestEnemyPool : MonoBehaviour
 {
-    [SerializeField] private string _missionId = QuestIds.QUEST_TEST;
+    [SerializeField] private string _missionId;
     [SerializeField] private List<SpawnData> _spawnDatas = new();
     private List<NetworkObject> _spawnedEnemies = new();
 

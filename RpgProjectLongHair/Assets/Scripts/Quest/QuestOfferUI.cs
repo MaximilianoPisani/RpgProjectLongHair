@@ -18,6 +18,8 @@ public class QuestOfferUI : MonoBehaviour
     private QuestController _questController;
     private QuestDataSO _questData;
 
+    public bool IsOpen => _panel.activeSelf;
+
     private void Awake()
     {
         _btnAccept.onClick.AddListener(OnAccept);
