@@ -119,11 +119,44 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &18435048 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8194022776614303342, guid: 50440a9caef937c4da73fc74a7519537, type: 3}
+  m_PrefabInstance: {fileID: 4225287540152698904}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fa5618f3be25144cb5b83ee42204cb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &74282737 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6683795969252478653, guid: f3e0ac08219e901408d5cc2dde011e13, type: 3}
   m_PrefabInstance: {fileID: 1130627987}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &169584463 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 65608905301921968, guid: fb9730d5bcb289e43b9925832650634b, type: 3}
+  m_PrefabInstance: {fileID: 1034721917}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &169584464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169584463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d82948cd016b83a4eb2ab1a5778da677, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _lobbyPanel: {fileID: 4225287540152698905}
+  _roomBrowser: {fileID: 18435048}
+  _roomCreator: {fileID: 603150952}
+  _runnerManager: {fileID: 1433661648584634293}
+  _browserRunnerManagerPrefab: {fileID: 5249535514515101596, guid: 50f4c7fe469cef14e87430f48ed2386c, type: 3}
 --- !u!1001 &208918857
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -452,9 +485,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3796379802374166144, guid: c1fdb36c21bfecc479c6884b72c66744, type: 3}
+      propertyPath: _logoutButton
+      value: 
+      objectReference: {fileID: 402483495}
     - target: {fileID: 5185464645727121636, guid: c1fdb36c21bfecc479c6884b72c66744, type: 3}
       propertyPath: m_Name
       value: CanvasPlayersPlayable
+      objectReference: {fileID: 0}
+    - target: {fileID: 5185464645727121636, guid: c1fdb36c21bfecc479c6884b72c66744, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7629205331684875950, guid: c1fdb36c21bfecc479c6884b72c66744, type: 3}
       propertyPath: m_Pivot.x
@@ -546,6 +587,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5185464645727121636, guid: c1fdb36c21bfecc479c6884b72c66744, type: 3}
   m_PrefabInstance: {fileID: 402483493}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &402483495 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1939759719085460102, guid: c1fdb36c21bfecc479c6884b72c66744, type: 3}
+  m_PrefabInstance: {fileID: 402483493}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &404105446
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -864,6 +916,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 92024dec93165cb4c8297de975e8d3a1, type: 3}
+--- !u!114 &603150952 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2597311373659335923, guid: 50440a9caef937c4da73fc74a7519537, type: 3}
+  m_PrefabInstance: {fileID: 4225287540152698904}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9c44039b87d85e40956866468c51e8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1136,7 +1199,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 65608905301921968, guid: fb9730d5bcb289e43b9925832650634b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 169584464}
   m_SourcePrefab: {fileID: 100100000, guid: fb9730d5bcb289e43b9925832650634b, type: 3}
 --- !u!1 &1039339718
 GameObject:
@@ -1658,6 +1724,10 @@ PrefabInstance:
     - target: {fileID: 7534475628394878791, guid: e648ae4611ec8bc43ae889044c747ea6, type: 3}
       propertyPath: m_Name
       value: LoginCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534475628394878791, guid: e648ae4611ec8bc43ae889044c747ea6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2270,6 +2340,53 @@ Transform:
   - {fileID: 1698751063932912558}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2110618234
+GameObject:
+  m_ObjectHideFlags: 8
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2110618236}
+  - component: {fileID: 2110618235}
+  m_Layer: 0
+  m_Name: Fusion_PhotonBackgroundConnectionHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2110618235
+MonoBehaviour:
+  m_ObjectHideFlags: 8
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2110618234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1222927710, guid: 7de3b8b9e1263ad479e2d0c4261b7646, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DisconnectAfterKeepAlive: 0
+  KeepAliveInBackground: 60000
+  ApplyDontDestroyOnLoad: 1
+--- !u!4 &2110618236
+Transform:
+  m_ObjectHideFlags: 8
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2110618234}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1176187092584503207 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6929098078885715258, guid: 84e2030daba224f4eb14a36c72bd7c2a, type: 3}
@@ -2827,14 +2944,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: CanvasRoomsConnection
       objectReference: {fileID: 0}
-    - target: {fileID: 4709555507566377829, guid: 50440a9caef937c4da73fc74a7519537, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5262091959740126961, guid: 50440a9caef937c4da73fc74a7519537, type: 3}
-      propertyPath: _runnerManagerPrefab
-      value: 
-      objectReference: {fileID: 1433661648584634293}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2996,3 +3105,4 @@ SceneRoots:
   - {fileID: 600901698}
   - {fileID: 402483493}
   - {fileID: 2057702614}
+  - {fileID: 2110618236}
