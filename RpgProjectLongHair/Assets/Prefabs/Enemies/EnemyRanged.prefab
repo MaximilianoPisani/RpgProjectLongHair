@@ -1207,15 +1207,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 364010a4ed55aa541ae88a2f33c5aec2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DetectionRadius: 15
+  detectionRadius: 15
   PlayerLayer:
     serializedVersion: 2
     m_Bits: 64
-  AttackOrigin: {fileID: 7505190822256135982}
-  RangedAttackData: {fileID: 11400000, guid: 48ba4edd30233c04ab0a19915691a11b, type: 2}
-  PreferredMinRange: 7
-  PreferredMaxRange: 10
+  attackOrigin: {fileID: 7505190822256135982}
+  _rangedAttackData: {fileID: 11400000, guid: 48ba4edd30233c04ab0a19915691a11b, type: 2}
+  _preferredMinRange: 4
+  _preferredMaxRange: 7
   animationController: {fileID: 7506564367792784943}
+  vfxController: {fileID: 5946224618582459977}
+  _NextRangedAttackTime: 0
+  _IsReloading: 0
 --- !u!95 &1797295556181063118
 Animator:
   serializedVersion: 7
@@ -1252,8 +1255,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1797295556181063118}
   speedParameter: Speed
+  attackIndexParameter: AttackIndex
   meleeAttackTrigger: MeleeAttack
   rangedAttackTrigger: RangedAttack
+  reloadTrigger: Reload
   hitTrigger: Hit
   deathTrigger: Death
   idleVariationsCount: 2

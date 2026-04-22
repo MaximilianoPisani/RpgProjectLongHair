@@ -3,84 +3,73 @@ using UnityEngine;
 
 public class EnemyMeleeController : EnemyBaseController
 {
-    [Header("Melee")]
-    public MeleeAttackData MeleeAttackData;
-    public float StoppingDistance = 1f;
+    [Header("Melee Settings")]
+    [SerializeField] private EnemyMeleeAttackData meleeAttackData;
+    [SerializeField] private float attackRange = 2f;
 
-    [SerializeField] private EnemyAnimationController animationController; // Cambiado
+    [Header("Animation & VFX")]
+    [SerializeField] private EnemyAnimationController animationController;
+    [SerializeField] private EnemyVFXController vfxController;
+
+    [Networked] public float NextMeleeAttackTime { get; set; }
+    [Networked] public int CurrentAttackIndex { get; set; }
+
+    // Propiedades públicas
+    public EnemyMeleeAttackData MeleeAttackData => meleeAttackData;  // tipo concreto, no base
+    public float AttackRange => attackRange;
     public EnemyAnimationController AnimationController => animationController;
-
-    private int currentComboIndex = 0;
+    public EnemyVFXController VFXController => vfxController;
 
     public override void Spawned()
     {
         base.Spawned();
-        if (Agent != null)
-            Agent.stoppingDistance = StoppingDistance;
-
         if (animationController == null)
             animationController = GetComponent<EnemyAnimationController>();
+
+        if (vfxController == null)
+            vfxController = GetComponent<EnemyVFXController>();
+        CurrentAttackIndex = 0;
     }
 
-    protected override void InitStateMachine()
-    {
-        ChangeState(new EnemyMeleeIdleState(this));
-    }
-
+    protected override void InitStateMachine() => ChangeState(new EnemyMeleeIdleState(this));
     protected override IEnemyState GetIdleState() => new EnemyMeleeIdleState(this);
 
-    public void TriggerMeleeAttackAnimation()
+    public int ExecuteCurrentAttack()
     {
-        if (animationController == null || MeleeAttackData == null) return;
+        if (meleeAttackData == null) return -1;
 
-        // Obtener VFX del combo actual
-        AttackVFXConfig vfxConfig = null;
-        if (MeleeAttackData.ComboAttacks != null && MeleeAttackData.ComboAttacks.Length > 0)
-        {
-            int index = Mathf.Clamp(currentComboIndex, 0, MeleeAttackData.ComboAttacks.Length - 1);
-            vfxConfig = MeleeAttackData.ComboAttacks[index].attackVFX;
-        }
+        int attackIndex = CurrentAttackIndex;
 
-        animationController.PlayMeleeAttack(vfxConfig);
+        // FIX: instancia, no clase estática
+        var vfxConfig = meleeAttackData.GetVFXConfig(attackIndex);
+        animationController?.PlayMeleeAttack(attackIndex, vfxConfig);
+
+        // Avanza secuencia usando AttackCount del data, no un campo manual
+        CurrentAttackIndex = (CurrentAttackIndex + 1) % meleeAttackData.AttackCount;
+
+        NextMeleeAttackTime = Runner.SimulationTime + meleeAttackData.Cooldown;
+
+        return attackIndex;
     }
 
-    public void TriggerHitAnimation()
+    public void ApplyDamageToTarget()
     {
-        if (animationController != null)
-            animationController.PlayHitReaction();
+        if (TargetPlayer == null || meleeAttackData == null) return;
+
+        float dist = Vector3.Distance(transform.position, TargetPlayer.position);
+        if (dist > attackRange) return;
+
+        if (TargetPlayer.TryGetComponent<PlayerHealth>(out var playerHealth))
+            playerHealth.TakeDamage(meleeAttackData.Damage, transform.position);
     }
 
-    public void OnMeleeHitFrame()
-    {
-        if (!Object.HasStateAuthority) return;
-        if (TargetPlayer == null) return;
-
-        Collider[] hits = Physics.OverlapSphere(
-            AttackOrigin.position,
-            MeleeAttackData.HitRadius,
-            PlayerLayer
-        );
-
-        var alreadyHit = new System.Collections.Generic.HashSet<PlayerHealth>();
-
-        foreach (var hit in hits)
-        {
-            if (!hit.CompareTag("Player")) continue;
-
-            var playerHealth = hit.GetComponent<PlayerHealth>()
-                            ?? hit.GetComponentInParent<PlayerHealth>();
-
-            if (playerHealth == null) continue;
-            if (playerHealth.IsDead) continue;
-            if (!alreadyHit.Add(playerHealth)) continue;
-
-            playerHealth.TakeDamage(MeleeAttackData.Damage, transform.position);
-        }
-    }
+    public void TriggerHitAnimation() => animationController?.PlayHitReaction();
 
     private void OnValidate()
     {
         if (animationController == null)
             animationController = GetComponent<EnemyAnimationController>();
+        if (vfxController == null)
+            vfxController = GetComponent<EnemyVFXController>();
     }
 }

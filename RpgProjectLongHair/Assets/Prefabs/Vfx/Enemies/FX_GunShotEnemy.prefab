@@ -187,7 +187,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 2
       minColor: {r: 0.14901961, g: 0.14901961, b: 0.14901961, a: 0.8509804}
-      maxColor: {r: 0.14901961, g: 0.14901961, b: 0.14901961, a: 0.7490196}
+      maxColor: {r: 0.14606127, g: 0.2754717, b: 0.120064065, a: 0.7490196}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -4946,7 +4946,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.825, g: 0.47235298, b: 0.22970591, a: 1}
+      maxColor: {r: 0.52509975, g: 0.8235294, b: 0.23137252, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -6090,7 +6090,7 @@ ParticleSystem:
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 0}
-        key1: {r: 0.3584906, g: 0.10054081, b: 0, a: 1}
+        key1: {r: 0.16557793, g: 0.35686275, b: 0, a: 1}
         key2: {r: 0, g: 0, b: 0, a: 1}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
@@ -6114,7 +6114,7 @@ ParticleSystem:
         atime6: 0
         atime7: 0
         m_Mode: 0
-        m_ColorSpace: -1
+        m_ColorSpace: 0
         m_NumColorKeys: 2
         m_NumAlphaKeys: 4
       minGradient:
@@ -10993,9 +10993,9 @@ ParticleSystem:
       maxGradient:
         serializedVersion: 2
         key0: {r: 0.754717, g: 0.754717, b: 0.754717, a: 1}
-        key1: {r: 1, g: 0.80811393, b: 0, a: 0.23529412}
-        key2: {r: 1, g: 0.39275518, b: 0.11764705, a: 0}
-        key3: {r: 0.8018868, g: 0.09261934, b: 0, a: 0.039215688}
+        key1: {r: 0.5422429, g: 1, b: 0, a: 0.23529412}
+        key2: {r: 0.35277727, g: 1, b: 0.11764705, a: 0}
+        key3: {r: 0.2796093, g: 0.6075471, b: 0.04929151, a: 0.039215688}
         key4: {r: 1, g: 0.017601715, b: 0, a: 0.039215688}
         key5: {r: 1, g: 1, b: 1, a: 0.039215688}
         key6: {r: 1, g: 1, b: 1, a: 0}
@@ -11017,7 +11017,7 @@ ParticleSystem:
         atime6: 0
         atime7: 0
         m_Mode: 0
-        m_ColorSpace: -1
+        m_ColorSpace: 0
         m_NumColorKeys: 4
         m_NumAlphaKeys: 3
       minGradient:
@@ -14541,9 +14541,9 @@ GameObject:
   - component: {fileID: 8194992990867289333}
   - component: {fileID: 8194992990867289332}
   - component: {fileID: 1347780276449787774}
-  - component: {fileID: 5780306382984241387}
+  - component: {fileID: 6587826063783983965}
   m_Layer: 0
-  m_Name: FX_GunShot
+  m_Name: FX_GunShotEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19451,7 +19451,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clearBehavior: 2
   cameraShake:
-    enabled: 1
+    enabled: 0
     useMainCamera: 1
     cameras: []
     delay: 0
@@ -19582,7 +19582,7 @@ MonoBehaviour:
     perlinColor: 0
     perlinColorSpeed: 1
   fadeOutReference: {fileID: 8194992990867289333}
---- !u!114 &5780306382984241387
+--- !u!114 &6587826063783983965
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

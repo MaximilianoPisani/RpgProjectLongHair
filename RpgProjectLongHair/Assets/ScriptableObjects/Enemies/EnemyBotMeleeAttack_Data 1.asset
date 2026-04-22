@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4022a342ea8f7dc44a7b44cada827286, type: 3}
+  m_Name: EnemyBotMeleeAttack_Data 1
+  m_EditorClassIdentifier: 
+  _attackRange: 2
+  _damage: 60
+  _cooldown: 2
+  _hitRadius: 1.5
+  _comboAttacks:
+  - attackDuration: 1.38
+    hitFrameTime: 0.52
+    comboWindowOpenTime: 0
+    comboWindowCloseTime: 0
+    damage: 60
+    animationStateName: meleeBot
+    attackVFX:
+      vfxPrefab: {fileID: 0}
+      vfxSpawnTime: 0
+      localOffset: {x: 0, y: 0, z: 0}
+      followTransform: 1
+      customDuration: 0
+  _comboResetTime: 0
+  _loopSequence: 1
+  _sequenceCooldown: 2
