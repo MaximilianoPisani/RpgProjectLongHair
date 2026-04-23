@@ -9,7 +9,11 @@ public class EnemyMeleeIdleState : IEnemyState
         _enemy = enemy;
     }
 
-    public void EnterState() { }
+    public void EnterState()
+    {
+        // Resetear índice de ataque cuando vuelve a idle
+        _enemy.CurrentAttackIndex = 0;
+    }
     public void ExitState() { }
 
     public void UpdateState()

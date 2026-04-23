@@ -12,6 +12,8 @@ public class PlayerDeadState : IPlayerState
 
     public void Enter()
     {
+        ResetAnimations();
+
         if (!_sm.Object.HasStateAuthority) return;
         _timer = 0f;
 
@@ -19,8 +21,28 @@ public class PlayerDeadState : IPlayerState
             RunnerManager.SetInputBlocked(true);
     }
 
+    private void ResetAnimations()
+    {
+        var animator = _sm.GetComponentInChildren<Animator>();
+        if (animator == null) return;
+
+        // Fuerza salir del estado de disparo
+        animator.SetBool("IsShooting", false);
+        animator.SetBool("IsAiming", false);
+        animator.SetFloat("MoveSpeed", 0f);
+
+        // Opción A: Si tenés animación de muerte configurada
+        animator.SetTrigger("Die");
+    }
     public void Exit()
     {
+        var animator = _sm.GetComponentInChildren<Animator>();
+        if (animator != null)
+        {
+            // Limpiar el trigger de muerte al revivir
+            animator.ResetTrigger("Die");
+        }
+
         if (!_sm.Object.HasInputAuthority) return;
         RunnerManager.SetInputBlocked(false);
     }

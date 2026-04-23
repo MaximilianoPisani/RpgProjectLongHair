@@ -8,7 +8,9 @@ public class EnemyAttackRangedState : IEnemyState
     private bool _shotTriggered;
     private bool _projectileSpawned;
 
-
+    // Para modo automático
+    private float _continuousFireStartTime;
+    private int _shotsFired;
     public EnemyAttackRangedState(EnemyRangedController enemy) => _enemy = enemy;
 
     public void EnterState()
@@ -17,6 +19,8 @@ public class EnemyAttackRangedState : IEnemyState
         _shotTriggered = false;
         _projectileSpawned = false;
         _shotStartTime = 0f;
+        _continuousFireStartTime = _enemy.Runner.SimulationTime;
+        _shotsFired = 0;
 
         // Detener movimiento
         if (_enemy.Agent != null && _enemy.Agent.isOnNavMesh)
@@ -131,6 +135,19 @@ public class EnemyAttackRangedState : IEnemyState
     /// </summary>
     private void HandleAutomaticFireWithTiming()
     {
+        // Verificar si necesita recargar después de disparar continuamente
+        if (_enemy.RangedAttackData.MaxContinuousFireTime > 0f)
+        {
+            float continuousFireElapsed = _enemy.Runner.SimulationTime - _continuousFireStartTime;
+
+            if (continuousFireElapsed >= _enemy.RangedAttackData.MaxContinuousFireTime)
+            {
+                // Tiempo de ráfaga completo, entrar en recarga
+                _enemy.ChangeState(new EnemyReloadRangedState(_enemy));
+                return;
+            }
+        }
+
         if (!_shotTriggered)
         {
             // Verificar si puede disparar
@@ -141,6 +158,7 @@ public class EnemyAttackRangedState : IEnemyState
                 _shotTriggered = true;
                 _shotStartTime = _enemy.Runner.SimulationTime;
                 _projectileSpawned = false;
+                _shotsFired++;
 
                 // Siguiente disparo según el fire rate
                 _enemy.NextRangedAttackTime = _enemy.Runner.SimulationTime + _enemy.RangedAttackData.FireRate;
