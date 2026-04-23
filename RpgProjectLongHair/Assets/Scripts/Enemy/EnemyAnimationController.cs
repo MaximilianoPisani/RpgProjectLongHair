@@ -10,6 +10,7 @@ public class EnemyAnimationController : MonoBehaviour
 
     [Header("Animation Parameters")]
     [SerializeField] private string speedParameter = "Speed";
+    [SerializeField] private string attackIndexParameter = "AttackIndex";
 
     [Header("Attack Triggers")]
     [Tooltip("Trigger para ataque melee")]
@@ -17,6 +18,9 @@ public class EnemyAnimationController : MonoBehaviour
 
     [Tooltip("Trigger para ataque ranged")]
     [SerializeField] private string rangedAttackTrigger = "RangedAttack";
+
+    [Tooltip("Trigger para recarga")]
+    [SerializeField] private string reloadTrigger = "Reload";
 
     [Tooltip("Trigger para recibir daño")]
     [SerializeField] private string hitTrigger = "Hit";
@@ -44,13 +48,16 @@ public class EnemyAnimationController : MonoBehaviour
     private float nextIdleChangeTime;
     private int currentIdleIndex = 0;
     private bool isAttacking = false;
+    private bool isReloading = false;
     private bool isDead = false;
     private float lastSpeed = 0f;
 
     // Hash de parámetros para optimización
     private int speedHash;
     private int meleeAttackHash;
+    private int attackIndexHash;
     private int rangedAttackHash;
+    private int reloadHash;
     private int hitHash;
     private int deathHash;
     private int idleIndexHash;
@@ -68,7 +75,9 @@ public class EnemyAnimationController : MonoBehaviour
 
         speedHash = Animator.StringToHash(speedParameter);
         meleeAttackHash = Animator.StringToHash(meleeAttackTrigger);
+        attackIndexHash = Animator.StringToHash(attackIndexParameter);
         rangedAttackHash = Animator.StringToHash(rangedAttackTrigger);
+        reloadHash = Animator.StringToHash(reloadTrigger);
         hitHash = Animator.StringToHash(hitTrigger);
         deathHash = Animator.StringToHash(deathTrigger);
         idleIndexHash = Animator.StringToHash(idleIndexParameter);
@@ -102,7 +111,7 @@ public class EnemyAnimationController : MonoBehaviour
 
     private void UpdateIdleVariation()
     {
-        if (isAttacking || idleVariationsCount <= 1) return;
+        if (isAttacking || isReloading || idleVariationsCount <= 1) return;
 
         if (lastSpeed < 0.1f && Time.time >= nextIdleChangeTime)
         {
@@ -130,17 +139,17 @@ public class EnemyAnimationController : MonoBehaviour
     /// <summary>
     /// Ejecuta animación de ataque melee con VFX opcional.
     /// </summary>
-    public void PlayMeleeAttack(AttackVFXConfig vfxConfig = null)
+    // PlayMeleeAttack recibe el índice además del VFX
+    public void PlayMeleeAttack(int attackIndex = 0, AttackVFXConfig vfxConfig = null)
     {
         if (animator == null || isDead) return;
 
+        Debug.Log($"[AnimController] PlayMeleeAttack — index:{attackIndex} animator:{animator.name} isDead:{isDead}");
+        animator.SetInteger(attackIndexHash, attackIndex);
         animator.SetTrigger(meleeAttackHash);
-        isAttacking = true;
 
         if (vfxConfig != null && vfxController != null)
             vfxController.SpawnVFXDelayed(vfxConfig, vfxConfig.vfxSpawnTime);
-
-        Invoke(nameof(ResetAttackFlag), 0.1f);
     }
 
     /// <summary>
@@ -166,9 +175,28 @@ public class EnemyAnimationController : MonoBehaviour
         Invoke(nameof(ResetAttackFlag), 0.1f);
     }
 
+    /// <summary>
+    /// Ejecuta animación de recarga.
+    /// </summary>
+    public void PlayReloadAnimation()
+    {
+        if (animator == null || isDead) return;
+
+        animator.SetTrigger(reloadHash);
+        isReloading = true;
+
+        // Resetear el flag de recarga después de un breve delay
+        Invoke(nameof(ResetReloadFlag), 0.1f);
+    }
+
     private void ResetAttackFlag()
     {
         isAttacking = false;
+    }
+
+    private void ResetReloadFlag()
+    {
+        isReloading = false;
     }
 
     #endregion
@@ -215,6 +243,7 @@ public class EnemyAnimationController : MonoBehaviour
 
     public int GetCurrentIdleIndex() => currentIdleIndex;
     public bool IsDead => isDead;
+    public bool IsReloading => isReloading;
 
     #endregion
 

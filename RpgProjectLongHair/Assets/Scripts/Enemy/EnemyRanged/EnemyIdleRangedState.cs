@@ -6,7 +6,11 @@ public class EnemyIdleRangedState : IEnemyState
 
     public EnemyIdleRangedState(EnemyRangedController enemy) => _enemy = enemy;
 
-    public void EnterState() { }
+    public void EnterState() 
+    {
+        // Resetear estado de recarga
+        _enemy.IsReloading = false;
+    }
     public void ExitState() { }
 
     public void UpdateState()

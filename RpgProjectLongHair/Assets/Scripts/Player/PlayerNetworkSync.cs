@@ -7,7 +7,6 @@ public class PlayerNetworkSync : NetworkBehaviour
     [Networked] private Quaternion SyncedRotation { get; set; }
 
     [Networked] private float SyncedSpeed { get; set; }
-    [Networked] private NetworkBool SyncedIsMoving { get; set; }
     [Networked] private NetworkBool SyncedIsJumping { get; set; }
     [Networked] private NetworkBool SyncedIsReloading { get; set; }
     [Networked] private NetworkBool SyncedIsFalling { get; set; }
@@ -55,7 +54,6 @@ public class PlayerNetworkSync : NetworkBehaviour
         if (_animator == null) return;
 
         SyncedSpeed = _animator.GetFloat("speed");
-        SyncedIsMoving = _animator.GetBool("isMoving");
         SyncedIsJumping = _animator.GetBool("isJumping");
         SyncedIsReloading = _animator.GetBool("IsReloading");
         SyncedComboIndex = _animator.GetInteger("ComboIndex");
@@ -67,6 +65,13 @@ public class PlayerNetworkSync : NetworkBehaviour
     {
         if (Object.HasInputAuthority) return;
 
+        // Interpolar POSICIÓN Y ROTACIÓN
+        transform.position = Vector3.Lerp(
+            transform.position,
+            SyncedPosition,
+            _interpolationSpeed * Time.deltaTime
+        );
+
         transform.rotation = Quaternion.Lerp(
             transform.rotation,
             SyncedRotation,
@@ -76,7 +81,6 @@ public class PlayerNetworkSync : NetworkBehaviour
         if (_animator == null) return;
 
         _animator.SetFloat("speed", SyncedSpeed);
-        _animator.SetBool("isMoving", SyncedIsMoving);
         _animator.SetBool("isJumping", SyncedIsJumping);
         _animator.SetBool("IsReloading", SyncedIsReloading);
         _animator.SetInteger("ComboIndex", SyncedComboIndex);

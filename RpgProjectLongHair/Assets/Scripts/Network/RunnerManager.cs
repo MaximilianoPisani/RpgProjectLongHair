@@ -18,7 +18,6 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     private NetworkRunner _runner;
 
     private Dictionary<PlayerRef, NetworkObject> _spawnedPlayers = new();
-   //lectura de players para Quest, la expone como solo-lectura hacia afuera
     public IReadOnlyDictionary<PlayerRef, NetworkObject> SpawnedPlayers => _spawnedPlayers;
 
     private HashSet<string> _connectedPlayerIds = new();
@@ -30,6 +29,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     private bool _isSprinting;
     public static bool IsInputBlocked { get; private set; } = false;
     public static bool IsInventoryOpen { get; private set; } = false;
+
     public async void StartRunner(GameMode mode, Action onFail)
     {
         _runner = gameObject.AddComponent<NetworkRunner>();
@@ -44,16 +44,17 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
 
+        int characterIndex = CharacterSelection.SelectedCharacter;
+        string tokenPayload = $"{playerId}|{characterIndex}";
+
         var startGameArgs = new StartGameArgs
         {
             GameMode = mode,
             SessionName = "Room_01",
-
             PlayerCount = MAX_PLAYERS,
-
             Scene = SceneRef.FromIndex(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex),
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
-            ConnectionToken = Encoding.UTF8.GetBytes(playerId)
+            ConnectionToken = Encoding.UTF8.GetBytes(tokenPayload)
         };
 
         var result = await _runner.StartGame(startGameArgs);
@@ -111,7 +112,24 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
 
-        string playerId = Encoding.UTF8.GetString(token);
+        string tokenStr = Encoding.UTF8.GetString(token);
+        string[] parts = tokenStr.Split('|');
+
+        if (parts.Length < 2 || !int.TryParse(parts[1], out int characterIndex))
+        {
+            Debug.LogError($"[RunnerManager] Token mal formado: {tokenStr}");
+            runner.Disconnect(player);
+            return;
+        }
+
+        string playerId = parts[0];
+
+        if (string.IsNullOrEmpty(playerId))
+        {
+            Debug.LogError("[RunnerManager] PlayerId vacío en token");
+            runner.Disconnect(player);
+            return;
+        }
 
         if (_connectedPlayerIds.Contains(playerId))
         {
@@ -122,14 +140,14 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         _connectedPlayerIds.Add(playerId);
 
-        var playerObj = _playerSpawner.SpawnPlayer(runner, player);
+        var playerObj = _playerSpawner.SpawnPlayer(runner, player, characterIndex);
 
         if (playerObj == null) return;
 
         runner.SetPlayerObject(player, playerObj);
         _spawnedPlayers[player] = playerObj;
 
-        Debug.Log($"[RunnerManager] Player conectado: {playerId}");
+        Debug.Log($"[RunnerManager] Player conectado: {playerId}, personaje: {characterIndex}");
 
         if (player == runner.LocalPlayer)
             OnPlayerSpawned?.Invoke(playerObj);
@@ -149,7 +167,9 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (token != null && token.Length > 0)
         {
-            string playerId = Encoding.UTF8.GetString(token);
+            string tokenStr = Encoding.UTF8.GetString(token);
+            string[] parts = tokenStr.Split('|');
+            string playerId = parts[0];
 
             if (_connectedPlayerIds.Contains(playerId))
                 _connectedPlayerIds.Remove(playerId);
@@ -219,6 +239,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         input.Set(data);
     }
+
     public static void SetInputBlocked(bool blocked)
     {
         IsInputBlocked = blocked;

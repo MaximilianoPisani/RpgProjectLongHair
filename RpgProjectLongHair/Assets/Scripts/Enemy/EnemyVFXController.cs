@@ -21,6 +21,9 @@ public class EnemyVFXController : MonoBehaviour
     [Tooltip("VFX cuando recibe daño")]
     [SerializeField] private AttackVFXConfig hitReactionVFX;
 
+    [Tooltip("Transform del modelo que se mueve con animaciones (ej: mesh root). Si está vacío usa el transform principal")]
+    [SerializeField] private Transform animatedModelTransform;
+
     // Runtime - Propulsores
     private ParticleSystem activeThrusterVfx;
     private bool thrustersActive = false;
@@ -129,8 +132,27 @@ public class EnemyVFXController : MonoBehaviour
     {
         if (hitReactionVFX == null || hitReactionVFX.vfxPrefab == null) return;
 
-        Quaternion rotation = Quaternion.LookRotation(hitNormal);
-        GameObject vfxInstance = Instantiate(hitReactionVFX.vfxPrefab, hitPosition, rotation);
+        // Usar el transform del modelo animado si está asignado, sino usar el transform principal
+        Transform targetTransform = animatedModelTransform != null ? animatedModelTransform : transform;
+
+        // Usar la posición del modelo (que se mueve con animaciones)
+        Vector3 spawnPos = targetTransform.position;
+
+        // Aplicar offset local si está configurado
+        spawnPos += targetTransform.TransformDirection(hitReactionVFX.localOffset);
+
+        // Rotación: el VFX mira HACIA AFUERA (en dirección del hit normal)
+        Quaternion rotation = hitNormal != Vector3.zero
+           ? Quaternion.LookRotation(hitNormal)
+           : Quaternion.identity;
+
+        GameObject vfxInstance = Instantiate(hitReactionVFX.vfxPrefab, spawnPos, rotation);
+
+        // Si followTransform está activo, parentear al modelo animado
+        if (hitReactionVFX.followTransform)
+        {
+            vfxInstance.transform.SetParent(targetTransform);
+        }
 
         float duration = hitReactionVFX.customDuration > 0
             ? hitReactionVFX.customDuration
@@ -185,5 +207,8 @@ public class EnemyVFXController : MonoBehaviour
 
         if (thrusterPoint == null)
             Debug.LogWarning($"{name}: Thruster Point no asignado");
+
+        if (animatedModelTransform == null)
+            Debug.LogWarning($"{name}: Animated Model Transform no asignado - se usará el transform principal");
     }
 }

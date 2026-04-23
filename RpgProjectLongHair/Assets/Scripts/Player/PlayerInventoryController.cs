@@ -27,9 +27,10 @@ public class PlayerInventoryController : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I))
+        bool togglePressed = Input.GetKeyDown(KeyCode.I) || (Input.GetKeyDown(KeyCode.Escape) && _isOpen);
+        if (togglePressed)
         {
-            _isOpen = !_isOpen;
+            _isOpen = Input.GetKeyDown(KeyCode.I) ? !_isOpen : false;
             RunnerManager.SetInventoryOpen(_isOpen);
             _inventoryPanel.SetActive(_isOpen);
         }

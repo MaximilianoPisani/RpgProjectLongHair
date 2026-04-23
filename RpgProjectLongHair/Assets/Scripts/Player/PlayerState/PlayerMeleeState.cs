@@ -5,17 +5,17 @@ public class PlayerMeleeState : IPlayerState
 {
     private PlayerStateMachine _sm;
 
-    // Estado del combo
     private int _comboIndex = 0;
     private bool _inputBuffered = false;
     private bool _isAttacking = false;
     private bool _queueNextAttack = false;
 
-    // Timers para el ataque actual
     private float _attackTimer = 0f;
     private float _comboResetTimer = 0f;
 
-    // Flags para eventos ya ejecutados
+    private float _postComboCooldown = 0f;
+    private bool _isOnCooldown = false;
+
     private bool _hitFrameExecuted = false;
     private bool _vfxSpawned = false;
     private bool _comboWindowOpened = false;
@@ -49,11 +49,25 @@ public class PlayerMeleeState : IPlayerState
         }
 
         _isAttacking = false;
+        _isOnCooldown = false;
+        _postComboCooldown = 0f;
         _comboResetTimer = 0f;
     }
 
     public void Tick(NetworkInputData input)
     {
+        // Si está en cooldown post-combo, esperar y bloquear todo input de ataque
+        if (_isOnCooldown)
+        {
+            _postComboCooldown -= _sm.Runner.DeltaTime;
+            if (_postComboCooldown <= 0f)
+            {
+                _isOnCooldown = false;
+                Debug.Log("[Melee] Post-combo cooldown terminado");
+            }
+            return; // no hacer nada hasta que termine
+        }
+
         if (!_isAttacking)
             UpdateLocomotion(input);
         else
@@ -132,7 +146,6 @@ public class PlayerMeleeState : IPlayerState
 
     private void ExecuteTimedEvents()
     {
-        // VFX — usa el spawn time del AttackVFXConfig embebido en el combo
         if (!_vfxSpawned
             && _currentAttackConfig.attackVFX != null
             && _attackTimer >= _currentAttackConfig.attackVFX.vfxSpawnTime)
@@ -223,14 +236,38 @@ public class PlayerMeleeState : IPlayerState
             return;
         }
 
+        // Si terminó el último ataque del combo, aplicar cooldown
+        bool isLastAttack = _comboIndex >= _meleeData.MaxComboCount;
+        if (isLastAttack)
+        {
+            _isAttacking = false;
+            _currentAttackConfig = null;
+            StartPostComboCooldown();
+            return;
+        }
+
         _isAttacking = false;
         _currentAttackConfig = null;
+    }
+
+    // NUEVO
+    private void StartPostComboCooldown()
+    {
+        _postComboCooldown = _meleeData.Cooldown; // reutiliza el campo Cooldown de AttackData
+        _isOnCooldown = true;
+        ResetCombo();
+
+        if (_sm.Animator != null)
+            _sm.Animator.SetInteger("ComboIndex", 0);
+
+        Debug.Log($"[Melee] Post-combo cooldown iniciado: {_postComboCooldown}s");
     }
 
     private void ResetCombo()
     {
         _comboIndex = 0;
         _inputBuffered = false;
+        _queueNextAttack = false;
         _comboResetTimer = 0f;
 
         if (_sm.Animator != null)
@@ -331,7 +368,6 @@ public class PlayerMeleeState : IPlayerState
                     damage = Mathf.RoundToInt(damage * rage.GetDamageMultiplier());
 
                 enemyHealth.ApplyDamageServer(damage, _sm.Object.InputAuthority);
-
                 PlayerRageHandler.NotifyDamageDealt(_sm.Object.InputAuthority, damage);
 
                 Debug.Log($"[Melee] Hit enemy - Damage: {damage}");
@@ -341,8 +377,5 @@ public class PlayerMeleeState : IPlayerState
         PlayHitFeedback();
     }
 
-    private void PlayHitFeedback()
-    {
-        // TODO: sonido, vibración, etc.
-    }
+    private void PlayHitFeedback() { }
 }

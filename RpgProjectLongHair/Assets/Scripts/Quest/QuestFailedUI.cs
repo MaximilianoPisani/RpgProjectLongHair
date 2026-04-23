@@ -1,43 +1,44 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 public class QuestFailedUI : MonoBehaviour
 {
     [Header("Panel")]
     [SerializeField] private GameObject _panel;
-
     [Header("Texts")]
     [SerializeField] private TextMeshProUGUI _txtTitle;
+    [Header("Duration")]
+    [SerializeField] private float _displayDuration = 3f;
 
-    [Header("Button")]
-    [SerializeField] private Button _btnContinue;
-
-    private void Start()
-    {
-        _btnContinue.onClick.AddListener(OnContinue);
-    }
+    public bool IsVisible => _panel != null && _panel.activeSelf;
+    private Coroutine _hideCoroutine;
 
     public void Show()
     {
-        Debug.Log("[QuestFailedUI] Show llamado");
         _txtTitle.text = "¡MISIÓN FALLIDA!";
         _panel.SetActive(true);
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        if (_hideCoroutine != null)
+            StopCoroutine(_hideCoroutine);
+        _hideCoroutine = StartCoroutine(HideAfterDelay());
     }
 
-    private void OnContinue()
+    private IEnumerator HideAfterDelay()
+    {
+        yield return new WaitForSeconds(_displayDuration);
+        Hide();
+    }
+
+    public void Hide()
     {
         _panel.SetActive(false);
+        _hideCoroutine = null;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
-    }
-
-    private void OnDisable()
-    {
-        Debug.Log($"[QuestFailedUI] Panel desactivado!\n{System.Environment.StackTrace}");
     }
 }
-    

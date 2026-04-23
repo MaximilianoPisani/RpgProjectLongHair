@@ -12,16 +12,12 @@ public class PlayerMoveState : IPlayerState
         _sm = sm;
     }
 
-    public void Enter()
-    {
-        if (_sm.Animator != null)
-            _sm.Animator.SetBool("isMoving", true);
-    }
+    public void Enter() { }
 
     public void Exit()
     {
         if (_sm.Animator != null)
-            _sm.Animator.SetBool("isMoving", false);
+            _sm.Animator.SetFloat("speed", 0f);
     }
 
     public void Tick(NetworkInputData input)
@@ -42,7 +38,6 @@ public class PlayerMoveState : IPlayerState
         if (_sm.Animator != null)
         {
             _sm.Animator.SetFloat("speed", normalizedSpeed);
-            _sm.Animator.SetBool("isMoving", speed > 0.05f);
         }
         // CAMBIO A IDLE SI NO SE MUEVE
         if (speed < 0.01f)

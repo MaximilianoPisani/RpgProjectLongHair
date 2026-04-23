@@ -6,18 +6,19 @@ using Fusion;
 public abstract class EnemyBaseController : NetworkBehaviour
 {
     [Header("Detection")]
-    public float DetectionRadius = 10f;
+    [SerializeField] protected float detectionRadius = 15f;
     public LayerMask PlayerLayer;
+    private Transform _targetPlayer;
 
     [Header("References")]
-    public Transform AttackOrigin;
+    [SerializeField] protected Transform attackOrigin;
 
     public NavMeshAgent Agent { get; private set; }
     public EnemyHealth Health { get; private set; }
     public float NextAttackTime { get; set; } = 0f;
-
-    private Transform _targetPlayer;
     public Transform TargetPlayer => _targetPlayer;
+    public float DetectionRadius => detectionRadius;
+    public Transform AttackOrigin => attackOrigin;
 
     protected EnemyStateMachine StateMachine { get; private set; }
 

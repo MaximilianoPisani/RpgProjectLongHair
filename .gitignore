@@ -62,6 +62,9 @@ ExportedObj/
 *.pdb.meta
 *.mdb.meta
 
+# Ignore specific problematic meta
+Editor CFXR.meta
+
 # Unity3D generated file on crash reports
 sysinfo.txt
 
