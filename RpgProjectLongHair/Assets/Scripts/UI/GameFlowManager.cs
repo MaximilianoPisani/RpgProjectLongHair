@@ -6,7 +6,7 @@ public class GameFlowManager : MonoBehaviour
 
     [Header("Panels — en orden de flujo")]
     [SerializeField] private GameObject _loginPanel;
-    [SerializeField] private GameObject _characterPanel;   
+    [SerializeField] private GameObject _characterPanel;
     [SerializeField] private GameObject _lobbyPanel;
     [SerializeField] private GameObject _gameplayMainCanvas;
     [SerializeField] private GameObject _rageCanvas;
@@ -41,6 +41,9 @@ public class GameFlowManager : MonoBehaviour
     {
         SetAllInactive();
         _lobbyPanel.SetActive(true);
+
+        NetworkController.Instance?.OnLobbyOpened();
+
         Debug.Log($"[GameFlowManager] Personaje {CharacterSelection.SelectedCharacter} elegido ? Lobby");
     }
 

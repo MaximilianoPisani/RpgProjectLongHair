@@ -7,6 +7,9 @@ public class CharacterSelection : MonoBehaviour
     [SerializeField] private Button _player1Button;
     [SerializeField] private Button _player2Button;
 
+    [Header("Logout")]
+    [SerializeField] private Button _logoutButton;
+
     [Header("Highlight visual (opcional)")]
     [SerializeField] private GameObject _highlight1;
     [SerializeField] private GameObject _highlight2;
@@ -17,6 +20,10 @@ public class CharacterSelection : MonoBehaviour
     {
         _player1Button.onClick.AddListener(() => SelectCharacter(1));
         _player2Button.onClick.AddListener(() => SelectCharacter(2));
+
+        if (_logoutButton != null)
+            _logoutButton.onClick.AddListener(OnLogoutClicked);
+
         SetHighlight(-1);
         Debug.Log("[CharacterSelection] Panel inicializado.");
     }
@@ -31,6 +38,19 @@ public class CharacterSelection : MonoBehaviour
             GameFlowManager.Instance.OnCharacterSelected();
         else
             Debug.LogWarning("[CharacterSelection] GameFlowManager no encontrado.");
+    }
+
+    private async void OnLogoutClicked()
+    {
+        Debug.Log("[CharacterSelection] Logout");
+
+        if (NetworkController.Instance != null)
+        {
+            await NetworkController.Instance.ShutdownAllRunners();
+        }
+
+        AuthenticationManager.Instance?.SignOut();
+        GameFlowManager.Instance?.ResetToLogin();
     }
 
     private void SetHighlight(int index)
