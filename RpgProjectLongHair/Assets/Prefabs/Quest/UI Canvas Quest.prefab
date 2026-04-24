@@ -2021,7 +2021,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5458867718522093543
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2100,8 +2100,8 @@ MonoBehaviour:
   _txtQuestName: {fileID: 8227111470891727043}
   _btnAccept: {fileID: 5848167781992977256}
   _btnDecline: {fileID: 7516064190306389024}
-  _inviteTimeout: 10
-  _txtTimer: {fileID: 0}
+  _inviteTimeout: 15
+  _txtTimer: {fileID: 3172891422247471353}
 --- !u!1 &6870959096794932759
 GameObject:
   m_ObjectHideFlags: 0
