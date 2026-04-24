@@ -171,11 +171,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _missionId: quest_test_001
   _spawnDatas:
-  - Prefab: {fileID: -164565949365206626, guid: 01831b58b299cbc46b9a7d4fa5308c35, type: 3}
+  - Prefab: {fileID: 7602107442121653444, guid: e0c591b22465fc246a632ac29eb7a3cf, type: 3}
     SpawnPoints:
     - {fileID: 3805849305465086468}
     Count: 1
-  - Prefab: {fileID: -164565949365206626, guid: 01831b58b299cbc46b9a7d4fa5308c35, type: 3}
+  - Prefab: {fileID: 4928595746056103536, guid: cf8ea576730a88543a6c45cbf04ecabd, type: 3}
     SpawnPoints:
     - {fileID: 1827303891249519576}
     Count: 1
