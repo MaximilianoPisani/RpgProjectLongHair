@@ -20,6 +20,6 @@ MonoBehaviour:
     amount: 2
   failureSteps: []
   allowTeleportParty: 1
-  teleportDestination: {x: 70, y: 1, z: 7.7}
+  teleportDestination: {x: 91, y: -1.4, z: 60}
   xp: 210
   coins: 0
