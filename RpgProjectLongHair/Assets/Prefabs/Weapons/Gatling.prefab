@@ -31,7 +31,7 @@ Transform:
   m_Children:
   - {fileID: 975983905204646974}
   m_Father: {fileID: 6211047567892000622}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -1.1661399e-14, y: 60.489178, z: -1.584088e-13}
 --- !u!1 &870520026262580110
 GameObject:
   m_ObjectHideFlags: 0
@@ -66,7 +66,7 @@ Transform:
   - {fileID: 1031080051869992342}
   - {fileID: 5596686835796347291}
   m_Father: {fileID: 6497747649001081996}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 89.99999, z: 0}
 --- !u!1 &3652601245874774623
 GameObject:
   m_ObjectHideFlags: 0
@@ -98,7 +98,7 @@ Transform:
   m_Children:
   - {fileID: 2636862537319095463}
   m_Father: {fileID: 6211047567892000622}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 1.5496326e-20, y: -6.4996274e-14, z: -1.299926e-13}
 --- !u!1 &4081039592354799937
 GameObject:
   m_ObjectHideFlags: 0
@@ -131,7 +131,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3217192584160692920}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -2.6537725e-10, y: 0.000008855442, z: 0.0000050584385}
 --- !u!33 &5152379099665793052
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -163,7 +163,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: -4002703166313647725, guid: f2689ad57e1444f489757295e94e72ef, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -217,7 +217,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6211047567892000622}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -2.6644112e-10, y: 0.00000069661326, z: 0.0000050584385}
 --- !u!33 &6201309428060420772
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -249,7 +249,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: -4002703166313647725, guid: f2689ad57e1444f489757295e94e72ef, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -302,7 +302,7 @@ Transform:
   m_Children:
   - {fileID: 5811150940020464758}
   m_Father: {fileID: 6211047567892000622}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0.00000023450602, y: -28.21914, z: 0.0000008290275}
 --- !u!1 &6752543943767949930
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,7 +335,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5596686835796347291}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -2.6644284e-10, y: 0.00000054522866, z: 0.0000050584385}
 --- !u!33 &4575229078347399395
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -367,7 +367,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: -4002703166313647725, guid: f2689ad57e1444f489757295e94e72ef, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -421,7 +421,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4760522388259084763}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -2.6644112e-10, y: 0.00000069661326, z: 0.0000050584385}
 --- !u!33 &249847457410885103
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -453,7 +453,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: -4002703166313647725, guid: f2689ad57e1444f489757295e94e72ef, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -512,7 +512,7 @@ Transform:
   m_Children:
   - {fileID: 6211047567892000622}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -89.98021, y: 0.000000009768291, z: 0}
 --- !u!135 &6652188097653096216
 SphereCollider:
   m_ObjectHideFlags: 0
