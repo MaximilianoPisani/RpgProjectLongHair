@@ -1,3 +1,4 @@
+using Fusion;
 using UnityEngine;
 
 public class PlayerInventoryController : MonoBehaviour
@@ -16,6 +17,13 @@ public class PlayerInventoryController : MonoBehaviour
 
     private void Start()
     {
+        var nb = GetComponentInParent<NetworkBehaviour>();
+        if (nb != null && !nb.HasInputAuthority)
+        {
+            Destroy(this);
+            return;
+        }
+
         if (_uiManager != null && _inventoryContent != null)
             _uiManager.SetContent(_inventoryContent);
 
@@ -88,7 +96,7 @@ public class PlayerInventoryController : MonoBehaviour
                 bool added = _inventoryData.AddItem(pickup.ItemData);
                 if (added)
                 {
-                    pickup.RPC_RequestDespawn(); 
+                    pickup.RPC_RequestDespawn();
                 }
                 return;
             }
