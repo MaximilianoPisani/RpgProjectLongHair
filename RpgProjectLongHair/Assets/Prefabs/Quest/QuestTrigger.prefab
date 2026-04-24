@@ -61,7 +61,7 @@ Transform:
   m_GameObject: {fileID: 6187780567333642918}
   serializedVersion: 2
   m_LocalRotation: {x: -1.2606253e-15, y: -0.70875406, z: -0.00000008449006, w: 0.70545566}
-  m_LocalPosition: {x: 91.01, y: -1.39, z: 64.8}
+  m_LocalPosition: {x: 91, y: -1.4, z: 65}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -155,7 +155,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _missionId: quest_test_001
   _questOfferUI: {fileID: 0}
-  _canvasNPC: {fileID: 0}
+  _canvasNPC: {fileID: 9199969999859423125}
+  _interactRadius: 3
 --- !u!114 &8820400329314414406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,7 +191,7 @@ GameObject:
   - component: {fileID: 5861801747788890544}
   - component: {fileID: 6857655307283213997}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: 'NPCText '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -474,7 +475,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6037975895385320833
 RectTransform:
   m_ObjectHideFlags: 0

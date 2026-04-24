@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(PlayerInventoryData))]
-// Componente encargado de manejar qué item está equipado
 public class EquipManager : NetworkBehaviour
 {
     [Header("Equip Points")]
@@ -17,7 +16,6 @@ public class EquipManager : NetworkBehaviour
 
     public event Action<int> OnEquippedChanged;
 
-    // ID sincronizado del item equipado
     [Networked, OnChangedRender(nameof(OnEquippedChangedRender))]
     public int EquippedItemId { get; set; }
 
@@ -40,30 +38,23 @@ public class EquipManager : NetworkBehaviour
             return;
         }
 
-        if (EquippedItemId == item.id)
-            RPC_RequestEquip(0);
-        else
-            RPC_RequestEquip(item.id);
+        if (!_inventory.HasItem(item.id))
+        {
+            Debug.LogWarning($"[Equip] Item {item.itemName} no está en el inventario local");
+            return;
+        }
+
+        int idToSend = EquippedItemId == item.id ? 0 : item.id;
+        RPC_RequestEquip(idToSend);
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RPC_RequestEquip(int id, RpcInfo info = default)
     {
-        if (_inventory == null) return;
-
-        // Validar en servidor también
         var sm = GetComponent<PlayerStateMachine>();
         if (sm != null && sm.IsBusy)
         {
             Debug.LogWarning("[Equip] Servidor rechazó equip: player ocupado");
-            return;
-        }
-
-        if (id == 0) { EquippedItemId = 0; return; }
-
-        if (!_inventory.HasItem(id))
-        {
-            Debug.LogWarning($"Equip rejected: Player does not own item {id}");
             return;
         }
 
@@ -166,6 +157,8 @@ public class EquipManager : NetworkBehaviour
         if (obj.TryGetComponent<Collider>(out var col))
             col.enabled = false;
 
-        obj.name = $"{item.itemName}_{suffix}";
+        obj.name = string.IsNullOrEmpty(suffix)
+            ? item.itemName
+            : $"{item.itemName}_{suffix}";
     }
 }
