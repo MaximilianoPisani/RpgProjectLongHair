@@ -14,6 +14,13 @@ public class PlayerIdleState : IPlayerState
     {
         if (_sm.Animator != null)
             _sm.Animator.SetFloat("speed", 0f);
+
+        var weapon = _sm.GetComponent<PlayerWeaponHandler>();
+        if (_sm.Animator != null && weapon != null)
+        {
+            _sm.Animator.SetBool("IsGunEquipped", weapon.IsRanged);
+            _sm.Animator.SetBool("IsAxeEquipped", weapon.IsMelee);
+        }
     }
 
     public void Exit() { }

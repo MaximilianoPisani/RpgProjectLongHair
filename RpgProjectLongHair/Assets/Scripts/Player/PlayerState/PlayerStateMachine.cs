@@ -53,7 +53,8 @@ public class PlayerStateMachine : NetworkBehaviour
             }
         }
 
-        bool canJump = _currentState is PlayerIdleState || _currentState is PlayerMoveState;
+        bool canJump = _currentState is PlayerIdleState
+            || _currentState is PlayerMoveState;
 
         if (input.jump && canJump && Player.IsGrounded() && !IsInputLocked)
         {

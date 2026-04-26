@@ -70,6 +70,13 @@ public class PlayerRangeState : IPlayerState
 
     public void Tick(NetworkInputData input)
     {
+        var weapon = _sm.GetComponent<PlayerWeaponHandler>();
+        if (weapon == null || !weapon.IsRanged)
+        {
+            _sm.ChangeState(new PlayerIdleState(_sm));
+            return;
+        }
+
         switch (_currentPhase)
         {
             case ShootPhase.Idle: UpdateIdlePhase(input); break;
@@ -83,10 +90,20 @@ public class PlayerRangeState : IPlayerState
 
     public void Exit()
     {
+        // Limpiar el AnimState networked — esto se propaga a todos los clientes
+        var sync = _sm.GetComponent<PlayerNetworkSync>();
+        if (sync != null)
+        {
+            sync?.SetIsReloading(false);
+            sync?.SetSpeed(0f);
+        }
+
+        // También limpiar local por si acaso
         if (_sm.Animator != null)
         {
             _sm.Animator.SetBool("IsReloading", false);
             _sm.Animator.SetFloat("speed", 0f);
+            _sm.Animator.ResetTrigger("Shoot");
         }
 
         Debug.Log("[Range] Exited");

@@ -14,16 +14,14 @@ public class PlayerJumpState : IPlayerState
         _minAirTimer = TickTimer.CreateFromSeconds(_sm.Runner, 0.1f);
         _minLandTimer = TickTimer.CreateFromSeconds(_sm.Runner, 0.3f);
 
-        _sm.GetComponent<PlayerNetworkSync>()?.TriggerJump();
-
         if (_sm.Animator != null)
         {
             _sm.Animator.SetBool("isLanding", false);
             _sm.Animator.SetBool("isJumping", true);
             _sm.Animator.SetBool("isFalling", false);
         }
-
         _sm.GetComponent<PlayerNetworkSync>()?.TriggerJump();
+
         Debug.Log("[JUMP] Enter - Starting jump");
     }
 

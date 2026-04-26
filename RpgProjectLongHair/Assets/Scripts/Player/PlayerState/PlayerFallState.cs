@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerFallState : IPlayerState
 {
     private PlayerStateMachine _sm;
-    private TickTimer _fallTimer;
+    private TickTimer _minFallTimer;
 
     public PlayerFallState(PlayerStateMachine sm)
     {
@@ -13,7 +13,7 @@ public class PlayerFallState : IPlayerState
 
     public void Enter()
     {
-        _fallTimer = TickTimer.CreateFromSeconds(_sm.Runner, 0f); // empieza expirado, solo para tracking
+        _minFallTimer = TickTimer.CreateFromSeconds(_sm.Runner, 0.15f);// empieza expirado, solo para tracking
         _sm.GetComponent<PlayerNetworkSync>()?.TriggerFall();
 
         if (_sm.Animator != null)
@@ -37,6 +37,8 @@ public class PlayerFallState : IPlayerState
 
     public void Tick(NetworkInputData input)
     {
+        if (!_minFallTimer.Expired(_sm.Runner)) return;
+
         var ncc = _sm.GetComponent<NetworkCharacterController>();
 
         if (_sm.Player.IsPhysicallyGroundedPublic())

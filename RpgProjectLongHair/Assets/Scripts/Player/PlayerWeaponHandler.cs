@@ -31,6 +31,14 @@ public class PlayerWeaponHandler : MonoBehaviour
 
     private void OnWeaponChanged(int equippedId)
     {
+        var networkSync = GetComponentInParent<PlayerNetworkSync>();
+        networkSync?.ForceResetAnimationFlags();
+
+        var sm = GetComponentInParent<PlayerStateMachine>();
+        if (sm != null && sm.CurrentState is PlayerRangeState)
+            sm.ChangeState(new PlayerIdleState(sm));
+
+
         if (equippedId == 0)
         {
             SetWeapon(false, false);

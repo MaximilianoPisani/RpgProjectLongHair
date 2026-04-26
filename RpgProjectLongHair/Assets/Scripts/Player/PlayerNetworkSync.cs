@@ -126,6 +126,64 @@ public class PlayerNetworkSync : NetworkBehaviour
         }
     }
 
+    public void SetIsReloading(bool value)
+    {
+        // Actualizar el flag en AnimationFlags
+        byte flags = AnimationFlags;
+        if (value)
+            flags |= FLAG_RELOADING;
+        else
+            flags &= flags &= unchecked((byte)~FLAG_RELOADING);
+
+        if (Object.HasStateAuthority)
+            AnimationFlags = flags;
+        else if (Object.HasInputAuthority)
+            RPC_SetIsReloading(value);
+
+        _animator?.SetBool("IsReloading", value);
+    }
+
+    public void SetSpeed(float speed)
+    {
+        if (Object.HasStateAuthority)
+            SyncedSpeed = speed;
+        else if (Object.HasInputAuthority)
+            RPC_SetSpeed(speed);
+
+        _animator?.SetFloat("speed", speed);
+    }
+
+    public void ForceResetAnimationFlags()
+    {
+
+        // Limpiar local también
+        if (_animator != null)
+        {
+            _animator.SetBool("IsReloading", false);
+            _animator.SetBool("isJumping", false);
+            _animator.SetBool("isFalling", false);
+            _animator.SetBool("isLanding", false);
+            _animator.SetFloat("speed", 0f);
+            _animator.SetInteger("ComboIndex", 0);
+            _animator.ResetTrigger("Shoot");
+            _animator.ResetTrigger("Melee");
+
+            _animator.Play("Idle", 0, 0f);
+        }
+
+        if (Object.HasStateAuthority)
+        {
+            AnimationFlags = 0;
+            SyncedSpeed = 0f;
+            SyncedComboIndex = 0;
+        }
+        else if (Object.HasInputAuthority)
+        {
+            // Cliente pide al host que limpie
+            RPC_ForceResetFlags();
+        }
+    }
+
     // ===== TRIGGERS PÚBLICOS =====
     public void TriggerMelee()
     {
@@ -228,4 +286,26 @@ public class PlayerNetworkSync : NetworkBehaviour
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RPC_TriggerLand() => SyncedLandTrigger++;
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_SetIsReloading(bool value)
+    {
+        byte flags = AnimationFlags;
+        if (value)
+            flags |= FLAG_RELOADING;
+        else
+            flags &= flags &= unchecked((byte)~FLAG_RELOADING);
+        AnimationFlags = flags;
+    }
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_SetSpeed(float speed)
+    {
+        SyncedSpeed = speed;
+    }
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_ForceResetFlags()
+    {
+        AnimationFlags = 0;
+        SyncedSpeed = 0f;
+        SyncedComboIndex = 0;
+    }
 }
