@@ -22,6 +22,8 @@ public class EnemyRangedController : EnemyBaseController
     public float PreferredMaxRange => _preferredMaxRange;
     public EnemyAnimationController AnimationController => animationController;
     public EnemyVFXController VFXController => vfxController;
+
+    private EnemyNetworkSync _networkSync;
     public override void Spawned()
     {
         base.Spawned();
@@ -31,6 +33,8 @@ public class EnemyRangedController : EnemyBaseController
 
         if (vfxController == null)
             vfxController = GetComponent<EnemyVFXController>();
+
+        _networkSync = GetComponent<EnemyNetworkSync>();
 
         IsReloading = false;
     }
@@ -49,9 +53,15 @@ public class EnemyRangedController : EnemyBaseController
 
     public void ExecuteShot()
     {
-        if (animationController == null || _rangedAttackData == null) return;
+        if (_rangedAttackData == null) return;
 
-        animationController.PlayRangedAttack(
+        _networkSync?.TriggerRangedAttack(
+            _rangedAttackData.FireEjectionVFX,
+            _rangedAttackData.ShellEjectionVFX
+        );
+
+        // Sincronizar muzzle flash y shell para proxies
+        _networkSync?.SyncMuzzleFlash(
             _rangedAttackData.FireEjectionVFX,
             _rangedAttackData.ShellEjectionVFX
         );
@@ -90,10 +100,8 @@ public class EnemyRangedController : EnemyBaseController
     /// </summary>
     public void ExecuteReload()
     {
-        if (animationController == null) return;
-
         IsReloading = true;
-        animationController.PlayReloadAnimation();
+        _networkSync?.TriggerReload();
     }
 
     /// <summary>
@@ -117,8 +125,11 @@ public class EnemyRangedController : EnemyBaseController
 
     public void TriggerHitAnimation()
     {
-        if (animationController != null)
-            animationController.PlayHitReaction();
+        _networkSync?.TriggerHit();
+    }
+    public void SyncHit(Vector3 hitPos, Vector3 hitNormal)
+    {
+        _networkSync?.SyncHitVFX(hitPos, hitNormal);
     }
 
     private void OnValidate()

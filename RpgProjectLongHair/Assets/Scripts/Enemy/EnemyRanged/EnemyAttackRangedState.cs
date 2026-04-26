@@ -27,7 +27,7 @@ public class EnemyAttackRangedState : IEnemyState
         _shotsFired = 0;
 
         if (!_comingFromReload)
-            _enemy.VFXController?.SpawnAttackIndicator();
+            _enemy.GetComponent<EnemyNetworkSync>()?.SyncAttackIndicator();
 
         // Detener movimiento
         if (_enemy.Agent != null && _enemy.Agent.isOnNavMesh)

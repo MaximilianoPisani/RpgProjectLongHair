@@ -128,6 +128,7 @@ GameObject:
   - component: {fileID: 7643492774128377838}
   - component: {fileID: 1903278522379067626}
   - component: {fileID: 1786112597573691305}
+  - component: {fileID: -7974863528754125525}
   m_Layer: 3
   m_Name: EnemyMeleeFungi
   m_TagString: Enemy
@@ -199,6 +200,7 @@ MonoBehaviour:
   - {fileID: 7564480211760997646}
   - {fileID: 457290789903389344}
   - {fileID: 5191328092586509695}
+  - {fileID: -7974863528754125525}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &164858896645782337
 MonoBehaviour:
@@ -411,6 +413,18 @@ MonoBehaviour:
     followTransform: 1
     customDuration: 0
   attackIndicatorPoint: {fileID: 9145632595001252045}
+--- !u!114 &-7974863528754125525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410296030982828054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ca5d21966338b440bb31e46a823f5a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &571856061514683734
 GameObject:
   m_ObjectHideFlags: 0

@@ -1345,6 +1345,7 @@ GameObject:
   - component: {fileID: 892926014339985389}
   - component: {fileID: 6915858454006334121}
   - component: {fileID: 7917198614339932064}
+  - component: {fileID: 7237182162067363730}
   m_Layer: 3
   m_Name: EnemyRangedFungi
   m_TagString: Enemy
@@ -1416,6 +1417,7 @@ MonoBehaviour:
   - {fileID: 4306025398902392576}
   - {fileID: 5667276092013689902}
   - {fileID: 4609699497982218712}
+  - {fileID: 7237182162067363730}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &3745464281572789658
 MonoBehaviour:
@@ -1629,6 +1631,18 @@ MonoBehaviour:
     followTransform: 1
     customDuration: 0
   attackIndicatorPoint: {fileID: 442824364138095064}
+--- !u!114 &7237182162067363730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7171795225345368329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ca5d21966338b440bb31e46a823f5a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7176762600081048073
 GameObject:
   m_ObjectHideFlags: 0

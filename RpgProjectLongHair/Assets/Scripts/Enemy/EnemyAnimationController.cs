@@ -62,6 +62,8 @@ public class EnemyAnimationController : MonoBehaviour
     private int deathHash;
     private int idleIndexHash;
 
+    private EnemyNetworkSync _networkSync;
+
     private void Awake()
     {
         if (animator == null)
@@ -83,10 +85,14 @@ public class EnemyAnimationController : MonoBehaviour
         idleIndexHash = Animator.StringToHash(idleIndexParameter);
 
         ScheduleNextIdleChange();
+
+        _networkSync = GetComponent<EnemyNetworkSync>();
     }
 
     private void Update()
     {
+        if (_networkSync != null && !_networkSync.Object.HasStateAuthority) return;
+
         if (animator == null || isDead) return;
 
         UpdateMovementAnimation();

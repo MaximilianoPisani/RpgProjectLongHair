@@ -957,6 +957,7 @@ GameObject:
   - component: {fileID: -7959826532971654791}
   - component: {fileID: 5886125173034358410}
   - component: {fileID: -8914437699861995711}
+  - component: {fileID: -1300499609020766671}
   m_Layer: 3
   m_Name: enemyMinionMecano
   m_TagString: Enemy
@@ -1028,6 +1029,7 @@ MonoBehaviour:
   - {fileID: 1680863857489578343}
   - {fileID: 814898277713001099}
   - {fileID: -7172902207724428572}
+  - {fileID: -1300499609020766671}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-6679422955088169947
 MonoBehaviour:
@@ -1240,6 +1242,18 @@ MonoBehaviour:
     followTransform: 1
     customDuration: 0
   attackIndicatorPoint: {fileID: 5656831148283486807}
+--- !u!114 &-1300499609020766671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5456948168675829924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ca5d21966338b440bb31e46a823f5a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5780365246860821373
 GameObject:
   m_ObjectHideFlags: 0

@@ -684,6 +684,7 @@ GameObject:
   - component: {fileID: -7172902207724428572}
   - component: {fileID: 1448903130190009638}
   - component: {fileID: 584240351165097834}
+  - component: {fileID: 9019307086516969868}
   m_Layer: 3
   m_Name: EnemyKamikaze
   m_TagString: Enemy
@@ -806,6 +807,7 @@ MonoBehaviour:
   - {fileID: 814898277713001099}
   - {fileID: -7172902207724428572}
   - {fileID: 584240351165097834}
+  - {fileID: 9019307086516969868}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-6679422955088169947
 MonoBehaviour:
@@ -863,6 +865,7 @@ MonoBehaviour:
   _meshRenderer: {fileID: 9220746733493959180}
   _flashColor: {r: 0.4264151, g: 0.068976164, b: 0.031377666, a: 1}
   _flashDuration: 0.2
+  _vfxController: {fileID: 0}
   enemyController: {fileID: 584240351165097834}
   _expConfig: {fileID: 11400000, guid: cba863bba89c4384b875ed03cef3bb49, type: 2}
   _isQuestEnemy: 0
@@ -927,12 +930,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fac5c3fbb7f2731419ec394774c72f3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DetectionRadius: 10
+  detectionRadius: 15
   PlayerLayer:
     serializedVersion: 2
     m_Bits: 64
-  AttackOrigin: {fileID: 7505190822256135982}
+  attackOrigin: {fileID: 0}
   KamikazeData: {fileID: 11400000, guid: 4e54a115615814d4e926e15a81ab820e, type: 2}
+--- !u!114 &9019307086516969868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5456948168675829924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ca5d21966338b440bb31e46a823f5a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7177038526544582139
 GameObject:
   m_ObjectHideFlags: 0
