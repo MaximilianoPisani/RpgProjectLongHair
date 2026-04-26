@@ -30,6 +30,8 @@ public class PlayerRangeState : IPlayerState
     private bool _attackButtonReleased = true;
     private bool _needsReload = false;
 
+    private int _lastVFXTick = -1;
+
     public PlayerRangeState(PlayerStateMachine sm)
     {
         _sm = sm;
@@ -40,6 +42,8 @@ public class PlayerRangeState : IPlayerState
     _currentPhase == ShootPhase.AutomaticFire;
     public void Enter()
     {
+        _lastVFXTick = -1;
+
         var weapon = _sm.GetComponent<PlayerWeaponHandler>();
         if (weapon == null || !weapon.IsRanged)
         {
@@ -128,6 +132,7 @@ public class PlayerRangeState : IPlayerState
 
     private void StartShooting()
     {
+        _lastVFXTick = -1;
         _currentPhase = ShootPhase.Shooting;
         _shootTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.ShootDuration);
         _projectileSpawned = false;
@@ -233,9 +238,16 @@ public class PlayerRangeState : IPlayerState
             _shellEjectionSpawned = false;
             _fireEjectionSpawned = false;
 
+            int currentTick = _sm.Runner.Tick;
+
             SpawnProjectile();
-            SpawnShellEjectionVFX();
-            SpawnFireEjectionVFX();
+
+            if (currentTick != _lastVFXTick)
+            {
+                _lastVFXTick = currentTick;
+                SpawnShellEjectionVFX();
+                SpawnFireEjectionVFX();
+            }
             _weaponAnim?.PlayShoot();
 
             Debug.Log($"[Range] Auto-fire shot");
