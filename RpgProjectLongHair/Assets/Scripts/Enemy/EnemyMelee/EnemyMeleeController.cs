@@ -44,6 +44,8 @@ public class EnemyMeleeController : EnemyBaseController
         var vfxConfig = meleeAttackData.GetVFXConfig(attackIndex);
         animationController?.PlayMeleeAttack(attackIndex, vfxConfig);
 
+        vfxController?.SpawnAttackIndicator();
+
         // Avanza secuencia usando AttackCount del data, no un campo manual
         CurrentAttackIndex = (CurrentAttackIndex + 1) % meleeAttackData.AttackCount;
 

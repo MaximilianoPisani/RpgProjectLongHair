@@ -404,6 +404,13 @@ MonoBehaviour:
     followTransform: 1
     customDuration: 0
   animatedModelTransform: {fileID: 9145632595001252045}
+  attackIndicatorVFX:
+    vfxPrefab: {fileID: 8194992990867289339, guid: 41c254381c7a6514ea1e3baef296ce78, type: 3}
+    vfxSpawnTime: 0
+    localOffset: {x: 0, y: 0, z: 0}
+    followTransform: 1
+    customDuration: 0
+  attackIndicatorPoint: {fileID: 9145632595001252045}
 --- !u!1 &571856061514683734
 GameObject:
   m_ObjectHideFlags: 0

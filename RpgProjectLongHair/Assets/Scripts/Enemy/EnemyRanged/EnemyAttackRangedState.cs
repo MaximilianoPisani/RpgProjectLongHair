@@ -7,12 +7,16 @@ public class EnemyAttackRangedState : IEnemyState
     private float _shotStartTime;
     private bool _shotTriggered;
     private bool _projectileSpawned;
+    private readonly bool _comingFromReload;
 
     // Para modo automático
     private float _continuousFireStartTime;
     private int _shotsFired;
-    public EnemyAttackRangedState(EnemyRangedController enemy) => _enemy = enemy;
-
+    public EnemyAttackRangedState(EnemyRangedController enemy, bool comingFromReload = false)
+    {
+        _enemy = enemy;
+        _comingFromReload = comingFromReload;
+    }
     public void EnterState()
     {
 
@@ -21,6 +25,9 @@ public class EnemyAttackRangedState : IEnemyState
         _shotStartTime = 0f;
         _continuousFireStartTime = _enemy.Runner.SimulationTime;
         _shotsFired = 0;
+
+        if (!_comingFromReload)
+            _enemy.VFXController?.SpawnAttackIndicator();
 
         // Detener movimiento
         if (_enemy.Agent != null && _enemy.Agent.isOnNavMesh)
