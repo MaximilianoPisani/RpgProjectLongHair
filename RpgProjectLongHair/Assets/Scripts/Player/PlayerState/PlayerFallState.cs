@@ -4,8 +4,7 @@ using UnityEngine;
 public class PlayerFallState : IPlayerState
 {
     private PlayerStateMachine _sm;
-    private float _fallTime;
-    private const float FallVelocityThreshold = -0.5f;
+    private TickTimer _fallTimer;
 
     public PlayerFallState(PlayerStateMachine sm)
     {
@@ -14,7 +13,7 @@ public class PlayerFallState : IPlayerState
 
     public void Enter()
     {
-        _fallTime = 0f;
+        _fallTimer = TickTimer.CreateFromSeconds(_sm.Runner, 0f); // empieza expirado, solo para tracking
         _sm.GetComponent<PlayerNetworkSync>()?.TriggerFall();
 
         if (_sm.Animator != null)
@@ -24,8 +23,6 @@ public class PlayerFallState : IPlayerState
             _sm.Animator.SetBool("isLanding", false);
         }
 
-        _sm.GetComponent<PlayerNetworkSync>()?.TriggerFall();
-
         Debug.Log("[FALL] Enter - Starting fall");
     }
 
@@ -34,21 +31,14 @@ public class PlayerFallState : IPlayerState
         if (_sm.Animator != null)
             _sm.Animator.SetBool("isFalling", false);
 
-        Debug.Log($"[FALL] Exit - Fall time was: {_fallTime:F2}s");
+
+        Debug.Log("[FALL] Exit");
     }
 
     public void Tick(NetworkInputData input)
     {
-        _fallTime += _sm.Runner.DeltaTime;
-
         var ncc = _sm.GetComponent<NetworkCharacterController>();
 
-        if (ncc != null)
-        {
-            Debug.Log($"[FALL] Tick - FallTime: {_fallTime:F2}, Grounded: {_sm.Player.IsPhysicallyGroundedPublic()}, VelY: {ncc.Velocity.y:F2}");
-        }
-
-        // Solo aterrizar si velocidad Y es negativa o cercana a 0
         if (_sm.Player.IsPhysicallyGroundedPublic())
         {
             if (ncc != null && ncc.Velocity.y <= 0.5f)
@@ -63,8 +53,6 @@ public class PlayerFallState : IPlayerState
         if (sm.Player == null) return false;
         var ncc = sm.GetComponent<NetworkCharacterController>();
         if (ncc == null) return false;
-
-        //Caer si NO está en el suelo Y la velocidad Y es negativa
         return !sm.Player.IsPhysicallyGroundedPublic() && ncc.Velocity.y < -1f;
     }
 }
