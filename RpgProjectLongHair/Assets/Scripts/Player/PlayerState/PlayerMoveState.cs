@@ -24,8 +24,11 @@ public class PlayerMoveState : IPlayerState
     {
         var weapon = _sm.GetComponent<PlayerWeaponHandler>();
 
-        if (input.attack && weapon != null && weapon.IsMelee)
-        { _sm.ChangeState(new PlayerMeleeState(_sm)); return; }
+        if (input.attackJustPressed && weapon != null && weapon.IsMelee)
+        {
+            _sm.ChangeState(new PlayerMeleeState(_sm));
+            return;
+        }
 
         if (input.attackRange && weapon != null && weapon.IsRanged)
         { _sm.ChangeState(new PlayerRangeState(_sm)); return; }

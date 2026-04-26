@@ -29,7 +29,7 @@ public class PlayerIdleState : IPlayerState
 
         var weapon = _sm.GetComponent<PlayerWeaponHandler>();
 
-        if (input.attack && weapon != null && weapon.IsMelee)
+        if (input.attackJustPressed && weapon != null && weapon.IsMelee)
         {
             _sm.ChangeState(new PlayerMeleeState(_sm));
             return;

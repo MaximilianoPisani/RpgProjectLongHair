@@ -5,7 +5,7 @@ public class PlayerJumpState : IPlayerState
     private PlayerStateMachine _sm;
     private float _airTime;
     private const float MinAirTimeBeforeFall = 0.1f; // Tiempo antes de poder caer
-    private const float MinAirTimeBeforeLand = 0.3f;
+    private const float MinAirTimeBeforeLand = 0.2f;
     public PlayerJumpState(PlayerStateMachine sm) => _sm = sm;
 
     public void Enter()

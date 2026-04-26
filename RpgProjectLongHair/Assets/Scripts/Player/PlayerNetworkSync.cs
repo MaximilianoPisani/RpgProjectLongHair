@@ -31,7 +31,8 @@ public class PlayerNetworkSync : NetworkBehaviour
     private int _lastJump;
     private int _lastDie;
     private int _lastFall;  
-    private int _lastLand;  
+    private int _lastLand;
+    private int _lastComboIndex = 0;
 
     // ===== SETUP =====
     public override void Spawned()
@@ -50,7 +51,8 @@ public class PlayerNetworkSync : NetworkBehaviour
         float currentSpeed = _animator.GetFloat("speed");
         SyncedSpeed = Mathf.Round(currentSpeed * 10f) / 10f;
 
-        SyncedComboIndex = _animator.GetInteger("ComboIndex");
+        var sm = GetComponent<PlayerStateMachine>();
+        SyncedComboIndex = sm != null ? sm.NetworkedComboIndex : _animator.GetInteger("ComboIndex");
 
         // Compacta booleanos en 1 byte
         byte flags = 0;
@@ -65,18 +67,22 @@ public class PlayerNetworkSync : NetworkBehaviour
     // ===== RENDER =====
     public override void Render()
     {
-        if (Object.HasInputAuthority) return;
         if (_animator == null) return;
+        if (!Object.HasInputAuthority)
+        {
+            _animator.SetFloat("speed", SyncedSpeed);
+            _animator.SetInteger("ComboIndex", SyncedComboIndex);
+            _animator.SetBool("isJumping", (AnimationFlags & FLAG_JUMPING) != 0);
+            _animator.SetBool("IsReloading", (AnimationFlags & FLAG_RELOADING) != 0);
+            _animator.SetBool("isFalling", (AnimationFlags & FLAG_FALLING) != 0);
+            _animator.SetBool("isLanding", (AnimationFlags & FLAG_LANDING) != 0);
 
-        // Actualiza valores continuos
-        _animator.SetFloat("speed", SyncedSpeed);
-        _animator.SetInteger("ComboIndex", SyncedComboIndex);
-
-        // Descompacta flags
-        _animator.SetBool("isJumping", (AnimationFlags & FLAG_JUMPING) != 0);
-        _animator.SetBool("IsReloading", (AnimationFlags & FLAG_RELOADING) != 0);
-        _animator.SetBool("isFalling", (AnimationFlags & FLAG_FALLING) != 0);
-        _animator.SetBool("isLanding", (AnimationFlags & FLAG_LANDING) != 0);
+            if (SyncedComboIndex > 0 && SyncedComboIndex != _lastComboIndex)
+            {
+                _animator.SetTrigger("Melee");
+            }
+            _lastComboIndex = SyncedComboIndex;
+        }
 
         // Detecta cambios en triggers
         foreach (var change in _changes.DetectChanges(this))
@@ -84,32 +90,38 @@ public class PlayerNetworkSync : NetworkBehaviour
             if (change == nameof(SyncedMeleeTrigger) && _lastMelee != SyncedMeleeTrigger)
             {
                 _lastMelee = SyncedMeleeTrigger;
-                _animator.SetTrigger("Melee");
+                if (!Object.HasInputAuthority) // ya lo disparó localmente
+                    _animator.SetTrigger("Melee");
             }
             if (change == nameof(SyncedShootTrigger) && _lastShoot != SyncedShootTrigger)
             {
                 _lastShoot = SyncedShootTrigger;
-                _animator.SetTrigger("Shoot");
+                if (!Object.HasInputAuthority)
+                    _animator.SetTrigger("Shoot");
             }
             if (change == nameof(SyncedJumpTrigger) && _lastJump != SyncedJumpTrigger)
             {
                 _lastJump = SyncedJumpTrigger;
-                _animator.SetTrigger("Jump");
+                if (!Object.HasInputAuthority)
+                    _animator.SetTrigger("Jump");
             }
             if (change == nameof(SyncedDieTrigger) && _lastDie != SyncedDieTrigger)
             {
                 _lastDie = SyncedDieTrigger;
-                _animator.SetTrigger("Die");
+                if (!Object.HasInputAuthority)
+                    _animator.SetTrigger("Die");
             }
             if (change == nameof(SyncedFallTrigger) && _lastFall != SyncedFallTrigger)
             {
                 _lastFall = SyncedFallTrigger;
-                _animator.SetTrigger("Fall");
+                if (!Object.HasInputAuthority)
+                    _animator.SetTrigger("Fall");
             }
             if (change == nameof(SyncedLandTrigger) && _lastLand != SyncedLandTrigger)
             {
                 _lastLand = SyncedLandTrigger;
-                _animator.SetTrigger("Land");
+                if (!Object.HasInputAuthority)
+                    _animator.SetTrigger("Land");
             }
         }
     }
