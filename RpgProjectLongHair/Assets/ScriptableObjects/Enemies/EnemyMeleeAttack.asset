@@ -18,7 +18,7 @@ MonoBehaviour:
   _hitRadius: 3
   _comboAttacks:
   - attackDuration: 0.42
-    hitFrameTime: 0.15
+    hitFrameTime: 0.25
     comboWindowOpenTime: 0
     comboWindowCloseTime: 0
     damage: 30
@@ -30,7 +30,7 @@ MonoBehaviour:
       followTransform: 1
       customDuration: 0
   - attackDuration: 0.55
-    hitFrameTime: 0.22
+    hitFrameTime: 0.35
     comboWindowOpenTime: 0
     comboWindowCloseTime: 0
     damage: 30

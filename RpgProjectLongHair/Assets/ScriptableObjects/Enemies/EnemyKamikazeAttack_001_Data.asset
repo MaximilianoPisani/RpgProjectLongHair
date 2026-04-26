@@ -16,4 +16,4 @@ MonoBehaviour:
   _damage: 125
   _cooldown: 0.5
   _hitRadius: 2
-  _explosionVFXPrefab: {fileID: 0}
+  _explosionVFXPrefab: {fileID: 4593184484909914552, guid: 65279befc332376428412072b0b3d2dd, type: 3}

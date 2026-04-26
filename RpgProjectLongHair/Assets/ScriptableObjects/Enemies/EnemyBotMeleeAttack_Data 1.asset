@@ -18,7 +18,7 @@ MonoBehaviour:
   _hitRadius: 1.5
   _comboAttacks:
   - attackDuration: 1.38
-    hitFrameTime: 0.52
+    hitFrameTime: 1.2
     comboWindowOpenTime: 0
     comboWindowCloseTime: 0
     damage: 60

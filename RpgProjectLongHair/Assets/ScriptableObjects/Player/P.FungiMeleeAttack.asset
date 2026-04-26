@@ -42,7 +42,7 @@ MonoBehaviour:
       followTransform: 1
       customDuration: 0
   - attackDuration: 1
-    hitFrameTime: 0.61
+    hitFrameTime: 0.75
     comboWindowOpenTime: 0.8
     comboWindowCloseTime: 1
     damage: 60
