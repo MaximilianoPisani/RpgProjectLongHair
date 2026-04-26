@@ -174,6 +174,17 @@ public class EnemyNetworkSync : NetworkBehaviour
             RPC_SpawnShellEjection(shellVFX.vfxPrefab.name, shellVFX.vfxSpawnTime);
     }
 
+    public void SyncSlashVFX(AttackVFXConfig config)
+    {
+        if (!Object.HasStateAuthority) return;
+        if (config?.vfxPrefab == null) return;
+
+        // Host ya lo spawna via PlayMeleeAttack — solo notificar proxies
+        RPC_SpawnSlashVFX(config.vfxPrefab.name, config.vfxSpawnTime,
+                          config.localOffset, config.followTransform, config.customDuration);
+    }
+
+
     // ===== RPCs =====
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
@@ -201,6 +212,15 @@ public class EnemyNetworkSync : NetworkBehaviour
         if (config != null)
             _vfxController?.SpawnVFXDelayed(config, delay, null);
     }
+    [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
+    private void RPC_SpawnSlashVFX(string prefabName, float delay, Vector3 offset,
+                                bool follow, float duration)
+    {
+        var config = FindMeleeVFXConfigByName(prefabName);
+        if (config != null)
+            _vfxController?.SpawnVFXDelayed(config, delay);
+    }
+
 
     private AttackVFXConfig FindVFXConfigByName(string name)
     {
@@ -209,6 +229,18 @@ public class EnemyNetworkSync : NetworkBehaviour
             return ranged.RangedAttackData.FireEjectionVFX;
         if (ranged?.RangedAttackData?.ShellEjectionVFX?.vfxPrefab?.name == name)
             return ranged.RangedAttackData.ShellEjectionVFX;
+        return null;
+    }
+    private AttackVFXConfig FindMeleeVFXConfigByName(string name)
+    {
+        var melee = GetComponent<EnemyMeleeController>();
+        if (melee?.MeleeAttackData?.ComboAttacks == null) return null;
+
+        foreach (var combo in melee.MeleeAttackData.ComboAttacks)
+        {
+            if (combo.attackVFX?.vfxPrefab?.name == name)
+                return combo.attackVFX;
+        }
         return null;
     }
 }

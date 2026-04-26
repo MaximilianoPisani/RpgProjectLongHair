@@ -50,6 +50,7 @@ public class EnemyMeleeController : EnemyBaseController
         _networkSync?.TriggerMeleeAttack(attackIndex, vfxConfig);
 
         _networkSync?.SyncAttackIndicator();
+        _networkSync?.SyncSlashVFX(vfxConfig);
 
         // Avanza secuencia usando AttackCount del data, no un campo manual
         CurrentAttackIndex = (CurrentAttackIndex + 1) % meleeAttackData.AttackCount;
