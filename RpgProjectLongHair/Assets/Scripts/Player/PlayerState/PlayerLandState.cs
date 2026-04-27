@@ -21,7 +21,6 @@ public class PlayerLandState : IPlayerState
             _sm.Animator.SetBool("isJumping", false);
             _sm.Animator.SetBool("isFalling", false);
             _sm.Animator.SetBool("isLanding", true);
-
             float speed = _sm.Player.GetHorizontalSpeed();
             float normalizedSpeed = speed / _sm.Player.SprintSpeed;
             _sm.Animator.SetFloat("speed", normalizedSpeed);
@@ -43,13 +42,13 @@ public class PlayerLandState : IPlayerState
 
         var weapon = _sm.GetComponent<PlayerWeaponHandler>();
 
-        if (input.attack && weapon != null && weapon.IsMelee)
+        if (input.attackJustPressed && weapon != null && weapon.IsMelee)
         {
             _sm.ChangeState(new PlayerMeleeState(_sm));
             return;
         }
 
-        if (input.attackRange && weapon != null && weapon.IsRanged)
+        if (input.attack && weapon != null && weapon.IsRanged)
         {
             _sm.ChangeState(new PlayerRangeState(_sm));
             return;

@@ -26,21 +26,37 @@ public class PlayerDeadState : IPlayerState
         var animator = _sm.GetComponentInChildren<Animator>();
         if (animator == null) return;
 
-        // Fuerza salir del estado de disparo
-        animator.SetBool("IsShooting", false);
-        animator.SetBool("IsAiming", false);
-        animator.SetFloat("MoveSpeed", 0f);
+        animator.SetBool("IsReloading", false);
+        animator.SetBool("isJumping", false);
+        animator.SetBool("isFalling", false);
+        animator.SetBool("isLanding", false);
+        animator.SetFloat("speed", 0f);
+        animator.SetInteger("ComboIndex", 0);
+        animator.ResetTrigger("Shoot");
+        animator.ResetTrigger("Melee");
+        animator.ResetTrigger("Jump");
+        animator.ResetTrigger("Fall");
+        animator.ResetTrigger("Land");
 
-        // Opción A: Si tenés animación de muerte configurada
+        animator.SetBool("IsDead", true);   
         animator.SetTrigger("Die");
     }
+
     public void Exit()
     {
         var animator = _sm.GetComponentInChildren<Animator>();
         if (animator != null)
         {
-            // Limpiar el trigger de muerte al revivir
             animator.ResetTrigger("Die");
+            animator.SetBool("IsDead", false);  
+            animator.SetBool("IsReloading", false);
+            animator.SetBool("isJumping", false);
+            animator.SetBool("isFalling", false);
+            animator.SetBool("isLanding", false);
+            animator.SetFloat("speed", 0f);
+            animator.SetInteger("ComboIndex", 0);
+            animator.ResetTrigger("Shoot");
+            animator.ResetTrigger("Melee");
         }
 
         if (!_sm.Object.HasInputAuthority) return;

@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class PlayerNetworkSync : NetworkBehaviour
 {
-    // ===== NETWORKED VARS OPTIMIZADAS =====
     [Networked] private float SyncedSpeed { get; set; }
     [Networked] private byte AnimationFlags { get; set; }
 
@@ -11,18 +10,15 @@ public class PlayerNetworkSync : NetworkBehaviour
     [Networked] private int SyncedShootTrigger { get; set; }
     [Networked] private int SyncedJumpTrigger { get; set; }
     [Networked] private int SyncedDieTrigger { get; set; }
-    [Networked] private int SyncedFallTrigger { get; set; }  
-    [Networked] private int SyncedLandTrigger { get; set; } 
-
+    [Networked] private int SyncedFallTrigger { get; set; }
+    [Networked] private int SyncedLandTrigger { get; set; }
     [Networked] private int SyncedComboIndex { get; set; }
 
-    // ===== ANIMATION FLAGS =====
     private const byte FLAG_JUMPING = 1 << 0;
     private const byte FLAG_RELOADING = 1 << 1;
     private const byte FLAG_FALLING = 1 << 2;
     private const byte FLAG_LANDING = 1 << 3;
 
-    // ===== LOCAL VARS =====
     private Animator _animator;
     private ChangeDetector _changes;
 
@@ -30,31 +26,27 @@ public class PlayerNetworkSync : NetworkBehaviour
     private int _lastShoot;
     private int _lastJump;
     private int _lastDie;
-    private int _lastFall;  
+    private int _lastFall;
     private int _lastLand;
     private int _lastComboIndex = 0;
 
-    // ===== SETUP =====
     public override void Spawned()
     {
         _animator = GetComponent<Animator>();
         _changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
     }
 
-    // ===== FIXED UPDATE =====
     public override void FixedUpdateNetwork()
     {
         if (!Object.HasStateAuthority) return;
         if (_animator == null) return;
 
-        // Sincroniza animaciones
         float currentSpeed = _animator.GetFloat("speed");
         SyncedSpeed = Mathf.Round(currentSpeed * 10f) / 10f;
 
         var sm = GetComponent<PlayerStateMachine>();
         SyncedComboIndex = sm != null ? sm.NetworkedComboIndex : _animator.GetInteger("ComboIndex");
 
-        // Compacta booleanos en 1 byte
         byte flags = 0;
         if (_animator.GetBool("isJumping")) flags |= FLAG_JUMPING;
         if (_animator.GetBool("IsReloading")) flags |= FLAG_RELOADING;
@@ -64,7 +56,6 @@ public class PlayerNetworkSync : NetworkBehaviour
         AnimationFlags = flags;
     }
 
-    // ===== RENDER =====
     public override void Render()
     {
         if (_animator == null) return;
@@ -78,19 +69,17 @@ public class PlayerNetworkSync : NetworkBehaviour
             _animator.SetBool("isLanding", (AnimationFlags & FLAG_LANDING) != 0);
 
             if (SyncedComboIndex > 0 && SyncedComboIndex != _lastComboIndex)
-            {
                 _animator.SetTrigger("Melee");
-            }
+
             _lastComboIndex = SyncedComboIndex;
         }
 
-        // Detecta cambios en triggers
         foreach (var change in _changes.DetectChanges(this))
         {
             if (change == nameof(SyncedMeleeTrigger) && _lastMelee != SyncedMeleeTrigger)
             {
                 _lastMelee = SyncedMeleeTrigger;
-                if (!Object.HasInputAuthority) // ya lo disparó localmente
+                if (!Object.HasInputAuthority)
                     _animator.SetTrigger("Melee");
             }
             if (change == nameof(SyncedShootTrigger) && _lastShoot != SyncedShootTrigger)
@@ -126,7 +115,31 @@ public class PlayerNetworkSync : NetworkBehaviour
         }
     }
 
-    // ===== TRIGGERS PÚBLICOS =====
+    public void ResetAllAnimations()
+    {
+        if (_animator == null) return;
+
+        _animator.ResetTrigger("Shoot");
+        _animator.ResetTrigger("Melee");
+        _animator.ResetTrigger("Jump");
+        _animator.ResetTrigger("Fall");
+        _animator.ResetTrigger("Land");
+        _animator.SetBool("IsReloading", false);
+        _animator.SetBool("isJumping", false);
+        _animator.SetBool("isFalling", false);
+        _animator.SetBool("isLanding", false);
+        _animator.SetFloat("speed", 0f);
+        _animator.SetInteger("ComboIndex", 0);
+        _animator.SetBool("IsShooting", false);
+
+        if (Object.HasStateAuthority)
+        {
+            AnimationFlags = 0;
+            SyncedSpeed = 0f;
+            SyncedComboIndex = 0;
+        }
+    }
+
     public void TriggerMelee()
     {
         if (Object.HasStateAuthority)
@@ -182,6 +195,7 @@ public class PlayerNetworkSync : NetworkBehaviour
             RPC_TriggerDie();
         }
     }
+
     public void TriggerFall()
     {
         if (Object.HasStateAuthority)
@@ -210,7 +224,6 @@ public class PlayerNetworkSync : NetworkBehaviour
         }
     }
 
-    // ===== RPCs =====
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RPC_TriggerMelee() => SyncedMeleeTrigger++;
 

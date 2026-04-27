@@ -86,7 +86,10 @@ public class PlayerRangeState : IPlayerState
         if (_sm.Animator != null)
         {
             _sm.Animator.SetBool("IsReloading", false);
+            _sm.Animator.SetBool("IsShooting", false); 
             _sm.Animator.SetFloat("speed", 0f);
+
+            _sm.Animator.ResetTrigger("Shoot");
         }
 
         Debug.Log("[Range] Exited");
@@ -101,9 +104,9 @@ public class PlayerRangeState : IPlayerState
 
         bool canShoot = _rangeData.RequireReleaseToShootAgain ? _attackButtonReleased : true;
 
-        if (input.attackRange && canShoot)
+        if (input.attack && canShoot)
             StartShooting();
-        else if (!input.attackRange)
+        else if (!input.attack)
             _sm.ChangeState(new PlayerIdleState(_sm));
     }
 
@@ -193,7 +196,7 @@ public class PlayerRangeState : IPlayerState
 
     private void UpdateAutomaticFirePhase(NetworkInputData input)
     {
-        if (!input.attackRange)
+        if (!input.attack)
         {
             Debug.Log("[Range] Button released - Starting reload");
             StartReloading();
@@ -255,7 +258,7 @@ public class PlayerRangeState : IPlayerState
 
         _sm.AttackCooldown = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.Cooldown);
 
-        if (_rangeData.Mode == FireMode.Automatic && input.attackRange && !_needsReload)
+        if (_rangeData.Mode == FireMode.Automatic && input.attack && !_needsReload)
         {
             Debug.Log("[Range] Reload complete - Resuming automatic fire");
             StartShooting();
