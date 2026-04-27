@@ -32,7 +32,7 @@ public class PlayerWeaponHandler : MonoBehaviour
     private void OnWeaponChanged(int equippedId)
     {
         var networkSync = GetComponentInParent<PlayerNetworkSync>();
-        networkSync?.ForceResetAnimationFlags();
+        networkSync?.ResetAllAnimations();
 
         var sm = GetComponentInParent<PlayerStateMachine>();
         if (sm != null && sm.CurrentState is PlayerRangeState)

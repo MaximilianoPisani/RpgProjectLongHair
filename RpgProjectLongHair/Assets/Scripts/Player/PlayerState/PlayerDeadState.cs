@@ -12,22 +12,14 @@ public class PlayerDeadState : IPlayerState
 
     public void Enter()
     {
-        _sm.GetComponent<PlayerNetworkSync>()?.ForceResetAnimationFlags();
-
-        if (_sm.Animator != null)
-        {
-            _sm.Animator.SetBool("IsReloading", false);
-            _sm.Animator.ResetTrigger("Shoot");
-        }
-
         var sync = _sm.GetComponent<PlayerNetworkSync>();
+        sync?.ResetAllAnimations();
         sync?.SetIsReloading(false);
         sync?.SetSpeed(0f);
 
         ResetAnimations();
 
         if (!_sm.Object.HasStateAuthority) return;
-
         _timer = 0f;
 
         if (_sm.Object.HasInputAuthority)
@@ -45,6 +37,7 @@ public class PlayerDeadState : IPlayerState
         animator.SetBool("isLanding", false);
         animator.SetFloat("speed", 0f);
         animator.SetInteger("ComboIndex", 0);
+        animator.SetBool("IsDead", true);
 
         animator.ResetTrigger("Shoot");
         animator.ResetTrigger("Melee");
@@ -59,7 +52,10 @@ public class PlayerDeadState : IPlayerState
     {
         var animator = _sm.Animator;
         if (animator != null)
+        {
             animator.ResetTrigger("Die");
+            animator.SetBool("IsDead", false);
+        }
 
         if (!_sm.Object.HasInputAuthority) return;
         RunnerManager.SetInputBlocked(false);
@@ -68,7 +64,6 @@ public class PlayerDeadState : IPlayerState
     public void Tick(NetworkInputData input)
     {
         if (!_sm.Object.HasStateAuthority) return;
-
         _timer += _sm.Runner.DeltaTime;
 
         if (_timer > 2f)
