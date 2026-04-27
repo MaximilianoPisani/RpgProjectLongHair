@@ -318,7 +318,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             jump = _jumpQueued,
             attack = attackNow,
             attackJustPressed = attackNow && !_lastAttackHeld,
-            attackRange = Input.GetMouseButton(1),
+            attackRange = attackNow,
             sprint = _isSprinting,
             equipSlot = -1,
             aimRotation = aimRot,

@@ -27,7 +27,6 @@ public class PlayerHealth : NetworkBehaviour
 
         _skinnedRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
         _originalColors = new Color[_skinnedRenderers.Length];
-
         for (int i = 0; i < _skinnedRenderers.Length; i++)
             _originalColors[i] = _skinnedRenderers[i].material.color;
 
@@ -52,8 +51,9 @@ public class PlayerHealth : NetworkBehaviour
     private void OnDeath()
     {
         Debug.Log("[Player] Dead");
-        Debug.Log("[PlayerHealth] OnDeath llamado");
-        // Avisar al sistema de misiones que el player murió
+
+        GetComponent<PlayerNetworkSync>()?.ResetAllAnimations();
+
         var questController = GetComponent<QuestController>();
         if (questController != null && questController.CurrentQuest != null)
             questController.FailureQuest();
@@ -61,12 +61,14 @@ public class PlayerHealth : NetworkBehaviour
         var sm = GetComponent<PlayerStateMachine>();
         if (sm != null)
             sm.ChangeState(new PlayerDeadState(sm));
+
         RPC_OnDeath();
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_OnDeath()
     {
+        GetComponent<PlayerNetworkSync>()?.ResetAllAnimations();
         GetComponent<PlayerNetworkSync>()?.TriggerDie();
     }
 
@@ -80,7 +82,6 @@ public class PlayerHealth : NetworkBehaviour
     private void RPC_Flash()
     {
         if (_skinnedRenderers == null || _skinnedRenderers.Length == 0) return;
-
         if (_flashCoroutine != null)
             StopCoroutine(_flashCoroutine);
         _flashCoroutine = StartCoroutine(FlashRoutine());
@@ -92,12 +93,9 @@ public class PlayerHealth : NetworkBehaviour
         {
             foreach (var r in _skinnedRenderers)
                 r.material.color = _flashColor;
-
             yield return new WaitForSeconds(_flashDuration);
-
             for (int j = 0; j < _skinnedRenderers.Length; j++)
                 _skinnedRenderers[j].material.color = _originalColors[j];
-
             yield return new WaitForSeconds(_flashDuration);
         }
     }
