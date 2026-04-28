@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerIdleState : IPlayerState
 {
     private PlayerStateMachine _sm;
-
+    private const float DecelDamp = 0.08f;
     public PlayerIdleState(PlayerStateMachine sm)
     {
         _sm = sm;
@@ -12,9 +12,6 @@ public class PlayerIdleState : IPlayerState
 
     public void Enter()
     {
-        if (_sm.Animator != null)
-            _sm.Animator.SetFloat("speed", 0f);
-
         var weapon = _sm.GetComponent<PlayerWeaponHandler>();
         if (_sm.Animator != null && weapon != null)
         {
@@ -47,6 +44,9 @@ public class PlayerIdleState : IPlayerState
             _sm.ChangeState(new PlayerRangeState(_sm));
             return;
         }
+
+        if (_sm.Animator != null)
+            _sm.Animator.SetFloat("speed", 0f, DecelDamp, Time.deltaTime);
 
         if (input.moveDirection.sqrMagnitude > 0.01f)
         {

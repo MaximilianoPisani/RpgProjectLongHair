@@ -5,7 +5,8 @@ public class PlayerMoveState : IPlayerState
 {
     private PlayerStateMachine _sm;
 
-
+    private const float AccelDamp = 0.08f;  // idle walk/run
+    private const float DecelDamp = 0.08f;   // walk/run idle
 
     public PlayerMoveState(PlayerStateMachine sm)
     {
@@ -14,11 +15,7 @@ public class PlayerMoveState : IPlayerState
 
     public void Enter() { }
 
-    public void Exit()
-    {
-        if (_sm.Animator != null)
-            _sm.Animator.SetFloat("speed", 0f);
-    }
+    public void Exit() { }
 
     public void Tick(NetworkInputData input)
     {
@@ -40,7 +37,13 @@ public class PlayerMoveState : IPlayerState
 
         if (_sm.Animator != null)
         {
-            _sm.Animator.SetFloat("speed", normalizedSpeed);
+            float currentAnim = _sm.Animator.GetFloat("speed");
+
+            // Damp asimétrico rápido al subir, lento al bajar
+            float damp = normalizedSpeed > currentAnim ? AccelDamp : DecelDamp;
+
+            // deltaTime como tercer parámetro activa el suavizado nativo del Animator
+            _sm.Animator.SetFloat("speed", normalizedSpeed, damp, Time.deltaTime);
         }
         // CAMBIO A IDLE SI NO SE MUEVE
         if (speed < 0.01f)
