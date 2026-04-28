@@ -13,8 +13,11 @@ MonoBehaviour:
   m_Name: EnemyKamikazeAttack_001_Data
   m_EditorClassIdentifier: 
   Damage: 100
-  HitRadius: 3
+  HitRadius: 5
   ExplodeDistance: 2
+  FlashEmissionColor: {r: 0.6, g: 0, b: 0, a: 1}
+  EmissionIntensity: 1.5
+  FlashInterval: 0.12
   ExplosionVFXPrefab: {fileID: 4593184484909914552, guid: 65279befc332376428412072b0b3d2dd, type: 3}
   ExplosionDelay: 1
   ShowExplosionRadius: 1

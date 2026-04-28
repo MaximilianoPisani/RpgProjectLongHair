@@ -1263,6 +1263,7 @@ MonoBehaviour:
   reloadTrigger: Reload
   hitTrigger: Hit
   deathTrigger: Death
+  explodeTrigger: Explode
   idleVariationsCount: 2
   minIdleChangeTime: 3
   maxIdleChangeTime: 8
@@ -1654,7 +1655,8 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9bbd8e1f92cffc640bab5199aedaa256, type: 2}
+  - {fileID: 2100000, guid: 49c9a287d6d08904bb19878e2040a725, type: 2}
+  - {fileID: 2100000, guid: 86cbabebc88514b47993d7244abb63cb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
