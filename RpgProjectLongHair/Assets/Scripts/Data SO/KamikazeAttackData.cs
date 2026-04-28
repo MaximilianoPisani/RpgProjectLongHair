@@ -17,6 +17,16 @@ public class KamikazeAttackData : ScriptableObject
     [Tooltip("Distancia a la que el kamikaze decide explotar")]
     public float ExplodeDistance = 2f;
 
+    [Header("Flash Settings")]
+    [Tooltip("Color de emisión durante el pre-explode flash")]
+    public Color FlashEmissionColor = new Color(0.6f, 0f, 0f);
+
+    [Tooltip("Intensidad de la emisión")]
+    public float EmissionIntensity = 1.5f;
+
+    [Tooltip("Intervalo del parpadeo")]
+    public float FlashInterval = 0.12f;
+
     /// <summary>
     /// Alias para ExplodeDistance, para compatibilidad con código existente.
     /// </summary>

@@ -31,6 +31,7 @@ public class EnemyNetworkSync : NetworkBehaviour
     private int _lastIdleIndex = -1;
     private int _lastExplode;
 
+    private Coroutine _flashLoopCoroutine;
     public override void Spawned()
     {
         _animController = GetComponent<EnemyAnimationController>();
@@ -157,6 +158,19 @@ public class EnemyNetworkSync : NetworkBehaviour
         SyncedExplodeTrigger++;
         _animController?.PlayExplode(null);
     }
+    public void StartExplosionFlash(float duration, float interval, Color emissionColor, float intensity)
+    {
+        if (!Object.HasStateAuthority) return;
+
+        RPC_StartFlashLoop(duration, interval, emissionColor, intensity);
+    }
+
+    public void StopExplosionFlash()
+    {
+        if (!Object.HasStateAuthority) return;
+
+        RPC_StopFlashLoop();
+    }
 
     // ===== API PÚBLICA VFX =====
 
@@ -256,6 +270,35 @@ public class EnemyNetworkSync : NetworkBehaviour
         GameObject.Destroy(vfx, 3f);
     }
 
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_StartFlashLoop(float duration, float interval, Color emissionColor, float intensity)
+    {
+        if (_flashLoopCoroutine != null)
+            StopCoroutine(_flashLoopCoroutine);
+
+        _flashLoopCoroutine = StartCoroutine(
+            FlashLoopRoutine(duration, interval, emissionColor, intensity)
+        );
+    }
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_StopFlashLoop()
+    {
+        if (_flashLoopCoroutine != null)
+        {
+            StopCoroutine(_flashLoopCoroutine);
+            _flashLoopCoroutine = null;
+        }
+
+        var meshRenderer = GetComponentInChildren<Renderer>();
+        if (meshRenderer == null) return;
+
+        var mat = meshRenderer.material;
+
+        if (_emissionCached)
+            mat.SetColor("_EmissionColor", _originalEmission);
+    }
+
+
 
     private AttackVFXConfig FindVFXConfigByName(string name)
     {
@@ -277,5 +320,39 @@ public class EnemyNetworkSync : NetworkBehaviour
                 return combo.attackVFX;
         }
         return null;
+    }
+
+    private Color _originalEmission;
+    private bool _emissionCached = false;
+    private System.Collections.IEnumerator FlashLoopRoutine(float duration, float interval, Color emissionColor, float intensity)
+    {
+        var meshRenderer = GetComponentInChildren<Renderer>();
+        if (meshRenderer == null) yield break;
+
+        var mat = meshRenderer.material;
+        mat.EnableKeyword("_EMISSION");
+
+        if (!_emissionCached)
+        {
+            _originalEmission = mat.GetColor("_EmissionColor");
+            _emissionCached = true;
+        }
+
+        float elapsed = 0f;
+        bool isFlashing = false;
+
+        while (elapsed < duration)
+        {
+            isFlashing = !isFlashing;
+
+            mat.SetColor("_EmissionColor",
+                isFlashing ? emissionColor * intensity : _originalEmission);
+
+            yield return new WaitForSeconds(interval);
+            elapsed += interval;
+        }
+
+        mat.SetColor("_EmissionColor", _originalEmission);
+        _flashLoopCoroutine = null;
     }
 }

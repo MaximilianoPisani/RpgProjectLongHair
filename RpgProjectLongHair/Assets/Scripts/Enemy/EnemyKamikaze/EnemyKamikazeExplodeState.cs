@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using static UnityEngine.UI.Image;
 using Fusion;
 
 public class EnemyKamikazeExplodeState : IEnemyState
@@ -8,7 +7,7 @@ public class EnemyKamikazeExplodeState : IEnemyState
     private readonly EnemyKamikazeController _enemy;
     private bool _exploded = false;
     private bool _animationTriggered = false;
-
+    private EnemyNetworkSync _networkSync;
     public EnemyKamikazeExplodeState(EnemyKamikazeController enemy) => _enemy = enemy;
 
     public void EnterState()
@@ -18,6 +17,8 @@ public class EnemyKamikazeExplodeState : IEnemyState
         // Detener movimiento inmediatamente
         if (_enemy.Agent != null && _enemy.Agent.isOnNavMesh)
             _enemy.Agent.SetDestination(_enemy.transform.position);
+
+        _networkSync = _enemy.GetComponent<EnemyNetworkSync>();
 
         // Trigger animación de explosión
         TriggerExplodeAnimation();
@@ -32,20 +33,34 @@ public class EnemyKamikazeExplodeState : IEnemyState
         if (_animationTriggered) return;
         _animationTriggered = true;
 
-        // Llamar a la animación de explosión
-        var networkSync = _enemy.GetComponent<EnemyNetworkSync>();
-        if (networkSync != null)
-            networkSync.TriggerExplode();
+        var data = _enemy.KamikazeData;
+        float delay = data != null ? data.ExplosionDelay : 0.3f;
+
+        // Usar el cache, no GetComponent otra vez
+        _networkSync?.SyncAttackIndicator();
+
+        if (data != null)
+        {
+            _networkSync?.StartExplosionFlash(
+                duration: delay,
+                interval: data.FlashInterval,
+                emissionColor: data.FlashEmissionColor,
+                intensity: data.EmissionIntensity
+            );
+        }
+
+        if (_networkSync != null)
+            _networkSync.TriggerExplode();
         else
             _enemy.GetComponent<EnemyAnimationController>()?.PlayExplode(null); // fallback
 
-        float delay = _enemy.KamikazeData != null ? _enemy.KamikazeData.ExplosionDelay : 0.3f;
         _enemy.StartCoroutine(ExplodeAfterDelay(delay));
     }
 
     private System.Collections.IEnumerator ExplodeAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
+        _networkSync?.StopExplosionFlash();
         Explode();
     }
 
@@ -54,12 +69,15 @@ public class EnemyKamikazeExplodeState : IEnemyState
         if (_exploded) return;
         _exploded = true;
 
-        int damage = _enemy.KamikazeData.Damage;
-        float radius = _enemy.KamikazeData.HitRadius;
+        var data = _enemy.KamikazeData;
+        if (data == null) return;
+
+        int damage = data.Damage;
+        float radius = data.HitRadius;
         Vector3 origin = _enemy.transform.position;
 
         Collider[] hits = Physics.OverlapSphere(
-            _enemy.transform.position,
+            origin,
             radius,
             _enemy.PlayerLayer
         );
@@ -102,15 +120,18 @@ public class EnemyKamikazeExplodeState : IEnemyState
 
     private void SpawnVFX()
     {
-        var prefab = _enemy.KamikazeData?.ExplosionVFXPrefab;
-        if (prefab == null) return;
+        var data = _enemy.KamikazeData;
+        if (data?.ExplosionVFXPrefab == null) return;
 
-        // Spawn local (host)
-        GameObject vfx = GameObject.Instantiate(prefab, _enemy.transform.position, Quaternion.identity);
+        GameObject vfx = GameObject.Instantiate(
+            data.ExplosionVFXPrefab,
+            _enemy.transform.position,
+            Quaternion.identity
+        );
+
         GameObject.Destroy(vfx, 3f);
 
-        // Sincronizar a proxies
-        var networkSync = _enemy.GetComponent<EnemyNetworkSync>();
-        networkSync?.SyncExplosionVFX(prefab, _enemy.transform.position);
+        _networkSync?.SyncExplosionVFX(data.ExplosionVFXPrefab, _enemy.transform.position);
     }
+
 }

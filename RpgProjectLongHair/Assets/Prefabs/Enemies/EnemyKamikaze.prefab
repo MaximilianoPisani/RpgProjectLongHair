@@ -1472,7 +1472,7 @@ MonoBehaviour:
   animatedModelTransform: {fileID: 7505190822256135982}
   attackIndicatorVFX:
     vfxPrefab: {fileID: 8194992990867289339, guid: 41c254381c7a6514ea1e3baef296ce78, type: 3}
-    vfxSpawnTime: 0.9
+    vfxSpawnTime: 1
     localOffset: {x: 0, y: 0, z: 0}
     followTransform: 1
     customDuration: 0

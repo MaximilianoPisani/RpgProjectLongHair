@@ -123,7 +123,7 @@ public class EnemyHealth : NetworkBehaviour
 
             // No necesitamos modificar la posición aquí, 
             // el VFXController ahora usa transform.position del enemigo
-            RPC_SpawnHitVFX(enemyPos, hitNormal);
+            RPC_SpawnHitVFX(transform.position, hitNormal);
         }
 
         if (enemyController is EnemyMeleeController meleeController)
@@ -133,6 +133,11 @@ public class EnemyHealth : NetworkBehaviour
         else if (enemyController is EnemyRangedController rangedController)
         {
             rangedController.TriggerHitAnimation();
+        }
+        else if (enemyController is EnemyKamikazeController) 
+        {
+            var networkSync = GetComponent<EnemyNetworkSync>();
+            networkSync?.TriggerHit(); 
         }
 
         RPC_Flash();
