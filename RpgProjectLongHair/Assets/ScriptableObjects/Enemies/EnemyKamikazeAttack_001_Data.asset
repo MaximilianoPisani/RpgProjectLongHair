@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Damage: 100
   HitRadius: 3
-  ExplodeDistance: 1.5
+  ExplodeDistance: 2
   ExplosionVFXPrefab: {fileID: 4593184484909914552, guid: 65279befc332376428412072b0b3d2dd, type: 3}
   ExplosionDelay: 1
   ShowExplosionRadius: 1

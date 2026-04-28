@@ -15,6 +15,7 @@ public class EnemyNetworkSync : NetworkBehaviour
     [Networked] private int SyncedReloadTrigger { get; set; }
     [Networked] private int SyncedHitTrigger { get; set; }
     [Networked] private int SyncedDeathTrigger { get; set; }
+    [Networked] private int SyncedExplodeTrigger { get; set; }
 
     // ===== LOCAL =====
     private EnemyAnimationController _animController;
@@ -28,6 +29,7 @@ public class EnemyNetworkSync : NetworkBehaviour
     private int _lastHit;
     private int _lastDeath;
     private int _lastIdleIndex = -1;
+    private int _lastExplode;
 
     public override void Spawned()
     {
@@ -97,6 +99,11 @@ public class EnemyNetworkSync : NetworkBehaviour
                 _lastDeath = SyncedDeathTrigger;
                 _animator.SetTrigger("Death");
             }
+            if (change == nameof(SyncedExplodeTrigger) && _lastExplode != SyncedExplodeTrigger)
+            {
+                _lastExplode = SyncedExplodeTrigger;
+                _animator.SetTrigger("Explode");
+            }
         }
     }
 
@@ -143,7 +150,13 @@ public class EnemyNetworkSync : NetworkBehaviour
         SyncedIsDead = true;
         _animController?.PlayDeath();
     }
+    public void TriggerExplode()
+    {
+        if (!Object.HasStateAuthority) return;
 
+        SyncedExplodeTrigger++;
+        _animController?.PlayExplode(null);
+    }
 
     // ===== API PÚBLICA VFX =====
 
@@ -183,6 +196,14 @@ public class EnemyNetworkSync : NetworkBehaviour
         RPC_SpawnSlashVFX(config.vfxPrefab.name, config.vfxSpawnTime,
                           config.localOffset, config.followTransform, config.customDuration);
     }
+    public void SyncExplosionVFX(GameObject vfxPrefab, Vector3 position)
+    {
+        if (!Object.HasStateAuthority) return;
+        if (vfxPrefab == null) return;
+
+        // Host ya lo spawnea en SpawnVFX() — solo notificar proxies
+        RPC_SpawnExplosionVFX(position);
+    }
 
 
     // ===== RPCs =====
@@ -219,6 +240,20 @@ public class EnemyNetworkSync : NetworkBehaviour
         var config = FindMeleeVFXConfigByName(prefabName);
         if (config != null)
             _vfxController?.SpawnVFXDelayed(config, delay);
+    }
+    [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
+    private void RPC_SpawnExplosionVFX(Vector3 position)
+    {
+        // Buscar el prefab desde KamikazeData
+        var kamikaze = GetComponent<EnemyKamikazeController>();
+        if (kamikaze?.KamikazeData?.ExplosionVFXPrefab == null) return;
+
+        GameObject vfx = GameObject.Instantiate(
+            kamikaze.KamikazeData.ExplosionVFXPrefab,
+            position,
+            Quaternion.identity
+        );
+        GameObject.Destroy(vfx, 3f);
     }
 
 

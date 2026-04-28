@@ -33,25 +33,13 @@ public class EnemyKamikazeExplodeState : IEnemyState
         _animationTriggered = true;
 
         // Llamar a la animación de explosión
-        var animController = _enemy.GetComponent<EnemyAnimationController>();
-        if (animController != null)
-        {
-            // Puedes pasar un VFXConfig si lo tienes configurado
-            // AttackVFXConfig vfxConfig = ...;
-            animController.PlayExplode(null);
-        }
+        var networkSync = _enemy.GetComponent<EnemyNetworkSync>();
+        if (networkSync != null)
+            networkSync.TriggerExplode();
+        else
+            _enemy.GetComponent<EnemyAnimationController>()?.PlayExplode(null); // fallback
 
-        // Usar el delay configurado en KamikazeAttackData
-        float explosionDelay = _enemy.KamikazeData != null
-            ? _enemy.KamikazeData.ExplosionDelay
-            : 0.3f;
-
-        DelayedExplode(explosionDelay);
-    }
-
-    private void DelayedExplode(float delay)
-    {
-        // Usar MonoBehaviour para el delay
+        float delay = _enemy.KamikazeData != null ? _enemy.KamikazeData.ExplosionDelay : 0.3f;
         _enemy.StartCoroutine(ExplodeAfterDelay(delay));
     }
 
@@ -114,15 +102,15 @@ public class EnemyKamikazeExplodeState : IEnemyState
 
     private void SpawnVFX()
     {
-        var prefab = _enemy.KamikazeData.ExplosionVFXPrefab;
+        var prefab = _enemy.KamikazeData?.ExplosionVFXPrefab;
         if (prefab == null) return;
 
-        GameObject vfx = GameObject.Instantiate(
-            prefab,
-            _enemy.transform.position,
-            Quaternion.identity
-        );
-
+        // Spawn local (host)
+        GameObject vfx = GameObject.Instantiate(prefab, _enemy.transform.position, Quaternion.identity);
         GameObject.Destroy(vfx, 3f);
+
+        // Sincronizar a proxies
+        var networkSync = _enemy.GetComponent<EnemyNetworkSync>();
+        networkSync?.SyncExplosionVFX(prefab, _enemy.transform.position);
     }
 }
