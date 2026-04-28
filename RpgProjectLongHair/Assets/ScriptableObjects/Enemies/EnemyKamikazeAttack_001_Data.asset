@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4424d4cb6b15974597997376cae2f2d, type: 3}
   m_Name: EnemyKamikazeAttack_001_Data
   m_EditorClassIdentifier: 
-  _attackRange: 2
-  _damage: 125
-  _cooldown: 0.5
-  _hitRadius: 2
-  _explosionVFXPrefab: {fileID: 4593184484909914552, guid: 65279befc332376428412072b0b3d2dd, type: 3}
+  Damage: 100
+  HitRadius: 3
+  ExplodeDistance: 1.5
+  ExplosionVFXPrefab: {fileID: 4593184484909914552, guid: 65279befc332376428412072b0b3d2dd, type: 3}
+  ExplosionDelay: 1.2
+  ShowExplosionRadius: 1

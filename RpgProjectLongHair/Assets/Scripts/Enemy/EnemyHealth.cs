@@ -54,6 +54,9 @@ public class EnemyHealth : NetworkBehaviour
 
             if (enemyController == null)
                 enemyController = GetComponent<EnemyRangedController>();
+
+            if (enemyController == null)
+                enemyController = GetComponent<EnemyKamikazeController>();
         }
 
 
@@ -137,6 +140,15 @@ public class EnemyHealth : NetworkBehaviour
         if (currentHealth <= 0)
         {
             GiveKillExp();
+
+            if (enemyController is EnemyKamikazeController kamikazeController)
+            {
+                // El ExplodeState se encargará de llamar a EnemyDeathState,
+                // que a su vez hará el Despawn. No despawnear aquí.
+                kamikazeController.ChangeState(new EnemyKamikazeExplodeState(kamikazeController));
+                return;
+            }
+
             if (Runner != null && Object.IsValid) //  evita despawnear dos veces
                 Runner.Despawn(Object);
         }
