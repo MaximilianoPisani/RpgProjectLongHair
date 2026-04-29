@@ -180,9 +180,6 @@ public class PlayerRangeState : IPlayerState
         }
     }
 
-    /// <summary>
-    /// Ejecuta los eventos de VFX y proyectil según los tiempos embebidos en cada AttackVFXConfig.
-    /// </summary>
     private void ExecuteShootTimedEvents(float elapsed)
     {
         // Shell ejection — tiempo viene de ShellEjectionVFX.vfxSpawnTime
@@ -231,6 +228,8 @@ public class PlayerRangeState : IPlayerState
             return;
         }
 
+        RotateToAimDirection(input);
+
         if (_fireRateTickTimer.Expired(_sm.Runner))
         {
             _fireRateTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.FireRate);
@@ -254,6 +253,16 @@ public class PlayerRangeState : IPlayerState
         }
     }
 
+    // ==================== MOVEMENT & ROTATION ====================
+
+    private void RotateToAimDirection(NetworkInputData input)
+    {
+        Vector3 dir = input.shootDirection;
+        Vector3 flatDir = new Vector3(dir.x, 0f, dir.z).normalized;
+
+        if (flatDir.sqrMagnitude > 0.01f)
+            _sm.transform.rotation = Quaternion.LookRotation(flatDir);
+    }
     // ==================== RELOADING ====================
 
     private void StartReloading()
