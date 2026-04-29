@@ -24,7 +24,7 @@ MonoBehaviour:
     damage: 20
     animationStateName: attackMelee
     attackVFX:
-      vfxPrefab: {fileID: 802242170397950454, guid: 973a3b3d7812e2c41ad5ebc91844f0c2, type: 3}
+      vfxPrefab: {fileID: 802242170397950454, guid: defe8cb319d05e44f859635c95a44c00, type: 3}
       vfxSpawnTime: 0.18
       localOffset: {x: 0, y: 0, z: 0}
       followTransform: 1
@@ -36,7 +36,7 @@ MonoBehaviour:
     damage: 20
     animationStateName: attackMelee1
     attackVFX:
-      vfxPrefab: {fileID: 7393661223654865908, guid: ebac32cec53ae804f9aa9f13a92a0c90, type: 3}
+      vfxPrefab: {fileID: 7393661223654865908, guid: deeb0c93ad7158d4f8b828a0d8bafaaa, type: 3}
       vfxSpawnTime: 0.26
       localOffset: {x: 0, y: 0, z: 0}
       followTransform: 1
