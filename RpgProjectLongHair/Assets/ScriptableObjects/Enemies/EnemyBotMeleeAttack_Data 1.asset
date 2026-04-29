@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: EnemyBotMeleeAttack_Data 1
   m_EditorClassIdentifier: 
   _attackRange: 2
-  _damage: 60
-  _cooldown: 2
+  _damage: 30
+  _cooldown: 3
   _hitRadius: 1.5
   _comboAttacks:
   - attackDuration: 1.38
     hitFrameTime: 1.2
     comboWindowOpenTime: 0
     comboWindowCloseTime: 0
-    damage: 60
+    damage: 30
     animationStateName: meleeBot
     attackVFX:
       vfxPrefab: {fileID: 0}
@@ -31,4 +31,4 @@ MonoBehaviour:
       customDuration: 0
   _comboResetTime: 0
   _loopSequence: 1
-  _sequenceCooldown: 2
+  _sequenceCooldown: 3

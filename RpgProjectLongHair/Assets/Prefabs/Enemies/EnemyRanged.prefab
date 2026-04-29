@@ -1115,8 +1115,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 10
-  m_Acceleration: 20
+  m_Speed: 15
+  m_Acceleration: 25
   avoidancePriority: 50
   m_AngularSpeed: 30
   m_StoppingDistance: 1
@@ -1139,7 +1139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99d1311fb4a7e5145a5e9003b9b56192, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 200
+  _maxHealth: 160
   _currentHealth: 0
   _meshRenderer: {fileID: 0}
   _flashColor: {r: 0.4264151, g: 0.068976164, b: 0.031377666, a: 1}
@@ -1209,14 +1209,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 364010a4ed55aa541ae88a2f33c5aec2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRadius: 15
+  detectionRadius: 30
   PlayerLayer:
     serializedVersion: 2
     m_Bits: 64
   attackOrigin: {fileID: 7505190822256135982}
   _rangedAttackData: {fileID: 11400000, guid: 48ba4edd30233c04ab0a19915691a11b, type: 2}
-  _preferredMinRange: 4
-  _preferredMaxRange: 7
+  _preferredMinRange: 5
+  _preferredMaxRange: 15
   animationController: {fileID: 7506564367792784943}
   vfxController: {fileID: 5946224618582459977}
   _NextRangedAttackTime: 0

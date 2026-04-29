@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4424d4cb6b15974597997376cae2f2d, type: 3}
   m_Name: EnemyKamikazeAttack_001_Data
   m_EditorClassIdentifier: 
-  Damage: 100
-  HitRadius: 5
+  Damage: 125
+  HitRadius: 5.5
   ExplodeDistance: 2
   FlashEmissionColor: {r: 0.6, g: 0, b: 0, a: 1}
   EmissionIntensity: 1.5

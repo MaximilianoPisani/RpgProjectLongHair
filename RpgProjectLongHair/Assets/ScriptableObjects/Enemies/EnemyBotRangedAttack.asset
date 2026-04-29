@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EnemyBotRangedAttack
   m_EditorClassIdentifier: 
   _attackRange: 26
-  _damage: 1
+  _damage: 7
   _cooldown: 0.5
   _hitRadius: 0.86
   _projectilePrefab: {fileID: 4028938312772070145, guid: 2a19c5cf5b0250845b43f425fee3708e, type: 3}
@@ -26,9 +26,9 @@ MonoBehaviour:
   _requireReleaseToShootAgain: 1
   _shootFrameTime: 0.1
   _shootDuration: 0.2
-  _reloadDuration: 2
+  _reloadDuration: 3
   _fireRate: 0.2
-  _maxContinuousFireTime: 3
+  _maxContinuousFireTime: 2.5
   _fireEjectionVFX:
     vfxPrefab: {fileID: 2574898397583427364, guid: 8ebca6564617a964fae54ec257e43022, type: 3}
     vfxSpawnTime: 0.1

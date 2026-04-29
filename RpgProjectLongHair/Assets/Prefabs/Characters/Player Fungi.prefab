@@ -1431,7 +1431,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f1a3bc9ed3017c4891b63ddb57c5688, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 250
+  _maxHealth: 200
   _flashColor: {r: 1, g: 0, b: 0, a: 1}
   _flashCount: 3
   _flashDuration: 0.1
@@ -1481,7 +1481,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 5
-  walkSpeed: 5
+  walkSpeed: 6
   sprintSpeed: 10
   baseJumpImpulse: 8
   runningJumpBonus: 3
@@ -1541,7 +1541,7 @@ MonoBehaviour:
   Combat: {fileID: 5247100580435787750}
   Health: {fileID: 2475146280369022930}
   Player: {fileID: 3144269693680086204}
-  moveSpeed: 5
+  moveSpeed: 6
   _NetworkedComboIndex: 0
 --- !u!114 &1290202656488514935
 MonoBehaviour:
