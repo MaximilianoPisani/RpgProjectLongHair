@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EnemyRangedAttack
   m_EditorClassIdentifier: 
   _attackRange: 40
-  _damage: 50
+  _damage: 35
   _cooldown: 1
   _hitRadius: 0.86
   _projectilePrefab: {fileID: 4028938312772070145, guid: 2a19c5cf5b0250845b43f425fee3708e, type: 3}
