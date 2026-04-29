@@ -61,9 +61,19 @@ public class PlayerMeleeState : IPlayerState
         }
 
         if (!_isAttacking)
+        {
+            float speed = _sm.Player.GetHorizontalSpeed();
+            if (speed >= 0.01f)
+            {
+                _sm.ChangeState(new PlayerMoveState(_sm));
+                return;
+            }
             UpdateLocomotion(input);
+        }
         else
+        {
             UpdateAttackLogic(input);
+        }
     }
 
     public void Exit()
@@ -97,6 +107,12 @@ public class PlayerMeleeState : IPlayerState
             if (speed < 0.01f)
             {
                 _sm.ChangeState(new PlayerIdleState(_sm));
+                return;
+            }
+            else
+            {
+                // FIX: si el jugador está en movimiento, salir al estado de locomoción
+                _sm.ChangeState(new PlayerMoveState(_sm));
                 return;
             }
         }
