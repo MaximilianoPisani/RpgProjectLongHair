@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 507443985831199782}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 90.9, y: -1.5, z: 53}
+  m_LocalPosition: {x: 96.9, y: -1.5, z: 34.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -377,7 +377,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3978839059995137992}
   serializedVersion: 2
-  m_LocalRotation: {x: 6.0021993e-16, y: 0.70758903, z: 0.00000008435118, w: 0.70662427}
+  m_LocalRotation: {x: 0, y: 0.7075879, z: 0, w: 0.70662534}
   m_LocalPosition: {x: -57.5, y: -0, z: 96.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -526,7 +526,7 @@ Transform:
   m_GameObject: {fileID: 4493148014632293764}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 90.263374, y: -1.3899994, z: 64.40289}
+  m_LocalPosition: {x: 90, y: -1.3, z: 64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -621,6 +621,7 @@ MonoBehaviour:
   _missionId: Quest_HUB
   _questOfferUI: {fileID: 0}
   _canvasNPC: {fileID: 4874270661420548961}
+  _interactRadius: 3
 --- !u!114 &41370430534696675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -635,7 +636,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _missionId: Quest_HUB
   _spawnDatas:
-  - Prefab: {fileID: -164565949365206626, guid: 43521ba9c5f7e614c9783df7cde0189e, type: 3}
+  - Prefab: {fileID: -164565949365206626, guid: 677c217e4f92d6944a87f734fdf3081a, type: 3}
     SpawnPoints:
     - {fileID: 3797338097096925921}
     - {fileID: 9012900014325688230}
@@ -643,7 +644,7 @@ MonoBehaviour:
     - {fileID: 3532725895808128548}
     - {fileID: 2902993947068457990}
     Count: 5
-  - Prefab: {fileID: -164565949365206626, guid: 01831b58b299cbc46b9a7d4fa5308c35, type: 3}
+  - Prefab: {fileID: 4928595746056103536, guid: cf8ea576730a88543a6c45cbf04ecabd, type: 3}
     SpawnPoints:
     - {fileID: 2601695892018191785}
     - {fileID: 4730124291369889907}
@@ -652,7 +653,7 @@ MonoBehaviour:
     - {fileID: 7721337280117404255}
     - {fileID: 1553326592644050090}
     Count: 6
-  - Prefab: {fileID: -164565949365206626, guid: 8dc8349852db33c45a171b833b850888, type: 3}
+  - Prefab: {fileID: 7602107442121653444, guid: e0c591b22465fc246a632ac29eb7a3cf, type: 3}
     SpawnPoints:
     - {fileID: 7400948776687245088}
     - {fileID: 7169688731927655858}

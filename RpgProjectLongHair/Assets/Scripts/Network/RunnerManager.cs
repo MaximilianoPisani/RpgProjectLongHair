@@ -35,6 +35,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     private bool _lockOnQueued;
     private bool _jumpQueued;
     private bool _isSprinting;
+    private bool _lastAttackHeld;
 
     public static bool IsInputBlocked { get; private set; } = false;
     public static bool IsInventoryOpen { get; private set; } = false;
@@ -279,6 +280,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (IsInventoryOpen || IsInputBlocked)
         {
+            _lastAttackHeld = false;
             input.Set(new NetworkInputData());
             return;
         }
@@ -307,13 +309,16 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
                 : ray.direction.normalized;
         }
 
+        bool attackNow = Input.GetMouseButton(0);
+
         var data = new NetworkInputData
         {
             moveDirection = movementDir,
             interact = Input.GetKey(KeyCode.E),
             jump = _jumpQueued,
-            attack = Input.GetMouseButton(0),
-            attackRange = Input.GetMouseButton(1),
+            attack = attackNow,
+            attackJustPressed = attackNow && !_lastAttackHeld,
+            attackRange = attackNow,
             sprint = _isSprinting,
             equipSlot = -1,
             aimRotation = aimRot,
@@ -321,6 +326,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             shootDirection = shootDir
         };
 
+        _lastAttackHeld = attackNow;
         _lockOnQueued = false;
         _jumpQueued = false;
 

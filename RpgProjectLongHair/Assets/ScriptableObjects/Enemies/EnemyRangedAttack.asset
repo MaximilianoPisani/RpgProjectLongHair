@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EnemyRangedAttack
   m_EditorClassIdentifier: 
   _attackRange: 40
-  _damage: 50
+  _damage: 35
   _cooldown: 1
   _hitRadius: 0.86
   _projectilePrefab: {fileID: 4028938312772070145, guid: 2a19c5cf5b0250845b43f425fee3708e, type: 3}
@@ -37,7 +37,7 @@ MonoBehaviour:
     customDuration: 0
   _shellEjectionVFX:
     vfxPrefab: {fileID: 0}
-    vfxSpawnTime: 0.2
+    vfxSpawnTime: 0
     localOffset: {x: 0, y: 0, z: 0}
-    followTransform: 0
+    followTransform: 1
     customDuration: 0

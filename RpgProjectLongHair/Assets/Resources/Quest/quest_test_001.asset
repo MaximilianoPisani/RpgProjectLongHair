@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: quest_test_001
   m_EditorClassIdentifier: 
   questId: quest_test_001
-  questName: Mision de prueba
+  questName: Prueba
   questDescription: Eliminar 2 enemigos
   questSteps:
   - targetId: Kill_Mission_Enemy
     amount: 2
   failureSteps: []
   allowTeleportParty: 1
-  teleportDestination: {x: 70, y: 1, z: 7.7}
+  teleportDestination: {x: -2, y: 59, z: 335}
   xp: 210
   coins: 0

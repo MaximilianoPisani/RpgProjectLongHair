@@ -54,6 +54,9 @@ public class EnemyHealth : NetworkBehaviour
 
             if (enemyController == null)
                 enemyController = GetComponent<EnemyRangedController>();
+
+            if (enemyController == null)
+                enemyController = GetComponent<EnemyKamikazeController>();
         }
 
 
@@ -120,7 +123,7 @@ public class EnemyHealth : NetworkBehaviour
 
             // No necesitamos modificar la posición aquí, 
             // el VFXController ahora usa transform.position del enemigo
-            RPC_SpawnHitVFX(enemyPos, hitNormal);
+            RPC_SpawnHitVFX(transform.position, hitNormal);
         }
 
         if (enemyController is EnemyMeleeController meleeController)
@@ -131,12 +134,26 @@ public class EnemyHealth : NetworkBehaviour
         {
             rangedController.TriggerHitAnimation();
         }
+        else if (enemyController is EnemyKamikazeController) 
+        {
+            var networkSync = GetComponent<EnemyNetworkSync>();
+            networkSync?.TriggerHit(); 
+        }
 
         RPC_Flash();
 
         if (currentHealth <= 0)
         {
             GiveKillExp();
+
+            if (enemyController is EnemyKamikazeController kamikazeController)
+            {
+                // El ExplodeState se encargará de llamar a EnemyDeathState,
+                // que a su vez hará el Despawn. No despawnear aquí.
+                kamikazeController.ChangeState(new EnemyKamikazeExplodeState(kamikazeController));
+                return;
+            }
+
             if (Runner != null && Object.IsValid) //  evita despawnear dos veces
                 Runner.Despawn(Object);
         }

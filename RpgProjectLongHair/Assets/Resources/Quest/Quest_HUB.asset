@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   questId: Quest_HUB
   questName: "Manada de \xD3xido"
-  questDescription: Eliminar 20 enemigos.
+  questDescription: Eliminar 13 enemigos.
   questSteps:
   - targetId: Kill_Mission_Enemy
-    amount: 20
+    amount: 13
   failureSteps: []
   allowTeleportParty: 1
-  teleportDestination: {x: 5, y: -1.4, z: -5}
+  teleportDestination: {x: -43, y: 16, z: 196}
   xp: 0
   coins: 420

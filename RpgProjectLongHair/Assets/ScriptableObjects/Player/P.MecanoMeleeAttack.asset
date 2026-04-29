@@ -21,7 +21,7 @@ MonoBehaviour:
     hitFrameTime: 0.21
     comboWindowOpenTime: 0.3
     comboWindowCloseTime: 0.35
-    damage: 40
+    damage: 60
     animationStateName: Attack_1
     attackVFX:
       vfxPrefab: {fileID: 802242170397950454, guid: b54a0f927d2f04a4d9f6a949652ad2dd, type: 3}
@@ -33,7 +33,7 @@ MonoBehaviour:
     hitFrameTime: 0.35
     comboWindowOpenTime: 0.48
     comboWindowCloseTime: 0.55
-    damage: 40
+    damage: 60
     animationStateName: Attack_2
     attackVFX:
       vfxPrefab: {fileID: 802242170397950454, guid: e30f5d12591e1ee4cbbf0552b5bb7412, type: 3}
@@ -42,7 +42,7 @@ MonoBehaviour:
       followTransform: 1
       customDuration: 0
   - attackDuration: 1.38
-    hitFrameTime: 1.32
+    hitFrameTime: 1.35
     comboWindowOpenTime: 1.34
     comboWindowCloseTime: 1.38
     damage: 80

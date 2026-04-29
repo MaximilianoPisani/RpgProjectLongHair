@@ -6,21 +6,19 @@ public class PlayerMeleeState : IPlayerState
     private PlayerStateMachine _sm;
 
     private int _comboIndex = 0;
+    private int _lastAttackTick = -1;
     private bool _inputBuffered = false;
     private bool _isAttacking = false;
     private bool _queueNextAttack = false;
 
-    private float _attackTimer = 0f;
-    private float _comboResetTimer = 0f;
-
-    private float _postComboCooldown = 0f;
-    private bool _isOnCooldown = false;
+    private TickTimer _attackTickTimer;
+    private TickTimer _comboResetTickTimer;
+    private TickTimer _postComboCooldownTimer;
 
     private bool _hitFrameExecuted = false;
     private bool _vfxSpawned = false;
     private bool _comboWindowOpened = false;
     private bool _comboWindowClosed = false;
-    private bool _lastAttackInput = false;
 
     private MeleeAttackData _meleeData;
     private ComboAttackConfig _currentAttackConfig;
@@ -48,24 +46,18 @@ public class PlayerMeleeState : IPlayerState
             return;
         }
 
-        _isAttacking = false;
-        _isOnCooldown = false;
-        _postComboCooldown = 0f;
-        _comboResetTimer = 0f;
+        _isAttacking = true;
+        StartNextAttack();
+
+        _lastAttackTick = _sm.Runner.Tick;
     }
 
     public void Tick(NetworkInputData input)
     {
-        // Si está en cooldown post-combo, esperar y bloquear todo input de ataque
-        if (_isOnCooldown)
+        if (!_postComboCooldownTimer.ExpiredOrNotRunning(_sm.Runner))
         {
-            _postComboCooldown -= _sm.Runner.DeltaTime;
-            if (_postComboCooldown <= 0f)
-            {
-                _isOnCooldown = false;
-                Debug.Log("[Melee] Post-combo cooldown terminado");
-            }
-            return; // no hacer nada hasta que termine
+            Debug.Log("[Melee] Post-combo cooldown...");
+            return;
         }
 
         if (!_isAttacking)
@@ -94,33 +86,19 @@ public class PlayerMeleeState : IPlayerState
             return;
         }
 
-        bool attackPressed = input.attack && !_lastAttackInput;
-        _lastAttackInput = input.attack;
-
-        if (attackPressed)
-        {
-            _isAttacking = true;
-            StartNextAttack();
-            return;
-        }
-
-        if (_comboResetTimer > 0f)
-        {
-            _comboResetTimer -= _sm.Runner.DeltaTime;
-            if (_comboResetTimer <= 0f)
-                ResetCombo();
-        }
-
         float speed = _sm.Player.GetHorizontalSpeed();
         float normalizedSpeed = speed / _sm.Player.SprintSpeed;
 
         if (_sm.Animator != null)
             _sm.Animator.SetFloat("speed", normalizedSpeed);
 
-        if (speed < 0.01f)
+        if (_comboResetTickTimer.ExpiredOrNotRunning(_sm.Runner))
         {
-            _sm.ChangeState(new PlayerIdleState(_sm));
-            return;
+            if (speed < 0.01f)
+            {
+                _sm.ChangeState(new PlayerIdleState(_sm));
+                return;
+            }
         }
     }
 
@@ -130,43 +108,46 @@ public class PlayerMeleeState : IPlayerState
     {
         if (_currentAttackConfig == null) return;
 
-        _attackTimer += _sm.Runner.DeltaTime;
+        float elapsed = _currentAttackConfig.attackDuration
+                      - (_attackTickTimer.RemainingTime(_sm.Runner) ?? 0f);
 
-        ExecuteTimedEvents();
+        ExecuteTimedEvents(elapsed);
 
-        bool attackPressed = input.attack && !_lastAttackInput;
-        _lastAttackInput = input.attack;
-
-        if (attackPressed && !_inputBuffered)
+        bool attackPressed = input.attackJustPressed;
+        int currentTick = _sm.Runner.Tick;
+        if (attackPressed && !_inputBuffered && currentTick != _lastAttackTick)
+        {
+            _lastAttackTick = currentTick;
             HandleAttackInput();
+        }
 
-        if (_attackTimer >= _currentAttackConfig.attackDuration)
+        if (_attackTickTimer.Expired(_sm.Runner))
             EndCurrentAttack();
     }
 
-    private void ExecuteTimedEvents()
+    private void ExecuteTimedEvents(float elapsed)
     {
         if (!_vfxSpawned
             && _currentAttackConfig.attackVFX != null
-            && _attackTimer >= _currentAttackConfig.attackVFX.vfxSpawnTime)
+            && elapsed >= _currentAttackConfig.attackVFX.vfxSpawnTime)
         {
             _vfxSpawned = true;
             SpawnSlashVFX();
         }
 
-        if (!_hitFrameExecuted && _attackTimer >= _currentAttackConfig.hitFrameTime)
+        if (!_hitFrameExecuted && elapsed >= _currentAttackConfig.hitFrameTime)
         {
             _hitFrameExecuted = true;
             ExecuteHitFrame();
         }
 
-        if (!_comboWindowOpened && _attackTimer >= _currentAttackConfig.comboWindowOpenTime)
+        if (!_comboWindowOpened && elapsed >= _currentAttackConfig.comboWindowOpenTime)
         {
             _comboWindowOpened = true;
             OpenComboWindow();
         }
 
-        if (!_comboWindowClosed && _attackTimer >= _currentAttackConfig.comboWindowCloseTime)
+        if (!_comboWindowClosed && elapsed >= _currentAttackConfig.comboWindowCloseTime)
         {
             _comboWindowClosed = true;
             CloseComboWindow();
@@ -181,13 +162,15 @@ public class PlayerMeleeState : IPlayerState
 
         _currentAttackConfig = _meleeData.ComboAttacks[_comboIndex - 1];
 
-        _attackTimer = 0f;
+        _attackTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _currentAttackConfig.attackDuration);
+        _comboResetTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _meleeData.ComboResetTime);
+
+        _lastAttackTick = -1;
         _hitFrameExecuted = false;
         _vfxSpawned = false;
         _comboWindowOpened = false;
         _comboWindowClosed = false;
         _inputBuffered = false;
-        _comboResetTimer = _meleeData.ComboResetTime;
 
         _sm.NetworkedComboIndex = _comboIndex;
 
@@ -195,10 +178,9 @@ public class PlayerMeleeState : IPlayerState
         {
             _sm.Animator.SetFloat("speed", 0f);
             _sm.Animator.SetInteger("ComboIndex", _comboIndex);
-
-            if (_comboIndex == 1)
-                _sm.GetComponent<PlayerNetworkSync>()?.TriggerMelee();
         }
+
+        _sm.GetComponent<PlayerNetworkSync>()?.TriggerMelee();
 
         Debug.Log($"[Melee] Combo Attack {_comboIndex} started - Duration: {_currentAttackConfig.attackDuration}s");
     }
@@ -236,7 +218,6 @@ public class PlayerMeleeState : IPlayerState
             return;
         }
 
-        // Si terminó el último ataque del combo, aplicar cooldown
         bool isLastAttack = _comboIndex >= _meleeData.MaxComboCount;
         if (isLastAttack)
         {
@@ -250,17 +231,15 @@ public class PlayerMeleeState : IPlayerState
         _currentAttackConfig = null;
     }
 
-    // NUEVO
     private void StartPostComboCooldown()
     {
-        _postComboCooldown = _meleeData.Cooldown; // reutiliza el campo Cooldown de AttackData
-        _isOnCooldown = true;
+        _postComboCooldownTimer = TickTimer.CreateFromSeconds(_sm.Runner, _meleeData.Cooldown);
         ResetCombo();
 
         if (_sm.Animator != null)
             _sm.Animator.SetInteger("ComboIndex", 0);
 
-        Debug.Log($"[Melee] Post-combo cooldown iniciado: {_postComboCooldown}s");
+        Debug.Log($"[Melee] Post-combo cooldown iniciado: {_meleeData.Cooldown}s");
     }
 
     private void ResetCombo()
@@ -268,7 +247,6 @@ public class PlayerMeleeState : IPlayerState
         _comboIndex = 0;
         _inputBuffered = false;
         _queueNextAttack = false;
-        _comboResetTimer = 0f;
 
         if (_sm.Animator != null)
             _sm.Animator.SetInteger("ComboIndex", 0);

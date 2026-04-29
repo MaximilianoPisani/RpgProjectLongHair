@@ -14,7 +14,7 @@ public class PlayerStateMachine : NetworkBehaviour
 
     [Header("Config")]
     public float moveSpeed = 5f;
-    public bool IsBusy =>_currentState is PlayerMeleeState || _currentState is PlayerRangeState;
+    public bool IsBusy => _currentState is PlayerMeleeState || _currentState is PlayerRangeState;
     [Networked] public TickTimer AttackCooldown { get; set; }
     [Networked] public int NetworkedComboIndex { get; set; }
 
@@ -53,12 +53,28 @@ public class PlayerStateMachine : NetworkBehaviour
             }
         }
 
-        bool canJump = _currentState is PlayerIdleState || _currentState is PlayerMoveState;
+        bool canJump = _currentState is PlayerIdleState
+            || _currentState is PlayerMoveState;
 
         if (input.jump && canJump && Player.IsGrounded() && !IsInputLocked)
         {
             IsJumping = true;
             ChangeState(new PlayerJumpState(this));
+            return;
+        }
+
+        bool isInAir = _currentState is PlayerFallState
+                    || _currentState is PlayerLandState
+                    || _currentState is PlayerJumpState
+                    || PlayerFallState.ShouldFall(this);
+
+        if (isInAir)
+        {
+            var blockedInput = input;
+            blockedInput.attack = false;
+            blockedInput.attackJustPressed = false;
+            blockedInput.attackRange = false;
+            _currentState?.Tick(blockedInput);
             return;
         }
 
@@ -103,10 +119,7 @@ public class PlayerStateMachine : NetworkBehaviour
             var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
             if (enemyHealth != null && enemyHealth.Object.HasStateAuthority)
             {
-                enemyHealth.ApplyDamageServer(
-                    damage,
-                    Object.InputAuthority
-                );
+                enemyHealth.ApplyDamageServer(damage, Object.InputAuthority);
             }
         }
     }

@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4022a342ea8f7dc44a7b44cada827286, type: 3}
   m_Name: EnemyMeleeAttack
   m_EditorClassIdentifier: 
-  _attackRange: 3
-  _damage: 30
+  _attackRange: 2
+  _damage: 20
   _cooldown: 1.5
   _hitRadius: 3
   _comboAttacks:
   - attackDuration: 0.42
-    hitFrameTime: 0.15
+    hitFrameTime: 0.25
     comboWindowOpenTime: 0
     comboWindowCloseTime: 0
-    damage: 30
+    damage: 20
     animationStateName: attackMelee
     attackVFX:
       vfxPrefab: {fileID: 802242170397950454, guid: 973a3b3d7812e2c41ad5ebc91844f0c2, type: 3}
@@ -30,10 +30,10 @@ MonoBehaviour:
       followTransform: 1
       customDuration: 0
   - attackDuration: 0.55
-    hitFrameTime: 0.22
+    hitFrameTime: 0.35
     comboWindowOpenTime: 0
     comboWindowCloseTime: 0
-    damage: 30
+    damage: 20
     animationStateName: attackMelee1
     attackVFX:
       vfxPrefab: {fileID: 7393661223654865908, guid: ebac32cec53ae804f9aa9f13a92a0c90, type: 3}
@@ -43,4 +43,4 @@ MonoBehaviour:
       customDuration: 0
   _comboResetTime: 1.5
   _loopSequence: 1
-  _sequenceCooldown: 1
+  _sequenceCooldown: 2

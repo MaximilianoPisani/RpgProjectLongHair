@@ -4,8 +4,7 @@ using UnityEngine;
 public class PlayerLandState : IPlayerState
 {
     private PlayerStateMachine _sm;
-    private float _landTime;
-    private const float LandDuration = 0.2f;
+    private TickTimer _landTickTimer;
 
     public PlayerLandState(PlayerStateMachine sm)
     {
@@ -14,15 +13,14 @@ public class PlayerLandState : IPlayerState
 
     public void Enter()
     {
-        _landTime = 0f;
         _sm.IsJumping = false;
+        _landTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, 0.2f);
 
         if (_sm.Animator != null)
         {
             _sm.Animator.SetBool("isJumping", false);
             _sm.Animator.SetBool("isFalling", false);
             _sm.Animator.SetBool("isLanding", true);
-
             float speed = _sm.Player.GetHorizontalSpeed();
             float normalizedSpeed = speed / _sm.Player.SprintSpeed;
             _sm.Animator.SetFloat("speed", normalizedSpeed);
@@ -39,20 +37,18 @@ public class PlayerLandState : IPlayerState
 
     public void Tick(NetworkInputData input)
     {
-        _landTime += _sm.Runner.DeltaTime;
-
-        if (_landTime < LandDuration)
+        if (!_landTickTimer.Expired(_sm.Runner))
             return;
 
         var weapon = _sm.GetComponent<PlayerWeaponHandler>();
 
-        if (input.attack && weapon != null && weapon.IsMelee)
+        if (input.attackJustPressed && weapon != null && weapon.IsMelee)
         {
             _sm.ChangeState(new PlayerMeleeState(_sm));
             return;
         }
 
-        if (input.attackRange && weapon != null && weapon.IsRanged)
+        if (input.attack && weapon != null && weapon.IsRanged)
         {
             _sm.ChangeState(new PlayerRangeState(_sm));
             return;

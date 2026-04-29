@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// Controlador de animaciones genérico para enemigos (Melee y Ranged).
+/// Controlador de animaciones genérico para enemigos (Melee, Ranged y Kamikaze).
 /// </summary>
 public class EnemyAnimationController : MonoBehaviour
 {
@@ -27,6 +27,9 @@ public class EnemyAnimationController : MonoBehaviour
 
     [Tooltip("Trigger para muerte")]
     [SerializeField] private string deathTrigger = "Death";
+
+    [Tooltip("Trigger para explosión kamikaze")]
+    [SerializeField] private string explodeTrigger = "Explode";
 
     [Header("Idle Settings")]
     [Tooltip("Cantidad de animaciones idle disponibles (0 = solo una idle)")]
@@ -60,7 +63,10 @@ public class EnemyAnimationController : MonoBehaviour
     private int reloadHash;
     private int hitHash;
     private int deathHash;
+    private int explodeHash;
     private int idleIndexHash;
+
+    private EnemyNetworkSync _networkSync;
 
     private void Awake()
     {
@@ -80,13 +86,18 @@ public class EnemyAnimationController : MonoBehaviour
         reloadHash = Animator.StringToHash(reloadTrigger);
         hitHash = Animator.StringToHash(hitTrigger);
         deathHash = Animator.StringToHash(deathTrigger);
+        explodeHash = Animator.StringToHash(explodeTrigger);
         idleIndexHash = Animator.StringToHash(idleIndexParameter);
 
         ScheduleNextIdleChange();
+
+        _networkSync = GetComponent<EnemyNetworkSync>();
     }
 
     private void Update()
     {
+        if (_networkSync != null && !_networkSync.Object.HasStateAuthority) return;
+
         if (animator == null || isDead) return;
 
         UpdateMovementAnimation();
@@ -187,6 +198,21 @@ public class EnemyAnimationController : MonoBehaviour
 
         // Resetear el flag de recarga después de un breve delay
         Invoke(nameof(ResetReloadFlag), 0.1f);
+    }
+
+    /// <summary>
+    /// Ejecuta animación de explosión kamikaze con VFX opcional.
+    /// </summary>
+    public void PlayExplode(AttackVFXConfig vfxConfig = null)
+    {
+        if (animator == null || isDead) return;
+
+        Debug.Log($"[AnimController] PlayExplode — animator:{animator.name}");
+        animator.SetTrigger(explodeHash);
+        isAttacking = true;
+
+        if (vfxConfig != null && vfxController != null)
+            vfxController.SpawnVFXDelayed(vfxConfig, vfxConfig.vfxSpawnTime);
     }
 
     private void ResetAttackFlag()

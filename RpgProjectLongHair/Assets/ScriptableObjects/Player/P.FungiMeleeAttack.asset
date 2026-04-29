@@ -42,10 +42,10 @@ MonoBehaviour:
       followTransform: 1
       customDuration: 0
   - attackDuration: 1
-    hitFrameTime: 0.61
+    hitFrameTime: 0.75
     comboWindowOpenTime: 0.8
     comboWindowCloseTime: 1
-    damage: 60
+    damage: 50
     animationStateName: Attack3
     attackVFX:
       vfxPrefab: {fileID: 3130428516026584381, guid: 74f5c04ec45a530489aabb8a50e0e151, type: 3}

@@ -20,6 +20,8 @@ public class EnemyMeleeController : EnemyBaseController
     public EnemyAnimationController AnimationController => animationController;
     public EnemyVFXController VFXController => vfxController;
 
+    private EnemyNetworkSync _networkSync;
+
     public override void Spawned()
     {
         base.Spawned();
@@ -28,6 +30,9 @@ public class EnemyMeleeController : EnemyBaseController
 
         if (vfxController == null)
             vfxController = GetComponent<EnemyVFXController>();
+
+        _networkSync = GetComponent<EnemyNetworkSync>();
+
         CurrentAttackIndex = 0;
     }
 
@@ -42,7 +47,10 @@ public class EnemyMeleeController : EnemyBaseController
 
         // FIX: instancia, no clase estática
         var vfxConfig = meleeAttackData.GetVFXConfig(attackIndex);
-        animationController?.PlayMeleeAttack(attackIndex, vfxConfig);
+        _networkSync?.TriggerMeleeAttack(attackIndex, vfxConfig);
+
+        _networkSync?.SyncAttackIndicator();
+        _networkSync?.SyncSlashVFX(vfxConfig);
 
         // Avanza secuencia usando AttackCount del data, no un campo manual
         CurrentAttackIndex = (CurrentAttackIndex + 1) % meleeAttackData.AttackCount;
@@ -63,7 +71,11 @@ public class EnemyMeleeController : EnemyBaseController
             playerHealth.TakeDamage(meleeAttackData.Damage, transform.position);
     }
 
-    public void TriggerHitAnimation() => animationController?.PlayHitReaction();
+    public void TriggerHitAnimation() => _networkSync?.TriggerHit();
+    public void SyncHit(Vector3 hitPos, Vector3 hitNormal)
+    {
+        _networkSync?.SyncHitVFX(hitPos, hitNormal);
+    }
 
     private void OnValidate()
     {

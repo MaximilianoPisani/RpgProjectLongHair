@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 255e96c449d52e24eb78ac0ad131bc74, type: 3}
   m_Name: P.RangedAttackGatling
   m_EditorClassIdentifier: 
-  _attackRange: 26
-  _damage: 50
+  _attackRange: 35
+  _damage: 10
   _cooldown: 0.1
   _hitRadius: 0.86
   _projectilePrefab: {fileID: 4028938312772070145, guid: d924951f8e151df4ba90bb00a313339a, type: 3}

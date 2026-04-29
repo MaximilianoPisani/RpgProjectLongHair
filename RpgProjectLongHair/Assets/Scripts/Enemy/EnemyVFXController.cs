@@ -24,6 +24,13 @@ public class EnemyVFXController : MonoBehaviour
     [Tooltip("Transform del modelo que se mueve con animaciones (ej: mesh root). Si está vacío usa el transform principal")]
     [SerializeField] private Transform animatedModelTransform;
 
+    [Header("Attack Indicator VFX")]
+    [Tooltip("VFX de advertencia que se muestra antes del ataque")]
+    [SerializeField] private AttackVFXConfig attackIndicatorVFX;
+
+    [Tooltip("Punto de spawn del indicador (si está vacío usa attackVfxPoint)")]
+    [SerializeField] private Transform attackIndicatorPoint;
+
     // Runtime - Propulsores
     private ParticleSystem activeThrusterVfx;
     private bool thrustersActive = false;
@@ -211,4 +218,14 @@ public class EnemyVFXController : MonoBehaviour
         if (animatedModelTransform == null)
             Debug.LogWarning($"{name}: Animated Model Transform no asignado - se usará el transform principal");
     }
+    public void SpawnAttackIndicator(float delay = 0f, Transform spawnPoint = null)
+    {
+        Transform point = attackIndicatorPoint ?? attackVfxPoint;
+
+        if (delay > 0f)
+            SpawnVFXDelayed(attackIndicatorVFX, delay, point);
+        else
+            SpawnVFX(attackIndicatorVFX, point);
+    }
+
 }

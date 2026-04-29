@@ -18,10 +18,10 @@ public class PlayerRangeState : IPlayerState
     private ShootPhase _currentPhase = ShootPhase.Idle;
 
     // Timers
-    private float _shootTimer = 0f;
-    private float _reloadTimer = 0f;
-    private float _fireRateTimer = 0f;
-    private float _continuousFireTimer = 0f;
+    private TickTimer _shootTickTimer;
+    private TickTimer _reloadTickTimer;
+    private TickTimer _fireRateTickTimer;
+    private TickTimer _continuousFireTickTimer;
 
     // Flags
     private bool _projectileSpawned = false;
@@ -29,6 +29,8 @@ public class PlayerRangeState : IPlayerState
     private bool _fireEjectionSpawned = false;
     private bool _attackButtonReleased = true;
     private bool _needsReload = false;
+
+    private int _lastVFXTick = -1;
 
     public PlayerRangeState(PlayerStateMachine sm)
     {
@@ -40,6 +42,8 @@ public class PlayerRangeState : IPlayerState
     _currentPhase == ShootPhase.AutomaticFire;
     public void Enter()
     {
+        _lastVFXTick = -1;
+
         var weapon = _sm.GetComponent<PlayerWeaponHandler>();
         if (weapon == null || !weapon.IsRanged)
         {
@@ -70,6 +74,13 @@ public class PlayerRangeState : IPlayerState
 
     public void Tick(NetworkInputData input)
     {
+        var weapon = _sm.GetComponent<PlayerWeaponHandler>();
+        if (weapon == null || !weapon.IsRanged)
+        {
+            _sm.ChangeState(new PlayerIdleState(_sm));
+            return;
+        }
+
         switch (_currentPhase)
         {
             case ShootPhase.Idle: UpdateIdlePhase(input); break;
@@ -83,10 +94,20 @@ public class PlayerRangeState : IPlayerState
 
     public void Exit()
     {
+        // Limpiar el AnimState networked — esto se propaga a todos los clientes
+        var sync = _sm.GetComponent<PlayerNetworkSync>();
+        if (sync != null)
+        {
+            sync?.SetIsReloading(false);
+            sync?.SetSpeed(0f);
+        }
+
+        // También limpiar local por si acaso
         if (_sm.Animator != null)
         {
             _sm.Animator.SetBool("IsReloading", false);
             _sm.Animator.SetFloat("speed", 0f);
+            _sm.Animator.ResetTrigger("Shoot");
         }
 
         Debug.Log("[Range] Exited");
@@ -111,8 +132,9 @@ public class PlayerRangeState : IPlayerState
 
     private void StartShooting()
     {
+        _lastVFXTick = -1;
         _currentPhase = ShootPhase.Shooting;
-        _shootTimer = 0f;
+        _shootTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.ShootDuration);
         _projectileSpawned = false;
         _shellEjectionSpawned = false;
         _fireEjectionSpawned = false;
@@ -127,11 +149,12 @@ public class PlayerRangeState : IPlayerState
 
     private void UpdateShootingPhase(NetworkInputData input)
     {
-        _shootTimer += _sm.Runner.DeltaTime;
+        float elapsed = _rangeData.ShootDuration
+                - (_shootTickTimer.RemainingTime(_sm.Runner) ?? 0f);
 
-        ExecuteShootTimedEvents();
+        ExecuteShootTimedEvents(elapsed);
 
-        if (_shootTimer >= _rangeData.ShootDuration)
+        if (_shootTickTimer.Expired(_sm.Runner))
             OnShootAnimationEnd(input);
     }
 
@@ -142,8 +165,8 @@ public class PlayerRangeState : IPlayerState
             if (input.attackRange)
             {
                 _currentPhase = ShootPhase.AutomaticFire;
-                _fireRateTimer = 0f;
-                _continuousFireTimer = 0f;
+                _fireRateTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.FireRate);
+                _continuousFireTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.MaxContinuousFireTime);
                 Debug.Log("[Range] Entering automatic fire mode");
             }
             else
@@ -160,12 +183,12 @@ public class PlayerRangeState : IPlayerState
     /// <summary>
     /// Ejecuta los eventos de VFX y proyectil según los tiempos embebidos en cada AttackVFXConfig.
     /// </summary>
-    private void ExecuteShootTimedEvents()
+    private void ExecuteShootTimedEvents(float elapsed)
     {
         // Shell ejection — tiempo viene de ShellEjectionVFX.vfxSpawnTime
         if (!_shellEjectionSpawned
             && _rangeData.ShellEjectionVFX != null
-            && _shootTimer >= _rangeData.ShellEjectionVFX.vfxSpawnTime)
+            && elapsed >= _rangeData.ShellEjectionVFX.vfxSpawnTime)
         {
             _shellEjectionSpawned = true;
             SpawnShellEjectionVFX();
@@ -174,14 +197,14 @@ public class PlayerRangeState : IPlayerState
         // Fire ejection — tiempo viene de FireEjectionVFX.vfxSpawnTime
         if (!_fireEjectionSpawned
             && _rangeData.FireEjectionVFX != null
-            && _shootTimer >= _rangeData.FireEjectionVFX.vfxSpawnTime)
+            && elapsed >= _rangeData.FireEjectionVFX.vfxSpawnTime)
         {
             _fireEjectionSpawned = true;
             SpawnFireEjectionVFX();
         }
 
         // Proyectil — tiempo propio del data
-        if (!_projectileSpawned && _shootTimer >= _rangeData.ShootFrameTime)
+        if (!_projectileSpawned && elapsed >= _rangeData.ShootFrameTime)
         {
             _projectileSpawned = true;
             SpawnProjectile();
@@ -192,9 +215,6 @@ public class PlayerRangeState : IPlayerState
 
     private void UpdateAutomaticFirePhase(NetworkInputData input)
     {
-        _fireRateTimer += _sm.Runner.DeltaTime;
-        _continuousFireTimer += _sm.Runner.DeltaTime;
-
         if (!input.attackRange)
         {
             Debug.Log("[Range] Button released - Starting reload");
@@ -203,7 +223,7 @@ public class PlayerRangeState : IPlayerState
         }
 
         if (_rangeData.MaxContinuousFireTime > 0f
-            && _continuousFireTimer >= _rangeData.MaxContinuousFireTime)
+            && _continuousFireTickTimer.Expired(_sm.Runner))
         {
             Debug.Log("[Range] Max continuous fire time reached - Forcing reload");
             _needsReload = true;
@@ -211,20 +231,26 @@ public class PlayerRangeState : IPlayerState
             return;
         }
 
-        if (_fireRateTimer >= _rangeData.FireRate)
+        if (_fireRateTickTimer.Expired(_sm.Runner))
         {
-            _fireRateTimer = 0f;
-            _shootTimer = 0f;
+            _fireRateTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.FireRate);
             _projectileSpawned = false;
             _shellEjectionSpawned = false;
             _fireEjectionSpawned = false;
 
+            int currentTick = _sm.Runner.Tick;
+
             SpawnProjectile();
-            SpawnShellEjectionVFX();
-            SpawnFireEjectionVFX();
+
+            if (currentTick != _lastVFXTick)
+            {
+                _lastVFXTick = currentTick;
+                SpawnShellEjectionVFX();
+                SpawnFireEjectionVFX();
+            }
             _weaponAnim?.PlayShoot();
 
-            Debug.Log($"[Range] Auto-fire shot - Continuous time: {_continuousFireTimer:F2}s");
+            Debug.Log($"[Range] Auto-fire shot");
         }
     }
 
@@ -233,7 +259,7 @@ public class PlayerRangeState : IPlayerState
     private void StartReloading()
     {
         _currentPhase = ShootPhase.Reloading;
-        _reloadTimer = 0f;
+        _reloadTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.ReloadDuration);
 
         if (_sm.Animator != null)
         {
@@ -243,12 +269,9 @@ public class PlayerRangeState : IPlayerState
 
         Debug.Log($"[Range] Started reloading - Duration: {_rangeData.ReloadDuration}s");
     }
-
     private void UpdateReloadingPhase(NetworkInputData input)
     {
-        _reloadTimer += _sm.Runner.DeltaTime;
-
-        if (_reloadTimer >= _rangeData.ReloadDuration)
+        if (_reloadTickTimer.Expired(_sm.Runner))
             OnReloadComplete(input);
     }
 
@@ -371,17 +394,12 @@ public class PlayerRangeState : IPlayerState
         float speed = _sm.Player.GetHorizontalSpeed();
         float normalized = speed / _sm.Player.SprintSpeed;
 
-        if (_currentPhase == ShootPhase.Shooting || _currentPhase == ShootPhase.AutomaticFire)
+        if (IsLockingInput)
+            normalized = 0f;
+        else if (_currentPhase == ShootPhase.AutomaticFire)
             normalized *= 0.5f;
 
         _sm.Animator.SetFloat("speed", normalized);
-        _sm.Animator.SetBool("isMoving", speed > 0.05f);
-        if (IsLockingInput)
-        {
-            _sm.Animator.SetFloat("speed", 0f);
-            _sm.Animator.SetBool("isMoving", false);
-            return;
-        }
     }
 
     private void RotateToShootDirection()
