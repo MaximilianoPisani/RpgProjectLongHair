@@ -37,6 +37,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     private bool _isSprinting;
     private bool _lastAttackHeld;
 
+    private int _scrollDelta;
+    private bool _scrollConsumed;
     public static bool IsInputBlocked { get; private set; } = false;
     public static bool IsInventoryOpen { get; private set; } = false;
 
@@ -174,6 +176,21 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         if (Input.GetKeyDown(KeyCode.F) && !IsInventoryOpen) _lockOnQueued = true;
         if (Input.GetKeyDown(KeyCode.Space) && !IsInventoryOpen) _jumpQueued = true;
         _isSprinting = Input.GetKey(KeyCode.LeftShift) && !IsInventoryOpen;
+
+        if (!IsInventoryOpen)
+        {
+            float scroll = Input.GetAxisRaw("Mouse ScrollWheel");
+
+            if (Mathf.Abs(scroll) > 0.01f && !_scrollConsumed)
+            {
+                _scrollDelta = scroll > 0f ? -1 : 1;
+                _scrollConsumed = true;
+            }
+            else if (Mathf.Abs(scroll) <= 0.01f)
+            {
+                _scrollConsumed = false;
+            }
+        }
     }
 
     // ?????????????????????????????????????????????????????????????????????????
@@ -281,6 +298,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         if (IsInventoryOpen || IsInputBlocked)
         {
             _lastAttackHeld = false;
+            _scrollDelta = 0;
+            _scrollConsumed = false;
             input.Set(new NetworkInputData());
             return;
         }
@@ -294,7 +313,6 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         Vector3 movementDir = Vector3.zero;
         Quaternion aimRot = Quaternion.identity;
         Vector3 shootDir = Vector3.forward;
-        Vector3 aimPoint = Vector3.zero;
 
         if (cameraTransform != null)
         {
@@ -305,18 +323,9 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             aimRot = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
 
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-
-            if (Physics.Raycast(ray, out RaycastHit hit, 200f))
-            {
-                aimPoint = hit.point;
-            }
-            else
-            {
-                aimPoint = ray.origin + ray.direction * 200f;
-            }
-
-            // Dirección aproximada (se corrige después con el muzzle)
-            shootDir = (aimPoint - cameraTransform.position).normalized;
+            shootDir = Physics.Raycast(ray, out RaycastHit hit, 200f)
+                ? (hit.point - Camera.main.transform.position).normalized
+                : ray.direction.normalized;
         }
 
         bool attackNow = Input.GetMouseButton(0);
@@ -334,13 +343,13 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             aimRotation = aimRot,
             LockOnPressed = _lockOnQueued,
             shootDirection = shootDir,
-            aimPoint = aimPoint
-
+            scrollDelta = _scrollDelta
         };
 
         _lastAttackHeld = attackNow;
         _lockOnQueued = false;
         _jumpQueued = false;
+        _scrollDelta = 0;
 
         input.Set(data);
     }

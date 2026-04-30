@@ -27,6 +27,15 @@ public class EquipManager : NetworkBehaviour
             RenderEquippedItem();
     }
 
+    public override void FixedUpdateNetwork()
+    {
+        if (!HasInputAuthority) return;
+        if (!GetInput(out NetworkInputData input)) return;
+
+        if (input.scrollDelta != 0)
+            CycleEquip(input.scrollDelta);
+    }
+
     public void OnSlotClicked(ItemSO item)
     {
         if (!HasInputAuthority || item == null) return;
@@ -160,5 +169,23 @@ public class EquipManager : NetworkBehaviour
         obj.name = string.IsNullOrEmpty(suffix)
             ? item.itemName
             : $"{item.itemName}_{suffix}";
+    }
+
+    public void CycleEquip(int direction)
+    {
+        var sm = GetComponent<PlayerStateMachine>();
+        if (sm != null && sm.IsBusy) return;
+
+        var ids = new List<int> { 0 };
+        foreach (var item in _inventory.Items)
+            if (item.id != 0) ids.Add(item.id);
+
+        if (ids.Count <= 1) return;
+
+        int currentIndex = ids.IndexOf(EquippedItemId);
+        if (currentIndex < 0) currentIndex = 0;
+
+        int nextIndex = (currentIndex + direction + ids.Count) % ids.Count;
+        RPC_RequestEquip(ids[nextIndex]);
     }
 }
