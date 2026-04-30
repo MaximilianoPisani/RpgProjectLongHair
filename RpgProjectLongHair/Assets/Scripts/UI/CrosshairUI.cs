@@ -1,6 +1,5 @@
-using UnityEngine;
 using Fusion;
-using System.Linq;
+using UnityEngine;
 
 public class CrosshairUI : MonoBehaviour
 {
@@ -12,19 +11,42 @@ public class CrosshairUI : MonoBehaviour
     public float smoothSpeed = 20f;
 
     private Vector3 _currentScreenPos;
-
     private PlayerStateMachine _player;
+    private RunnerManager _runnerManager;
 
     void Start()
     {
         if (cam == null)
             cam = Camera.main;
 
-        // Buscar el player LOCAL (con InputAuthority)
-        _player = FindObjectsByType<PlayerStateMachine>(FindObjectsSortMode.None)
-            .FirstOrDefault(p => p.Object.HasInputAuthority);
+        // Reemplazo correcto del deprecated
+        _runnerManager = FindFirstObjectByType<RunnerManager>();
+
+        if (_runnerManager != null)
+        {
+            _runnerManager.OnPlayerSpawned += OnPlayerSpawned;
+        }
 
         _currentScreenPos = crosshair.position;
+    }
+
+    private void OnDestroy()
+    {
+        // MUY importante: evitar leaks/eventos colgados
+        if (_runnerManager != null)
+        {
+            _runnerManager.OnPlayerSpawned -= OnPlayerSpawned;
+        }
+    }
+
+    private void OnPlayerSpawned(NetworkObject obj)
+    {
+        var player = obj.GetComponent<PlayerStateMachine>();
+
+        if (player != null && player.Object.HasInputAuthority)
+        {
+            _player = player;
+        }
     }
 
     void Update()
@@ -35,7 +57,7 @@ public class CrosshairUI : MonoBehaviour
 
         Vector3 screenPos = cam.WorldToScreenPoint(worldPoint);
 
-        // Evita que el crosshair aparezca si está detrás de cámara
+        // Ocultar si está detrás
         if (screenPos.z < 0)
         {
             if (crosshair.gameObject.activeSelf)
