@@ -22,6 +22,7 @@ public class PlayerStateMachine : NetworkBehaviour
     public Vector3 LastShootDirection { get; set; } = Vector3.forward;
     public bool IsInputLocked => _currentState is PlayerRangeState rangeState && rangeState.IsLockingInput;
 
+    public NetworkInputData InputData { get; private set; }
     public override void Spawned()
     {
         Player = GetComponent<Player>();
@@ -40,7 +41,11 @@ public class PlayerStateMachine : NetworkBehaviour
             return;
         }
 
-        if (!GetInput(out NetworkInputData input)) return;
+        if (GetInput(out NetworkInputData input))
+        {
+            InputData = input;
+            LastShootDirection = input.shootDirection;
+        }
 
         LastShootDirection = input.shootDirection;
 

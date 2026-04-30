@@ -294,6 +294,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         Vector3 movementDir = Vector3.zero;
         Quaternion aimRot = Quaternion.identity;
         Vector3 shootDir = Vector3.forward;
+        Vector3 aimPoint = Vector3.zero;
 
         if (cameraTransform != null)
         {
@@ -304,9 +305,18 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             aimRot = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
 
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-            shootDir = Physics.Raycast(ray, out RaycastHit hit, 200f)
-                ? (hit.point - Camera.main.transform.position).normalized
-                : ray.direction.normalized;
+
+            if (Physics.Raycast(ray, out RaycastHit hit, 200f))
+            {
+                aimPoint = hit.point;
+            }
+            else
+            {
+                aimPoint = ray.origin + ray.direction * 200f;
+            }
+
+            // Dirección aproximada (se corrige después con el muzzle)
+            shootDir = (aimPoint - cameraTransform.position).normalized;
         }
 
         bool attackNow = Input.GetMouseButton(0);
@@ -323,7 +333,9 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             equipSlot = -1,
             aimRotation = aimRot,
             LockOnPressed = _lockOnQueued,
-            shootDirection = shootDir
+            shootDirection = shootDir,
+            aimPoint = aimPoint
+
         };
 
         _lastAttackHeld = attackNow;

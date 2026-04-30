@@ -370,11 +370,13 @@ public class PlayerRangeState : IPlayerState
         var settings = _sm.Combat;
         if (_rangeData == null) return;
 
-        Vector3 direction = GetShootDirection();
+        Vector3 aimPoint = _sm.InputData.aimPoint;
 
         Vector3 spawnPos = (settings.shootPoints != null && settings.shootPoints.Length > 0)
             ? settings.shootPoints[0].position
             : _sm.transform.position + _sm.transform.forward + Vector3.up;
+
+        Vector3 direction = (aimPoint - spawnPos).normalized;
 
         PlayerRef attacker = _sm.Object.InputAuthority;
 
@@ -390,8 +392,6 @@ public class PlayerRangeState : IPlayerState
                     projectile.InitServer(direction, _rangeData, attacker, spawnPos);
             }
         );
-
-        Debug.Log($"[Range] Projectile spawned at {spawnPos}");
     }
 
     // ==================== MOVEMENT & ROTATION ====================
@@ -421,21 +421,5 @@ public class PlayerRangeState : IPlayerState
 
         if (flatDir.sqrMagnitude > 0.01f)
             _sm.transform.rotation = Quaternion.LookRotation(flatDir);
-    }
-
-    private Vector3 GetShootDirection()
-    {
-        if (_sm.LastShootDirection.sqrMagnitude > 0.01f)
-            return _sm.LastShootDirection.normalized;
-
-        Camera cam = Camera.main;
-        if (cam == null) return _sm.transform.forward;
-
-        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 200f))
-            return (hit.point - _sm.transform.position).normalized;
-
-        return ray.direction.normalized;
     }
 }
