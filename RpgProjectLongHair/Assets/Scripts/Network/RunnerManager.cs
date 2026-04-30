@@ -37,6 +37,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     private bool _isSprinting;
     private bool _lastAttackHeld;
 
+    private int _scrollDelta;
+    private bool _scrollConsumed;
     public static bool IsInputBlocked { get; private set; } = false;
     public static bool IsInventoryOpen { get; private set; } = false;
 
@@ -174,6 +176,21 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         if (Input.GetKeyDown(KeyCode.F) && !IsInventoryOpen) _lockOnQueued = true;
         if (Input.GetKeyDown(KeyCode.Space) && !IsInventoryOpen) _jumpQueued = true;
         _isSprinting = Input.GetKey(KeyCode.LeftShift) && !IsInventoryOpen;
+
+        if (!IsInventoryOpen)
+        {
+            float scroll = Input.GetAxisRaw("Mouse ScrollWheel");
+
+            if (Mathf.Abs(scroll) > 0.01f && !_scrollConsumed)
+            {
+                _scrollDelta = scroll > 0f ? -1 : 1;
+                _scrollConsumed = true;
+            }
+            else if (Mathf.Abs(scroll) <= 0.01f)
+            {
+                _scrollConsumed = false;
+            }
+        }
     }
 
     // ?????????????????????????????????????????????????????????????????????????
@@ -281,6 +298,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         if (IsInventoryOpen || IsInputBlocked)
         {
             _lastAttackHeld = false;
+            _scrollDelta = 0;
+            _scrollConsumed = false;
             input.Set(new NetworkInputData());
             return;
         }
@@ -323,12 +342,14 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             equipSlot = -1,
             aimRotation = aimRot,
             LockOnPressed = _lockOnQueued,
-            shootDirection = shootDir
+            shootDirection = shootDir,
+            scrollDelta = _scrollDelta
         };
 
         _lastAttackHeld = attackNow;
         _lockOnQueued = false;
         _jumpQueued = false;
+        _scrollDelta = 0;
 
         input.Set(data);
     }
