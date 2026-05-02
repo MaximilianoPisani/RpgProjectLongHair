@@ -18,7 +18,6 @@ public class PlayerSpawner : MonoBehaviour
         }
 
         int prefabIndex = Mathf.Clamp(characterIndex - 1, 0, _characterPrefabs.Length - 1);
-
         NetworkObject prefab = _characterPrefabs[prefabIndex];
 
         if (prefab == null)
@@ -36,14 +35,21 @@ public class PlayerSpawner : MonoBehaviour
             playerRef
         );
 
-        Debug.Log($"[PlayerSpawner] Spawneado personaje {characterIndex} (prefab índice {prefabIndex}) para {playerRef}");
+        // Registrar con el baker inmediatamente al spawnear.
+        // Esto reemplaza el uso de GetPlayerObject() en el baker,
+        // que no funciona en clientes ni antes de SetPlayerObject().
+        if (spawned != null)
+            AreaFloorBaker.RegisterPlayer(spawned.transform);
+
+        Debug.Log($"[PlayerSpawner] Spawneado personaje {characterIndex} " +
+                  $"(prefab índice {prefabIndex}) para {playerRef}");
+
         return spawned;
     }
 
     public NetworkObject SpawnPlayer(NetworkRunner runner, PlayerRef playerRef)
     {
-        Debug.LogWarning("[PlayerSpawner] Llamado sin characterIndex — usando selección local del host. " +
-                         "En multijugador esto causa que todos los jugadores spawneen el mismo personaje.");
+        Debug.LogWarning("[PlayerSpawner] Llamado sin characterIndex — usando selección local del host.");
         return SpawnPlayer(runner, playerRef, CharacterSelection.SelectedCharacter);
     }
 

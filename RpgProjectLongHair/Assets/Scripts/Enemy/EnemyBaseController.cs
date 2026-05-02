@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using Fusion;
@@ -22,26 +23,73 @@ public abstract class EnemyBaseController : NetworkBehaviour
 
     protected EnemyStateMachine StateMachine { get; private set; }
 
+
     public override void Spawned()
     {
         Agent = GetComponent<NavMeshAgent>();
         Health = GetComponent<EnemyHealth>();
 
-        Agent.enabled = false;
-        Agent.enabled = true;
-
-        if (!Object.HasStateAuthority)
-            Agent.enabled = false;
-
         StateMachine = new EnemyStateMachine();
         InitStateMachine();
+
+        if (!Object.HasStateAuthority)
+        {
+            // Clientes no necesitan el agente de navegación
+            Agent.enabled = false;
+            return;
+        }
+
+        // El servidor inicializa el agente de forma segura
+        // (el baker ya terminó porque EnemySpawner esperó IsReady)
+        StartCoroutine(InitAgentSafe());
     }
+
+    /// <summary>
+    /// Habilita el agente solo cuando hay NavMesh válida en la posición actual.
+    /// Reintenta si no la encuentra de inmediato (puede pasar en el primer frame).
+    /// </summary>
+    private IEnumerator InitAgentSafe()
+    {
+        Agent.enabled = false;
+
+        // Intentar hasta encontrar NavMesh en esta posición
+        int maxAttempts = 10;
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            {
+                // Mover al punto exacto de la NavMesh y habilitar el agente
+                transform.position = hit.position;
+                Agent.enabled = true;
+
+                if (Agent.isOnNavMesh)
+                {
+                    Debug.Log($"[Enemy] {name} agente inicializado en {hit.position}");
+                    yield break;
+                }
+
+                // Si isOnNavMesh sigue false, deshabilitar y reintentar
+                Agent.enabled = false;
+            }
+
+            Debug.LogWarning($"[Enemy] {name} sin NavMesh en intento {i + 1}/{maxAttempts}. Reintentando...");
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        Debug.LogError($"[Enemy] {name} no pudo inicializar el agente. Sin NavMesh en {transform.position}");
+    }
+
 
     protected abstract void InitStateMachine();
 
     public override void FixedUpdateNetwork()
     {
         if (!Object.HasStateAuthority) return;
+
+        // No correr la máquina de estados si el agente no está listo
+        if (Agent == null || !Agent.enabled || !Agent.isOnNavMesh)
+            return;
+
         StateMachine.Update();
     }
 
