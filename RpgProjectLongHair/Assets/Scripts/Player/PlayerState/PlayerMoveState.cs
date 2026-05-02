@@ -43,7 +43,7 @@ public class PlayerMoveState : IPlayerState
             float damp = normalizedSpeed > currentAnim ? AccelDamp : DecelDamp;
 
             // deltaTime como tercer parámetro activa el suavizado nativo del Animator
-            _sm.Animator.SetFloat("speed", normalizedSpeed, damp, Time.deltaTime);
+            _sm.Animator.SetFloat("speed", normalizedSpeed, damp, _sm.Runner.DeltaTime); 
         }
         // CAMBIO A IDLE SI NO SE MUEVE
         if (speed < 0.01f)
