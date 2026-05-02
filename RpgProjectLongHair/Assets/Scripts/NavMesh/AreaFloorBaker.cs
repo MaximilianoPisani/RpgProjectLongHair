@@ -22,7 +22,7 @@ public class AreaFloorBaker : MonoBehaviour
 
     public bool IsReady { get; private set; } = false;
 
-    // ?? Registro de jugadores ????????????????????????????????????
+    // ?? Registro de jugadores 
     // Los players se registran ellos mismos vía RegisterPlayer().
     // No dependemos de GetPlayerObject() que solo funciona en el servidor.
     private static readonly List<Transform> _registeredPlayers = new List<Transform>();
@@ -46,14 +46,14 @@ public class AreaFloorBaker : MonoBehaviour
         _registeredPlayers.Remove(playerTransform);
     }
 
-    // ?? Estado interno ???????????????????????????????????????????
+    // ?? Estado interno
     private NavMeshData _navMeshData;
     private NavMeshDataInstance _instance;
     private readonly List<NavMeshBuildSource> _sources = new List<NavMeshBuildSource>();
     private Vector3 _lastCenter;
     private AsyncOperation _pendingBake;
 
-    // ????????????????????????????????????????????????????????????
+ 
 
     private void Awake()
     {
@@ -76,7 +76,7 @@ public class AreaFloorBaker : MonoBehaviour
 
     private IEnumerator Init()
     {
-        // ?? 1. Esperar que haya al menos un jugador registrado ???
+        //1. Esperar que haya al menos un jugador registrado 
         Debug.Log("[Baker] Esperando jugadores registrados...");
 
         float timeout = 0f;
@@ -96,11 +96,11 @@ public class AreaFloorBaker : MonoBehaviour
 
         Debug.Log($"[Baker] {_registeredPlayers.Count} jugador(es) registrado(s).");
 
-        // ?? 2. Crear NavMeshData ?????????????????????????????????
+        // 2. Crear NavMeshData
         _navMeshData = new NavMeshData();
         _instance = NavMesh.AddNavMeshData(_navMeshData);
 
-        // ?? 3. Primer bake centrado en el jugador ????????????????
+        //  3. Primer bake centrado en el jugador 
         _lastCenter = GetPlayersCenter();
         Debug.Log($"[Baker] Primer bake en {_lastCenter}...");
         yield return StartCoroutine(BuildNavMeshAndWait(_lastCenter));
@@ -108,7 +108,7 @@ public class AreaFloorBaker : MonoBehaviour
         IsReady = true;
         Debug.Log("[Baker] IsReady = true. NavMesh lista.");
 
-        // ?? 4. Loop de actualización ?????????????????????????????
+        // ?? 4. Loop de actualización 
         WaitForSeconds wait = new WaitForSeconds(UpdateRate);
         while (true)
         {
