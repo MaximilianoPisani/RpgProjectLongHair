@@ -71,16 +71,6 @@ public class Player : NetworkBehaviour
             {
                 _ncc.Move(moveDir);
             }
-
-            // SOLO ROTAR SI TIENES STATE AUTHORITY
-            if (moveDir.sqrMagnitude > 0.01f)
-            {
-                transform.rotation = Quaternion.Slerp(
-                    transform.rotation,
-                    Quaternion.LookRotation(moveDir),
-                    rotationSpeed * Runner.DeltaTime
-                );
-            }
         }
 
         // Esto está bien, solo se ejecuta en el cliente con input authority

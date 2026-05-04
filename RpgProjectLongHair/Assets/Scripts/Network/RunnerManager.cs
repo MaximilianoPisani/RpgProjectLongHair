@@ -306,6 +306,9 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         Vector3 inputMove = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 
+        if (inputMove.magnitude < 0.1f)
+            inputMove = Vector3.zero;
+
         Transform cameraTransform = PlayerCamera.Local != null
             ? PlayerCamera.Local.transform
             : (Camera.main != null ? Camera.main.transform : null);
