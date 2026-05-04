@@ -1,0 +1,109 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Upper_MecanoMask
+  m_Mask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: arm_mecanoV2
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/neck
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/neck/head
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.L
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.L/shoulderJoint.L
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.L/shoulderJoint.L/uparm.L
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.L/shoulderJoint.L/uparm.L/armJoint.L
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.L/shoulderJoint.L/uparm.L/armJoint.L/lowarm.L
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.L/shoulderJoint.L/uparm.L/armJoint.L/lowarm.L/handJoint.L
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.L/shoulderJoint.L/uparm.L/armJoint.L/lowarm.L/handJoint.L/hand.L
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.L/shoulderJoint.L/uparm.L/armJoint.L/lowarm.L/handJoint.L/hand.L/fingersA1.L
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.L/shoulderJoint.L/uparm.L/armJoint.L/lowarm.L/handJoint.L/hand.L/fingersA1.L/fingersA2.L
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.L/shoulderJoint.L/uparm.L/armJoint.L/lowarm.L/handJoint.L/hand.L/fingersA1.L/fingersA2.L/fingersA3.L
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.L/shoulderJoint.L/uparm.L/armJoint.L/lowarm.L/handJoint.L/hand.L/fingersB1.L
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.L/shoulderJoint.L/uparm.L/armJoint.L/lowarm.L/handJoint.L/hand.L/fingersB1.L/fingersB2.L
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.L/shoulderJoint.L/uparm.L/armJoint.L/lowarm.L/handJoint.L/hand.L/fingersB1.L/fingersB2.L/fingersB3.L
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.L/shoulderJoint.L/uparm.L/armJoint.L/lowarm.L/handJoint.L/handSocked.L
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.R
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.R/shoulderJoint.R
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.R/shoulderJoint.R/uparm.R
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.R/shoulderJoint.R/uparm.R/armJoint.R
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.R/shoulderJoint.R/uparm.R/armJoint.R/lowarm.R
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.R/shoulderJoint.R/uparm.R/armJoint.R/lowarm.R/handJoint.R
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.R/shoulderJoint.R/uparm.R/armJoint.R/lowarm.R/handJoint.R/hand.R
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.R/shoulderJoint.R/uparm.R/armJoint.R/lowarm.R/handJoint.R/hand.R/fingersA1.R
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.R/shoulderJoint.R/uparm.R/armJoint.R/lowarm.R/handJoint.R/hand.R/fingersA1.R/fingersA2.R
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.R/shoulderJoint.R/uparm.R/armJoint.R/lowarm.R/handJoint.R/hand.R/fingersA1.R/fingersA2.R/fingersA3.R
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.R/shoulderJoint.R/uparm.R/armJoint.R/lowarm.R/handJoint.R/hand.R/fingersB1.R
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.R/shoulderJoint.R/uparm.R/armJoint.R/lowarm.R/handJoint.R/hand.R/fingersB1.R/fingersB2.R
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisJoint/torso/shoulder.R/shoulderJoint.R/uparm.R/armJoint.R/lowarm.R/handJoint.R/hand.R/fingersB1.R/fingersB2.R/fingersB3.R
+    m_Weight: 1
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisSub.L
+    m_Weight: 0
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisSub.L/upLeg.L
+    m_Weight: 0
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisSub.L/upLeg.L/legJointA.L
+    m_Weight: 0
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisSub.L/upLeg.L/legJointA.L/legJointB.L
+    m_Weight: 0
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisSub.L/upLeg.L/legJointA.L/legJointB.L/lowLeg.L
+    m_Weight: 0
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisSub.L/upLeg.L/legJointA.L/legJointB.L/lowLeg.L/foot.L
+    m_Weight: 0
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisSub.R
+    m_Weight: 0
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisSub.R/upLeg.R
+    m_Weight: 0
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisSub.R/upLeg.R/legJointA.R
+    m_Weight: 0
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisSub.R/upLeg.R/legJointA.R/legJointB.R
+    m_Weight: 0
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisSub.R/upLeg.R/legJointA.R/legJointB.R/lowLeg.R
+    m_Weight: 0
+  - m_Path: arm_mecanoV2/Root/pelvisCtrl/pelvis/pelvisSub.R/upLeg.R/legJointA.R/legJointB.R/lowLeg.R/foot.R
+    m_Weight: 0
+  - m_Path: obj_mecano.001
+    m_Weight: 0

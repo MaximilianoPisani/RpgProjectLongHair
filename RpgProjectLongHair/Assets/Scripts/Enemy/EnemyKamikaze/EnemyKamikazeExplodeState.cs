@@ -114,8 +114,7 @@ public class EnemyKamikazeExplodeState : IEnemyState
 
         SpawnVFX();
 
-        if (_enemy.Runner != null && _enemy.Object.IsValid)
-            _enemy.Runner.Despawn(_enemy.Object);
+        _enemy.StartCoroutine(DespawnAfterVFX());
     }
 
     private void SpawnVFX()
@@ -132,6 +131,16 @@ public class EnemyKamikazeExplodeState : IEnemyState
         GameObject.Destroy(vfx, 3f);
 
         _networkSync?.SyncExplosionVFX(data.ExplosionVFXPrefab, _enemy.transform.position);
+    }
+
+    private System.Collections.IEnumerator DespawnAfterVFX()
+    {
+        // Dos frames es suficiente para que Fusion entregue el RPC
+        yield return null;
+        yield return null;
+
+        if (_enemy.Runner != null && _enemy.Object.IsValid)
+            _enemy.Runner.Despawn(_enemy.Object);
     }
 
 }
