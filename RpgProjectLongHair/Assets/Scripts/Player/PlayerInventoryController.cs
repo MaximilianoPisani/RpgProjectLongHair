@@ -100,6 +100,24 @@ public class PlayerInventoryController : MonoBehaviour
                 }
                 return;
             }
+
+            // Item de crafteo - nuevo
+            if (hit.TryGetComponent<PickupableCraftItem>(out var craftPickup))
+            {
+                if (craftPickup.Object == null || !craftPickup.Object.IsValid) continue;
+                var craftItemData = new ItemData
+                {
+                    id = craftPickup.ItemId,
+                    type = ItemType.QuestItem
+                };
+                bool added = _inventoryData.AddItem(craftItemData);
+                if (added)
+                {
+                    Debug.Log($"[PlayerInventoryController] CraftItem recogido: {craftPickup.CraftItemSO.itemName}");
+                    craftPickup.RPC_RequestDespawn();
+                }
+                return;
+            }
         }
     }
 }
