@@ -31,7 +31,7 @@ public class PlayerStateMachine : NetworkBehaviour
 
     public bool IsJumping { get; set; } = false;
     public Vector3 LastShootDirection { get; set; } = Vector3.forward;
-    public bool IsInputLocked => _currentState is PlayerRangeState rangeState && rangeState.IsLockingInput;
+    public bool IsJumpLocked => _currentState is PlayerRangeState;
 
     public NetworkInputData InputData { get; private set; }
 
@@ -76,7 +76,7 @@ public class PlayerStateMachine : NetworkBehaviour
         bool canJump = _currentState is PlayerIdleState
             || _currentState is PlayerMoveState;
 
-        if (input.jump && canJump && Player.IsGrounded() && !IsInputLocked)
+        if (input.jump && canJump && Player.IsGrounded() && !IsJumpLocked)
         {
             IsJumping = true;
             ChangeState(new PlayerJumpState(this));

@@ -49,15 +49,12 @@ public class Player : NetworkBehaviour
         UpdateCoyoteTimer(Runner.DeltaTime);
 
         var sm = GetComponent<PlayerStateMachine>();
-        bool inputLocked = sm != null && sm.IsInputLocked;
         bool isInAir = sm != null && (sm.CurrentState is PlayerJumpState || sm.CurrentState is PlayerFallState);
 
         float targetSpeed = input.sprint ? sprintSpeed : walkSpeed;
         _ncc.maxSpeed = targetSpeed;
 
-        Vector3 moveDir = inputLocked
-            ? Vector3.zero
-            : new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
+        Vector3 moveDir = new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
 
         if (Object.HasStateAuthority)
         {
