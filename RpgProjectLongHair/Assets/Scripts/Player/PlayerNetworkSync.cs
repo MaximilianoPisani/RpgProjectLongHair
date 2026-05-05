@@ -163,8 +163,6 @@ public class PlayerNetworkSync : NetworkBehaviour
             _animator.ResetTrigger("Jump");
             _animator.ResetTrigger("Fall");
             _animator.ResetTrigger("Land");
-
-            _animator.Play("Idle", 0, 0f);
         }
 
         if (Object.HasStateAuthority)

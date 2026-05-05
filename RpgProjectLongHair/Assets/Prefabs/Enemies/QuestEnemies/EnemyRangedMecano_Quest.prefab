@@ -2072,9 +2072,8 @@ GameObject:
   - component: {fileID: 7917198614339932064}
   - component: {fileID: 7237182162067363730}
   - component: {fileID: 3324900406352068192}
-  - component: {fileID: -4120167824600476325}
   m_Layer: 3
-  m_Name: EnemyRangedMecano
+  m_Name: EnemyRangedMecano_Quest
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2135,7 +2134,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SortKey: 4008526198
+  SortKey: 1605745826
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -2363,7 +2362,6 @@ MonoBehaviour:
     followTransform: 1
     customDuration: 0
   attackIndicatorPoint: {fileID: 806385109384300258}
-  showMissingReferenceWarnings: 0
 --- !u!114 &7237182162067363730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2392,18 +2390,6 @@ MonoBehaviour:
   deathForceMultiplier: 27
   animator: {fileID: 892926014339985389}
   mainCollider: {fileID: 7856483003115484394}
---- !u!114 &-4120167824600476325
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7171795225345368329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc8000341cae5194584281182f7b3aff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7195634846278212548
 GameObject:
   m_ObjectHideFlags: 0

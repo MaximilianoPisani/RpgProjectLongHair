@@ -717,6 +717,7 @@ GameObject:
   - component: {fileID: -8914437699861995711}
   - component: {fileID: -1300499609020766671}
   - component: {fileID: 3462980502678904855}
+  - component: {fileID: -5798436353134483142}
   m_Layer: 3
   m_Name: enemyMinionMecano
   m_TagString: Enemy
@@ -846,6 +847,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   attackOrigin: {fileID: 7505190822256135982}
+  _navMeshCheckInterval: 0.5
+  _navMeshSearchRadius: 2
+  _showActivationGizmos: 1
   meleeAttackData: {fileID: 11400000, guid: aad3e5dd5c3513c4a94baaa7af33f4e9, type: 2}
   attackRange: 2
   animationController: {fileID: 5886125173034358410}
@@ -1002,6 +1006,7 @@ MonoBehaviour:
     followTransform: 1
     customDuration: 0
   attackIndicatorPoint: {fileID: 5656831148283486807}
+  showMissingReferenceWarnings: 0
 --- !u!114 &-1300499609020766671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1030,6 +1035,18 @@ MonoBehaviour:
   deathForceMultiplier: 35
   animator: {fileID: -7959826532971654791}
   mainCollider: {fileID: 818729507882848107}
+--- !u!114 &-5798436353134483142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5456948168675829924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8000341cae5194584281182f7b3aff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5780365246860821373
 GameObject:
   m_ObjectHideFlags: 0

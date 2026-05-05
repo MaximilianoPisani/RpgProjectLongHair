@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
 
@@ -32,12 +33,63 @@ public class EnemyNetworkSync : NetworkBehaviour
     private int _lastExplode;
 
     private Coroutine _flashLoopCoroutine;
+
+    // ===== PARÁMETROS VÁLIDOS =====
+    private HashSet<int> _validParams;
+
+    // Hashes pre-calculados
+    private static readonly int _speedHash = Animator.StringToHash("Speed");
+    private static readonly int _attackIndexHash = Animator.StringToHash("AttackIndex");
+    private static readonly int _idleIndexHash = Animator.StringToHash("IdleIndex");
+    private static readonly int _meleeHash = Animator.StringToHash("MeleeAttack");
+    private static readonly int _rangedHash = Animator.StringToHash("RangedAttack");
+    private static readonly int _reloadHash = Animator.StringToHash("Reload");
+    private static readonly int _hitHash = Animator.StringToHash("Hit");
+    private static readonly int _deathHash = Animator.StringToHash("Death");
+    private static readonly int _explodeHash = Animator.StringToHash("Explode");
+
     public override void Spawned()
     {
         _animController = GetComponent<EnemyAnimationController>();
         _animator = GetComponentInChildren<Animator>();
         _vfxController = GetComponent<EnemyVFXController>();
         _changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
+
+        CacheValidParameters();
+    }
+
+    private void CacheValidParameters()
+    {
+        _validParams = new HashSet<int>();
+        if (_animator == null) return;
+
+        foreach (AnimatorControllerParameter param in _animator.parameters)
+            _validParams.Add(param.nameHash);
+    }
+
+    private void SafeSetTrigger(int hash)
+    {
+        if (_validParams.Contains(hash)) _animator.SetTrigger(hash);
+    }
+
+    private void SafeSetFloat(int hash, float value)
+    {
+        if (_validParams.Contains(hash)) _animator.SetFloat(hash, value);
+    }
+
+    private void SafeSetInteger(int hash, int value)
+    {
+        if (_validParams.Contains(hash)) _animator.SetInteger(hash, value);
+    }
+
+    private float SafeGetFloat(int hash)
+    {
+        return _validParams.Contains(hash) ? _animator.GetFloat(hash) : 0f;
+    }
+
+    private int SafeGetInteger(int hash)
+    {
+        return _validParams.Contains(hash) ? _animator.GetInteger(hash) : 0;
     }
 
     // ===== HOST ESCRIBE EN FixedUpdate =====
@@ -46,9 +98,9 @@ public class EnemyNetworkSync : NetworkBehaviour
         if (!Object.HasStateAuthority) return;
         if (_animator == null) return;
 
-        SyncedSpeed = _animator.GetFloat("Speed");
-        SyncedAttackIndex = (byte)_animator.GetInteger("AttackIndex");
-        SyncedIdleIndex = (byte)_animator.GetInteger("IdleIndex");
+        SyncedSpeed = SafeGetFloat(_speedHash);
+        SyncedAttackIndex = (byte)SafeGetInteger(_attackIndexHash);
+        SyncedIdleIndex = (byte)SafeGetInteger(_idleIndexHash);
         SyncedIsDead = _animController != null && _animController.IsDead;
     }
 
@@ -59,14 +111,14 @@ public class EnemyNetworkSync : NetworkBehaviour
         if (_animator == null) return;
 
         // Valores continuos
-        _animator.SetFloat("Speed", SyncedSpeed);
-        _animator.SetInteger("AttackIndex", SyncedAttackIndex);
+        SafeSetFloat(_speedHash, SyncedSpeed);
+        SafeSetInteger(_attackIndexHash, SyncedAttackIndex);
 
         // IdleIndex solo cuando cambia
         if (SyncedIdleIndex != _lastIdleIndex)
         {
             _lastIdleIndex = SyncedIdleIndex;
-            _animator.SetInteger("IdleIndex", SyncedIdleIndex);
+            SafeSetInteger(_idleIndexHash, SyncedIdleIndex);
         }
 
         _vfxController?.UpdateThrusters(SyncedSpeed);
@@ -77,33 +129,33 @@ public class EnemyNetworkSync : NetworkBehaviour
             if (change == nameof(SyncedMeleeTrigger) && _lastMelee != SyncedMeleeTrigger)
             {
                 _lastMelee = SyncedMeleeTrigger;
-                _animator.SetInteger("AttackIndex", SyncedAttackIndex);
-                _animator.SetTrigger("MeleeAttack");
+                SafeSetInteger(_attackIndexHash, SyncedAttackIndex);
+                SafeSetTrigger(_meleeHash);
             }
             if (change == nameof(SyncedRangedTrigger) && _lastRanged != SyncedRangedTrigger)
             {
                 _lastRanged = SyncedRangedTrigger;
-                _animator.SetTrigger("RangedAttack");
+                SafeSetTrigger(_rangedHash);
             }
             if (change == nameof(SyncedReloadTrigger) && _lastReload != SyncedReloadTrigger)
             {
                 _lastReload = SyncedReloadTrigger;
-                _animator.SetTrigger("Reload");
+                SafeSetTrigger(_reloadHash);
             }
             if (change == nameof(SyncedHitTrigger) && _lastHit != SyncedHitTrigger)
             {
                 _lastHit = SyncedHitTrigger;
-                _animator.SetTrigger("Hit");
+                SafeSetTrigger(_hitHash);
             }
             if (change == nameof(SyncedDeathTrigger) && _lastDeath != SyncedDeathTrigger)
             {
                 _lastDeath = SyncedDeathTrigger;
-                _animator.SetTrigger("Death");
+                SafeSetTrigger(_deathHash);
             }
             if (change == nameof(SyncedExplodeTrigger) && _lastExplode != SyncedExplodeTrigger)
             {
                 _lastExplode = SyncedExplodeTrigger;
-                _animator.SetTrigger("Explode");
+                SafeSetTrigger(_explodeHash);
             }
         }
     }
@@ -153,6 +205,7 @@ public class EnemyNetworkSync : NetworkBehaviour
 
         RPC_ActivateRagdoll(Vector3.zero);
     }
+
     public void TriggerExplode()
     {
         if (!Object.HasStateAuthority) return;
@@ -160,17 +213,16 @@ public class EnemyNetworkSync : NetworkBehaviour
         SyncedExplodeTrigger++;
         _animController?.PlayExplode(null);
     }
+
     public void StartExplosionFlash(float duration, float interval, Color emissionColor, float intensity)
     {
         if (!Object.HasStateAuthority) return;
-
         RPC_StartFlashLoop(duration, interval, emissionColor, intensity);
     }
 
     public void StopExplosionFlash()
     {
         if (!Object.HasStateAuthority) return;
-
         RPC_StopFlashLoop();
     }
 
@@ -194,8 +246,6 @@ public class EnemyNetworkSync : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
 
-        // Host lo ejecuta local (ya lo hace animationController)
-        // Solo necesita notificar proxies
         if (fireVFX?.vfxPrefab != null)
             RPC_SpawnMuzzleFlash(fireVFX.vfxPrefab.name, fireVFX.vfxSpawnTime);
 
@@ -208,19 +258,17 @@ public class EnemyNetworkSync : NetworkBehaviour
         if (!Object.HasStateAuthority) return;
         if (config?.vfxPrefab == null) return;
 
-        // Host ya lo spawna via PlayMeleeAttack — solo notificar proxies
         RPC_SpawnSlashVFX(config.vfxPrefab.name, config.vfxSpawnTime,
                           config.localOffset, config.followTransform, config.customDuration);
     }
+
     public void SyncExplosionVFX(GameObject vfxPrefab, Vector3 position)
     {
         if (!Object.HasStateAuthority) return;
         if (vfxPrefab == null) return;
 
-        // Host ya lo spawnea en SpawnVFX() — solo notificar proxies
         RPC_SpawnExplosionVFX(position);
     }
-
 
     // ===== RPCs =====
 
@@ -235,6 +283,7 @@ public class EnemyNetworkSync : NetworkBehaviour
     {
         _vfxController?.SpawnAttackIndicator();
     }
+
     [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
     private void RPC_SpawnMuzzleFlash(string prefabName, float delay)
     {
@@ -242,6 +291,7 @@ public class EnemyNetworkSync : NetworkBehaviour
         if (config != null)
             _vfxController?.SpawnVFXDelayed(config, delay, null);
     }
+
     [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
     private void RPC_SpawnShellEjection(string prefabName, float delay)
     {
@@ -249,18 +299,19 @@ public class EnemyNetworkSync : NetworkBehaviour
         if (config != null)
             _vfxController?.SpawnVFXDelayed(config, delay, null);
     }
+
     [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
     private void RPC_SpawnSlashVFX(string prefabName, float delay, Vector3 offset,
-                                bool follow, float duration)
+                                   bool follow, float duration)
     {
         var config = FindMeleeVFXConfigByName(prefabName);
         if (config != null)
             _vfxController?.SpawnVFXDelayed(config, delay);
     }
+
     [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
     private void RPC_SpawnExplosionVFX(Vector3 position)
     {
-        // Buscar el prefab desde KamikazeData
         var kamikaze = GetComponent<EnemyKamikazeController>();
         if (kamikaze?.KamikazeData?.ExplosionVFXPrefab == null) return;
 
@@ -282,6 +333,7 @@ public class EnemyNetworkSync : NetworkBehaviour
             FlashLoopRoutine(duration, interval, emissionColor, intensity)
         );
     }
+
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_StopFlashLoop()
     {
@@ -295,19 +347,18 @@ public class EnemyNetworkSync : NetworkBehaviour
         if (meshRenderer == null) return;
 
         var mat = meshRenderer.material;
-
         if (_emissionCached)
             mat.SetColor("_EmissionColor", _originalEmission);
     }
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)] // era RpcTargets.All
+    [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
     private void RPC_ActivateRagdoll(Vector3 deathForce)
     {
         var ragdoll = GetComponent<EnemyRagdoll>();
         ragdoll?.ActivateRagdoll(deathForce);
     }
 
-
+    // ===== HELPERS =====
 
     private AttackVFXConfig FindVFXConfigByName(string name)
     {
@@ -318,6 +369,7 @@ public class EnemyNetworkSync : NetworkBehaviour
             return ranged.RangedAttackData.ShellEjectionVFX;
         return null;
     }
+
     private AttackVFXConfig FindMeleeVFXConfigByName(string name)
     {
         var melee = GetComponent<EnemyMeleeController>();
@@ -333,7 +385,9 @@ public class EnemyNetworkSync : NetworkBehaviour
 
     private Color _originalEmission;
     private bool _emissionCached = false;
-    private System.Collections.IEnumerator FlashLoopRoutine(float duration, float interval, Color emissionColor, float intensity)
+
+    private System.Collections.IEnumerator FlashLoopRoutine(float duration, float interval,
+                                                             Color emissionColor, float intensity)
     {
         var meshRenderer = GetComponentInChildren<Renderer>();
         if (meshRenderer == null) yield break;
@@ -353,7 +407,6 @@ public class EnemyNetworkSync : NetworkBehaviour
         while (elapsed < duration)
         {
             isFlashing = !isFlashing;
-
             mat.SetColor("_EmissionColor",
                 isFlashing ? emissionColor * intensity : _originalEmission);
 

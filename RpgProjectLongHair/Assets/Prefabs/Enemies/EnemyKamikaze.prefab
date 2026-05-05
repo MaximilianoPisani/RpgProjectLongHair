@@ -741,6 +741,7 @@ GameObject:
   - component: {fileID: 6690841013695187739}
   - component: {fileID: 3712013063289210803}
   - component: {fileID: 2311809555398978493}
+  - component: {fileID: -8126224708820907491}
   m_Layer: 3
   m_Name: EnemyKamikaze
   m_TagString: Enemy
@@ -940,6 +941,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   attackOrigin: {fileID: 7505190822256135982}
+  _navMeshCheckInterval: 0.5
+  _navMeshSearchRadius: 2
+  _showActivationGizmos: 1
   KamikazeData: {fileID: 11400000, guid: 4e54a115615814d4e926e15a81ab820e, type: 2}
   _enemyLayer:
     serializedVersion: 2
@@ -1036,6 +1040,19 @@ MonoBehaviour:
     followTransform: 1
     customDuration: 0
   attackIndicatorPoint: {fileID: 7505190822256135982}
+  showMissingReferenceWarnings: 0
+--- !u!114 &-8126224708820907491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5456948168675829924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8000341cae5194584281182f7b3aff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5476429770161952615
 GameObject:
   m_ObjectHideFlags: 0

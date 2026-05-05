@@ -1971,6 +1971,7 @@ GameObject:
   - component: {fileID: 7917198614339932064}
   - component: {fileID: 7237182162067363730}
   - component: {fileID: 3837223309279823347}
+  - component: {fileID: 8161732333465657480}
   m_Layer: 3
   m_Name: EnemyRangedFungi
   m_TagString: Enemy
@@ -2170,6 +2171,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   attackOrigin: {fileID: 5162140186112679462}
+  _navMeshCheckInterval: 0.5
+  _navMeshSearchRadius: 2
+  _showActivationGizmos: 1
   _rangedAttackData: {fileID: 11400000, guid: 12bd0668e0ec2c74499d9066e8aa635c, type: 2}
   _preferredMinRange: 3
   _preferredMaxRange: 35
@@ -2257,6 +2261,7 @@ MonoBehaviour:
     followTransform: 1
     customDuration: 0
   attackIndicatorPoint: {fileID: 9174170827509408516}
+  showMissingReferenceWarnings: 0
 --- !u!114 &7237182162067363730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2285,6 +2290,18 @@ MonoBehaviour:
   deathForceMultiplier: 30
   animator: {fileID: 892926014339985389}
   mainCollider: {fileID: 7856483003115484394}
+--- !u!114 &8161732333465657480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7171795225345368329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8000341cae5194584281182f7b3aff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7808436265388424472
 GameObject:
   m_ObjectHideFlags: 0

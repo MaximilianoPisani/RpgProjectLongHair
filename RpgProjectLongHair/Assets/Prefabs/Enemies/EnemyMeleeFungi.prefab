@@ -302,6 +302,7 @@ GameObject:
   - component: {fileID: 1786112597573691305}
   - component: {fileID: -7974863528754125525}
   - component: {fileID: 4913386781217223567}
+  - component: {fileID: 1858470035446153509}
   m_Layer: 3
   m_Name: EnemyMeleeFungi
   m_TagString: Enemy
@@ -431,6 +432,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   attackOrigin: {fileID: 6310323841488000103}
+  _navMeshCheckInterval: 0.5
+  _navMeshSearchRadius: 2
+  _showActivationGizmos: 1
   meleeAttackData: {fileID: 11400000, guid: ba0db7e68cb07d547ac78250acdcb703, type: 2}
   attackRange: 2
   animationController: {fileID: 1903278522379067626}
@@ -587,6 +591,7 @@ MonoBehaviour:
     followTransform: 1
     customDuration: 0
   attackIndicatorPoint: {fileID: 2979044574307439802}
+  showMissingReferenceWarnings: 0
 --- !u!114 &-7974863528754125525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -615,6 +620,18 @@ MonoBehaviour:
   deathForceMultiplier: 30
   animator: {fileID: 7643492774128377838}
   mainCollider: {fileID: 5967741658296360039}
+--- !u!114 &1858470035446153509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410296030982828054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8000341cae5194584281182f7b3aff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &571856061514683734
 GameObject:
   m_ObjectHideFlags: 0

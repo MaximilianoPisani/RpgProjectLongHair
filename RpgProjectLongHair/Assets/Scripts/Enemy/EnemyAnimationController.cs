@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -47,6 +48,9 @@ public class EnemyAnimationController : MonoBehaviour
     [SerializeField] private UnityEngine.AI.NavMeshAgent agent;
     [SerializeField] private EnemyVFXController vfxController;
 
+    // Parámetros válidos en este Animator (evita warnings de parámetros ausentes)
+    private HashSet<int> _validParams;
+
     // Control interno
     private float nextIdleChangeTime;
     private int currentIdleIndex = 0;
@@ -89,9 +93,46 @@ public class EnemyAnimationController : MonoBehaviour
         explodeHash = Animator.StringToHash(explodeTrigger);
         idleIndexHash = Animator.StringToHash(idleIndexParameter);
 
+        // Cachear qué parámetros tiene realmente este Animator
+        CacheValidParameters();
+
         ScheduleNextIdleChange();
 
         _networkSync = GetComponent<EnemyNetworkSync>();
+    }
+
+    /// <summary>
+    /// Recorre los parámetros del Animator y guarda sus hashes.
+    /// De esta forma SetTrigger/SetFloat/SetInteger solo se llaman
+    /// si el parámetro existe, evitando warnings en consola.
+    /// </summary>
+    private void CacheValidParameters()
+    {
+        _validParams = new HashSet<int>();
+        if (animator == null) return;
+
+        foreach (AnimatorControllerParameter param in animator.parameters)
+            _validParams.Add(param.nameHash);
+    }
+
+    // Wrappers seguros
+
+    private void SafeSetTrigger(int hash)
+    {
+        if (_validParams.Contains(hash))
+            animator.SetTrigger(hash);
+    }
+
+    private void SafeSetFloat(int hash, float value)
+    {
+        if (_validParams.Contains(hash))
+            animator.SetFloat(hash, value);
+    }
+
+    private void SafeSetInteger(int hash, int value)
+    {
+        if (_validParams.Contains(hash))
+            animator.SetInteger(hash, value);
     }
 
     private void Update()
@@ -111,7 +152,7 @@ public class EnemyAnimationController : MonoBehaviour
 
         float currentSpeed = agent.velocity.magnitude;
         lastSpeed = Mathf.Lerp(lastSpeed, currentSpeed, Time.deltaTime * 10f);
-        animator.SetFloat(speedHash, lastSpeed);
+        SafeSetFloat(speedHash, lastSpeed);
     }
 
     private void UpdateVFX()
@@ -134,7 +175,7 @@ public class EnemyAnimationController : MonoBehaviour
             while (newIdleIndex == currentIdleIndex && idleVariationsCount > 1);
 
             currentIdleIndex = newIdleIndex;
-            animator.SetInteger(idleIndexHash, currentIdleIndex);
+            SafeSetInteger(idleIndexHash, currentIdleIndex);
 
             ScheduleNextIdleChange();
         }
@@ -150,14 +191,13 @@ public class EnemyAnimationController : MonoBehaviour
     /// <summary>
     /// Ejecuta animación de ataque melee con VFX opcional.
     /// </summary>
-    // PlayMeleeAttack recibe el índice además del VFX
     public void PlayMeleeAttack(int attackIndex = 0, AttackVFXConfig vfxConfig = null)
     {
         if (animator == null || isDead) return;
 
         Debug.Log($"[AnimController] PlayMeleeAttack — index:{attackIndex} animator:{animator.name} isDead:{isDead}");
-        animator.SetInteger(attackIndexHash, attackIndex);
-        animator.SetTrigger(meleeAttackHash);
+        SafeSetInteger(attackIndexHash, attackIndex);
+        SafeSetTrigger(meleeAttackHash);
 
         if (vfxConfig != null && vfxController != null)
             vfxController.SpawnVFXDelayed(vfxConfig, vfxConfig.vfxSpawnTime);
@@ -165,13 +205,12 @@ public class EnemyAnimationController : MonoBehaviour
 
     /// <summary>
     /// Ejecuta animación de ataque ranged con VFX de disparo y/o casquillo.
-    /// Ambos configs son opcionales; el timing viene embebido en cada AttackVFXConfig.
     /// </summary>
     public void PlayRangedAttack(AttackVFXConfig fireVFX = null, AttackVFXConfig shellVFX = null)
     {
         if (animator == null || isDead) return;
 
-        animator.SetTrigger(rangedAttackHash);
+        SafeSetTrigger(rangedAttackHash);
         isAttacking = true;
 
         if (vfxController != null)
@@ -193,10 +232,9 @@ public class EnemyAnimationController : MonoBehaviour
     {
         if (animator == null || isDead) return;
 
-        animator.SetTrigger(reloadHash);
+        SafeSetTrigger(reloadHash);
         isReloading = true;
 
-        // Resetear el flag de recarga después de un breve delay
         Invoke(nameof(ResetReloadFlag), 0.1f);
     }
 
@@ -208,22 +246,15 @@ public class EnemyAnimationController : MonoBehaviour
         if (animator == null || isDead) return;
 
         Debug.Log($"[AnimController] PlayExplode — animator:{animator.name}");
-        animator.SetTrigger(explodeHash);
+        SafeSetTrigger(explodeHash);
         isAttacking = true;
 
         if (vfxConfig != null && vfxController != null)
             vfxController.SpawnVFXDelayed(vfxConfig, vfxConfig.vfxSpawnTime);
     }
 
-    private void ResetAttackFlag()
-    {
-        isAttacking = false;
-    }
-
-    private void ResetReloadFlag()
-    {
-        isReloading = false;
-    }
+    private void ResetAttackFlag() => isAttacking = false;
+    private void ResetReloadFlag() => isReloading = false;
 
     #endregion
 
@@ -235,7 +266,7 @@ public class EnemyAnimationController : MonoBehaviour
     public void PlayHitReaction()
     {
         if (animator == null || isDead) return;
-        animator.SetTrigger(hitHash);
+        SafeSetTrigger(hitHash);
     }
 
     /// <summary>
@@ -246,7 +277,7 @@ public class EnemyAnimationController : MonoBehaviour
         if (animator == null || isDead) return;
 
         isDead = true;
-        animator.SetTrigger(deathHash);
+        SafeSetTrigger(deathHash);
 
         if (vfxController != null)
             vfxController.ForceStopThrusters();
@@ -264,7 +295,7 @@ public class EnemyAnimationController : MonoBehaviour
         if (index < 0 || index >= idleVariationsCount || isDead) return;
 
         currentIdleIndex = index;
-        animator.SetInteger(idleIndexHash, currentIdleIndex);
+        SafeSetInteger(idleIndexHash, currentIdleIndex);
     }
 
     public int GetCurrentIdleIndex() => currentIdleIndex;

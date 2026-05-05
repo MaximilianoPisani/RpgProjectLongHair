@@ -120,9 +120,8 @@ GameObject:
   - component: {fileID: 1786112597573691305}
   - component: {fileID: -7974863528754125525}
   - component: {fileID: 7392428832242673731}
-  - component: {fileID: 1722417530376032891}
   m_Layer: 3
-  m_Name: EnemyMeleeMecano
+  m_Name: EnemyMeleeMecano_Quest
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -183,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SortKey: 768751594
+  SortKey: 3064166382
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -410,7 +409,6 @@ MonoBehaviour:
     followTransform: 1
     customDuration: 0
   attackIndicatorPoint: {fileID: 7508546152325408451}
-  showMissingReferenceWarnings: 0
 --- !u!114 &-7974863528754125525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -439,18 +437,6 @@ MonoBehaviour:
   deathForceMultiplier: 27
   animator: {fileID: 7643492774128377838}
   mainCollider: {fileID: 5967741658296360039}
---- !u!114 &1722417530376032891
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 410296030982828054}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc8000341cae5194584281182f7b3aff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &543381601608490176
 GameObject:
   m_ObjectHideFlags: 0
