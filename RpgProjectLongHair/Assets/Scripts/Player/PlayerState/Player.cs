@@ -49,15 +49,12 @@ public class Player : NetworkBehaviour
         UpdateCoyoteTimer(Runner.DeltaTime);
 
         var sm = GetComponent<PlayerStateMachine>();
-        bool inputLocked = sm != null && sm.IsInputLocked;
         bool isInAir = sm != null && (sm.CurrentState is PlayerJumpState || sm.CurrentState is PlayerFallState);
 
         float targetSpeed = input.sprint ? sprintSpeed : walkSpeed;
         _ncc.maxSpeed = targetSpeed;
 
-        Vector3 moveDir = inputLocked
-            ? Vector3.zero
-            : new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
+        Vector3 moveDir = new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
 
         if (Object.HasStateAuthority)
         {
@@ -73,16 +70,6 @@ public class Player : NetworkBehaviour
             else
             {
                 _ncc.Move(moveDir);
-            }
-
-            // SOLO ROTAR SI TIENES STATE AUTHORITY
-            if (moveDir.sqrMagnitude > 0.01f)
-            {
-                transform.rotation = Quaternion.Slerp(
-                    transform.rotation,
-                    Quaternion.LookRotation(moveDir),
-                    rotationSpeed * Runner.DeltaTime
-                );
             }
         }
 

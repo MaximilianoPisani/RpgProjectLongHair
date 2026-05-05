@@ -142,20 +142,18 @@ public class EnemyHealth : NetworkBehaviour
 
         RPC_Flash();
 
-        if (currentHealth <= 0)
-        {
+        if(currentHealth <= 0)
+{
             GiveKillExp();
 
             if (enemyController is EnemyKamikazeController kamikazeController)
             {
-                // El ExplodeState se encargará de llamar a EnemyDeathState,
-                // que a su vez hará el Despawn. No despawnear aquí.
                 kamikazeController.ChangeState(new EnemyKamikazeExplodeState(kamikazeController));
                 return;
             }
 
-            if (Runner != null && Object.IsValid) //  evita despawnear dos veces
-                Runner.Despawn(Object);
+            //Delegar al death state — él hace el despawn retrasado
+            enemyController?.ChangeState(new EnemyDeathState(enemyController));
         }
     }
 

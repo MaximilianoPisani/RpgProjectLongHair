@@ -36,10 +36,7 @@ public class PlayerRangeState : IPlayerState
     {
         _sm = sm;
     }
-    public bool IsLockingInput =>
-    _currentPhase == ShootPhase.Shooting ||
-    _currentPhase == ShootPhase.Reloading ||
-    _currentPhase == ShootPhase.AutomaticFire;
+    public bool IsLockingInput => false;
     public void Enter()
     {
         _lastVFXTick = -1;
@@ -149,6 +146,8 @@ public class PlayerRangeState : IPlayerState
 
     private void UpdateShootingPhase(NetworkInputData input)
     {
+        RotateToAimDirection(input);
+
         float elapsed = _rangeData.ShootDuration
                 - (_shootTickTimer.RemainingTime(_sm.Runner) ?? 0f);
 
@@ -403,10 +402,22 @@ public class PlayerRangeState : IPlayerState
         float speed = _sm.Player.GetHorizontalSpeed();
         float normalized = speed / _sm.Player.SprintSpeed;
 
-        if (IsLockingInput)
-            normalized = 0f;
-        else if (_currentPhase == ShootPhase.AutomaticFire)
-            normalized *= 0.5f;
+        switch (_currentPhase)
+        {
+            case ShootPhase.Shooting:
+                normalized *= 0.5f; // 70% velocidad al disparar
+                break;
+            case ShootPhase.Reloading:
+                normalized *= 0.5f; // 80% velocidad al recargar
+                break;
+            case ShootPhase.AutomaticFire:
+                normalized *= 0.5f; // 60% velocidad en automático
+                break;
+            case ShootPhase.Idle:
+                // Sin penalización
+                break;
+        }
+
 
         _sm.Animator.SetFloat("speed", normalized);
     }

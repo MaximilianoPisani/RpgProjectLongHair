@@ -31,6 +31,10 @@ public class PlayerNetworkSync : NetworkBehaviour
     private int _lastLand;
     private int _lastComboIndex = 0;
 
+    private const float AccelDamp = 0.08f;
+    private const float DecelDamp = 0.08f;
+
+
     public override void Spawned()
     {
         _animator = GetComponent<Animator>();
@@ -62,7 +66,9 @@ public class PlayerNetworkSync : NetworkBehaviour
         if (_animator == null) return;
         if (!Object.HasInputAuthority)
         {
-            _animator.SetFloat("speed", SyncedSpeed);
+            float currentAnim = _animator.GetFloat("speed");
+            float damp = SyncedSpeed > currentAnim ? AccelDamp : DecelDamp;
+            _animator.SetFloat("speed", SyncedSpeed, damp, Time.deltaTime);
             _animator.SetInteger("ComboIndex", SyncedComboIndex);
             _animator.SetBool("isJumping", (AnimationFlags & FLAG_JUMPING) != 0);
             _animator.SetBool("IsReloading", (AnimationFlags & FLAG_RELOADING) != 0);

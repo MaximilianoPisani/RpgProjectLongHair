@@ -150,6 +150,8 @@ public class EnemyNetworkSync : NetworkBehaviour
         SyncedDeathTrigger++;
         SyncedIsDead = true;
         _animController?.PlayDeath();
+
+        RPC_ActivateRagdoll(Vector3.zero);
     }
     public void TriggerExplode()
     {
@@ -296,6 +298,13 @@ public class EnemyNetworkSync : NetworkBehaviour
 
         if (_emissionCached)
             mat.SetColor("_EmissionColor", _originalEmission);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)] // era RpcTargets.All
+    private void RPC_ActivateRagdoll(Vector3 deathForce)
+    {
+        var ragdoll = GetComponent<EnemyRagdoll>();
+        ragdoll?.ActivateRagdoll(deathForce);
     }
 
 
