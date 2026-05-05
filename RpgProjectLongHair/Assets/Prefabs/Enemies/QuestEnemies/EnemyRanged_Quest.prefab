@@ -1448,7 +1448,7 @@ MonoBehaviour:
   _vfxController: {fileID: 5946224618582459977}
   enemyController: {fileID: 2294630877922104380}
   _expConfig: {fileID: 11400000, guid: cba863bba89c4384b875ed03cef3bb49, type: 2}
-  _isQuestEnemy: 0
+  _isQuestEnemy: 1
 --- !u!114 &814898277713001099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1605,6 +1605,7 @@ MonoBehaviour:
     followTransform: 1
     customDuration: 0
   attackIndicatorPoint: {fileID: 8849920074071977338}
+  showMissingReferenceWarnings: 0
 --- !u!114 &5634959948199663224
 MonoBehaviour:
   m_ObjectHideFlags: 0
