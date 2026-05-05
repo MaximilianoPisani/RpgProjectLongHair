@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class CraftingTable : MonoBehaviour
 {
-    [Header("Receta")]
-    [SerializeField] private CraftRecipeSO _recipe;
+    [Header("Recetas por personaje")]
+    [SerializeField] private CraftRecipeSO _recipeFungi;
+    [SerializeField] private CraftRecipeSO _recipeMecano;
 
     [Header("Detección")]
     [SerializeField] private float _interactRadius = 3f;
@@ -13,6 +14,9 @@ public class CraftingTable : MonoBehaviour
     [SerializeField] private GameObject _canvasTable; // panel "presioná E"
 
     private PlayerInventoryData _playerInventory;
+
+    private CraftRecipeSO _currentRecipe;
+
     private bool _playerInRange;
 
     private void Update()
@@ -25,6 +29,7 @@ public class CraftingTable : MonoBehaviour
         if (!cerca)
         {
             _playerInventory = null;
+            _currentRecipe = null;
             _canvasTable.SetActive(false);
             return;
         }
@@ -33,12 +38,23 @@ public class CraftingTable : MonoBehaviour
 
         if (!Input.GetKeyDown(KeyCode.E)) return;
 
-        _craftingUI.Show(_recipe, _playerInventory);
+        _craftingUI.Show(_currentRecipe, _playerInventory);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
+
+        //Obtener el tipo de personaje
+        var characterData = other.GetComponent<PlayerCharacterData>();
+        if (characterData == null) return;
+
+        //ASignar receta según personaje
+        _currentRecipe = characterData.characterType == CharacterType.Fungi 
+        ? _recipeFungi 
+        : _recipeMecano;
+
+        //obtener Inventario
         var inventory = other.GetComponent<PlayerInventoryData>();
         if (inventory == null) return;
         _playerInventory = inventory;

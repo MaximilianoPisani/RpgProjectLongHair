@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4cf242f1999e274697db74a539e3cb5, type: 3}
   m_Name: CraftRecipeMecano
   m_EditorClassIdentifier: 
-  recipeName: Gatling Mecano
+  recipeName: Gatling
   requiredItems:
   - {fileID: 11400000, guid: a9997c3a026b7dd4ab2f5a059bb19e04, type: 2}
   - {fileID: 11400000, guid: 6ec5f82d1a7097a49831160023f150bd, type: 2}

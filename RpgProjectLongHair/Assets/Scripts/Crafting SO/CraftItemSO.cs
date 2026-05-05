@@ -7,4 +7,9 @@ public class CraftItemSO : ScriptableObject
     public string itemName;
     public Sprite icon;
     public GameObject visualPrefab;
+
+    [Header("VFX")]
+    public ItemVFXConfig vfxConfig;
+
+    public CharacterType owner;
 }

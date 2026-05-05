@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6fbbc0d6ce1a2f44091fd70ced46befd, type: 3}
-  m_Name: Canon rifle
+  m_Name: Gatillo gatling
   m_EditorClassIdentifier: 
-  id: 101
-  itemName: Canon rifle
+  id: 106
+  itemName: Gatillo gatling
   icon: {fileID: 0}
   visualPrefab: {fileID: 0}
+  vfxConfig: {fileID: 11400000, guid: 7ce7e8daea7162a409acdb2620bc26ca, type: 2}
+  owner: 1

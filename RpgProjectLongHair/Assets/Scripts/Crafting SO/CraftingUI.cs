@@ -78,7 +78,7 @@ public class CraftingUI : MonoBehaviour
         Hide();
     }
 
-    private void Hide()
+    public void Hide()
     {
         _panel.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
