@@ -65,4 +65,15 @@ public class PlayerInventoryData : NetworkBehaviour
     {
         public List<ItemData> items;
     }
+
+    public bool HasCraftItem(int id) => Items.Exists(x => x.id == id);
+
+    public bool HasAllCraftItems(List<CraftItemSO> requiredItems)
+    {
+        foreach (var item in requiredItems)
+        {
+            if (!HasCraftItem(item.id)) return false;
+        }
+        return true;
+    }
 }
