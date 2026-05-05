@@ -105,6 +105,16 @@ public class PlayerInventoryController : MonoBehaviour
             if (hit.TryGetComponent<PickupableCraftItem>(out var craftPickup))
             {
                 if (craftPickup.Object == null || !craftPickup.Object.IsValid) continue;
+
+                // Chequear si el item le corresponde a este player
+                var characterData = GetComponent<PlayerCharacterData>();
+                if (characterData == null) return;
+                if (craftPickup.CraftItemSO.owner != characterData.characterType)
+                {
+                    Debug.Log($"[PlayerInventoryController] Item no corresponde a este personaje");
+                    return;
+                }
+
                 var craftItemData = new ItemData
                 {
                     id = craftPickup.ItemId,

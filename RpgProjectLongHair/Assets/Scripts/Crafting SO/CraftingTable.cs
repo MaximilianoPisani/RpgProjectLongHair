@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CraftingTable : MonoBehaviour
 {
-    [Header("Recetas por personaje")]
+    [Header("Recetas")]
     [SerializeField] private CraftRecipeSO _recipeFungi;
     [SerializeField] private CraftRecipeSO _recipeMecano;
 
@@ -16,8 +16,6 @@ public class CraftingTable : MonoBehaviour
     private PlayerInventoryData _playerInventory;
 
     private CraftRecipeSO _currentRecipe;
-
-    private bool _playerInRange;
 
     private void Update()
     {
@@ -37,6 +35,7 @@ public class CraftingTable : MonoBehaviour
         _canvasTable.SetActive(!_craftingUI.IsOpen);
 
         if (!Input.GetKeyDown(KeyCode.E)) return;
+        if (_currentRecipe == null) return;
 
         _craftingUI.Show(_currentRecipe, _playerInventory);
     }
@@ -58,6 +57,5 @@ public class CraftingTable : MonoBehaviour
         var inventory = other.GetComponent<PlayerInventoryData>();
         if (inventory == null) return;
         _playerInventory = inventory;
-        _playerInRange = true;
     }
 }
