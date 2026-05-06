@@ -9,6 +9,14 @@ public class PlayerSpawner : MonoBehaviour
     [Header("Puntos de spawn (uno por jugador, o solo uno si quieren mismo punto)")]
     [SerializeField] private Transform[] _spawnPoints;
 
+    [Header("Debug")]
+    [SerializeField] private bool _showDebugLogs = true;
+
+    /// <summary>
+    /// Spawnea un jugador con el índice de personaje especificado.
+    /// El registro en NavMeshTileManager lo hace NavMeshPlayerTracker.Spawned()
+    /// automáticamente en todos los clientes — no hay nada que hacer acá.
+    /// </summary>
     public NetworkObject SpawnPlayer(NetworkRunner runner, PlayerRef playerRef, int characterIndex)
     {
         if (_characterPrefabs == null || _characterPrefabs.Length == 0)
@@ -35,24 +43,34 @@ public class PlayerSpawner : MonoBehaviour
             playerRef
         );
 
-        // Registrar con el baker inmediatamente al spawnear.
-        // Esto reemplaza el uso de GetPlayerObject() en el baker,
-        // que no funciona en clientes ni antes de SetPlayerObject().
         if (spawned != null)
-            AreaFloorBaker.RegisterPlayer(spawned.transform);
-
-        Debug.Log($"[PlayerSpawner] Spawneado personaje {characterIndex} " +
-                  $"(prefab índice {prefabIndex}) para {playerRef}");
+        {
+            if (_showDebugLogs)
+                Debug.Log($"[PlayerSpawner] Spawneado personaje {characterIndex} " +
+                          $"(prefab índice {prefabIndex}) para {playerRef} en {spawnPoint.position}");
+        }
+        else
+        {
+            Debug.LogError($"[PlayerSpawner] Falló spawn para {playerRef}");
+        }
 
         return spawned;
     }
 
+    /// <summary>
+    /// Compatibilidad con código antiguo — usa la selección local del host.
+    /// </summary>
     public NetworkObject SpawnPlayer(NetworkRunner runner, PlayerRef playerRef)
     {
-        Debug.LogWarning("[PlayerSpawner] Llamado sin characterIndex — usando selección local del host.");
+        if (_showDebugLogs)
+            Debug.LogWarning("[PlayerSpawner] Llamado sin characterIndex — usando selección local del host.");
+
         return SpawnPlayer(runner, playerRef, CharacterSelection.SelectedCharacter);
     }
 
+    /// <summary>
+    /// Punto de spawn distribuido por PlayerRef.
+    /// </summary>
     private Transform GetSpawnPoint(PlayerRef playerRef)
     {
         if (_spawnPoints == null || _spawnPoints.Length == 0)
@@ -64,4 +82,11 @@ public class PlayerSpawner : MonoBehaviour
         int idx = (playerRef.RawEncoded - 1) % _spawnPoints.Length;
         return _spawnPoints[idx];
     }
+
+    /// <summary>
+    /// Mantener por si algún sistema externo lo llama — ya no hace nada
+    /// porque NavMeshPlayerTracker.Despawned() se encarga automáticamente.
+    /// Podés borrarlo cuando confirmes que nadie más lo llama.
+    /// </summary>
+    public void DespawnPlayer(Transform playerTransform) { }
 }
