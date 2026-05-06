@@ -46,8 +46,6 @@ public class Player : NetworkBehaviour
     {
         if (!GetInput(out NetworkInputData input)) return;
 
-        bool isAiming = input.attackRange;
-
         UpdateCoyoteTimer(Runner.DeltaTime);
 
         var sm = GetComponent<PlayerStateMachine>();
@@ -56,10 +54,7 @@ public class Player : NetworkBehaviour
         float targetSpeed = input.sprint ? sprintSpeed : walkSpeed;
         _ncc.maxSpeed = targetSpeed;
 
-        _ncc.AllowRotation = !isAiming;
-
         Vector3 moveDir = new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
-
 
         if (Object.HasStateAuthority)
         {
