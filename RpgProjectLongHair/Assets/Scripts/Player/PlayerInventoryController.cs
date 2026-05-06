@@ -112,6 +112,7 @@ public class PlayerInventoryController : MonoBehaviour
                 if (craftPickup.CraftItemSO.owner != characterData.characterType)
                 {
                     Debug.Log($"[PlayerInventoryController] Item no corresponde a este personaje");
+                    craftPickup.ShowFeedback("¡ESTE ITEM NO TE PERTENECE!");
                     return;
                 }
 

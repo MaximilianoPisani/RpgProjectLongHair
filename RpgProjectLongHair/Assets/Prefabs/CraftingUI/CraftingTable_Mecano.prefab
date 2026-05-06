@@ -1267,7 +1267,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dd47c6162c15de4c84174de526dd524, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _recipe: {fileID: 11400000, guid: 3d572cd3862b4ff4e867cc1f35c6d3f2, type: 2}
+  _recipeFungi: {fileID: 0}
+  _recipeMecano: {fileID: 0}
   _interactRadius: 3
   _craftingUI: {fileID: 8722391445716068558}
   _canvasTable: {fileID: 4023689623310529208}
