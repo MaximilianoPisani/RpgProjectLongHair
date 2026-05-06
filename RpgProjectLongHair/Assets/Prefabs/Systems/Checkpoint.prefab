@@ -167,7 +167,6 @@ GameObject:
   - component: {fileID: 2206259968939155427}
   - component: {fileID: 1473100561975073374}
   - component: {fileID: 7902937691862049508}
-  - component: {fileID: 1520820990230532981}
   m_Layer: 0
   m_Name: Checkpoint
   m_TagString: Untagged
@@ -183,7 +182,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2062481592678499497}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -212,8 +211,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 5.07695, y: 3.2111747, z: 43.671112}
-  m_Center: {x: 0, y: 1.415964, z: 0}
+  m_Size: {x: 5.07695, y: 3.2111747, z: 4.8004456}
+  m_Center: {x: 0, y: 1.415964, z: 0.018432617}
 --- !u!114 &4134865034335057317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,25 +305,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1520820990230532981
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2062481592678499497}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SortKey: 2377412065
-  ObjectInterest: 1
-  Flags: 262145
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 4134865034335057317}
-  ForceRemoteRenderTimeframe: 0
 --- !u!1 &3053337239447170131
 GameObject:
   m_ObjectHideFlags: 0

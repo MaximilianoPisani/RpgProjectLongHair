@@ -10,13 +10,15 @@ public class PlayerCheckpoint : NetworkBehaviour
         if (HasStateAuthority)
         {
             LastCheckpoint = transform.position;
-            Debug.Log($"[Checkpoint] Initial position: {LastCheckpoint}");
         }
     }
 
     public void SetCheckpoint(Vector3 position)
     {
-        RPC_SaveCheckpoint(position);
+        if (HasInputAuthority)
+        {
+            RPC_SaveCheckpoint(position);
+        }
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
