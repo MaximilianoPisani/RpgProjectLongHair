@@ -46,7 +46,9 @@ namespace Fusion {
     public float maxSpeed      = 2.0f;
     public float rotationSpeed = 15.0f;
 
-    Tick                _initial;
+    public bool AllowRotation = true;
+
+        Tick                _initial;
     CharacterController _controller;
 
     public Vector3 Velocity {
@@ -102,11 +104,14 @@ namespace Fusion {
                     maxSpeed
                 );
 
-                transform.rotation = Quaternion.Slerp(
-                    transform.rotation,
-                    Quaternion.LookRotation(direction),
-                    rotationSpeed * Runner.DeltaTime
-                );
+                if (AllowRotation)
+                {
+                    transform.rotation = Quaternion.Slerp(
+                        transform.rotation,
+                        Quaternion.LookRotation(direction),
+                        rotationSpeed * Runner.DeltaTime
+                    );
+                }
             }
 
             moveVelocity.x = horizontalVel.x;
