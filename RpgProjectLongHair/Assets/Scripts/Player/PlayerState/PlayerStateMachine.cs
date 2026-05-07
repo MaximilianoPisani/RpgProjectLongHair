@@ -23,8 +23,6 @@ public class PlayerStateMachine : NetworkBehaviour
     public PlayerHealth Health;
     public Player Player;
 
-    [Header("Config")]
-    public float moveSpeed = 5f;
     public bool IsBusy => _currentState is PlayerMeleeState || _currentState is PlayerRangeState;
     [Networked] public TickTimer AttackCooldown { get; set; }
     [Networked] public int NetworkedComboIndex { get; set; }
