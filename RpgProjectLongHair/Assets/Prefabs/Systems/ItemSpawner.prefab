@@ -290,27 +290,15 @@ MonoBehaviour:
     Count: 1
   - Prefab: {fileID: 7367654128530244139, guid: db727c8cf04cb7e4793894b0805a50ff, type: 3}
     SpawnPoints:
-    - {fileID: 9193386956823576780}
+    - {fileID: 0}
     Count: 1
-  - Prefab: {fileID: 1057492792692869932, guid: 31ed1d5f751d3e348ba5eb62398629bd, type: 3}
+  - Prefab: {fileID: 4765755173333686077, guid: d05683b829d971d49b0a035918c6ec4f, type: 3}
     SpawnPoints:
-    - {fileID: 1318400025244105971}
+    - {fileID: 0}
     Count: 1
   - Prefab: {fileID: 1057492792692869932, guid: f4e082fe3ff75134fb4bfbceec1934f0, type: 3}
     SpawnPoints:
-    - {fileID: 1129441075785239630}
-    Count: 1
-  - Prefab: {fileID: 1057492792692869932, guid: 96d0cf1b4daebd14a92027c892bafcea, type: 3}
-    SpawnPoints:
-    - {fileID: 4109625222807986510}
-    Count: 1
-  - Prefab: {fileID: 1057492792692869932, guid: 32717ed7d04f9514e97d51308f84b87f, type: 3}
-    SpawnPoints:
-    - {fileID: 6115665560132485224}
-    Count: 1
-  - Prefab: {fileID: 7367654128530244139, guid: 42eab65d3be806a44af974b8273bed54, type: 3}
-    SpawnPoints:
-    - {fileID: 3416081158349411571}
+    - {fileID: 0}
     Count: 1
 --- !u!1 &6724767523884071625
 GameObject:

@@ -1193,6 +1193,7 @@ GameObject:
   - component: {fileID: 6503268396307447784}
   - component: {fileID: 411337141550204832}
   - component: {fileID: 2973454572198412574}
+  - component: {fileID: 1370390588136010403}
   m_Layer: 6
   m_Name: Player Fungi
   m_TagString: Player
@@ -1684,6 +1685,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activationDistance: 20
   deactivationDistance: 50
+--- !u!114 &1370390588136010403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6542864224881935982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c18b8603764cd408c3162e94886023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterType: 0
 --- !u!1 &6615053419392994001
 GameObject:
   m_ObjectHideFlags: 0
