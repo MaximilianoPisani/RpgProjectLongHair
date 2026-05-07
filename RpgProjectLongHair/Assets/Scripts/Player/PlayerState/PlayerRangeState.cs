@@ -181,12 +181,16 @@ public class PlayerRangeState : IPlayerState
 
     private void ExecuteShootTimedEvents(float elapsed)
     {
+        if (!_projectileSpawned && elapsed >= _rangeData.ShootFrameTime)
+        {
+            _projectileSpawned = true;
+            SpawnProjectile();
+        }
         if (!_shellEjectionSpawned
-    && _rangeData.ShellEjectionVFX != null
-    && elapsed >= _rangeData.ShellEjectionVFX.vfxSpawnTime)
+         && _rangeData.ShellEjectionVFX != null
+         && elapsed >= _rangeData.ShellEjectionVFX.vfxSpawnTime)
         {
             _shellEjectionSpawned = true;
-            // Ya no llamas a SpawnShellEjectionVFX() — solo incrementás el counter
             _sm.GetComponent<PlayerNetworkSync>()?.TriggerShellVFX();
         }
 
