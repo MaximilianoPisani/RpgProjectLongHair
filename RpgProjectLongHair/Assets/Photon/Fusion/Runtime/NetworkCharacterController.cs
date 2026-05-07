@@ -45,8 +45,9 @@ namespace Fusion {
     public float braking       = 10.0f;
     public float maxSpeed      = 2.0f;
     public float rotationSpeed = 15.0f;
+    public bool AllowRotation { get; set; } = true;
 
-    Tick                _initial;
+        Tick                _initial;
     CharacterController _controller;
 
     public Vector3 Velocity {
@@ -74,26 +75,32 @@ namespace Fusion {
       }
     }
 
-    public void Move(Vector3 direction) {
-      var deltaTime    = Runner.DeltaTime;
-      var previousPos  = transform.position;
-      var moveVelocity = Data.Velocity;
+        public void Move(Vector3 direction)
+        {
+            var deltaTime = Runner.DeltaTime;
+            var previousPos = transform.position;
+            var moveVelocity = Data.Velocity;
 
-      direction = direction.normalized;
+            direction = direction.normalized;
 
-      if (Data.Grounded && moveVelocity.y < 0) {
-        moveVelocity.y = 0f;
-      }
+            if (Data.Grounded && moveVelocity.y < 0)
+            {
+                moveVelocity.y = 0f;
+            }
 
-      moveVelocity.y += gravity * Runner.DeltaTime;
+            moveVelocity.y += gravity * Runner.DeltaTime;
 
-      var horizontalVel = default(Vector3);
-      horizontalVel.x = moveVelocity.x;
-      horizontalVel.z = moveVelocity.z;
+            var horizontalVel = default(Vector3);
+            horizontalVel.x = moveVelocity.x;
+            horizontalVel.z = moveVelocity.z;
 
             if (direction.sqrMagnitude < 0.0001f)
             {
-                horizontalVel = Vector3.Lerp(horizontalVel, Vector3.zero, braking * deltaTime);
+                horizontalVel = Vector3.Lerp(
+                    horizontalVel,
+                    Vector3.zero,
+                    braking * deltaTime
+                );
             }
             else
             {
@@ -102,21 +109,24 @@ namespace Fusion {
                     maxSpeed
                 );
 
-                transform.rotation = Quaternion.Slerp(
-                    transform.rotation,
-                    Quaternion.LookRotation(direction),
-                    rotationSpeed * Runner.DeltaTime
-                );
+                if (AllowRotation)
+                {
+                    transform.rotation = Quaternion.Slerp(
+                        transform.rotation,
+                        Quaternion.LookRotation(direction),
+                        rotationSpeed * Runner.DeltaTime
+                    );
+                }
             }
 
             moveVelocity.x = horizontalVel.x;
-      moveVelocity.z = horizontalVel.z;
+                moveVelocity.z = horizontalVel.z;
 
-      _controller.Move(moveVelocity * deltaTime);
+                _controller.Move(moveVelocity * deltaTime);
 
-      Data.Velocity = (transform.position - previousPos) * Runner.TickRate;
-      Data.Grounded = _controller.isGrounded;
-    }
+                Data.Velocity = (transform.position - previousPos) * Runner.TickRate;
+                Data.Grounded = _controller.isGrounded;
+        }
     
     public override void Spawned() {
       _initial = default;
