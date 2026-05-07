@@ -2273,7 +2273,7 @@ MonoBehaviour:
     m_Bits: 64
   attackOrigin: {fileID: 5162140186112679462}
   _navMeshCheckInterval: 0.5
-  _navMeshSearchRadius: 2
+  _navMeshSearchRadius: 5
   _showActivationGizmos: 1
   _rangedAttackData: {fileID: 11400000, guid: e17bd948095bc6149b20b6363b8e4bcd, type: 2}
   _preferredMinRange: 3
