@@ -5,9 +5,8 @@ public enum ExpEvent : byte { Kill, Chest, Quest, Craft }
 [CreateAssetMenu(fileName = "ExpConfig", menuName = "RPG/Exp Config")]
 public class ExpConfigSO : ScriptableObject
 {
-    [Header("Curva de Nivel")]
-    public int baseLevelThreshold = 100; 
-    public float levelCurve = 1.35f;    
+    [Header("EXP necesaria por nivel")]
+    public int expPerLevel = 200;
 
     [Header("Recompensas de EXP")]
     public int killExp = 100;
@@ -29,6 +28,6 @@ public class ExpConfigSO : ScriptableObject
 
     public int CalcExpToNext(int level)
     {
-        return Mathf.FloorToInt(baseLevelThreshold * Mathf.Pow(levelCurve, level - 1));
+        return expPerLevel;
     }
 }
