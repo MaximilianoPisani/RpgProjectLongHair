@@ -22,7 +22,7 @@ public class PlayerRangeState : IPlayerState
     private bool _shellEjectionSpawned = false;
     private bool _fireEjectionSpawned = false;
 
-    private int _lastVFXTick = -1;
+    private int _lastAutoFireTick = -1;
 
     public PlayerRangeState(PlayerStateMachine sm)
     {
@@ -31,7 +31,7 @@ public class PlayerRangeState : IPlayerState
     public bool IsLockingInput => false;
     public void Enter()
     {
-        _lastVFXTick = -1;
+        _lastAutoFireTick = -1;
 
         var weapon = _sm.GetComponent<PlayerWeaponHandler>();
         if (weapon == null || !weapon.IsRanged)
@@ -121,7 +121,7 @@ public class PlayerRangeState : IPlayerState
 
     private void StartShooting()
     {
-        _lastVFXTick = -1;
+
         _currentPhase = ShootPhase.Shooting;
         _sm.ShootTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.ShootDuration); 
         _projectileSpawned = false;
@@ -158,7 +158,8 @@ public class PlayerRangeState : IPlayerState
             {
                 _currentPhase = ShootPhase.AutomaticFire;
                 _sm.FireRateTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.FireRate);         
-                _sm.ContinuousFireTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.MaxContinuousFireTime); 
+                _sm.ContinuousFireTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.MaxContinuousFireTime);
+                _lastAutoFireTick = -1;
                 Debug.Log("[Range] Entering automatic fire mode");
             }
             else
@@ -174,29 +175,21 @@ public class PlayerRangeState : IPlayerState
 
     private void ExecuteShootTimedEvents(float elapsed)
     {
-        // Shell ejection — tiempo viene de ShellEjectionVFX.vfxSpawnTime
         if (!_shellEjectionSpawned
-            && _rangeData.ShellEjectionVFX != null
-            && elapsed >= _rangeData.ShellEjectionVFX.vfxSpawnTime)
+    && _rangeData.ShellEjectionVFX != null
+    && elapsed >= _rangeData.ShellEjectionVFX.vfxSpawnTime)
         {
             _shellEjectionSpawned = true;
-            SpawnShellEjectionVFX();
+            // Ya no llamas a SpawnShellEjectionVFX() — solo incrementás el counter
+            _sm.GetComponent<PlayerNetworkSync>()?.TriggerShellVFX();
         }
 
-        // Fire ejection — tiempo viene de FireEjectionVFX.vfxSpawnTime
         if (!_fireEjectionSpawned
             && _rangeData.FireEjectionVFX != null
             && elapsed >= _rangeData.FireEjectionVFX.vfxSpawnTime)
         {
             _fireEjectionSpawned = true;
-            SpawnFireEjectionVFX();
-        }
-
-        // Proyectil — tiempo propio del data
-        if (!_projectileSpawned && elapsed >= _rangeData.ShootFrameTime)
-        {
-            _projectileSpawned = true;
-            SpawnProjectile();
+            _sm.GetComponent<PlayerNetworkSync>()?.TriggerFireVFX();
         }
     }
 
@@ -222,27 +215,35 @@ public class PlayerRangeState : IPlayerState
 
         RotateToAimDirection(input);
 
+        // Solo disparar cuando el timer expire Y no hayamos disparado en este tick
         if (_sm.FireRateTimer.Expired(_sm.Runner))
         {
-            _sm.FireRateTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.FireRate); 
-            _projectileSpawned = false;
-            _shellEjectionSpawned = false;
-            _fireEjectionSpawned = false;
-
             int currentTick = _sm.Runner.Tick;
 
-            SpawnProjectile();
-
-            if (currentTick != _lastVFXTick)
+            // Prevenir múltiples spawns en el mismo tick de network
+            if (currentTick == _lastAutoFireTick)
             {
-                _lastVFXTick = currentTick;
-                SpawnShellEjectionVFX();
-                SpawnFireEjectionVFX();
+                Debug.LogWarning($"[Range] Skipping duplicate auto-fire in tick {currentTick}");
+                return;
             }
-            _weaponAnim?.PlayShoot();
 
-            Debug.Log($"[Range] Auto-fire shot");
+            _lastAutoFireTick = currentTick;
+
+            // Reset del timer para el próximo disparo
+            _sm.FireRateTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.FireRate);
+
+            // Ejecutar disparo completo
+            ExecuteAutoFireShot();
         }
+    }
+    private void ExecuteAutoFireShot()
+    {
+        SpawnProjectile();
+
+        var sync = _sm.GetComponent<PlayerNetworkSync>();
+        sync?.TriggerShellVFX();
+        sync?.TriggerFireVFX();
+        _weaponAnim?.PlayShoot();
     }
 
     // ==================== MOVEMENT & ROTATION ====================
@@ -294,48 +295,6 @@ public class PlayerRangeState : IPlayerState
         {
             _sm.ChangeState(new PlayerIdleState(_sm));
         }
-    }
-
-    // ==================== VFX ====================
-
-    private void SpawnShellEjectionVFX()
-    {
-        if (_rangeData.ShellEjectionVFX == null) return;
-
-        var rage = _sm.GetComponent<PlayerRageHandler>();
-
-        if (rage != null && rage.IsRageActive)
-        {
-            var rageConfig = rage.RageData?.GetConfigForWeapon(_sm.Combat.CurrentWeapon);
-            if (rageConfig?.rageShellEjectionVFX != null)
-                _sm.Combat?.SpawnShellEjectionVFX(rageConfig.rageShellEjectionVFX);
-            else
-                Debug.LogWarning("[Range][Rage] No rage shell ejection VFX configured");
-            return;
-        }
-
-        _sm.Combat?.SpawnShellEjectionVFX(_rangeData.ShellEjectionVFX);
-        Debug.Log("[Range] Shell ejection VFX spawned");
-    }
-
-    private void SpawnFireEjectionVFX()
-    {
-        if (_rangeData.FireEjectionVFX == null) return;
-
-        var rage = _sm.GetComponent<PlayerRageHandler>();
-
-        if (rage != null && rage.IsRageActive)
-        {
-            var rageConfig = rage.RageData?.GetConfigForWeapon(_sm.Combat.CurrentWeapon);
-            if (rageConfig?.rageFireEjectionVFX != null)
-                _sm.Combat?.SpawnFireEjectionVFX(rageConfig.rageFireEjectionVFX);
-            else
-                Debug.LogWarning("[Range][Rage] No rage fire ejection VFX configured");
-            return;
-        }
-
-        _sm.Combat?.SpawnFireEjectionVFX(_rangeData.FireEjectionVFX);
-        Debug.Log("[Range] Fire ejection VFX spawned");
     }
 
     // ==================== PROJECTILE ====================
