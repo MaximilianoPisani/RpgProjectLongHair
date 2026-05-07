@@ -17,10 +17,17 @@ public class PlayerRangeState : IPlayerState
 
     private ShootPhase _currentPhase = ShootPhase.Idle;
 
+    private TickTimer _shootTickTimer;
+    private TickTimer _reloadTickTimer;
+    private TickTimer _fireRateTickTimer;
+    private TickTimer _continuousFireTickTimer;
+
     // Flags
     private bool _projectileSpawned = false;
     private bool _shellEjectionSpawned = false;
     private bool _fireEjectionSpawned = false;
+    private bool _attackButtonReleased = true; 
+    private bool _needsReload = false;
 
     private int _lastAutoFireTick = -1;
 
@@ -56,7 +63,7 @@ public class PlayerRangeState : IPlayerState
 
         _weaponAnim = weapon.GetCurrentWeaponAnimatable();
         _currentPhase = ShootPhase.Idle;
-        _sm.NeedsReload = false;
+        _needsReload = false;
 
         Debug.Log($"[Range] Entered - Fire Mode: {_rangeData.Mode}");
     }
@@ -107,9 +114,9 @@ public class PlayerRangeState : IPlayerState
     private void UpdateIdlePhase(NetworkInputData input)
     {
         if (!input.attackRange)
-            _sm.AttackButtonReleased = true;
+            _attackButtonReleased = true;
 
-        bool canShoot = _rangeData.RequireReleaseToShootAgain ? _sm.AttackButtonReleased : true;
+        bool canShoot = _rangeData.RequireReleaseToShootAgain ? _attackButtonReleased : true;
 
         if (input.attackRange && canShoot)
             StartShooting();
@@ -123,16 +130,15 @@ public class PlayerRangeState : IPlayerState
     {
 
         _currentPhase = ShootPhase.Shooting;
-        _sm.ShootTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.ShootDuration); 
+        _shootTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.ShootDuration); 
         _projectileSpawned = false;
         _shellEjectionSpawned = false;
         _fireEjectionSpawned = false;
-        _sm.AttackButtonReleased = false;
+        _attackButtonReleased = false;
 
         RotateToShootDirection();
         _sm.GetComponent<PlayerNetworkSync>()?.TriggerShoot();
         _weaponAnim?.PlayShoot();
-
         Debug.Log("[Range] Started shooting");
     }
 
@@ -141,12 +147,12 @@ public class PlayerRangeState : IPlayerState
         RotateToAimDirection(input);
 
         float elapsed = _rangeData.ShootDuration
-            - (_sm.ShootTickTimer.RemainingTime(_sm.Runner) ?? 0f); 
+            - (_shootTickTimer.RemainingTime(_sm.Runner) ?? 0f); 
 
 
         ExecuteShootTimedEvents(elapsed);
 
-        if (_sm.ShootTickTimer.Expired(_sm.Runner)) 
+        if (_shootTickTimer.Expired(_sm.Runner)) 
             OnShootAnimationEnd(input);
     }
 
@@ -157,8 +163,8 @@ public class PlayerRangeState : IPlayerState
             if (input.attackRange)
             {
                 _currentPhase = ShootPhase.AutomaticFire;
-                _sm.FireRateTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.FireRate);         
-                _sm.ContinuousFireTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.MaxContinuousFireTime);
+                _fireRateTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.FireRate);         
+                _continuousFireTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.MaxContinuousFireTime);
                 _lastAutoFireTick = -1;
                 Debug.Log("[Range] Entering automatic fire mode");
             }
@@ -205,10 +211,10 @@ public class PlayerRangeState : IPlayerState
         }
 
         if (_rangeData.MaxContinuousFireTime > 0f
-        && _sm.ContinuousFireTimer.Expired(_sm.Runner)) // 
+        && _continuousFireTickTimer.Expired(_sm.Runner)) // 
         {
             Debug.Log("[Range] Max continuous fire time reached - Forcing reload");
-            _sm.NeedsReload = true;
+            _needsReload = true;
             StartReloading();
             return;
         }
@@ -216,7 +222,7 @@ public class PlayerRangeState : IPlayerState
         RotateToAimDirection(input);
 
         // Solo disparar cuando el timer expire Y no hayamos disparado en este tick
-        if (_sm.FireRateTimer.Expired(_sm.Runner))
+        if (_fireRateTickTimer.Expired(_sm.Runner))
         {
             int currentTick = _sm.Runner.Tick;
 
@@ -230,7 +236,7 @@ public class PlayerRangeState : IPlayerState
             _lastAutoFireTick = currentTick;
 
             // Reset del timer para el próximo disparo
-            _sm.FireRateTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.FireRate);
+            _fireRateTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.FireRate);
 
             // Ejecutar disparo completo
             ExecuteAutoFireShot();
@@ -261,7 +267,7 @@ public class PlayerRangeState : IPlayerState
     private void StartReloading()
     {
         _currentPhase = ShootPhase.Reloading;
-        _sm.ReloadTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.ReloadDuration); 
+        _reloadTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.ReloadDuration);
 
         if (_sm.Animator != null)
         {
@@ -273,7 +279,7 @@ public class PlayerRangeState : IPlayerState
     }
     private void UpdateReloadingPhase(NetworkInputData input)
     {
-        if (_sm.ReloadTickTimer.Expired(_sm.Runner)) 
+        if (_reloadTickTimer.Expired(_sm.Runner)) 
             OnReloadComplete(input);
     }
 
@@ -281,20 +287,15 @@ public class PlayerRangeState : IPlayerState
     {
         Debug.Log("[Range] Reload complete");
 
-        if (_sm.Animator != null)
+        if (!_sm.Runner.IsResimulation && _sm.Animator != null) 
             _sm.Animator.SetBool("IsReloading", false);
 
         _sm.AttackCooldown = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.Cooldown);
 
-        if (_rangeData.Mode == FireMode.Automatic && input.attackRange && !_sm.NeedsReload)
-        {
-            Debug.Log("[Range] Reload complete - Resuming automatic fire");
+        if (_rangeData.Mode == FireMode.Automatic && input.attackRange && !_needsReload)
             StartShooting();
-        }
         else
-        {
             _sm.ChangeState(new PlayerIdleState(_sm));
-        }
     }
 
     // ==================== PROJECTILE ====================
