@@ -432,7 +432,7 @@ MonoBehaviour:
     m_Bits: 64
   attackOrigin: {fileID: 6310323841488000103}
   _navMeshCheckInterval: 0.5
-  _navMeshSearchRadius: 2
+  _navMeshSearchRadius: 5
   _showActivationGizmos: 1
   meleeAttackData: {fileID: 11400000, guid: ba0db7e68cb07d547ac78250acdcb703, type: 2}
   attackRange: 2

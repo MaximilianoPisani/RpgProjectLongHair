@@ -90,6 +90,8 @@ public abstract class EnemyBaseController : NetworkBehaviour
                 NavMesh.AllAreas
             );
 
+            Debug.Log($"[Enemy] {name} | hasNavMesh:{hasNavMeshNow} | IsActive:{IsActive} | pos:{transform.position}");
+
             //  Transición: SIN NavMesh  CON NavMesh (ACTIVAR)
             if (!HasNavMesh && hasNavMeshNow)
             {

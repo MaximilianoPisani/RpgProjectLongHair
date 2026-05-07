@@ -941,7 +941,7 @@ MonoBehaviour:
     m_Bits: 64
   attackOrigin: {fileID: 7505190822256135982}
   _navMeshCheckInterval: 0.5
-  _navMeshSearchRadius: 2
+  _navMeshSearchRadius: 5
   _showActivationGizmos: 1
   KamikazeData: {fileID: 11400000, guid: 4e54a115615814d4e926e15a81ab820e, type: 2}
   _enemyLayer:
