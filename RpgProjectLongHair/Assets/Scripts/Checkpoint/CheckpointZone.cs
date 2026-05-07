@@ -18,17 +18,15 @@ public class CheckpointZone : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.TryGetComponent<PlayerCheckpoint>(out var checkpoint))
-            return;
-
+        if (!other.TryGetComponent<PlayerCheckpoint>(out var checkpoint)) return;
         if (!checkpoint.HasInputAuthority) return;
 
         Vector3 spawnPos = _spawnPoint != null
             ? _spawnPoint.position
             : transform.position;
 
-        checkpoint.SetCheckpoint(spawnPos);
-
+        checkpoint.SetCheckpoint(spawnPos); 
+        checkpoint.PersistCheckpoint(spawnPos); 
         PlayLocalFeedback();
     }
 
@@ -44,7 +42,8 @@ public class CheckpointZone : NetworkBehaviour
                 : transform.position;
 
             var vfx = Instantiate(_vfxPrefab, vfxPosition, Quaternion.identity);
-            Destroy(vfx.gameObject, vfx.main.duration + vfx.main.startLifetime.constantMax);
+            Destroy(vfx.gameObject,
+                vfx.main.duration + vfx.main.startLifetime.constantMax);
         }
     }
 }

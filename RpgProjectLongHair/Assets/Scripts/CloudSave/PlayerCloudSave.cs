@@ -10,72 +10,100 @@ public class PlayerCloudSave : MonoBehaviour
 {
     private const string SAVE_KEY = "player_data";
 
-    public async Task SavePlayerData(PlayerSaveData saveData)
-    {
-        try
-        {
-            if (!AuthenticationService.Instance.IsSignedIn)
-            {
-                Debug.LogWarning("[CloudSave] No está logueado");
-                return;
-            }
+    private PlayerSaveData _cache = null;
+    private bool _isLoading = false;
+    private TaskCompletionSource<PlayerSaveData> _loadingTcs = null;
 
-            if (saveData == null)
-            {
-                Debug.LogWarning("[CloudSave] saveData es null");
-                return;
-            }
-
-            string json = JsonUtility.ToJson(saveData);
-
-            var data = new Dictionary<string, object>
-            {
-                { SAVE_KEY, json }
-            };
-
-            await CloudSaveService.Instance.Data.Player.SaveAsync(data);
-            Debug.Log($"[CloudSave] Guardado -> Level: {saveData.level} | Exp: {saveData.exp}");
-        }
-        catch (Exception e)
-        {
-            Debug.LogError("[CloudSave] Error al guardar: " + e.Message);
-        }
-    }
+    private bool _isSaving = false;
+    private bool _pendingSave = false;
 
     public async Task<PlayerSaveData> LoadPlayerData()
     {
+        if (_cache != null) return _cache;
+
+        if (_isLoading)
+            return await _loadingTcs.Task;
+
+        _isLoading = true;
+        _loadingTcs = new TaskCompletionSource<PlayerSaveData>();
+
         try
         {
             if (!AuthenticationService.Instance.IsSignedIn)
             {
                 Debug.LogWarning("[CloudSave] No está logueado");
-                return new PlayerSaveData();
+                _cache = new PlayerSaveData();
             }
-
-            var keys = new HashSet<string> { SAVE_KEY };
-            var result = await CloudSaveService.Instance.Data.Player.LoadAsync(keys);
-
-            if (result.TryGetValue(SAVE_KEY, out Item item))
+            else
             {
-                string json = item.Value.GetAs<string>();
-                var playerData = JsonUtility.FromJson<PlayerSaveData>(json);
+                var keys = new HashSet<string> { SAVE_KEY };
+                var result = await CloudSaveService.Instance.Data.Player.LoadAsync(keys);
 
-                if (playerData == null)
+                if (result.TryGetValue(SAVE_KEY, out Item item))
                 {
-                    Debug.LogWarning("[CloudSave] JSON inválido, devolviendo datos por defecto");
-                    return new PlayerSaveData();
+                    string json = item.Value.GetAs<string>();
+                    _cache = JsonUtility.FromJson<PlayerSaveData>(json) ?? new PlayerSaveData();
+                    Debug.Log($"[CloudSave] Cargado -> Level:{_cache.level} Exp:{_cache.exp} Items:{_cache.inventoryItemIds?.Length ?? 0}");
                 }
-
-                Debug.Log($"[CloudSave] Cargado -> Level: {playerData.level} | Exp: {playerData.exp}");
-                return playerData;
+                else
+                {
+                    _cache = new PlayerSaveData();
+                    Debug.Log("[CloudSave] Sin datos previos");
+                }
             }
         }
         catch (Exception e)
         {
             Debug.LogError("[CloudSave] Error al cargar: " + e.Message);
+            _cache = new PlayerSaveData();
+        }
+        finally
+        {
+            _isLoading = false;
+            _loadingTcs.SetResult(_cache);
         }
 
-        Debug.Log("[CloudSave] Sin datos previos, iniciando desde cero");
-        return new PlayerSaveData();
+        return _cache;
     }
+
+    public async Task SavePlayerData(PlayerSaveData saveData)
+    {
+        _cache = saveData;
+
+        if (_isSaving)
+        {
+            _pendingSave = true;
+            return;
+        }
+
+        _isSaving = true;
+
+        do
+        {
+            _pendingSave = false;
+
+            try
+            {
+                if (!AuthenticationService.Instance.IsSignedIn)
+                {
+                    Debug.LogWarning("[CloudSave] No está logueado");
+                    break;
+                }
+
+                string json = JsonUtility.ToJson(_cache);
+                var data = new Dictionary<string, object> { { SAVE_KEY, json } };
+                await CloudSaveService.Instance.Data.Player.SaveAsync(data);
+                Debug.Log($"[CloudSave] Guardado -> Level:{_cache.level} Exp:{_cache.exp} Items:{_cache.inventoryItemIds?.Length ?? 0}");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("[CloudSave] Error al guardar: " + e.Message);
+            }
+
+        } while (_pendingSave);
+
+        _isSaving = false;
+    }
+
+    public void ClearCache() => _cache = null;
 }
