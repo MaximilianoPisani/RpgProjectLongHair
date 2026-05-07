@@ -1192,7 +1192,7 @@ GameObject:
   - component: {fileID: 5209128995767928058}
   - component: {fileID: 6503268396307447784}
   - component: {fileID: 411337141550204832}
-  - component: {fileID: 3444354757088163299}
+  - component: {fileID: 2973454572198412574}
   m_Layer: 6
   m_Name: Player Fungi
   m_TagString: Player
@@ -1310,6 +1310,7 @@ MonoBehaviour:
   - {fileID: -6668896433345507029}
   - {fileID: 6150348916230871467}
   - {fileID: 411337141550204832}
+  - {fileID: 2973454572198412574}
   - {fileID: 8511789763993353943}
   - {fileID: 2938826579672917076}
   ForceRemoteRenderTimeframe: 0
@@ -1669,7 +1670,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4b5f2e3ca7864c429ef91b648973864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3444354757088163299
+--- !u!114 &2973454572198412574
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1678,10 +1679,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6542864224881935982}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00c18b8603764cd408c3162e94886023, type: 3}
+  m_Script: {fileID: 11500000, guid: 793ad05dd7663a540b0c0a0aaba7d8f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterType: 0
+  activationDistance: 20
+  deactivationDistance: 50
 --- !u!1 &6615053419392994001
 GameObject:
   m_ObjectHideFlags: 0

@@ -288,6 +288,10 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (_spawnedPlayers.TryGetValue(player, out var obj))
         {
+            // NavMeshPlayerTracker.Despawned() se dispara solo con runner.Despawn(),
+            // pero si usás NetworkBehaviour.Despawned() en el tracker, esto es automático.
+            // Si no usás NetworkBehaviour, desregistrá manualmente acá:
+            // NavMeshTileManager.Instance?.UnregisterPlayer(obj.transform);
             runner.Despawn(obj);
             _spawnedPlayers.Remove(player);
         }

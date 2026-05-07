@@ -1472,7 +1472,7 @@ GameObject:
   - component: {fileID: 7643408876200794298}
   - component: {fileID: 3451855441021840746}
   - component: {fileID: 8669877731037165159}
-  - component: {fileID: 1714441332410021328}
+  - component: {fileID: 1626658859710510846}
   m_Layer: 6
   m_Name: Player Mecano
   m_TagString: Player
@@ -1588,6 +1588,7 @@ MonoBehaviour:
   - {fileID: 3655203288333280099}
   - {fileID: 3451855441021840746}
   - {fileID: 8669877731037165159}
+  - {fileID: 1626658859710510846}
   - {fileID: 8511789763993353943}
   - {fileID: 4981121483645908282}
   ForceRemoteRenderTimeframe: 0
@@ -1947,7 +1948,7 @@ MonoBehaviour:
   _delayAfterDamage: 4
   _onlyWhenNotFull: 1
   _stopWhenDead: 1
---- !u!114 &1714441332410021328
+--- !u!114 &1626658859710510846
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1956,10 +1957,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6542864224881935982}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00c18b8603764cd408c3162e94886023, type: 3}
+  m_Script: {fileID: 11500000, guid: 793ad05dd7663a540b0c0a0aaba7d8f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterType: 1
 --- !u!1 &6921007751941972638
 GameObject:
   m_ObjectHideFlags: 0
