@@ -14,6 +14,8 @@ public class PlayerNetworkSync : NetworkBehaviour
     [Networked] private int SyncedLandTrigger { get; set; }
 
     [Networked] private int SyncedComboIndex { get; set; }
+    [Networked] private int SyncedShellVFXTrigger { get; set; }
+    [Networked] private int SyncedFireVFXTrigger { get; set; }
 
     private const byte FLAG_JUMPING = 1 << 0;
     private const byte FLAG_RELOADING = 1 << 1;
@@ -30,6 +32,9 @@ public class PlayerNetworkSync : NetworkBehaviour
     private int _lastFall;
     private int _lastLand;
     private int _lastComboIndex = 0;
+
+    private int _lastShellVFX;
+    private int _lastFireVFX;
 
     private const float AccelDamp = 0.08f;
     private const float DecelDamp = 0.08f;
@@ -118,6 +123,17 @@ public class PlayerNetworkSync : NetworkBehaviour
                 _lastLand = SyncedLandTrigger;
                 if (!Object.HasInputAuthority)
                     _animator.SetTrigger("Land");
+            }
+            if (change == nameof(SyncedShellVFXTrigger) && _lastShellVFX != SyncedShellVFXTrigger)
+            {
+                _lastShellVFX = SyncedShellVFXTrigger;
+                GetComponent<PlayerVFXSync>()?.OnShellVFXTriggered();
+            }
+
+            if (change == nameof(SyncedFireVFXTrigger) && _lastFireVFX != SyncedFireVFXTrigger)
+            {
+                _lastFireVFX = SyncedFireVFXTrigger;
+                GetComponent<PlayerVFXSync>()?.OnFireVFXTriggered();
             }
         }
     }
@@ -260,6 +276,22 @@ public class PlayerNetworkSync : NetworkBehaviour
             RPC_TriggerLand();
         }
     }
+    public void TriggerShellVFX()
+    {
+        if (Object.HasStateAuthority)
+            SyncedShellVFXTrigger++;
+        else if (Object.HasInputAuthority)
+            RPC_TriggerShellVFX();
+    }
+
+    public void TriggerFireVFX()
+    {
+        if (Object.HasStateAuthority)
+            SyncedFireVFXTrigger++;
+        else if (Object.HasInputAuthority)
+            RPC_TriggerFireVFX();
+    }
+
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RPC_TriggerMelee() => SyncedMeleeTrigger++;
@@ -303,4 +335,10 @@ public class PlayerNetworkSync : NetworkBehaviour
         SyncedSpeed = 0f;
         SyncedComboIndex = 0;
     }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_TriggerShellVFX() => SyncedShellVFXTrigger++;
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_TriggerFireVFX() => SyncedFireVFXTrigger++;
 }

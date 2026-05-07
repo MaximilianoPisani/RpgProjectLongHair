@@ -49,10 +49,4 @@ public class PlayerCombat : NetworkBehaviour
 
     public void SpawnSlashVFX(AttackVFXConfig config)
         => _vfxSync?.SpawnSlashVFX(config);
-
-    public void SpawnShellEjectionVFX(AttackVFXConfig config)
-        => _vfxSync?.SpawnShellEjectionVFX(config);
-
-    public void SpawnFireEjectionVFX(AttackVFXConfig config)
-        => _vfxSync?.SpawnFireEjectionVFX(config);
 }

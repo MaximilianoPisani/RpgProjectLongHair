@@ -33,40 +33,18 @@ public class PlayerVFXSync : NetworkBehaviour
                                 config.localOffset, config.followTransform, config.customDuration);
     }
 
-    public void SpawnShellEjectionVFX(AttackVFXConfig config)
+    public void OnShellVFXTriggered()
     {
-        if (config == null || config.vfxPrefab == null) return;
-
-        Transform point = _vfxController.GetShellSpawnPoint();
-        Vector3 worldPos = point != null ? point.position : transform.position;
-        Quaternion worldRot = point != null ? point.rotation : transform.rotation;
-
-        _vfxController?.SpawnShellEjectionVFX(config);
-
-        if (Object.HasStateAuthority)
-            RPC_SpawnShellEjectionVFX(config.vfxPrefab.name, worldPos, worldRot,
-                                      config.localOffset, config.followTransform, config.customDuration);
-        else if (Object.HasInputAuthority)
-            RPC_RequestShellEjectionVFX(config.vfxPrefab.name, worldPos, worldRot,
-                                        config.localOffset, config.followTransform, config.customDuration);
+        var config = GetCurrentShellConfig();
+        if (config != null)
+            _vfxController?.SpawnShellEjectionVFX(config);
     }
 
-    public void SpawnFireEjectionVFX(AttackVFXConfig config)
+    public void OnFireVFXTriggered()
     {
-        if (config == null || config.vfxPrefab == null) return;
-
-        Transform point = _vfxController.GetFireSpawnPoint();
-        Vector3 worldPos = point != null ? point.position : transform.position;
-        Quaternion worldRot = point != null ? point.rotation : transform.rotation;
-
-        _vfxController?.SpawnFireEjectionVFX(config);
-
-        if (Object.HasStateAuthority)
-            RPC_SpawnFireEjectionVFX(config.vfxPrefab.name, worldPos, worldRot,
-                                     config.localOffset, config.followTransform, config.customDuration);
-        else if (Object.HasInputAuthority)
-            RPC_RequestFireEjectionVFX(config.vfxPrefab.name, worldPos, worldRot,
-                                       config.localOffset, config.followTransform, config.customDuration);
+        var config = GetCurrentFireConfig();
+        if (config != null)
+            _vfxController?.SpawnFireEjectionVFX(config);
     }
 
     // ===== RPCs SLASH =====
@@ -83,27 +61,27 @@ public class PlayerVFXSync : NetworkBehaviour
         _vfxController?.SpawnVFXFromName(prefabName, pos, rot, offset, follow, duration, _combat);
     }
 
-    // ===== RPCs SHELL =====
+    private AttackVFXConfig GetCurrentShellConfig()
+    {
+        var rage = GetComponent<PlayerRageHandler>();
+        if (rage != null && rage.IsRageActive)
+        {
+            var rageConfig = rage.RageData?.GetConfigForWeapon(_combat.CurrentWeapon);
+            if (rageConfig?.rageShellEjectionVFX != null)
+                return rageConfig.rageShellEjectionVFX;
+        }
+        return _combat?.RangeData?.ShellEjectionVFX;
+    }
 
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    private void RPC_RequestShellEjectionVFX(string prefabName, Vector3 pos, Quaternion rot,
-                                          Vector3 offset, bool follow, float duration)
-    => RPC_SpawnShellEjectionVFX(prefabName, pos, rot, offset, follow, duration);
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
-    private void RPC_SpawnShellEjectionVFX(string prefabName, Vector3 pos, Quaternion rot,
-                                            Vector3 offset, bool follow, float duration)
-        => _vfxController?.SpawnVFXFromName(prefabName, pos, rot, offset, follow, duration, _combat);
-
-    // ===== RPCs FIRE =====
-
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    private void RPC_RequestFireEjectionVFX(string prefabName, Vector3 pos, Quaternion rot,
-                                          Vector3 offset, bool follow, float duration)
-     => RPC_SpawnFireEjectionVFX(prefabName, pos, rot, offset, follow, duration);
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
-    private void RPC_SpawnFireEjectionVFX(string prefabName, Vector3 pos, Quaternion rot,
-                                           Vector3 offset, bool follow, float duration)
-        => _vfxController?.SpawnVFXFromName(prefabName, pos, rot, offset, follow, duration, _combat);
+    private AttackVFXConfig GetCurrentFireConfig()
+    {
+        var rage = GetComponent<PlayerRageHandler>();
+        if (rage != null && rage.IsRageActive)
+        {
+            var rageConfig = rage.RageData?.GetConfigForWeapon(_combat.CurrentWeapon);
+            if (rageConfig?.rageFireEjectionVFX != null)
+                return rageConfig.rageFireEjectionVFX;
+        }
+        return _combat?.RangeData?.FireEjectionVFX;
+    }
 }
