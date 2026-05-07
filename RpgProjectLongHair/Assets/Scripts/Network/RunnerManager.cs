@@ -47,7 +47,6 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     public static bool IsInputBlocked { get; private set; } = false;
     public static bool IsInventoryOpen { get; private set; } = false;
 
-    // ARRANCAR como Host o Client (runner de juego)
     public async void StartRunner(GameMode mode, string sessionName, Action onFail)
     {
         _isBrowserOnly = false;
@@ -71,8 +70,26 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
 
-        int characterIndex = CharacterSelection.SelectedCharacter;
-        string tokenPayload = $"{playerId}|{characterIndex}";
+        int charIndex = CharacterSelection.SelectedCharacter;
+
+        var cloudSave = gameObject.GetComponent<PlayerCloudSave>()
+                       ?? gameObject.AddComponent<PlayerCloudSave>();
+        PlayerSaveData saveData = await cloudSave.LoadPlayerData();
+
+        string tokenPayload;
+        if (saveData.hasCheckpoint)
+        {
+            Vector3 cp = saveData.CheckpointPosition;
+            tokenPayload = string.Format(
+                System.Globalization.CultureInfo.InvariantCulture,
+                "{0}|{1}|{2}|{3}|{4}|1",
+                playerId, charIndex, cp.x, cp.y, cp.z
+            );
+        }
+        else
+        {
+            tokenPayload = $"{playerId}|{charIndex}|0|0|0|0";
+        }
 
         var startGameArgs = new StartGameArgs
         {
@@ -101,6 +118,39 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    public async void StartRunnerWithToken(GameMode mode, string sessionName, string tokenPayload, Action onFail)
+    {
+        _isBrowserOnly = false;
+        _isShuttingDownControlled = false;
+
+        if (_runner != null)
+        {
+            await ShutdownAsync();
+        }
+
+        _runner = gameObject.AddComponent<NetworkRunner>();
+        _runner.ProvideInput = true;
+
+        var startGameArgs = new StartGameArgs
+        {
+            GameMode = mode,
+            SessionName = sessionName,
+            PlayerCount = MAX_PLAYERS,
+            Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
+            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
+            IsVisible = true,
+            IsOpen = true,
+            ConnectionToken = Encoding.UTF8.GetBytes(tokenPayload)
+        };
+
+        var result = await _runner.StartGame(startGameArgs);
+
+        if (!result.Ok)
+        {
+            Debug.LogError($"[RunnerManager] StartGame falló: {result.ShutdownReason}");
+            onFail?.Invoke();
+        }
+    }
     // ARRANCAR en modo browser (solo escuchar la lista de salas)
     public async void StartLobbyBrowser(Action onFail)
     {
@@ -210,10 +260,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         byte[] token = runner.GetPlayerConnectionToken(player);
-
         if (token == null || token.Length == 0)
         {
-            Debug.LogError("[RunnerManager] Token inválido");
             runner.Disconnect(player);
             return;
         }
@@ -221,7 +269,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         string tokenStr = Encoding.UTF8.GetString(token);
         string[] parts = tokenStr.Split('|');
 
-        if (parts.Length < 2 || !int.TryParse(parts[1], out int characterIndex))
+        if (parts.Length < 6 || !int.TryParse(parts[1], out int characterIndex))
         {
             Debug.LogError($"[RunnerManager] Token mal formado: {tokenStr}");
             runner.Disconnect(player);
@@ -229,7 +277,6 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         string playerId = parts[0];
-
         if (string.IsNullOrEmpty(playerId))
         {
             runner.Disconnect(player);
@@ -243,21 +290,45 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
 
+        bool hasCheckpoint = parts[5] == "1";
+        Vector3 spawnPosition = Vector3.zero;
+        bool useCheckpoint = false;
+
+        if (hasCheckpoint &&
+            float.TryParse(parts[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float cx) &&
+            float.TryParse(parts[3], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float cy) &&
+            float.TryParse(parts[4], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float cz))
+        {
+            spawnPosition = new Vector3(cx, cy, cz);
+            useCheckpoint = true;
+            Debug.Log($"[RunnerManager] Checkpoint en token: {spawnPosition}");
+        }
+
         _connectedPlayerIds.Add(playerId);
 
-        var playerObj = _playerSpawner.SpawnPlayer(runner, player, characterIndex);
+        NetworkObject playerObj;
+        if (useCheckpoint)
+            playerObj = _playerSpawner.SpawnPlayerAtPosition(runner, player, characterIndex, spawnPosition);
+        else
+            playerObj = _playerSpawner.SpawnPlayer(runner, player, characterIndex);
+
         if (playerObj == null) return;
 
         runner.SetPlayerObject(player, playerObj);
         _spawnedPlayers[player] = playerObj;
 
+        if (useCheckpoint)
+        {
+            var checkpoint = playerObj.GetComponent<PlayerCheckpoint>();
+            if (checkpoint != null)
+                checkpoint.LastCheckpoint = spawnPosition;
+        }
+
         Debug.Log($"[RunnerManager] Player conectado: {playerId}, personaje: {characterIndex}");
 
-        // Notificar al NetworkController (solo para el jugador local del host)
         if (player == runner.LocalPlayer)
             OnPlayerSpawned?.Invoke(playerObj);
 
-        // Spawnear items y enemigos solo cuando entra el primer jugador
         if (_spawnedPlayers.Count == 1)
         {
             _itemSpawner.SpawnItems(_runner);

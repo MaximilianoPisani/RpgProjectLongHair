@@ -1,5 +1,6 @@
 using Fusion;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class PlayerExp : NetworkBehaviour
 {
@@ -15,25 +16,16 @@ public class PlayerExp : NetworkBehaviour
     public override async void Spawned()
     {
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
-        _cloud = FindFirstObjectByType<PlayerCloudSave>();
 
+        _cloud = GetComponent<PlayerCloudSave>();
         if (_cloud == null)
-            Debug.LogWarning("[PlayerExp] PlayerCloudSave no encontrado en escena");
+            _cloud = gameObject.AddComponent<PlayerCloudSave>();
 
         if (Object.HasStateAuthority)
         {
-            if (_cloud != null)
-            {
-                var data = await _cloud.LoadPlayerData();
-                Level = data.level;
-                CurrentExp = data.exp;
-            }
-            else
-            {
-                Level = 0;
-                CurrentExp = 0;
-            }
-
+            var data = await _cloud.LoadPlayerData();
+            Level = data.level;
+            CurrentExp = data.exp;
             ExpToNextLevel = expConfig.CalcExpToNext(Level);
         }
 
@@ -72,9 +64,9 @@ public class PlayerExp : NetworkBehaviour
             ExpToNextLevel = expConfig.CalcExpToNext(Level);
         }
 
-        if (_cloud != null)
-            await _cloud.SavePlayerData(new PlayerSaveData { level = Level, exp = CurrentExp });
-        else
-            Debug.LogWarning("[PlayerExp] PlayerCloudSave no encontrado, no se guardó");
+        var saveData = await _cloud.LoadPlayerData(); 
+        saveData.level = Level;
+        saveData.exp = CurrentExp;
+        await _cloud.SavePlayerData(saveData);
     }
 }
