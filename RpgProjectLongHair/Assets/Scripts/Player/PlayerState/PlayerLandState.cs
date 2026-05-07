@@ -4,8 +4,6 @@ using UnityEngine;
 public class PlayerLandState : IPlayerState
 {
     private PlayerStateMachine _sm;
-    private TickTimer _landTickTimer;
-
     public PlayerLandState(PlayerStateMachine sm)
     {
         _sm = sm;
@@ -14,7 +12,7 @@ public class PlayerLandState : IPlayerState
     public void Enter()
     {
         _sm.IsJumping = false;
-        _landTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, 0.2f);
+        _sm.LandTickTimer = TickTimer.CreateFromSeconds(_sm.Runner, 0.2f);
 
         if (_sm.Animator != null)
         {
@@ -37,7 +35,7 @@ public class PlayerLandState : IPlayerState
 
     public void Tick(NetworkInputData input)
     {
-        if (!_landTickTimer.Expired(_sm.Runner))
+        if (!_sm.LandTickTimer.Expired(_sm.Runner))
             return;
 
         var weapon = _sm.GetComponent<PlayerWeaponHandler>();

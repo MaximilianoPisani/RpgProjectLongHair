@@ -28,7 +28,13 @@ public class PlayerStateMachine : NetworkBehaviour
     public bool IsBusy => _currentState is PlayerMeleeState || _currentState is PlayerRangeState;
     [Networked] public TickTimer AttackCooldown { get; set; }
     [Networked] public int NetworkedComboIndex { get; set; }
-
+    [Networked] public TickTimer LandTickTimer { get; set; }
+    [Networked] public TickTimer ShootTickTimer { get; set; }
+    [Networked] public TickTimer ReloadTickTimer { get; set; }
+    [Networked] public TickTimer FireRateTimer { get; set; }
+    [Networked] public TickTimer ContinuousFireTimer { get; set; }
+    [Networked] public NetworkBool AttackButtonReleased { get; set; }
+    [Networked] public NetworkBool NeedsReload { get; set; }
     public bool IsJumping { get; set; } = false;
     public Vector3 LastShootDirection { get; set; } = Vector3.forward;
     public bool IsJumpLocked => _currentState is PlayerRangeState;

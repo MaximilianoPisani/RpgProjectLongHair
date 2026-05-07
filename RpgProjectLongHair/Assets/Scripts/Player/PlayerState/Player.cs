@@ -50,6 +50,7 @@ public class Player : NetworkBehaviour
 
         var sm = GetComponent<PlayerStateMachine>();
         bool isInAir = sm != null && (sm.CurrentState is PlayerJumpState || sm.CurrentState is PlayerFallState);
+        bool isAiming = sm != null && sm.CurrentState is PlayerRangeState;
 
         float targetSpeed = input.sprint ? sprintSpeed : walkSpeed;
         _ncc.maxSpeed = targetSpeed;
@@ -58,26 +59,33 @@ public class Player : NetworkBehaviour
 
         if (Object.HasStateAuthority)
         {
-            // Guardar aceleración original
+            // Guardar rotación antes del Move si estamos apuntando
+            Quaternion aimRotation = transform.rotation;
+
             float originalAcceleration = _ncc.acceleration;
 
             if (isInAir)
             {
                 _ncc.acceleration = originalAcceleration * airControl;
                 _ncc.Move(moveDir);
-                _ncc.acceleration = originalAcceleration; // Restaurar el valor real
+                _ncc.acceleration = originalAcceleration;
             }
             else
             {
                 _ncc.Move(moveDir);
             }
+
+            // El NCC rota solo hacia el moveDir — si estamos apuntando,
+            // restauramos la rotación para que la controle el estado de rango
+            if (isAiming)
+            {
+                transform.rotation = aimRotation;
+            }
         }
 
-        // Esto está bien, solo se ejecuta en el cliente con input authority
         if (input.interact && Object.HasInputAuthority)
             GetComponent<PlayerInventoryController>()?.TryPickupItem();
     }
-
     private void UpdateCoyoteTimer(float deltaTime)
     {
         if (IsPhysicallyGrounded())
