@@ -256,21 +256,11 @@ public class PlayerRangeState : IPlayerState
 
     private void RotateToAimDirection(NetworkInputData input)
     {
-        Vector3 target = input.aimPoint;
+        Vector3 dir = input.shootDirection;
+        Vector3 flatDir = new Vector3(dir.x, 0f, dir.z).normalized;
 
-        Vector3 dir = target - _sm.transform.position;
-        dir.y = 0f;
-
-        if (dir.sqrMagnitude > 0.01f)
-        {
-            Quaternion targetRot = Quaternion.LookRotation(dir.normalized);
-
-            _sm.transform.rotation = Quaternion.Slerp(
-                _sm.transform.rotation,
-                targetRot,
-                20f * _sm.Runner.DeltaTime
-            );
-        }
+        if (flatDir.sqrMagnitude > 0.01f)
+            _sm.transform.rotation = Quaternion.LookRotation(flatDir);
     }
     // ==================== RELOADING ====================
 
