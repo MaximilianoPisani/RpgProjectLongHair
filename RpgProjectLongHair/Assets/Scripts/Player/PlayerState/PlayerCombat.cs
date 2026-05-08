@@ -49,4 +49,10 @@ public class PlayerCombat : NetworkBehaviour
 
     public void SpawnSlashVFX(AttackVFXConfig config)
         => _vfxSync?.SpawnSlashVFX(config);
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_SetCurrentWeapon(WeaponCategory weapon)
+    {
+        CurrentWeapon = weapon;
+    }
 }

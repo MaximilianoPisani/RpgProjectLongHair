@@ -3,15 +3,9 @@ using UnityEngine;
 
 public enum PlayerStateId : byte
 {
-    Idle,
-    Move,
-    Jump,
-    Fall,
-    Land,
-    Melee,
-    Range,
-    Dead
+    Idle, Move, Jump, Fall, Land, Melee, Range, Dead
 }
+
 public class PlayerStateMachine : NetworkBehaviour
 {
     private IPlayerState _currentState;
@@ -35,45 +29,75 @@ public class PlayerStateMachine : NetworkBehaviour
 
     [Networked] public PlayerStateId NetworkedStateId { get; set; }
     private ChangeDetector _stateChangeDetector;
-    private PlayerStateId _lastKnownStateId;
+
+    // ??? estados que el cliente predice localmente ???????????????????????
+    private static bool IsClientPredicted(IPlayerState s) =>
+        s is PlayerIdleState
+        || s is PlayerMoveState
+        || s is PlayerMeleeState
+        || s is PlayerRangeState;
+
+    // ??? estados que solo el host resuelve ???????????????????????????????
+    private static bool IsAirborneState(IPlayerState s) =>
+        s is PlayerJumpState
+        || s is PlayerFallState
+        || s is PlayerLandState;
+
     public override void Spawned()
     {
         Player = GetComponent<Player>();
         IsJumping = false;
         _stateChangeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
-        _lastKnownStateId = PlayerStateId.Idle;
         ChangeState(new PlayerIdleState(this));
     }
 
     public override void FixedUpdateNetwork()
     {
-        if (Player.IsPhysicallyGroundedPublic())
+        if (Player.IsPhysicallyGroundedPublic() && !(_currentState is PlayerJumpState))
             IsJumping = false;
 
         if (_currentState is PlayerDeadState)
         {
-            _currentState.Tick(default);
+            if (Object.HasStateAuthority)
+                _currentState.Tick(default);
             return;
         }
 
-        if (!GetInput(out NetworkInputData input)) return;
+        // Cliente remoto: nunca tickea
+        if (!Object.HasInputAuthority && !Object.HasStateAuthority)
+            return;
 
+        if (!GetInput(out NetworkInputData input)) return;
         InputData = input;
         LastShootDirection = input.shootDirection;
 
-
-        if (_currentState is PlayerIdleState || _currentState is PlayerMoveState)
+        // Estados aéreos: solo el host tickea
+        if (IsAirborneState(_currentState))
         {
-            if (PlayerFallState.ShouldFall(this))
+            if (Object.HasStateAuthority)
+            {
+                var blockedInput = input;
+                blockedInput.attack = false;
+                blockedInput.attackJustPressed = false;
+                blockedInput.attackRange = false;
+                _currentState.Tick(blockedInput);
+            }
+            return;
+        }
+
+        // Caída: solo host inicia
+        if (Object.HasStateAuthority)
+        {
+            if ((_currentState is PlayerIdleState || _currentState is PlayerMoveState)
+                && PlayerFallState.ShouldFall(this))
             {
                 ChangeState(new PlayerFallState(this));
                 return;
             }
         }
 
-        bool canJump = _currentState is PlayerIdleState
-            || _currentState is PlayerMoveState;
-
+        // Salto: el input viene del cliente, el host ejecuta la física
+        bool canJump = _currentState is PlayerIdleState || _currentState is PlayerMoveState;
         if (input.jump && canJump && Player.IsGrounded() && !IsJumpLocked)
         {
             IsJumping = true;
@@ -81,26 +105,58 @@ public class PlayerStateMachine : NetworkBehaviour
             return;
         }
 
-        bool isInAir = _currentState is PlayerFallState
-                    || _currentState is PlayerLandState
-                    || _currentState is PlayerJumpState
-                    || PlayerFallState.ShouldFall(this);
-
-        if (isInAir)
-        {
-            var blockedInput = input;
-            blockedInput.attack = false;
-            blockedInput.attackJustPressed = false;
-            blockedInput.attackRange = false;
-            _currentState?.Tick(blockedInput);
-            return;
-        }
-
         _currentState?.Tick(input);
     }
 
+    public override void Render()
+    {
+        Debug.Log($"[RENDER] NetworkedStateId cambió a {NetworkedStateId} | InputAuth:{Object.HasInputAuthority} | currentState:{GetStateId(_currentState)}");
+        // El host ya tiene el estado correcto, solo necesita sincronizar clientes
+        foreach (var change in _stateChangeDetector.DetectChanges(this))
+        {
+            if (change != nameof(NetworkedStateId)) continue;
+
+            if (Object.HasStateAuthority) continue;
+
+            if (Object.HasInputAuthority)
+            {
+                // Cliente local: solo sincronizar estados aéreos y muerte
+                // Los estados predichos (Idle/Move/Melee/Range) no se pisan
+
+                bool currentIsAirborne = _currentState is PlayerJumpState
+                                 || _currentState is PlayerFallState
+                                 || _currentState is PlayerLandState;
+
+                bool shouldSync = NetworkedStateId == PlayerStateId.Jump
+                          || NetworkedStateId == PlayerStateId.Fall
+                          || NetworkedStateId == PlayerStateId.Land
+                          || NetworkedStateId == PlayerStateId.Dead
+                          // Salir del ciclo aéreo cuando el host confirma tierra
+                          || (currentIsAirborne && (
+                              NetworkedStateId == PlayerStateId.Idle
+                           || NetworkedStateId == PlayerStateId.Move));
+                if (shouldSync)
+            {
+                // Resetear IsJumping cuando volvemos a tierra
+                if (NetworkedStateId == PlayerStateId.Idle
+                 || NetworkedStateId == PlayerStateId.Move)
+                    IsJumping = false;
+
+                SyncStateOnClient(NetworkedStateId);
+            }
+            }
+            else
+            {
+                // Cliente remoto: sincronizar todo
+                SyncStateOnClient(NetworkedStateId);
+            }
+        }
+    }
+
+    // ??? Cambia estado y notifica al host ?????????????????????????????????
     public void ChangeState(IPlayerState newState)
     {
+        Debug.Log($"[SM] {GetStateId(_currentState)} ? {GetStateId(newState)} | StateAuth:{Object.HasStateAuthority} | InputAuth:{Object.HasInputAuthority}");
         _currentState?.Exit();
         _currentState = newState;
         _currentState.Enter();
@@ -109,45 +165,10 @@ public class PlayerStateMachine : NetworkBehaviour
             NetworkedStateId = GetStateId(newState);
     }
 
-    public void UpdateState(NetworkInputData input)
-    {
-        _currentState?.Tick(input);
-    }
-
-    public override void Render()
-    {
-        if (Object.HasStateAuthority) return;
-
-        foreach (var change in _stateChangeDetector.DetectChanges(this))
-        {
-            if (change == nameof(NetworkedStateId))
-            {
-                if (Object.HasInputAuthority)
-                {
-                    // Jugador local: SOLO sincronizar el respawn (Dead  vivo)
-                    // El combo y movimiento los maneja la predicción local
-                    bool isRespawn = _currentState is PlayerDeadState
-                                     && NetworkedStateId != PlayerStateId.Dead;
-                    if (isRespawn)
-                    {
-                        _lastKnownStateId = PlayerStateId.Dead;
-                        SyncStateOnClient(NetworkedStateId);
-                    }
-                }
-                else
-                {
-                    // Jugador remoto: sincronizar todo
-                    SyncStateOnClient(NetworkedStateId);
-                }
-            }
-        }
-    }
-
+    // ??? Sincroniza estado en el cliente sin tocar NetworkedStateId ???????
     private void SyncStateOnClient(PlayerStateId stateId)
     {
-        if (_lastKnownStateId == stateId) return;
-        _lastKnownStateId = stateId;
-
+        Debug.Log($"[SYNC CLIENT] Aplicando {stateId} | currentState:{GetStateId(_currentState)}");
         IPlayerState newState = stateId switch
         {
             PlayerStateId.Idle => new PlayerIdleState(this),
@@ -161,10 +182,28 @@ public class PlayerStateMachine : NetworkBehaviour
             _ => new PlayerIdleState(this)
         };
 
-        // Cambia el estado localmente sin modificar NetworkedStateId
         _currentState?.Exit();
         _currentState = newState;
         _currentState.Enter();
+    }
+
+    // ??? RPC: cliente pide al host que ejecute el salto ??????????????????
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    private void RPC_RequestJump()
+    {
+        if (!Player.IsGrounded() || IsJumpLocked) return;
+        IsJumping = true;
+        ChangeState(new PlayerJumpState(this));
+    }
+
+    // ??? Animación local de salto para el cliente (sin esperar al host) ??
+    private void PlayJumpAnimationLocal()
+    {
+        if (Animator == null) return;
+        Animator.SetBool("isLanding", false);
+        Animator.SetBool("isJumping", true);
+        Animator.SetBool("isFalling", false);
+        GetComponent<PlayerNetworkSync>()?.TriggerJump();
     }
 
     private static PlayerStateId GetStateId(IPlayerState state) => state switch
@@ -179,6 +218,7 @@ public class PlayerStateMachine : NetworkBehaviour
         PlayerDeadState => PlayerStateId.Dead,
         _ => PlayerStateId.Idle
     };
+
     public Vector3 GetSpawnPosition()
     {
         var checkpoint = GetComponent<PlayerCheckpoint>();
@@ -194,19 +234,13 @@ public class PlayerStateMachine : NetworkBehaviour
             ? Combat.meleeOrigin.position
             : origin + forward * 0.5f + Vector3.up;
 
-        Collider[] hits = Physics.OverlapSphere(
-            attackOrigin,
-            Combat.meleeData.HitRadius,
-            Combat.enemyLayer
-        );
+        Collider[] hits = Physics.OverlapSphere(attackOrigin, Combat.meleeData.HitRadius, Combat.enemyLayer);
 
         foreach (var hit in hits)
         {
             var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
             if (enemyHealth != null && enemyHealth.Object.HasStateAuthority)
-            {
                 enemyHealth.ApplyDamageServer(damage, Object.InputAuthority);
-            }
         }
     }
 
@@ -220,14 +254,8 @@ public class PlayerStateMachine : NetworkBehaviour
             : transform.position + direction * 0.5f + Vector3.up;
 
         float radius = Combat.meleeData.HitRadius;
-
-        if (_currentState is PlayerMeleeState)
-            Gizmos.color = Color.red;
-        else
-            Gizmos.color = new Color(1, 0, 0, 0.2f);
-
+        Gizmos.color = _currentState is PlayerMeleeState ? Color.red : new Color(1, 0, 0, 0.2f);
         Gizmos.DrawWireSphere(origin, radius);
-
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(origin, origin + direction * 1.5f);
     }

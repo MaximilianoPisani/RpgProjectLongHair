@@ -79,8 +79,18 @@ public class PlayerWeaponHandler : MonoBehaviour
 
     private void SetCurrentWeapon(WeaponCategory weapon)
     {
-        if (_combat != null && _combat.HasStateAuthority)
+        if (_combat == null) return;
+
+        // Host: setea directo
+        if (_combat.HasStateAuthority)
+        {
             _combat.CurrentWeapon = weapon;
+            return;
+        }
+
+        // Cliente: pide al host via RPC
+        if (_combat.HasInputAuthority)
+            _combat.RPC_SetCurrentWeapon(weapon);
     }
 
     private void SetWeapon(bool melee, bool ranged)

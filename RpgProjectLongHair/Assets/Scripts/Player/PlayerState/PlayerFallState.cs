@@ -6,15 +6,12 @@ public class PlayerFallState : IPlayerState
     private PlayerStateMachine _sm;
     private TickTimer _minFallTimer;
 
-    public PlayerFallState(PlayerStateMachine sm)
-    {
-        _sm = sm;
-    }
+    public PlayerFallState(PlayerStateMachine sm) => _sm = sm;
 
     public void Enter()
     {
-        _minFallTimer = TickTimer.CreateFromSeconds(_sm.Runner, 0.15f);// empieza expirado, solo para tracking
-        _sm.GetComponent<PlayerNetworkSync>()?.TriggerFall();
+        if (_sm.Object.HasStateAuthority)
+            _minFallTimer = TickTimer.CreateFromSeconds(_sm.Runner, 0.15f);
 
         if (_sm.Animator != null)
         {
@@ -23,31 +20,23 @@ public class PlayerFallState : IPlayerState
             _sm.Animator.SetBool("isLanding", false);
         }
 
-        Debug.Log("[FALL] Enter - Starting fall");
+        _sm.GetComponent<PlayerNetworkSync>()?.TriggerFall();
     }
 
     public void Exit()
     {
         if (_sm.Animator != null)
             _sm.Animator.SetBool("isFalling", false);
-
-
-        Debug.Log("[FALL] Exit");
     }
 
     public void Tick(NetworkInputData input)
     {
+        if (!_sm.Object.HasStateAuthority) return;
         if (!_minFallTimer.Expired(_sm.Runner)) return;
 
         var ncc = _sm.GetComponent<NetworkCharacterController>();
-
-        if (_sm.Player.IsPhysicallyGroundedPublic())
-        {
-            if (ncc != null && ncc.Velocity.y <= 0.5f)
-            {
-                _sm.ChangeState(new PlayerLandState(_sm));
-            }
-        }
+        if (_sm.Player.IsPhysicallyGroundedPublic() && ncc != null && ncc.Velocity.y <= 0.5f)
+            _sm.ChangeState(new PlayerLandState(_sm));
     }
 
     public static bool ShouldFall(PlayerStateMachine sm)
