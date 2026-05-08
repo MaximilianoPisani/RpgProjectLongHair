@@ -30,14 +30,7 @@ public class PlayerStateMachine : NetworkBehaviour
     [Networked] public PlayerStateId NetworkedStateId { get; set; }
     private ChangeDetector _stateChangeDetector;
 
-    // ??? estados que el cliente predice localmente ???????????????????????
-    private static bool IsClientPredicted(IPlayerState s) =>
-        s is PlayerIdleState
-        || s is PlayerMoveState
-        || s is PlayerMeleeState
-        || s is PlayerRangeState;
-
-    // ??? estados que solo el host resuelve ???????????????????????????????
+    // === estados que solo el host resuelve ====================
     private static bool IsAirborneState(IPlayerState s) =>
         s is PlayerJumpState
         || s is PlayerFallState
@@ -153,7 +146,7 @@ public class PlayerStateMachine : NetworkBehaviour
         }
     }
 
-    // ??? Cambia estado y notifica al host ?????????????????????????????????
+    // ===Cambia estado y notifica al host ====================
     public void ChangeState(IPlayerState newState)
     {
         Debug.Log($"[SM] {GetStateId(_currentState)} ? {GetStateId(newState)} | StateAuth:{Object.HasStateAuthority} | InputAuth:{Object.HasInputAuthority}");
@@ -165,7 +158,7 @@ public class PlayerStateMachine : NetworkBehaviour
             NetworkedStateId = GetStateId(newState);
     }
 
-    // ??? Sincroniza estado en el cliente sin tocar NetworkedStateId ???????
+    // ===Sincroniza estado en el cliente sin tocar NetworkedStateId ====================
     private void SyncStateOnClient(PlayerStateId stateId)
     {
         Debug.Log($"[SYNC CLIENT] Aplicando {stateId} | currentState:{GetStateId(_currentState)}");
@@ -185,25 +178,6 @@ public class PlayerStateMachine : NetworkBehaviour
         _currentState?.Exit();
         _currentState = newState;
         _currentState.Enter();
-    }
-
-    // ??? RPC: cliente pide al host que ejecute el salto ??????????????????
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    private void RPC_RequestJump()
-    {
-        if (!Player.IsGrounded() || IsJumpLocked) return;
-        IsJumping = true;
-        ChangeState(new PlayerJumpState(this));
-    }
-
-    // ??? Animación local de salto para el cliente (sin esperar al host) ??
-    private void PlayJumpAnimationLocal()
-    {
-        if (Animator == null) return;
-        Animator.SetBool("isLanding", false);
-        Animator.SetBool("isJumping", true);
-        Animator.SetBool("isFalling", false);
-        GetComponent<PlayerNetworkSync>()?.TriggerJump();
     }
 
     private static PlayerStateId GetStateId(IPlayerState state) => state switch
