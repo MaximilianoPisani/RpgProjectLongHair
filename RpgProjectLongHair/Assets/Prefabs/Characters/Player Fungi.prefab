@@ -1587,7 +1587,6 @@ MonoBehaviour:
   Combat: {fileID: 5247100580435787750}
   Health: {fileID: 2475146280369022930}
   Player: {fileID: 3144269693680086204}
-  moveSpeed: 6
   _NetworkedComboIndex: 0
   _NetworkedStateId: 0
 --- !u!114 &1290202656488514935

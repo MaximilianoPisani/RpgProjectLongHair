@@ -20,7 +20,7 @@ MonoBehaviour:
   amount: 0
   slotPrefab: {fileID: 6399456027509336925, guid: 6b38aec3eef2ef64dbc737a68ddb7623, type: 3}
   isDualWield: 0
-  equipPrefab: {fileID: 8608693512484160100, guid: 84e816238ffa3634e8b5777a730d9497, type: 3}
+  equipPrefab: {fileID: 8608693512484160100, guid: 5fcff9543f52f814aa739f6cecba615c, type: 3}
   rightHandPrefab: {fileID: 0}
   leftHandPrefab: {fileID: 0}
-  vfxConfig: {fileID: 0}
+  vfxConfig: {fileID: 11400000, guid: 7ce7e8daea7162a409acdb2620bc26ca, type: 2}
