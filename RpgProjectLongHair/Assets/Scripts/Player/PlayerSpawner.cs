@@ -82,7 +82,31 @@ public class PlayerSpawner : MonoBehaviour
         int idx = (playerRef.RawEncoded - 1) % _spawnPoints.Length;
         return _spawnPoints[idx];
     }
+    public NetworkObject SpawnPlayerAtPosition(NetworkRunner runner, PlayerRef playerRef, int characterIndex, Vector3 position)
+    {
+        if (_characterPrefabs == null || _characterPrefabs.Length == 0)
+        {
+            Debug.LogError("[PlayerSpawner] No hay prefabs asignados.");
+            return null;
+        }
 
+        int prefabIndex = Mathf.Clamp(characterIndex - 1, 0, _characterPrefabs.Length - 1);
+        NetworkObject prefab = _characterPrefabs[prefabIndex];
+
+        if (prefab == null)
+        {
+            Debug.LogError($"[PlayerSpawner] Prefab en índice {prefabIndex} es null.");
+            return null;
+        }
+
+        Transform spawnPoint = GetSpawnPoint(playerRef);
+        NetworkObject spawned = runner.Spawn(prefab, position, spawnPoint.rotation, playerRef);
+
+        if (_showDebugLogs)
+            Debug.Log($"[PlayerSpawner] Spawneado en checkpoint {position} para {playerRef}");
+
+        return spawned;
+    }
     /// <summary>
     /// Mantener por si algún sistema externo lo llama — ya no hace nada
     /// porque NavMeshPlayerTracker.Despawned() se encarga automáticamente.

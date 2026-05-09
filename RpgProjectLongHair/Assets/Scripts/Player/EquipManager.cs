@@ -23,7 +23,7 @@ public class EquipManager : NetworkBehaviour
     {
         _inventory = GetComponent<PlayerInventoryData>();
 
-        if (EquippedItemId != 0)
+        if (!HasInputAuthority && EquippedItemId != 0)
             RenderEquippedItem();
     }
 
