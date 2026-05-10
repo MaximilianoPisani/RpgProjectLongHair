@@ -5,7 +5,8 @@ public enum WeaponCategory
     Axe,
     Hammer,
     Rifle,
-    Gatling
+    Gatling,
+    CraftItem
 }
 
 [CreateAssetMenu(fileName = "NewItem", menuName = "Inventory/Item")]

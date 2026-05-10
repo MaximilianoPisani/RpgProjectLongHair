@@ -15,6 +15,14 @@ MonoBehaviour:
   id: 104
   itemName: Rotor gatling
   icon: {fileID: 0}
-  visualPrefab: {fileID: 0}
+  type: 0
+  weaponCategory: 4
+  amount: 1
+  slotPrefab: {fileID: 6399456027509336925, guid: 56edf9cdae5d8f540bba63ca8c9507db, type: 3}
+  isDualWield: 0
+  equipPrefab: {fileID: 3784861427520222797, guid: f4e082fe3ff75134fb4bfbceec1934f0, type: 3}
+  rightHandPrefab: {fileID: 0}
+  leftHandPrefab: {fileID: 0}
   vfxConfig: {fileID: 0}
+  visualPrefab: {fileID: 0}
   owner: 1

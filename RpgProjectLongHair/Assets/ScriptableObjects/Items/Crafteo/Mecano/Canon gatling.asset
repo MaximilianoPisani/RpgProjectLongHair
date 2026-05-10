@@ -15,6 +15,14 @@ MonoBehaviour:
   id: 105
   itemName: Canon gatling
   icon: {fileID: 0}
-  visualPrefab: {fileID: 0}
+  type: 0
+  weaponCategory: 4
+  amount: 1
+  slotPrefab: {fileID: 6399456027509336925, guid: d5918bcaad8677f4f9cd742d8a05f727, type: 3}
+  isDualWield: 0
+  equipPrefab: {fileID: 8294984411714850430, guid: db727c8cf04cb7e4793894b0805a50ff, type: 3}
+  rightHandPrefab: {fileID: 0}
+  leftHandPrefab: {fileID: 0}
   vfxConfig: {fileID: 11400000, guid: 7ce7e8daea7162a409acdb2620bc26ca, type: 2}
+  visualPrefab: {fileID: 0}
   owner: 1

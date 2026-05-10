@@ -1,15 +1,12 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewCraftItem", menuName = "Crafting/CraftItem")]
-public class CraftItemSO : ScriptableObject
+public class CraftItemSO : ItemSO
 {
-    public int id;
-    public string itemName;
-    public Sprite icon;
+   
     public GameObject visualPrefab;
 
-    [Header("VFX")]
-    public ItemVFXConfig vfxConfig;
+    
 
     public CharacterType owner;
 }
