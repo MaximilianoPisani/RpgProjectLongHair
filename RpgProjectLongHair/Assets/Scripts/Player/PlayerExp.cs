@@ -1,6 +1,5 @@
 using Fusion;
 using UnityEngine;
-using System.Threading.Tasks;
 
 public class PlayerExp : NetworkBehaviour
 {
@@ -9,17 +8,18 @@ public class PlayerExp : NetworkBehaviour
     [Networked] public int ExpToNextLevel { get; private set; }
 
     [SerializeField] private ExpConfigSO expConfig;
+    [SerializeField] private GameObject _expCanvas;
 
     private ChangeDetector _changeDetector;
     private PlayerCloudSave _cloud;
+    private PlayerExpHUD _hud;
 
     public override async void Spawned()
     {
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
 
         _cloud = GetComponent<PlayerCloudSave>();
-        if (_cloud == null)
-            _cloud = gameObject.AddComponent<PlayerCloudSave>();
+        if (_cloud == null) _cloud = gameObject.AddComponent<PlayerCloudSave>();
 
         if (Object.HasStateAuthority)
         {
@@ -31,8 +31,16 @@ public class PlayerExp : NetworkBehaviour
 
         if (Object.HasInputAuthority)
         {
-            var hud = FindFirstObjectByType<PlayerExpHUD>();
-            if (hud != null) hud.Bind(this);
+            if (_expCanvas != null)
+                _expCanvas.SetActive(true);
+
+            _hud = GetComponentInChildren<PlayerExpHUD>(true);
+            if (_hud != null) _hud.Bind(this);
+        }
+        else
+        {
+            if (_expCanvas != null)
+                _expCanvas.SetActive(false);
         }
     }
 
@@ -42,11 +50,8 @@ public class PlayerExp : NetworkBehaviour
         {
             if (change == nameof(CurrentExp) || change == nameof(Level))
             {
-                if (Object.HasInputAuthority)
-                {
-                    var hud = FindFirstObjectByType<PlayerExpHUD>();
-                    if (hud != null) hud.OnExpUpdated(CurrentExp, ExpToNextLevel, Level);
-                }
+                if (Object.HasInputAuthority && _hud != null)
+                    _hud.OnExpUpdated(CurrentExp, ExpToNextLevel, Level);
             }
         }
     }
@@ -64,9 +69,15 @@ public class PlayerExp : NetworkBehaviour
             ExpToNextLevel = expConfig.CalcExpToNext(Level);
         }
 
-        var saveData = await _cloud.LoadPlayerData(); 
+        var saveData = await _cloud.LoadPlayerData();
         saveData.level = Level;
         saveData.exp = CurrentExp;
         await _cloud.SavePlayerData(saveData);
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
+    public void RPC_RequestAddExp(int amount)
+    {
+        AddExperience(amount);
     }
 }
