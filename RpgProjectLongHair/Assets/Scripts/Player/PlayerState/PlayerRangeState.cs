@@ -30,12 +30,12 @@ public class PlayerRangeState : IPlayerState
     private bool _needsReload = false;
 
     private int _lastAutoFireTick = -1;
-
     public PlayerRangeState(PlayerStateMachine sm)
     {
         _sm = sm;
     }
     public bool IsLockingInput => false;
+    public bool IsReloading => _currentPhase == ShootPhase.Reloading;
     public void Enter()
     {
         _lastAutoFireTick = -1;
