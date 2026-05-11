@@ -96,8 +96,6 @@ public class Player : NetworkBehaviour
 
     private bool IsPhysicallyGrounded()
     {
-        if (_ncc != null && _ncc.Grounded) return true;
-
         Vector3 origin = transform.position + Vector3.up * (groundCheckRadius + 0.05f);
 
         return Physics.SphereCast(
@@ -167,5 +165,23 @@ public class Player : NetworkBehaviour
 
             Debug.Log($"[JUMP PHYSICS] Impulse: {jumpImpulse:F1}, Speed: {currentSpeed:F1}, Grounded: {_ncc.Grounded}, FinalVel: {_ncc.Velocity}");
         }
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Vector3 origin = transform.position + Vector3.up * (groundCheckRadius + 0.05f);
+        Vector3 endPoint = origin + Vector3.down * (groundCheckDistance + 0.05f);
+
+        // Esfera inicial del cast
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(origin, groundCheckRadius);
+
+        // Esfera final del cast
+        bool grounded = IsPhysicallyGrounded();
+        Gizmos.color = grounded ? Color.green : Color.red;
+        Gizmos.DrawWireSphere(endPoint, groundCheckRadius);
+
+        // Línea que conecta ambas esferas
+        Gizmos.color = Color.white;
+        Gizmos.DrawLine(origin, endPoint);
     }
 }

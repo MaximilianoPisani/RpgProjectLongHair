@@ -36,7 +36,7 @@ public class NavMeshPlayerTracker : NetworkBehaviour
         Gizmos.DrawWireSphere(transform.position, deactivationDistance);
 
         Gizmos.color = Color.cyan;
-        Gizmos.DrawSphere(transform.position, 1.5f);
+        Gizmos.DrawSphere(transform.position, 0.2f);
     }
 #endif
 }
