@@ -1794,8 +1794,8 @@ MonoBehaviour:
   baseJumpImpulse: 9
   runningJumpBonus: 3
   airControl: 0.3
-  groundCheckRadius: 0.35
-  groundCheckDistance: 0.3
+  groundCheckRadius: 0.14
+  groundCheckDistance: 0.1
   groundLayers:
     serializedVersion: 2
     m_Bits: 1024
