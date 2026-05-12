@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6613602477143965403}
+  - component: {fileID: 7783208623534316573}
   m_Layer: 0
   m_Name: FX_FungiAttackBUFF_01
   m_TagString: Untagged
@@ -32,6 +33,20 @@ Transform:
   - {fileID: 5693700770480509042}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7783208623534316573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1402268366991796481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02fcd7f87891d2148a64d63c6efebaa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifetime: 2
+  useParticleSystemDuration: 1
 --- !u!1 &2511441168809939732
 GameObject:
   m_ObjectHideFlags: 0
@@ -44,7 +59,6 @@ GameObject:
   - component: {fileID: 6378058254484844487}
   - component: {fileID: 5192620600859882975}
   - component: {fileID: 8985203461590150583}
-  - component: {fileID: 1379388924998706296}
   m_Layer: 0
   m_Name: FX_BuffAttack1
   m_TagString: Untagged
@@ -4905,20 +4919,6 @@ MonoBehaviour:
     perlinColor: 0
     perlinColorSpeed: 0
   fadeOutReference: {fileID: 0}
---- !u!114 &1379388924998706296
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2511441168809939732}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02fcd7f87891d2148a64d63c6efebaa9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lifetime: 0
-  useParticleSystemDuration: 1
 --- !u!1 &4138283181747406743
 GameObject:
   m_ObjectHideFlags: 0

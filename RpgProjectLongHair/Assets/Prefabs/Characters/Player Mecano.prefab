@@ -1452,7 +1452,6 @@ GameObject:
   - component: {fileID: 2904240425719104618}
   - component: {fileID: 656428240036111067}
   - component: {fileID: 7211342961291623563}
-  - component: {fileID: -6551859019695016956}
   - component: {fileID: 2371474720591061133}
   - component: {fileID: 6989304598263037872}
   - component: {fileID: 2856937399264218972}
@@ -1619,29 +1618,6 @@ CharacterController:
   m_SkinWidth: 0.1
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
---- !u!136 &-6551859019695016956
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6542864224881935982}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1.8
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &2371474720591061133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1794,8 +1770,8 @@ MonoBehaviour:
   baseJumpImpulse: 9
   runningJumpBonus: 3
   airControl: 0.3
-  groundCheckRadius: 0.14
-  groundCheckDistance: 0.1
+  groundCheckRadius: 0.2
+  groundCheckDistance: 0.4
   groundLayers:
     serializedVersion: 2
     m_Bits: 1024

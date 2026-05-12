@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 4156443557946600323}
   - component: {fileID: 628879991078343892}
   - component: {fileID: 6253887336137977356}
-  - component: {fileID: 8926632023173963617}
   m_Layer: 0
   m_Name: FX_Attack3
   m_TagString: Untagged
@@ -4873,20 +4872,6 @@ MonoBehaviour:
     perlinColor: 0
     perlinColorSpeed: 0
   fadeOutReference: {fileID: 0}
---- !u!114 &8926632023173963617
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 789224974861105896}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02fcd7f87891d2148a64d63c6efebaa9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lifetime: 2
-  useParticleSystemDuration: 1
 --- !u!1 &1615110978039432461
 GameObject:
   m_ObjectHideFlags: 0
@@ -14464,6 +14449,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3381554677769568988}
+  - component: {fileID: 6622399833551499753}
   m_Layer: 0
   m_Name: FX_FungiAttack_03
   m_TagString: Untagged
@@ -14487,6 +14473,20 @@ Transform:
   - {fileID: 2398212451378646419}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6622399833551499753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3130428516026584381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02fcd7f87891d2148a64d63c6efebaa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifetime: 2
+  useParticleSystemDuration: 1
 --- !u!1 &5527212000390026710
 GameObject:
   m_ObjectHideFlags: 0

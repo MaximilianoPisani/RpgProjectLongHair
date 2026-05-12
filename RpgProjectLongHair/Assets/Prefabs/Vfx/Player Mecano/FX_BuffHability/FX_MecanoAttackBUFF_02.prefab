@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3554671405334285613}
+  - component: {fileID: 8939648072539681402}
   m_Layer: 0
   m_Name: FX_MecanoAttackBUFF_02
   m_TagString: Untagged
@@ -32,6 +33,20 @@ Transform:
   - {fileID: 7417126416749010424}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8939648072539681402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 660411333210349344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02fcd7f87891d2148a64d63c6efebaa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifetime: 2
+  useParticleSystemDuration: 1
 --- !u!1 &1388782317802664831
 GameObject:
   m_ObjectHideFlags: 0
@@ -44,7 +59,6 @@ GameObject:
   - component: {fileID: 1195123980625892555}
   - component: {fileID: 3915812376133573620}
   - component: {fileID: 5285081156270068515}
-  - component: {fileID: 6532201012803801118}
   m_Layer: 0
   m_Name: FX_BuffAttack2
   m_TagString: Untagged
@@ -4905,20 +4919,6 @@ MonoBehaviour:
     perlinColor: 0
     perlinColorSpeed: 0
   fadeOutReference: {fileID: 0}
---- !u!114 &6532201012803801118
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1388782317802664831}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02fcd7f87891d2148a64d63c6efebaa9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lifetime: 2
-  useParticleSystemDuration: 1
 --- !u!1 &6145976105103831527
 GameObject:
   m_ObjectHideFlags: 0
