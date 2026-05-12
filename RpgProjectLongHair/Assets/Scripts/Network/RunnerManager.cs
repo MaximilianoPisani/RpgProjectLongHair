@@ -406,7 +406,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             }
 
             // Dirección aproximada (se corrige después con el muzzle)
-            shootDir = (aimPoint - cameraTransform.position).normalized;
+            shootDir = new Vector3(cameraTransform.forward.x, 0f, cameraTransform.forward.z).normalized;
         }
 
 
