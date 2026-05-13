@@ -8,7 +8,6 @@ public class GameFlowManager : MonoBehaviour
     [SerializeField] private GameObject _loginPanel;
     [SerializeField] private GameObject _characterPanel;
     [SerializeField] private GameObject _lobbyPanel;
-    [SerializeField] private GameObject _gameplayMainCanvas;
     [SerializeField] private GameObject _rageCanvas;
 
     private bool _isLoggedIn = false;
@@ -50,7 +49,6 @@ public class GameFlowManager : MonoBehaviour
     public void EnterGameplay()
     {
         SetAllInactive();
-        _gameplayMainCanvas.SetActive(true);
         _rageCanvas.SetActive(true);
         Debug.Log("[GameFlowManager] Entrando a gameplay");
     }
@@ -74,7 +72,6 @@ public class GameFlowManager : MonoBehaviour
         _loginPanel.SetActive(false);
         _characterPanel.SetActive(false);
         _lobbyPanel.SetActive(false);
-        _gameplayMainCanvas.SetActive(false);
         _rageCanvas.SetActive(false);
     }
 

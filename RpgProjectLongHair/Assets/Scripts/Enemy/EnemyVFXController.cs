@@ -31,6 +31,10 @@ public class EnemyVFXController : MonoBehaviour
     [Tooltip("Punto de spawn del indicador (si está vacío usa attackVfxPoint)")]
     [SerializeField] private Transform attackIndicatorPoint;
 
+    [Header("Validation")]
+    [Tooltip("Activa advertencias en consola para referencias no asignadas (útil durante desarrollo)")]
+    [SerializeField] private bool showMissingReferenceWarnings = false;
+
     // Runtime - Propulsores
     private ParticleSystem activeThrusterVfx;
     private bool thrustersActive = false;
@@ -43,30 +47,20 @@ public class EnemyVFXController : MonoBehaviour
         bool shouldBeActive = currentSpeed >= thrusterActivationSpeed;
 
         if (shouldBeActive && !thrustersActive)
-        {
             ActivateThrusters();
-        }
         else if (!shouldBeActive && thrustersActive)
-        {
             DeactivateThrusters();
-        }
     }
 
     private void ActivateThrusters()
     {
         if (thrusterVfxPrefab == null) return;
 
-        Vector3 spawnPos = thrusterPoint != null
-            ? thrusterPoint.position
-            : transform.position;
-
-        Quaternion spawnRot = thrusterPoint != null
-            ? thrusterPoint.rotation
-            : transform.rotation;
+        Vector3 spawnPos = thrusterPoint != null ? thrusterPoint.position : transform.position;
+        Quaternion spawnRot = thrusterPoint != null ? thrusterPoint.rotation : transform.rotation;
 
         activeThrusterVfx = Instantiate(thrusterVfxPrefab, spawnPos, spawnRot);
 
-        // Parentear al punto de spawn
         if (thrusterPoint != null)
             activeThrusterVfx.transform.SetParent(thrusterPoint);
         else
@@ -101,9 +95,7 @@ public class EnemyVFXController : MonoBehaviour
         GameObject vfxInstance = Instantiate(config.vfxPrefab, spawnPos, spawnRot);
 
         if (config.followTransform)
-        {
             vfxInstance.transform.SetParent(point);
-        }
 
         float duration = config.customDuration > 0
             ? config.customDuration
@@ -139,27 +131,17 @@ public class EnemyVFXController : MonoBehaviour
     {
         if (hitReactionVFX == null || hitReactionVFX.vfxPrefab == null) return;
 
-        // Usar el transform del modelo animado si está asignado, sino usar el transform principal
         Transform targetTransform = animatedModelTransform != null ? animatedModelTransform : transform;
+        Vector3 spawnPos = targetTransform.position + targetTransform.TransformDirection(hitReactionVFX.localOffset);
 
-        // Usar la posición del modelo (que se mueve con animaciones)
-        Vector3 spawnPos = targetTransform.position;
-
-        // Aplicar offset local si está configurado
-        spawnPos += targetTransform.TransformDirection(hitReactionVFX.localOffset);
-
-        // Rotación: el VFX mira HACIA AFUERA (en dirección del hit normal)
         Quaternion rotation = hitNormal != Vector3.zero
-           ? Quaternion.LookRotation(hitNormal)
-           : Quaternion.identity;
+            ? Quaternion.LookRotation(hitNormal)
+            : Quaternion.identity;
 
         GameObject vfxInstance = Instantiate(hitReactionVFX.vfxPrefab, spawnPos, rotation);
 
-        // Si followTransform está activo, parentear al modelo animado
         if (hitReactionVFX.followTransform)
-        {
             vfxInstance.transform.SetParent(targetTransform);
-        }
 
         float duration = hitReactionVFX.customDuration > 0
             ? hitReactionVFX.customDuration
@@ -176,48 +158,6 @@ public class EnemyVFXController : MonoBehaviour
         SpawnVFX(config, muzzlePoint);
     }
 
-    /// <summary>
-    /// Obtiene la duración de un particle system
-    /// </summary>
-    private float GetParticleDuration(GameObject vfxObject)
-    {
-        ParticleSystem ps = vfxObject.GetComponent<ParticleSystem>();
-        if (ps != null)
-        {
-            return ps.main.duration + ps.main.startLifetime.constantMax;
-        }
-        return 2f; // Fallback
-    }
-
-    /// <summary>
-    /// Fuerza la desactivación de propulsores (útil al morir)
-    /// </summary>
-    public void ForceStopThrusters()
-    {
-        if (thrustersActive)
-        {
-            DeactivateThrusters();
-        }
-    }
-
-    private void OnDestroy()
-    {
-        // Limpiar VFX al destruir el enemigo
-        if (activeThrusterVfx != null)
-            Destroy(activeThrusterVfx.gameObject);
-    }
-
-    private void OnValidate()
-    {
-        if (attackVfxPoint == null)
-            Debug.LogWarning($"{name}: Attack VFX Point no asignado");
-
-        if (thrusterPoint == null)
-            Debug.LogWarning($"{name}: Thruster Point no asignado");
-
-        if (animatedModelTransform == null)
-            Debug.LogWarning($"{name}: Animated Model Transform no asignado - se usará el transform principal");
-    }
     public void SpawnAttackIndicator(float delay = 0f, Transform spawnPoint = null)
     {
         Transform point = attackIndicatorPoint ?? attackVfxPoint;
@@ -228,4 +168,43 @@ public class EnemyVFXController : MonoBehaviour
             SpawnVFX(attackIndicatorVFX, point);
     }
 
+    /// <summary>
+    /// Obtiene la duración de un particle system
+    /// </summary>
+    private float GetParticleDuration(GameObject vfxObject)
+    {
+        ParticleSystem ps = vfxObject.GetComponent<ParticleSystem>();
+        return ps != null
+            ? ps.main.duration + ps.main.startLifetime.constantMax
+            : 2f;
+    }
+
+    /// <summary>
+    /// Fuerza la desactivación de propulsores (útil al morir)
+    /// </summary>
+    public void ForceStopThrusters()
+    {
+        if (thrustersActive)
+            DeactivateThrusters();
+    }
+
+    private void OnDestroy()
+    {
+        if (activeThrusterVfx != null)
+            Destroy(activeThrusterVfx.gameObject);
+    }
+
+    private void OnValidate()
+    {
+        if (!showMissingReferenceWarnings) return;
+
+        if (attackVfxPoint == null)
+            Debug.LogWarning($"{name}: Attack VFX Point no asignado");
+
+        if (thrusterPoint == null)
+            Debug.LogWarning($"{name}: Thruster Point no asignado");
+
+        if (animatedModelTransform == null)
+            Debug.LogWarning($"{name}: Animated Model Transform no asignado - se usará el transform principal");
+    }
 }

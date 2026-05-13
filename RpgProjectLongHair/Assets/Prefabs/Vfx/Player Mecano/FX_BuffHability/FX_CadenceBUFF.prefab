@@ -4768,6 +4768,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6241315122760553417}
+  - component: {fileID: 3997727197177955632}
   m_Layer: 6
   m_Name: FX_CadenceBUFF
   m_TagString: Untagged
@@ -4791,6 +4792,20 @@ Transform:
   - {fileID: 7514278403953073471}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3997727197177955632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2574898397583427364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02fcd7f87891d2148a64d63c6efebaa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifetime: 2
+  useParticleSystemDuration: 1
 --- !u!1 &7514278403672127492
 GameObject:
   m_ObjectHideFlags: 0
@@ -4924,7 +4939,6 @@ GameObject:
   - component: {fileID: 7514278403953073470}
   - component: {fileID: 7514278403953073457}
   - component: {fileID: 7514278403953073468}
-  - component: {fileID: 4303114650190788380}
   m_Layer: 0
   m_Name: FV_CadenceFire
   m_TagString: Untagged
@@ -10021,20 +10035,6 @@ MonoBehaviour:
     perlinColor: 0
     perlinColorSpeed: 0
   fadeOutReference: {fileID: 0}
---- !u!114 &4303114650190788380
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7514278403953073456}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02fcd7f87891d2148a64d63c6efebaa9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lifetime: 1
-  useParticleSystemDuration: 1
 --- !u!1 &7514278404335769966
 GameObject:
   m_ObjectHideFlags: 0

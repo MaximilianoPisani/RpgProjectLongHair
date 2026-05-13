@@ -10,7 +10,8 @@ public class AutoDestroyVFX : MonoBehaviour
         if (useParticleSystemDuration)
         {
             // Obtener la duración del sistema de partículas
-            ParticleSystem ps = GetComponent<ParticleSystem>();
+            ParticleSystem ps = GetComponent<ParticleSystem>()
+                        ?? GetComponentInChildren<ParticleSystem>();
             if (ps != null)
             {
                 lifetime = ps.main.duration + ps.main.startLifetime.constantMax;

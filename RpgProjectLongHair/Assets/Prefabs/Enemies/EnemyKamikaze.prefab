@@ -940,6 +940,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   attackOrigin: {fileID: 7505190822256135982}
+  _navMeshCheckInterval: 0.5
+  _navMeshSearchRadius: 5
+  _showActivationGizmos: 1
   KamikazeData: {fileID: 11400000, guid: 4e54a115615814d4e926e15a81ab820e, type: 2}
   _enemyLayer:
     serializedVersion: 2
@@ -1036,6 +1039,7 @@ MonoBehaviour:
     followTransform: 1
     customDuration: 0
   attackIndicatorPoint: {fileID: 7505190822256135982}
+  showMissingReferenceWarnings: 0
 --- !u!1 &5476429770161952615
 GameObject:
   m_ObjectHideFlags: 0

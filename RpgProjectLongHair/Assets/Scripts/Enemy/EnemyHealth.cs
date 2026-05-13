@@ -142,20 +142,18 @@ public class EnemyHealth : NetworkBehaviour
 
         RPC_Flash();
 
-        if (currentHealth <= 0)
-        {
+        if(currentHealth <= 0)
+{
             GiveKillExp();
 
             if (enemyController is EnemyKamikazeController kamikazeController)
             {
-                // El ExplodeState se encargará de llamar a EnemyDeathState,
-                // que a su vez hará el Despawn. No despawnear aquí.
                 kamikazeController.ChangeState(new EnemyKamikazeExplodeState(kamikazeController));
                 return;
             }
 
-            if (Runner != null && Object.IsValid) //  evita despawnear dos veces
-                Runner.Despawn(Object);
+            //Delegar al death state — él hace el despawn retrasado
+            enemyController?.ChangeState(new EnemyDeathState(enemyController));
         }
     }
 
@@ -199,34 +197,21 @@ public class EnemyHealth : NetworkBehaviour
     }
     private void GiveKillExp()
     {
-        Debug.Log($"[EnemyHealth] GiveKillExp called. LastAttacker={_lastAttacker}");
+        if (_lastAttacker == PlayerRef.None) return;
 
-        if (_lastAttacker == PlayerRef.None)
-        {
-            Debug.Log("[EnemyHealth] LastAttacker is NONE");
-            return;
-        }
-
-        if (!Runner.TryGetPlayerObject(_lastAttacker, out NetworkObject playerObj))
-        {
-            Debug.Log("[EnemyHealth] PlayerObject NOT FOUND");
-            return;
-        }
-
-        Debug.Log($"[EnemyHealth] PlayerObject found: {playerObj.name}");
+        if (!Runner.TryGetPlayerObject(_lastAttacker, out NetworkObject playerObj)) return;
 
         var playerExp = playerObj.GetComponent<PlayerExp>();
-        if (playerExp != null)
-        {
-            int exp = _expConfig.GetExp(ExpEvent.Kill);
-            playerExp.AddExperience(exp);
-        }
+        if (playerExp == null) return;
 
-        Debug.Log($"[EnemyHealth] TrackEvents suscriptores: {TrackEvents.OnTrackEvent?.GetInvocationList().Length ?? 0}");
+        int exp = _expConfig.GetExp(ExpEvent.Kill);
+
+        playerExp.AddExperience(exp);
 
         if (_isQuestEnemy)
             TrackEvents.OnTrackEvent?.Invoke(QuestIds.KILL_MISSION_ENEMY, 1);
         else
             TrackEvents.OnTrackEvent?.Invoke(QuestIds.KILL_ENEMY, 1);
     }
+
 }

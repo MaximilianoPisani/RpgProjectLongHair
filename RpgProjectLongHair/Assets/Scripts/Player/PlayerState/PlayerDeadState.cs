@@ -19,11 +19,17 @@ public class PlayerDeadState : IPlayerState
 
         ResetAnimations();
 
-        if (!_sm.Object.HasStateAuthority) return;
-        _timer = 0f;
+        if (_sm.Object.HasStateAuthority)
+        {
+            _timer = 0f;
 
-        if (_sm.Object.HasInputAuthority)
-            RunnerManager.SetInputBlocked(true);
+            // CRÍTICO: Solo el servidor incrementa el trigger
+            // Esto se sincronizará automáticamente a todos los clientes
+            sync?.TriggerDie();
+
+            if (_sm.Object.HasInputAuthority)
+                RunnerManager.SetInputBlocked(true);
+        }
     }
 
     private void ResetAnimations()

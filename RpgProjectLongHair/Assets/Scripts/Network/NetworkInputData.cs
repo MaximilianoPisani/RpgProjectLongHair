@@ -14,4 +14,6 @@ public struct NetworkInputData : INetworkInput
     public Vector3 shootDirection;
     public bool sprint;
     public NetworkBool attackJustPressed;
+    public Vector3 aimPoint;
+    public int scrollDelta;
 }

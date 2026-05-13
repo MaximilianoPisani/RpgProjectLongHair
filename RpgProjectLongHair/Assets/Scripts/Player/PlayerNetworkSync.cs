@@ -14,6 +14,8 @@ public class PlayerNetworkSync : NetworkBehaviour
     [Networked] private int SyncedLandTrigger { get; set; }
 
     [Networked] private int SyncedComboIndex { get; set; }
+    [Networked] private int SyncedShellVFXTrigger { get; set; }
+    [Networked] private int SyncedFireVFXTrigger { get; set; }
 
     private const byte FLAG_JUMPING = 1 << 0;
     private const byte FLAG_RELOADING = 1 << 1;
@@ -30,6 +32,13 @@ public class PlayerNetworkSync : NetworkBehaviour
     private int _lastFall;
     private int _lastLand;
     private int _lastComboIndex = 0;
+
+    private int _lastShellVFX;
+    private int _lastFireVFX;
+
+    private const float AccelDamp = 0.08f;
+    private const float DecelDamp = 0.08f;
+
 
     public override void Spawned()
     {
@@ -62,7 +71,9 @@ public class PlayerNetworkSync : NetworkBehaviour
         if (_animator == null) return;
         if (!Object.HasInputAuthority)
         {
-            _animator.SetFloat("speed", SyncedSpeed);
+            float currentAnim = _animator.GetFloat("speed");
+            float damp = SyncedSpeed > currentAnim ? AccelDamp : DecelDamp;
+            _animator.SetFloat("speed", SyncedSpeed, damp, Time.deltaTime);
             _animator.SetInteger("ComboIndex", SyncedComboIndex);
             _animator.SetBool("isJumping", (AnimationFlags & FLAG_JUMPING) != 0);
             _animator.SetBool("IsReloading", (AnimationFlags & FLAG_RELOADING) != 0);
@@ -113,6 +124,17 @@ public class PlayerNetworkSync : NetworkBehaviour
                 if (!Object.HasInputAuthority)
                     _animator.SetTrigger("Land");
             }
+            if (change == nameof(SyncedShellVFXTrigger) && _lastShellVFX != SyncedShellVFXTrigger)
+            {
+                _lastShellVFX = SyncedShellVFXTrigger;
+                GetComponent<PlayerVFXSync>()?.OnShellVFXTriggered();
+            }
+
+            if (change == nameof(SyncedFireVFXTrigger) && _lastFireVFX != SyncedFireVFXTrigger)
+            {
+                _lastFireVFX = SyncedFireVFXTrigger;
+                GetComponent<PlayerVFXSync>()?.OnFireVFXTriggered();
+            }
         }
     }
 
@@ -157,8 +179,6 @@ public class PlayerNetworkSync : NetworkBehaviour
             _animator.ResetTrigger("Jump");
             _animator.ResetTrigger("Fall");
             _animator.ResetTrigger("Land");
-
-            _animator.Play("Idle", 0, 0f);
         }
 
         if (Object.HasStateAuthority)
@@ -256,6 +276,22 @@ public class PlayerNetworkSync : NetworkBehaviour
             RPC_TriggerLand();
         }
     }
+    public void TriggerShellVFX()
+    {
+        if (Object.HasStateAuthority)
+            SyncedShellVFXTrigger++;
+        else if (Object.HasInputAuthority)
+            RPC_TriggerShellVFX();
+    }
+
+    public void TriggerFireVFX()
+    {
+        if (Object.HasStateAuthority)
+            SyncedFireVFXTrigger++;
+        else if (Object.HasInputAuthority)
+            RPC_TriggerFireVFX();
+    }
+
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RPC_TriggerMelee() => SyncedMeleeTrigger++;
@@ -299,4 +335,10 @@ public class PlayerNetworkSync : NetworkBehaviour
         SyncedSpeed = 0f;
         SyncedComboIndex = 0;
     }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_TriggerShellVFX() => SyncedShellVFXTrigger++;
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_TriggerFireVFX() => SyncedFireVFXTrigger++;
 }

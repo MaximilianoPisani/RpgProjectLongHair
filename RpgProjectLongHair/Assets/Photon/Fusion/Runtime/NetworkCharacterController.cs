@@ -45,8 +45,9 @@ namespace Fusion {
     public float braking       = 10.0f;
     public float maxSpeed      = 2.0f;
     public float rotationSpeed = 15.0f;
+    public bool LockRotation { get; set; } = false;
 
-    Tick                _initial;
+        Tick                _initial;
     CharacterController _controller;
 
     public Vector3 Velocity {
@@ -91,14 +92,28 @@ namespace Fusion {
       horizontalVel.x = moveVelocity.x;
       horizontalVel.z = moveVelocity.z;
 
-      if (direction == default) {
-        horizontalVel = Vector3.Lerp(horizontalVel, default, braking * deltaTime);
-      } else {
-        horizontalVel      = Vector3.ClampMagnitude(horizontalVel + direction * acceleration * deltaTime, maxSpeed);
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed * Runner.DeltaTime);
-      }
+            if (direction.sqrMagnitude < 0.0001f)
+            {
+                horizontalVel = Vector3.Lerp(horizontalVel, Vector3.zero, braking * deltaTime);
+            }
+            else
+            {
+                horizontalVel = Vector3.ClampMagnitude(
+                    horizontalVel + direction * acceleration * deltaTime,
+                    maxSpeed
+                );
 
-      moveVelocity.x = horizontalVel.x;
+                // Solo rotar si no está bloqueado
+                if (!LockRotation)
+                {
+                    transform.rotation = Quaternion.Slerp(
+                        transform.rotation,
+                        Quaternion.LookRotation(direction),
+                        rotationSpeed * Runner.DeltaTime
+                    );
+                }
+            }
+            moveVelocity.x = horizontalVel.x;
       moveVelocity.z = horizontalVel.z;
 
       _controller.Move(moveVelocity * deltaTime);

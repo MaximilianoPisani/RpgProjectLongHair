@@ -49,48 +49,40 @@ public class Player : NetworkBehaviour
         UpdateCoyoteTimer(Runner.DeltaTime);
 
         var sm = GetComponent<PlayerStateMachine>();
-        bool inputLocked = sm != null && sm.IsInputLocked;
         bool isInAir = sm != null && (sm.CurrentState is PlayerJumpState || sm.CurrentState is PlayerFallState);
+        bool isAiming = false;
+        if (sm?.CurrentState is PlayerRangeState rangeState)
+            isAiming = !rangeState.IsReloading;
+
+        _ncc.LockRotation = isAiming;
 
         float targetSpeed = input.sprint ? sprintSpeed : walkSpeed;
         _ncc.maxSpeed = targetSpeed;
 
-        Vector3 moveDir = inputLocked
-            ? Vector3.zero
-            : new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
+        // Delegar control de rotación al estado activo
+        _ncc.LockRotation = isAiming;
+
+        Vector3 moveDir = new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
 
         if (Object.HasStateAuthority)
         {
-            // Guardar aceleración original
             float originalAcceleration = _ncc.acceleration;
 
             if (isInAir)
             {
                 _ncc.acceleration = originalAcceleration * airControl;
                 _ncc.Move(moveDir);
-                _ncc.acceleration = originalAcceleration; // Restaurar el valor real
+                _ncc.acceleration = originalAcceleration;
             }
             else
             {
-                _ncc.Move(moveDir);
-            }
-
-            // SOLO ROTAR SI TIENES STATE AUTHORITY
-            if (moveDir.sqrMagnitude > 0.01f)
-            {
-                transform.rotation = Quaternion.Slerp(
-                    transform.rotation,
-                    Quaternion.LookRotation(moveDir),
-                    rotationSpeed * Runner.DeltaTime
-                );
+                _ncc.Move(moveDir); // NCC mueve pero NO rota si LockRotation = true
             }
         }
 
-        // Esto está bien, solo se ejecuta en el cliente con input authority
         if (input.interact && Object.HasInputAuthority)
             GetComponent<PlayerInventoryController>()?.TryPickupItem();
     }
-
     private void UpdateCoyoteTimer(float deltaTime)
     {
         if (IsPhysicallyGrounded())
@@ -101,8 +93,6 @@ public class Player : NetworkBehaviour
 
     private bool IsPhysicallyGrounded()
     {
-        if (_ncc != null && _ncc.Grounded) return true;
-
         Vector3 origin = transform.position + Vector3.up * (groundCheckRadius + 0.05f);
 
         return Physics.SphereCast(
@@ -172,5 +162,23 @@ public class Player : NetworkBehaviour
 
             Debug.Log($"[JUMP PHYSICS] Impulse: {jumpImpulse:F1}, Speed: {currentSpeed:F1}, Grounded: {_ncc.Grounded}, FinalVel: {_ncc.Velocity}");
         }
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Vector3 origin = transform.position + Vector3.up * (groundCheckRadius + 0.05f);
+        Vector3 endPoint = origin + Vector3.down * (groundCheckDistance + 0.05f);
+
+        // Esfera inicial del cast
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(origin, groundCheckRadius);
+
+        // Esfera final del cast
+        bool grounded = IsPhysicallyGrounded();
+        Gizmos.color = grounded ? Color.green : Color.red;
+        Gizmos.DrawWireSphere(endPoint, groundCheckRadius);
+
+        // Línea que conecta ambas esferas
+        Gizmos.color = Color.white;
+        Gizmos.DrawLine(origin, endPoint);
     }
 }

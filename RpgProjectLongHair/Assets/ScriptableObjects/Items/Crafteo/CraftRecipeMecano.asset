@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4cf242f1999e274697db74a539e3cb5, type: 3}
+  m_Name: CraftRecipeMecano
+  m_EditorClassIdentifier: 
+  recipeName: Gatling
+  requiredItems:
+  - {fileID: 11400000, guid: a9997c3a026b7dd4ab2f5a059bb19e04, type: 2}
+  - {fileID: 11400000, guid: 6ec5f82d1a7097a49831160023f150bd, type: 2}
+  - {fileID: 11400000, guid: 487f28214da785441bd7ae6b5f559c78, type: 2}
+  resultItem: {fileID: 11400000, guid: 328c4700892e4394bb9bb4f614e1f86d, type: 2}
+  resultWeaponName: Gatling
+  resultIcon: {fileID: 0}

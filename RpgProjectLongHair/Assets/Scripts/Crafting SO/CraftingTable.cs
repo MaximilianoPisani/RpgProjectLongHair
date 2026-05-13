@@ -1,0 +1,61 @@
+using UnityEngine;
+
+public class CraftingTable : MonoBehaviour
+{
+    [Header("Recetas")]
+    [SerializeField] private CraftRecipeSO _recipeFungi;
+    [SerializeField] private CraftRecipeSO _recipeMecano;
+
+    [Header("Detección")]
+    [SerializeField] private float _interactRadius = 3f;
+
+    [Header("UI")]
+    [SerializeField] private CraftingUI _craftingUI;
+    [SerializeField] private GameObject _canvasTable; // panel "presioná E"
+
+    private PlayerInventoryData _playerInventory;
+
+    private CraftRecipeSO _currentRecipe;
+
+    private void Update()
+    {
+        if (_playerInventory == null) return;
+
+        float dist = Vector3.Distance(transform.position, _playerInventory.transform.position);
+        bool cerca = dist <= _interactRadius;
+
+        if (!cerca)
+        {
+            _playerInventory = null;
+            _currentRecipe = null;
+            _canvasTable.SetActive(false);
+            return;
+        }
+
+        _canvasTable.SetActive(!_craftingUI.IsOpen);
+
+        if (!Input.GetKeyDown(KeyCode.E)) return;
+        if (_currentRecipe == null) return;
+
+        _craftingUI.Show(_currentRecipe, _playerInventory);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag("Player")) return;
+
+        //Obtener el tipo de personaje
+        var characterData = other.GetComponent<PlayerCharacterData>();
+        if (characterData == null) return;
+
+        //ASignar receta según personaje
+        _currentRecipe = characterData.characterType == CharacterType.Fungi 
+        ? _recipeFungi 
+        : _recipeMecano;
+
+        //obtener Inventario
+        var inventory = other.GetComponent<PlayerInventoryData>();
+        if (inventory == null) return;
+        _playerInventory = inventory;
+    }
+}

@@ -10,6 +10,11 @@ using UnityEngine.SceneManagement;
 
 public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 {
+    private void Awake()
+    {
+        Application.targetFrameRate = 60;
+    }
+
     public event Action<NetworkObject> OnPlayerSpawned;
 
     [Header("Spawners")]
@@ -37,12 +42,11 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     private bool _isSprinting;
     private bool _lastAttackHeld;
 
+    private int _scrollDelta;
+    private bool _scrollConsumed;
     public static bool IsInputBlocked { get; private set; } = false;
     public static bool IsInventoryOpen { get; private set; } = false;
 
-    // ?????????????????????????????????????????????????????????????????????????
-    // ARRANCAR como Host o Client (runner de juego)
-    // ?????????????????????????????????????????????????????????????????????????
     public async void StartRunner(GameMode mode, string sessionName, Action onFail)
     {
         _isBrowserOnly = false;
@@ -66,8 +70,26 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
 
-        int characterIndex = CharacterSelection.SelectedCharacter;
-        string tokenPayload = $"{playerId}|{characterIndex}";
+        int charIndex = CharacterSelection.SelectedCharacter;
+
+        var cloudSave = gameObject.GetComponent<PlayerCloudSave>()
+                       ?? gameObject.AddComponent<PlayerCloudSave>();
+        PlayerSaveData saveData = await cloudSave.LoadPlayerData();
+
+        string tokenPayload;
+        if (saveData.hasCheckpoint)
+        {
+            Vector3 cp = saveData.CheckpointPosition;
+            tokenPayload = string.Format(
+                System.Globalization.CultureInfo.InvariantCulture,
+                "{0}|{1}|{2}|{3}|{4}|1",
+                playerId, charIndex, cp.x, cp.y, cp.z
+            );
+        }
+        else
+        {
+            tokenPayload = $"{playerId}|{charIndex}|0|0|0|0";
+        }
 
         var startGameArgs = new StartGameArgs
         {
@@ -96,9 +118,40 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    // ?????????????????????????????????????????????????????????????????????????
+    public async void StartRunnerWithToken(GameMode mode, string sessionName, string tokenPayload, Action onFail)
+    {
+        _isBrowserOnly = false;
+        _isShuttingDownControlled = false;
+
+        if (_runner != null)
+        {
+            await ShutdownAsync();
+        }
+
+        _runner = gameObject.AddComponent<NetworkRunner>();
+        _runner.ProvideInput = true;
+
+        var startGameArgs = new StartGameArgs
+        {
+            GameMode = mode,
+            SessionName = sessionName,
+            PlayerCount = MAX_PLAYERS,
+            Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
+            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
+            IsVisible = true,
+            IsOpen = true,
+            ConnectionToken = Encoding.UTF8.GetBytes(tokenPayload)
+        };
+
+        var result = await _runner.StartGame(startGameArgs);
+
+        if (!result.Ok)
+        {
+            Debug.LogError($"[RunnerManager] StartGame falló: {result.ShutdownReason}");
+            onFail?.Invoke();
+        }
+    }
     // ARRANCAR en modo browser (solo escuchar la lista de salas)
-    // ?????????????????????????????????????????????????????????????????????????
     public async void StartLobbyBrowser(Action onFail)
     {
         _isBrowserOnly = true;
@@ -128,9 +181,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    // ?????????????????????????????????????????????????????????????????????????
     // SHUTDOWN controlado — aguardable (Task) para encadenar con await
-    // ?????????????????????????????????????????????????????????????????????????
     public async Task ShutdownAsync()
     {
         _isShuttingDownControlled = true;
@@ -145,9 +196,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         _isShuttingDownControlled = false;
     }
 
-    // ?????????????????????????????????????????????????????????????????????????
     // Helpers de gameplay
-    // ?????????????????????????????????????????????????????????????????????????
     public static void SetInventoryOpen(bool open)
     {
         IsInventoryOpen = open;
@@ -166,19 +215,30 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             item.Runner.Despawn(item);
     }
 
-    // ?????????????????????????????????????????????????????????????????????????
     // Update — cola de inputs
-    // ?????????????????????????????????????????????????????????????????????????
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F) && !IsInventoryOpen) _lockOnQueued = true;
         if (Input.GetKeyDown(KeyCode.Space) && !IsInventoryOpen) _jumpQueued = true;
         _isSprinting = Input.GetKey(KeyCode.LeftShift) && !IsInventoryOpen;
+
+        if (!IsInventoryOpen)
+        {
+            float scroll = Input.GetAxisRaw("Mouse ScrollWheel");
+
+            if (Mathf.Abs(scroll) > 0.01f && !_scrollConsumed)
+            {
+                _scrollDelta = scroll > 0f ? -1 : 1;
+                _scrollConsumed = true;
+            }
+            else if (Mathf.Abs(scroll) <= 0.01f)
+            {
+                _scrollConsumed = false;
+            }
+        }
     }
 
-    // ?????????????????????????????????????????????????????????????????????????
     // INetworkRunnerCallbacks
-    // ?????????????????????????????????????????????????????????????????????????
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
     {
         if (runner.ActivePlayers.Count() >= MAX_PLAYERS)
@@ -200,10 +260,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         byte[] token = runner.GetPlayerConnectionToken(player);
-
         if (token == null || token.Length == 0)
         {
-            Debug.LogError("[RunnerManager] Token inválido");
             runner.Disconnect(player);
             return;
         }
@@ -211,7 +269,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         string tokenStr = Encoding.UTF8.GetString(token);
         string[] parts = tokenStr.Split('|');
 
-        if (parts.Length < 2 || !int.TryParse(parts[1], out int characterIndex))
+        if (parts.Length < 6 || !int.TryParse(parts[1], out int characterIndex))
         {
             Debug.LogError($"[RunnerManager] Token mal formado: {tokenStr}");
             runner.Disconnect(player);
@@ -219,7 +277,6 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         string playerId = parts[0];
-
         if (string.IsNullOrEmpty(playerId))
         {
             runner.Disconnect(player);
@@ -233,21 +290,45 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
 
+        bool hasCheckpoint = parts[5] == "1";
+        Vector3 spawnPosition = Vector3.zero;
+        bool useCheckpoint = false;
+
+        if (hasCheckpoint &&
+            float.TryParse(parts[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float cx) &&
+            float.TryParse(parts[3], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float cy) &&
+            float.TryParse(parts[4], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float cz))
+        {
+            spawnPosition = new Vector3(cx, cy, cz);
+            useCheckpoint = true;
+            Debug.Log($"[RunnerManager] Checkpoint en token: {spawnPosition}");
+        }
+
         _connectedPlayerIds.Add(playerId);
 
-        var playerObj = _playerSpawner.SpawnPlayer(runner, player, characterIndex);
+        NetworkObject playerObj;
+        if (useCheckpoint)
+            playerObj = _playerSpawner.SpawnPlayerAtPosition(runner, player, characterIndex, spawnPosition);
+        else
+            playerObj = _playerSpawner.SpawnPlayer(runner, player, characterIndex);
+
         if (playerObj == null) return;
 
         runner.SetPlayerObject(player, playerObj);
         _spawnedPlayers[player] = playerObj;
 
+        if (useCheckpoint)
+        {
+            var checkpoint = playerObj.GetComponent<PlayerCheckpoint>();
+            if (checkpoint != null)
+                checkpoint.LastCheckpoint = spawnPosition;
+        }
+
         Debug.Log($"[RunnerManager] Player conectado: {playerId}, personaje: {characterIndex}");
 
-        // Notificar al NetworkController (solo para el jugador local del host)
         if (player == runner.LocalPlayer)
             OnPlayerSpawned?.Invoke(playerObj);
 
-        // Spawnear items y enemigos solo cuando entra el primer jugador
         if (_spawnedPlayers.Count == 1)
         {
             _itemSpawner.SpawnItems(_runner);
@@ -271,6 +352,10 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (_spawnedPlayers.TryGetValue(player, out var obj))
         {
+            // NavMeshPlayerTracker.Despawned() se dispara solo con runner.Despawn(),
+            // pero si usás NetworkBehaviour.Despawned() en el tracker, esto es automático.
+            // Si no usás NetworkBehaviour, desregistrá manualmente acá:
+            // NavMeshTileManager.Instance?.UnregisterPlayer(obj.transform);
             runner.Despawn(obj);
             _spawnedPlayers.Remove(player);
         }
@@ -281,11 +366,16 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         if (IsInventoryOpen || IsInputBlocked)
         {
             _lastAttackHeld = false;
+            _scrollDelta = 0;
+            _scrollConsumed = false;
             input.Set(new NetworkInputData());
             return;
         }
 
         Vector3 inputMove = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+
+        if (inputMove.magnitude < 0.1f)
+            inputMove = Vector3.zero;
 
         Transform cameraTransform = PlayerCamera.Local != null
             ? PlayerCamera.Local.transform
@@ -294,6 +384,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         Vector3 movementDir = Vector3.zero;
         Quaternion aimRot = Quaternion.identity;
         Vector3 shootDir = Vector3.forward;
+        Vector3 aimPoint = Vector3.zero;
 
         if (cameraTransform != null)
         {
@@ -304,10 +395,20 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             aimRot = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
 
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-            shootDir = Physics.Raycast(ray, out RaycastHit hit, 200f)
-                ? (hit.point - Camera.main.transform.position).normalized
-                : ray.direction.normalized;
+
+            if (Physics.Raycast(ray, out RaycastHit hit, 200f))
+            {
+                aimPoint = hit.point;
+            }
+            else
+            {
+                aimPoint = ray.origin + ray.direction * 200f;
+            }
+
+            // Dirección aproximada (se corrige después con el muzzle)
+            shootDir = new Vector3(cameraTransform.forward.x, 0f, cameraTransform.forward.z).normalized;
         }
+
 
         bool attackNow = Input.GetMouseButton(0);
 
@@ -323,12 +424,15 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             equipSlot = -1,
             aimRotation = aimRot,
             LockOnPressed = _lockOnQueued,
-            shootDirection = shootDir
+            shootDirection = shootDir,
+            aimPoint = aimPoint,
+            scrollDelta = _scrollDelta
         };
 
         _lastAttackHeld = attackNow;
         _lockOnQueued = false;
         _jumpQueued = false;
+        _scrollDelta = 0;
 
         input.Set(data);
     }
@@ -369,7 +473,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         Debug.LogWarning($"[RunnerManager] Conexión fallida: {reason}");
     }
 
-    // ?? Callbacks vacíos requeridos por la interfaz ???????????????????????????
+    // ?? Callbacks vacíos requeridos por la interfaz 
     public void OnConnectedToServer(NetworkRunner runner) { }
     public void OnObjectExitAOI(NetworkRunner r, NetworkObject o, PlayerRef p) { }
     public void OnObjectEnterAOI(NetworkRunner r, NetworkObject o, PlayerRef p) { }

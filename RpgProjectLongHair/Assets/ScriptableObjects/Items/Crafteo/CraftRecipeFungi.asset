@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4cf242f1999e274697db74a539e3cb5, type: 3}
+  m_Name: CraftRecipeFungi
+  m_EditorClassIdentifier: 
+  recipeName: 'Mosquete '
+  requiredItems:
+  - {fileID: 11400000, guid: bc1bf2d127ae0b142971ae819d4577bc, type: 2}
+  - {fileID: 11400000, guid: 9bdff672a6f7aba44a71d9dd6634930a, type: 2}
+  - {fileID: 11400000, guid: e30d0165993c27f4a9bf4a097254d7c7, type: 2}
+  resultItem: {fileID: 11400000, guid: 51a804f6a8ca40740b9c36c15b5dc1b0, type: 2}
+  resultWeaponName: Mosquete
+  resultIcon: {fileID: 0}

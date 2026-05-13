@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4022a342ea8f7dc44a7b44cada827286, type: 3}
+  m_Name: EnemyMeleeAttack_Mecano
+  m_EditorClassIdentifier: 
+  _attackRange: 2
+  _damage: 20
+  _cooldown: 1.5
+  _hitRadius: 3
+  _comboAttacks:
+  - attackDuration: 0.45
+    hitFrameTime: 0.3
+    comboWindowOpenTime: 0
+    comboWindowCloseTime: 0
+    damage: 25
+    animationStateName: attackMelee
+    attackVFX:
+      vfxPrefab: {fileID: 802242170397950454, guid: 301d42be74e184c48af74ba3bab116f7, type: 3}
+      vfxSpawnTime: 0.26
+      localOffset: {x: 0, y: 0.2, z: 0.5}
+      followTransform: 1
+      customDuration: 0
+  - attackDuration: 1.1
+    hitFrameTime: 0.5
+    comboWindowOpenTime: 0
+    comboWindowCloseTime: 0
+    damage: 25
+    animationStateName: attackMelee1
+    attackVFX:
+      vfxPrefab: {fileID: 802242170397950454, guid: de972d60dfa3916409e1abcf02830ea7, type: 3}
+      vfxSpawnTime: 0.35
+      localOffset: {x: 0, y: 0.4, z: 0.5}
+      followTransform: 1
+      customDuration: 0
+  _comboResetTime: 1.5
+  _loopSequence: 1
+  _sequenceCooldown: 2

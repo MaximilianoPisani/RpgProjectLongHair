@@ -31,8 +31,11 @@ public class ItemSpawner : MonoBehaviour
     {
         if (!runner.IsServer) return;
 
+        Debug.Log($"[ItemSpawner] SpawnItems llamado - items a spawnear={_spawnDatas.Count}");
+
         foreach (var data in _spawnDatas)
         {
+            Debug.Log($"[ItemSpawner] Procesando prefab={data.Prefab?.name} - spawnPoints={data.SpawnPoints?.Length} - count={data.Count}");
             if (data.Prefab == null || data.SpawnPoints.Length == 0) continue;
 
             for (int i = 0; i < data.Count; i++)

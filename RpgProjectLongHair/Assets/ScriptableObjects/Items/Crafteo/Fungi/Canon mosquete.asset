@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fbbc0d6ce1a2f44091fd70ced46befd, type: 3}
+  m_Name: Canon mosquete
+  m_EditorClassIdentifier: 
+  id: 101
+  itemName: Canon mosquete
+  icon: {fileID: 0}
+  type: 0
+  weaponCategory: 4
+  amount: 1
+  slotPrefab: {fileID: 6399456027509336925, guid: 02748864d66f9574b8c9684e118cff61, type: 3}
+  isDualWield: 0
+  equipPrefab: {fileID: 8294984411714850430, guid: 42eab65d3be806a44af974b8273bed54, type: 3}
+  rightHandPrefab: {fileID: 0}
+  leftHandPrefab: {fileID: 0}
+  vfxConfig: {fileID: 11400000, guid: 2bcc8fdfb49b3794bad6c9232a57d3b4, type: 2}
+  visualPrefab: {fileID: 0}
+  owner: 0
