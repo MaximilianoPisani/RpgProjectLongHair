@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71408b1cfb7f3d04cb3ab3e507a8af8d, type: 3}
   m_Name: RageData
   m_EditorClassIdentifier: 
-  maxCharge: 100
+  maxCharge: 200
   chargePerDamage: 100
   useHitsInsteadOfDamage: 1
-  chargePerHit: 50
+  chargePerHit: 25
   extraChargeFromDamage: 0.2
   damageMultiplier: 1.75
   activeDuration: 20
