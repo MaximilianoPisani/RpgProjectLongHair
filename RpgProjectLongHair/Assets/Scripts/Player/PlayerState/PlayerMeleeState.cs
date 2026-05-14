@@ -355,13 +355,14 @@ public class PlayerMeleeState : IPlayerState
 
             if (enemyHealth != null && _sm.Object.HasStateAuthority)
             {
-                int damage = _currentAttackConfig.damage;
+                var stats = _sm.GetComponent<PlayerStats>();
 
-                var rage = _sm.GetComponent<PlayerRageHandler>();
-                if (rage != null)
-                    damage = Mathf.RoundToInt(damage * rage.GetDamageMultiplier());
+                int damage = stats != null
+                    ? stats.CurrentDamage
+                    : _currentAttackConfig.damage;
 
                 enemyHealth.ApplyDamageServer(damage, _sm.Object.InputAuthority);
+
                 PlayerRageHandler.NotifyDamageDealt(_sm.Object.InputAuthority, damage);
 
                 Debug.Log($"[Melee] Hit enemy - Damage: {damage}");
