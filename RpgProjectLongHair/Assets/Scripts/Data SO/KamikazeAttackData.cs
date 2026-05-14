@@ -23,9 +23,12 @@ public class KamikazeAttackData : ScriptableObject
 
     [Tooltip("Intensidad de la emisión")]
     public float EmissionIntensity = 1.5f;
-
     [Tooltip("Intervalo del parpadeo")]
     public float FlashInterval = 0.12f;
+
+    [Header("Knockback")]
+    [SerializeField] private int _explosionKnockbackDamage = 50;
+    public int ExplosionKnockbackDamage => _explosionKnockbackDamage;
 
     /// <summary>
     /// Alias para ExplodeDistance, para compatibilidad con código existente.

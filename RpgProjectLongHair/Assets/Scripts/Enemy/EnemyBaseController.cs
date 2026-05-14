@@ -11,6 +11,10 @@ public abstract class EnemyBaseController : NetworkBehaviour
     public LayerMask PlayerLayer;
     private Transform _targetPlayer;
 
+    [Header("Rotation")]
+    [SerializeField] private float _rotationSpeed = 10f;
+    [SerializeField] private bool _lookAtPlayerWhileChasing = true;
+
     [Header("References")]
     [SerializeField] protected Transform attackOrigin;
 
@@ -176,6 +180,28 @@ public abstract class EnemyBaseController : NetworkBehaviour
 
         // Actualizar máquina de estados
         StateMachine.Update();
+
+        if (_lookAtPlayerWhileChasing)
+            HandleRotationTowardsTarget();
+    }
+
+    private void HandleRotationTowardsTarget()
+    {
+        // Rotar si tiene target Y el agente está moviéndose
+        if (_targetPlayer == null) return;
+        if (Agent.velocity.sqrMagnitude < 0.1f) return; // Quieto = no rota
+
+        Vector3 direction = (_targetPlayer.position - transform.position);
+        direction.y = 0f; // Solo rotación horizontal
+
+        if (direction.sqrMagnitude < 0.001f) return;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            targetRotation,
+            _rotationSpeed * Runner.DeltaTime
+        );
     }
 
     private void TryFindTarget()

@@ -101,15 +101,24 @@ public class EnemyKamikazeExplodeState : IEnemyState
         var hitEnemies = new HashSet<EnemyHealth>();
         foreach (var hit in Physics.OverlapSphere(origin, radius, _enemy.EnemyLayer))
         {
-            // Ignorarse a sí mismo
             if (hit.transform.IsChildOf(_enemy.transform) || hit.gameObject == _enemy.gameObject)
                 continue;
 
             var eh = hit.GetComponent<EnemyHealth>() ?? hit.GetComponentInParent<EnemyHealth>();
             if (eh == null || eh.IsDead || !hitEnemies.Add(eh)) continue;
 
-            // Usar el mismo flujo de red que usa el resto del juego
             eh.ApplyDamageServer(damage, PlayerRef.None);
+
+            float dist = Vector3.Distance(origin, eh.transform.position);
+            float falloff = 1f - Mathf.Clamp01(dist / radius); // 1 = centro, 0 = borde
+            int scaledDamage = Mathf.RoundToInt(data.ExplosionKnockbackDamage * (0.5f + falloff * 0.5f));
+
+            //Knockback desde el origen de la explosión hacia afuera
+            EnemyKnockback.TryApplyProjectileKnockback(
+                 eh.gameObject,
+                 (eh.transform.position - origin).normalized,
+                 scaledDamage  // ahora sí usa el valor con falloff
+            );     
         }
 
         SpawnVFX();

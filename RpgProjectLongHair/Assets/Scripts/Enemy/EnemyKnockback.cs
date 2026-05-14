@@ -12,6 +12,7 @@ public class EnemyKnockback : NetworkBehaviour
 
     [Tooltip("Velocidad inicial del knockback en metros/segundo (se escala por fuerza del ataque)")]
     [SerializeField] private float _baseKnockbackSpeed = 6f;
+    [SerializeField] private float _maxForceScale = 3f;
 
     [Tooltip("Cuánto se desacelera el knockback por segundo (fricción)")]
     [SerializeField] private float _deceleration = 14f;
@@ -26,24 +27,18 @@ public class EnemyKnockback : NetworkBehaviour
     [Tooltip("Daño base de referencia para normalizar la fuerza")]
     [SerializeField] private float _referenceDamage = 25f;
 
+
     [Networked] private Vector3 KnockbackVelocity { get; set; }
     [Networked] private float KnockbackTimer { get; set; }
 
     private NavMeshAgent _agent;
-    private ChangeDetector _changeDetector;
-
-    private Vector3 _localVelocity;
-    private bool _isBeingKnockedBack;
 
     public override void Spawned()
     {
         _agent = GetComponent<NavMeshAgent>();
-        _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
 
         KnockbackVelocity = Vector3.zero;
         KnockbackTimer = 0f;
-        _localVelocity = Vector3.zero;
-        _isBeingKnockedBack = false;
     }
 
     public void ApplyKnockback(Vector3 attackDirection, int damage)
@@ -54,7 +49,7 @@ public class EnemyKnockback : NetworkBehaviour
         if (flatDir.sqrMagnitude < 0.001f) return;
         flatDir.Normalize();
 
-        float forceScale = Mathf.Clamp(damage / _referenceDamage, 0.3f, 3f);
+        float forceScale = Mathf.Clamp(damage / _referenceDamage, 0.3f, _maxForceScale);
         float force = _baseKnockbackSpeed * forceScale * _knockbackMultiplier;
 
         if (force < _minForceThreshold) return;
@@ -114,7 +109,6 @@ public class EnemyKnockback : NetworkBehaviour
         if (_agent == null) return;
         _agent.isStopped = true;
         _agent.ResetPath();
-        _isBeingKnockedBack = true;
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable)]
@@ -122,7 +116,6 @@ public class EnemyKnockback : NetworkBehaviour
     {
         if (_agent == null) return;
         _agent.isStopped = false;
-        _isBeingKnockedBack = false;
     }
 
     public static void TryApplyMeleeKnockback(GameObject enemyRoot, Vector3 attackerPosition, int damage)

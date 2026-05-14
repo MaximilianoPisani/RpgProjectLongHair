@@ -430,6 +430,8 @@ MonoBehaviour:
   PlayerLayer:
     serializedVersion: 2
     m_Bits: 64
+  _rotationSpeed: 10
+  _lookAtPlayerWhileChasing: 1
   attackOrigin: {fileID: 6310323841488000103}
   _navMeshCheckInterval: 0.5
   _navMeshSearchRadius: 5
@@ -492,11 +494,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _knockbackMultiplier: 1
-  _baseKnockbackSpeed: 6
+  _baseKnockbackSpeed: 15
+  _maxForceScale: 3
   _deceleration: 14
   _maxDuration: 0.35
   _minForceThreshold: 5
-  _referenceDamage: 25
+  _referenceDamage: 100
 --- !u!114 &8486568303301570082
 MonoBehaviour:
   m_ObjectHideFlags: 0
