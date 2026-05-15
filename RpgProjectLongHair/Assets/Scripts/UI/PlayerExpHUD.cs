@@ -29,6 +29,6 @@ public class PlayerExpHUD : MonoBehaviour
             expText.text = $"{currentExp} / {expToNext}";
 
         if (levelText != null)
-            levelText.text = $"Lv {level}";
+            levelText.text = $"Lvl {level}";
     }
 }
