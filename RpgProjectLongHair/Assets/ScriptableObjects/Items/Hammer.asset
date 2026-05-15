@@ -24,3 +24,4 @@ MonoBehaviour:
   rightHandPrefab: {fileID: 0}
   leftHandPrefab: {fileID: 9222434869062965706, guid: 01406e3e3d634c643800a099bc0567af, type: 3}
   vfxConfig: {fileID: 11400000, guid: 7ce7e8daea7162a409acdb2620bc26ca, type: 2}
+  baseDamage: 60

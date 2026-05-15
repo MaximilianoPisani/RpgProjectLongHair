@@ -32,4 +32,7 @@ public class ItemSO : ScriptableObject
 
     [Header("VFX")]
     public ItemVFXConfig vfxConfig;
+
+    [Header("Stats")]
+    public int baseDamage;
 }
