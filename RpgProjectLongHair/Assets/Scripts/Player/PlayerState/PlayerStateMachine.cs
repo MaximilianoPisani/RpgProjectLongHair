@@ -202,19 +202,40 @@ public class PlayerStateMachine : NetworkBehaviour
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
     public void RPC_RequestMeleeDamage(Vector3 origin, Vector3 forward, int damage)
     {
-        if (Combat == null || Combat.meleeData == null) return;
+        if (Combat == null || Combat.meleeData == null)
+            return;
 
         Vector3 attackOrigin = Combat.meleeOrigin != null
             ? Combat.meleeOrigin.position
             : origin + forward * 0.5f + Vector3.up;
 
-        Collider[] hits = Physics.OverlapSphere(attackOrigin, Combat.meleeData.HitRadius, Combat.enemyLayer);
+        Collider[] hits = Physics.OverlapSphere(
+            attackOrigin,
+            Combat.meleeData.HitRadius,
+            Combat.enemyLayer
+        );
 
         foreach (var hit in hits)
         {
             var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
+
             if (enemyHealth != null && enemyHealth.Object.HasStateAuthority)
-                enemyHealth.ApplyDamageServer(damage, Object.InputAuthority);
+            {
+                var stats = GetComponent<PlayerStats>();
+
+                int finalDamage = stats != null
+                    ? stats.CurrentDamage
+                    : damage;
+
+                enemyHealth.ApplyDamageServer(finalDamage, Object.InputAuthority);
+
+                PlayerRageHandler.NotifyDamageDealt(
+                    Object.InputAuthority,
+                    finalDamage
+                );
+
+                Debug.Log($"[RPC Melee] Hit enemy - Damage: {finalDamage}");
+            }
         }
     }
 

@@ -91,16 +91,43 @@ public class PlayerRageHandler : NetworkBehaviour
 
     private void HandleDamageDealt(PlayerRef attacker, int damage)
     {
-        if (!Object.HasStateAuthority) return;
-        if (Object.InputAuthority != attacker) return;
-        if (IsRageActive) return;
+        if (!Object.HasStateAuthority)
+            return;
+
+        if (Object.InputAuthority != attacker)
+            return;
+
+        if (IsRageActive)
+            return;
 
         float amount = _rageData.chargePerHit;
 
         if (!_rageData.useHitsInsteadOfDamage)
+        {
             amount = damage * _rageData.chargePerDamage;
+        }
         else
+        {
             amount += damage * _rageData.extraChargeFromDamage;
+        }
+
+        if (Runner.TryGetPlayerObject(attacker, out NetworkObject playerObj))
+        {
+            var combat = playerObj.GetComponent<PlayerCombat>();
+
+            if (combat != null)
+            {
+                WeaponCategory weapon = combat.CurrentWeapon;
+
+                bool isAutomaticWeapon =
+                    weapon == WeaponCategory.Gatling;
+
+                if (isAutomaticWeapon)
+                {
+                    amount *= _rageData.automaticWeaponChargeMultiplier;
+                }
+            }
+        }
 
         AddCharge(amount);
     }
@@ -108,9 +135,13 @@ public class PlayerRageHandler : NetworkBehaviour
     private void AddCharge(float amount)
     {
         float previous = CurrentCharge;
-        CurrentCharge = Mathf.Min(CurrentCharge + amount, _rageData.maxCharge);
 
-        if (Object.HasInputAuthority && !Mathf.Approximately(previous, CurrentCharge))
+        CurrentCharge = Mathf.Min(
+            CurrentCharge + amount,
+            _rageData.maxCharge
+        );
+
+        if (!Mathf.Approximately(previous, CurrentCharge))
             OnChargeChanged?.Invoke(CurrentCharge, _rageData.maxCharge);
     }
 

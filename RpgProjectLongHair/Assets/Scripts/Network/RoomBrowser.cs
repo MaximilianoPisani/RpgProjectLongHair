@@ -23,7 +23,10 @@ public class RoomBrowser : MonoBehaviour
     [SerializeField] private RoomCreator _roomCreator;
 
     private string _selectedSessionName;
+
     private readonly List<GameObject> _spawnedEntries = new();
+
+    private readonly HashSet<string> _currentRoomNames = new();
 
     private void Awake()
     {
@@ -47,8 +50,11 @@ public class RoomBrowser : MonoBehaviour
     {
         Debug.Log($"[RoomBrowser] RefreshList — {sessions.Count} sesión(es)");
 
+        _currentRoomNames.Clear();
+
         foreach (var entry in _spawnedEntries)
             Destroy(entry);
+
         _spawnedEntries.Clear();
 
         bool selectedStillExists = false;
@@ -61,10 +67,17 @@ public class RoomBrowser : MonoBehaviour
                 continue;
             }
 
+            _currentRoomNames.Add(session.Name.ToLowerInvariant());
+
             var entryGO = Instantiate(_roomEntryPrefab, _listContainer);
             var entry = entryGO.GetComponent<RoomEntryItem>();
 
-            entry.Setup(session.Name, session.PlayerCount, session.MaxPlayers, SelectRoom);
+            entry.Setup(
+                session.Name,
+                session.PlayerCount,
+                session.MaxPlayers,
+                SelectRoom
+            );
 
             if (session.Name == _selectedSessionName)
             {
@@ -73,6 +86,7 @@ public class RoomBrowser : MonoBehaviour
             }
 
             _spawnedEntries.Add(entryGO);
+
             Debug.Log($"[RoomBrowser] Entrada: '{session.Name}' {session.PlayerCount}/{session.MaxPlayers}");
         }
 
@@ -83,6 +97,16 @@ public class RoomBrowser : MonoBehaviour
         }
 
         _emptyLabel.gameObject.SetActive(_spawnedEntries.Count == 0);
+    }
+
+    public bool RoomExists(string roomName)
+    {
+        if (string.IsNullOrWhiteSpace(roomName))
+            return false;
+
+        return _currentRoomNames.Contains(
+            roomName.Trim().ToLowerInvariant()
+        );
     }
 
     private void SelectRoom(string sessionName)

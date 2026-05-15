@@ -12,6 +12,11 @@ public class RageData : ScriptableObject
     public float chargePerHit = 10f;
     public float extraChargeFromDamage = 0.2f;
 
+    [Header("Automatic Weapon Multiplier")]
+    [Tooltip("Multiplicador de carga para armas automáticas")]
+    [Range(0.05f, 1f)]
+    public float automaticWeaponChargeMultiplier = 0.35f;
+
     [Header("Active Buff")]
     public float damageMultiplier = 1.75f;
     public float activeDuration = 8f;
@@ -22,10 +27,15 @@ public class RageData : ScriptableObject
 
     public RageWeaponVFXConfig GetConfigForWeapon(WeaponCategory weapon)
     {
-        if (weaponVFXConfigs == null) return null;
+        if (weaponVFXConfigs == null)
+            return null;
+
         foreach (var config in weaponVFXConfigs)
+        {
             if (config.weapon == weapon)
                 return config;
+        }
+
         return null;
     }
 }

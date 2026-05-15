@@ -55,11 +55,21 @@ public class RoomCreator : MonoBehaviour
 
         foreach (char c in name)
         {
-            if (!char.IsLetterOrDigit(c) && c != ' ' && c != '_' && c != '-')
+            if (!char.IsLetterOrDigit(c) &&
+                c != ' ' &&
+                c != '_' &&
+                c != '-')
             {
                 ShowError("Solo se permiten letras, números, espacios, guiones y guiones bajos.");
                 return false;
             }
+        }
+
+        if (_roomBrowser != null &&
+            _roomBrowser.RoomExists(name))
+        {
+            ShowError("Ese nombre de sala ya está en uso.");
+            return false;
         }
 
         return true;

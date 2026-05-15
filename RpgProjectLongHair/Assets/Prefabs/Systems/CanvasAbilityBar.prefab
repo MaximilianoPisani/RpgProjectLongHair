@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4499137233390902422
 RectTransform:
   m_ObjectHideFlags: 0
@@ -313,7 +313,7 @@ RectTransform:
   m_GameObject: {fileID: 7938661300241610684}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4, y: 0.65, z: 1}
+  m_LocalScale: {x: 4, y: 0.3898455, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4371165890689849466}
@@ -323,7 +323,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -685.5, y: -461}
+  m_AnchoredPosition: {x: -726.9, y: -461}
   m_SizeDelta: {x: 99.1667, y: 28}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1086779953472529813
@@ -340,6 +340,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fillImage: {fileID: 2744676344349341489}
   _readyIndicator: {fileID: 7019541881949615743}
-  _chargingColor: {r: 0.39410633, g: 0.8113208, b: 0.08036668, a: 1}
-  _activeColor: {r: 1, g: 0, b: 0, a: 1}
+  _chargingColor: {r: 0.1251335, g: 0.42904446, b: 0.7169812, a: 1}
+  _activeColor: {r: 0, g: 0.6686821, b: 1, a: 1}
   _fillSpeed: 3

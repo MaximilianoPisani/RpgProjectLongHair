@@ -310,6 +310,19 @@ public class AuthUIController : MonoBehaviour
         backToLoginButton.interactable = state;
     }
 
+    private void OnEnable()
+    {
+        if (GameFlowManager.Instance != null)
+        {
+            string msg = GameFlowManager.Instance.LastDisconnectMessage;
+            if (!string.IsNullOrEmpty(msg))
+            {
+                SetError(loginGeneralError, msg);
+                GameFlowManager.Instance.LastDisconnectMessage = null;
+            }
+        }
+    }
+
     private void ValidateReferences()
     {
         if (loginPanel == null) Debug.LogError("[AuthUI] loginPanel no asignado");

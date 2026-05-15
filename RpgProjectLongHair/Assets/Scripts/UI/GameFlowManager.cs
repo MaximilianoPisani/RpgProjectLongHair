@@ -8,9 +8,10 @@ public class GameFlowManager : MonoBehaviour
     [SerializeField] private GameObject _loginPanel;
     [SerializeField] private GameObject _characterPanel;
     [SerializeField] private GameObject _lobbyPanel;
-    [SerializeField] private GameObject _rageCanvas;
 
     private bool _isLoggedIn = false;
+
+    public string LastDisconnectMessage { get; set; }  
 
     private void Awake()
     {
@@ -40,16 +41,13 @@ public class GameFlowManager : MonoBehaviour
     {
         SetAllInactive();
         _lobbyPanel.SetActive(true);
-
         NetworkController.Instance?.OnLobbyOpened();
-
         Debug.Log($"[GameFlowManager] Personaje {CharacterSelection.SelectedCharacter} elegido ? Lobby");
     }
 
     public void EnterGameplay()
     {
         SetAllInactive();
-        _rageCanvas.SetActive(true);
         Debug.Log("[GameFlowManager] Entrando a gameplay");
     }
 
@@ -59,6 +57,23 @@ public class GameFlowManager : MonoBehaviour
         CharacterSelection.SelectedCharacter = -1;
         ShowLogin();
         Debug.Log("[GameFlowManager] Reset ? Login");
+    }
+
+    public async void ForceReturnToLogin(string message)
+    {
+        LastDisconnectMessage = message;
+
+        _isLoggedIn = false;
+        CharacterSelection.SelectedCharacter = -1;
+
+        if (NetworkController.Instance != null)
+            await NetworkController.Instance.ShutdownAllRunners();
+
+        AuthenticationManager.Instance?.SignOut();
+
+        ShowLogin();  
+
+        Debug.Log($"[GameFlowManager] Forzando retorno al login: {message}");
     }
 
     private void ShowLogin()
@@ -72,9 +87,11 @@ public class GameFlowManager : MonoBehaviour
         _loginPanel.SetActive(false);
         _characterPanel.SetActive(false);
         _lobbyPanel.SetActive(false);
-        _rageCanvas.SetActive(false);
     }
 
-    public bool CanConnect() => _isLoggedIn && CharacterSelection.SelectedCharacter != -1;
+    public bool CanConnect() =>
+        _isLoggedIn &&
+        CharacterSelection.SelectedCharacter != -1;
+
     public bool IsLoggedIn => _isLoggedIn;
 }

@@ -24,6 +24,9 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private NetworkRunner _runner;
 
+    private bool _isTryingToJoin;
+    private bool _wasRejectedByDuplicateLogin;
+
     private Dictionary<PlayerRef, NetworkObject> _spawnedPlayers = new();
     public IReadOnlyDictionary<PlayerRef, NetworkObject> SpawnedPlayers => _spawnedPlayers;
 
@@ -52,6 +55,9 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         _isBrowserOnly = false;
         _isShuttingDownControlled = false;
 
+        _isTryingToJoin = true;
+        _wasRejectedByDuplicateLogin = false;
+
         if (_runner != null)
         {
             Debug.LogWarning("[RunnerManager] StartRunner llamado pero ya hay un runner activo. Haciendo shutdown primero.");
@@ -65,7 +71,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (string.IsNullOrEmpty(playerId))
         {
-            Debug.LogError("[RunnerManager] PlayerId inválido. ¿No estás logueado?");
+            Debug.LogError("[RunnerManager] PlayerId inválido.");
             onFail?.Invoke();
             return;
         }
@@ -74,16 +80,23 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         var cloudSave = gameObject.GetComponent<PlayerCloudSave>()
                        ?? gameObject.AddComponent<PlayerCloudSave>();
+
         PlayerSaveData saveData = await cloudSave.LoadPlayerData();
 
         string tokenPayload;
+
         if (saveData.hasCheckpoint)
         {
             Vector3 cp = saveData.CheckpointPosition;
+
             tokenPayload = string.Format(
                 System.Globalization.CultureInfo.InvariantCulture,
                 "{0}|{1}|{2}|{3}|{4}|1",
-                playerId, charIndex, cp.x, cp.y, cp.z
+                playerId,
+                charIndex,
+                cp.x,
+                cp.y,
+                cp.z
             );
         }
         else
@@ -110,6 +123,9 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         if (!result.Ok)
         {
             Debug.LogError($"[RunnerManager] StartGame falló: {result.ShutdownReason}");
+
+            _isTryingToJoin = false;
+
             onFail?.Invoke();
         }
         else
@@ -251,7 +267,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (!runner.IsServer) return;
+        if (!runner.IsServer)
+            return;
 
         if (_spawnedPlayers.Count >= MAX_PLAYERS)
         {
@@ -260,6 +277,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         byte[] token = runner.GetPlayerConnectionToken(player);
+
         if (token == null || token.Length == 0)
         {
             runner.Disconnect(player);
@@ -277,6 +295,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         string playerId = parts[0];
+
         if (string.IsNullOrEmpty(playerId))
         {
             runner.Disconnect(player);
@@ -285,49 +304,62 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (_connectedPlayerIds.Contains(playerId))
         {
-            Debug.LogWarning($"[RunnerManager] Cuenta ya en uso: {playerId}");
+            Debug.LogWarning($"[RunnerManager] Login duplicado detectado: {playerId}");
+
             runner.Disconnect(player);
+
             return;
         }
 
         bool hasCheckpoint = parts[5] == "1";
+
         Vector3 spawnPosition = Vector3.zero;
         bool useCheckpoint = false;
 
         if (hasCheckpoint &&
-            float.TryParse(parts[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float cx) &&
-            float.TryParse(parts[3], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float cy) &&
-            float.TryParse(parts[4], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float cz))
+            float.TryParse(parts[2], System.Globalization.NumberStyles.Float,
+            System.Globalization.CultureInfo.InvariantCulture, out float cx) &&
+            float.TryParse(parts[3], System.Globalization.NumberStyles.Float,
+            System.Globalization.CultureInfo.InvariantCulture, out float cy) &&
+            float.TryParse(parts[4], System.Globalization.NumberStyles.Float,
+            System.Globalization.CultureInfo.InvariantCulture, out float cz))
         {
             spawnPosition = new Vector3(cx, cy, cz);
             useCheckpoint = true;
-            Debug.Log($"[RunnerManager] Checkpoint en token: {spawnPosition}");
         }
 
         _connectedPlayerIds.Add(playerId);
 
         NetworkObject playerObj;
-        if (useCheckpoint)
-            playerObj = _playerSpawner.SpawnPlayerAtPosition(runner, player, characterIndex, spawnPosition);
-        else
-            playerObj = _playerSpawner.SpawnPlayer(runner, player, characterIndex);
 
-        if (playerObj == null) return;
+        if (useCheckpoint)
+            playerObj = _playerSpawner.SpawnPlayerAtPosition(
+                runner,
+                player,
+                characterIndex,
+                spawnPosition
+            );
+        else
+            playerObj = _playerSpawner.SpawnPlayer(
+                runner,
+                player,
+                characterIndex
+            );
+
+        if (playerObj == null)
+            return;
 
         runner.SetPlayerObject(player, playerObj);
+
         _spawnedPlayers[player] = playerObj;
 
-        if (useCheckpoint)
-        {
-            var checkpoint = playerObj.GetComponent<PlayerCheckpoint>();
-            if (checkpoint != null)
-                checkpoint.LastCheckpoint = spawnPosition;
-        }
-
-        Debug.Log($"[RunnerManager] Player conectado: {playerId}, personaje: {characterIndex}");
+        Debug.Log($"[RunnerManager] Player conectado: {playerId}");
 
         if (player == runner.LocalPlayer)
+        {
+            _isTryingToJoin = false;
             OnPlayerSpawned?.Invoke(playerObj);
+        }
 
         if (_spawnedPlayers.Count == 1)
         {
@@ -448,24 +480,47 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
     {
-        Debug.Log($"[RunnerManager] Desconectado: {reason} | browserOnly:{_isBrowserOnly} | controlled:{_isShuttingDownControlled}");
+        Debug.Log(
+            $"[RunnerManager] Desconectado: {reason} | " +
+            $"browserOnly:{_isBrowserOnly} | " +
+            $"controlled:{_isShuttingDownControlled}"
+        );
 
-        // Shutdown controlado (browser cerrándose para unirse, o logout) ? ignorar
-        if (_isShuttingDownControlled || _isBrowserOnly)
+        if (_isShuttingDownControlled)
         {
             Debug.Log("[RunnerManager] Desconexión controlada — ignorando");
+
             _runner = null;
             return;
         }
 
-        // Desconexión inesperada durante el juego ? resetear al login
-        Debug.LogWarning("[RunnerManager] Desconexión inesperada ? ResetToLogin");
         _runner = null;
 
-        if (AuthenticationManager.Instance != null)
-            AuthenticationManager.Instance.SignOut();
-        if (GameFlowManager.Instance != null)
-            GameFlowManager.Instance.ResetToLogin();
+        string message;
+
+        if (_isTryingToJoin)
+        {
+            message = "Esta cuenta ya está en uso. Iniciá sesión de nuevo.";
+            _isTryingToJoin = false;
+            _wasRejectedByDuplicateLogin = true;
+        }
+        else
+        {
+            message = reason switch
+            {
+                NetDisconnectReason.Timeout =>
+                    "Se perdió la conexión con el servidor.",
+
+                _ =>
+                    "Desconectado del servidor."
+            };
+        }
+
+        Debug.LogWarning($"[RunnerManager] {message}");
+
+        AuthenticationManager.Instance?.SignOut();
+
+        GameFlowManager.Instance?.ForceReturnToLogin(message);
     }
 
     public void OnConnectFailed(NetworkRunner runner, NetAddress remote, NetConnectFailedReason reason)
