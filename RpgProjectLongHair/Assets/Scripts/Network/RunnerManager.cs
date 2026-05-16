@@ -40,6 +40,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     /// <summary>true durante el shutdown controlado — evita que OnDisconnectedFromServer resetee al login.</summary>
     private bool _isShuttingDownControlled = false;
 
+    private bool _hasSpawnedWorldObjects = false;
+
     private bool _lockOnQueued;
     private bool _jumpQueued;
     private bool _isSprinting;
@@ -361,9 +363,13 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             OnPlayerSpawned?.Invoke(playerObj);
         }
 
-        if (_spawnedPlayers.Count == 1)
+        if (!_hasSpawnedWorldObjects)
         {
-            _itemSpawner.SpawnItems(_runner);
+            _hasSpawnedWorldObjects = true;
+
+            Debug.Log("[RunnerManager] Spawn inicial de mundo");
+
+            _itemSpawner.SpawnItems(runner);
             _enemySpawner?.SpawnEnemies(runner);
         }
     }

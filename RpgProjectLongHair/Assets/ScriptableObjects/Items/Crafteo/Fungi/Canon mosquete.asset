@@ -17,12 +17,13 @@ MonoBehaviour:
   icon: {fileID: 0}
   type: 0
   weaponCategory: 4
-  amount: 1
+  amount: 0
   slotPrefab: {fileID: 6399456027509336925, guid: 02748864d66f9574b8c9684e118cff61, type: 3}
   isDualWield: 0
   equipPrefab: {fileID: 8294984411714850430, guid: 42eab65d3be806a44af974b8273bed54, type: 3}
   rightHandPrefab: {fileID: 0}
   leftHandPrefab: {fileID: 0}
-  vfxConfig: {fileID: 11400000, guid: 2bcc8fdfb49b3794bad6c9232a57d3b4, type: 2}
+  vfxConfig: {fileID: 0}
+  baseDamage: 0
   visualPrefab: {fileID: 0}
   owner: 0

@@ -1162,6 +1162,7 @@ GameObject:
   - component: {fileID: 2973454572198412574}
   - component: {fileID: 1370390588136010403}
   - component: {fileID: 7463494069985512446}
+  - component: {fileID: 4362207663762058591}
   m_Layer: 6
   m_Name: Player Fungi
   m_TagString: Player
@@ -1281,6 +1282,7 @@ MonoBehaviour:
   - {fileID: 6150348916230871467}
   - {fileID: 411337141550204832}
   - {fileID: 2973454572198412574}
+  - {fileID: 4362207663762058591}
   - {fileID: 8511789763993353943}
   - {fileID: 2938826579672917076}
   ForceRemoteRenderTimeframe: 0
@@ -1661,6 +1663,18 @@ MonoBehaviour:
   OnDamageChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4362207663762058591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6542864224881935982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0989710dbf4450f48acf32e886ca0290, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6615053419392994001
 GameObject:
   m_ObjectHideFlags: 0

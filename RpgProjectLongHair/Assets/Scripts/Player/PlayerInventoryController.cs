@@ -101,18 +101,24 @@ public class PlayerInventoryController : MonoBehaviour
                 return;
             }
 
-            // Item de crafteo - nuevo
             if (hit.TryGetComponent<PickupableCraftItem>(out var craftPickup))
             {
                 if (craftPickup.Object == null || !craftPickup.Object.IsValid) continue;
 
-                // Chequear si el item le corresponde a este player
                 var characterData = GetComponent<PlayerCharacterData>();
                 if (characterData == null) return;
                 if (craftPickup.CraftItemSO.owner != characterData.characterType)
                 {
-                    Debug.Log($"[PlayerInventoryController] Item no corresponde a este personaje");
                     craftPickup.ShowFeedback("¡ESTE ITEM NO TE PERTENECE!");
+                    return;
+                }
+
+                if (!craftPickup.TryMarkPicked())
+                    return;
+
+                if (_inventoryData.HasItem(craftPickup.ItemId))
+                {
+                    Debug.Log($"[Pickup] Ya tenés el item {craftPickup.CraftItemSO.itemName}");
                     return;
                 }
 
@@ -124,11 +130,11 @@ public class PlayerInventoryController : MonoBehaviour
                 bool added = _inventoryData.AddItem(craftItemData);
                 if (added)
                 {
-                    Debug.Log($"[PlayerInventoryController] CraftItem recogido: {craftPickup.CraftItemSO.itemName}");
                     craftPickup.RPC_RequestDespawn();
                 }
                 return;
             }
+
         }
     }
 }

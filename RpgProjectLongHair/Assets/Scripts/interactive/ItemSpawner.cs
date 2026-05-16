@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
-using static Unity.Collections.Unicode;
 
 [System.Serializable]
 public class ItemSpawnData
@@ -27,6 +26,7 @@ public class ItemSpawner : MonoBehaviour
         }
         Instance = this;
     }
+
     public void SpawnItems(NetworkRunner runner)
     {
         if (!runner.IsServer) return;
@@ -36,14 +36,27 @@ public class ItemSpawner : MonoBehaviour
         foreach (var data in _spawnDatas)
         {
             Debug.Log($"[ItemSpawner] Procesando prefab={data.Prefab?.name} - spawnPoints={data.SpawnPoints?.Length} - count={data.Count}");
-            if (data.Prefab == null || data.SpawnPoints.Length == 0) continue;
+
+            if (data.Prefab == null || data.SpawnPoints == null || data.SpawnPoints.Length == 0) continue;
 
             for (int i = 0; i < data.Count; i++)
             {
                 Transform spawnPoint = data.SpawnPoints[i % data.SpawnPoints.Length];
                 Vector3 pos = spawnPoint.position;
+                Quaternion rot = spawnPoint.rotation;
 
-                NetworkObject itemObj = runner.Spawn(data.Prefab, pos, Quaternion.identity, null);
+                NetworkObject itemObj = runner.Spawn(
+                    data.Prefab,
+                    pos,
+                    rot,
+                    PlayerRef.None,
+                    (r, obj) =>
+                    {
+                        obj.transform.position = pos;
+                        obj.transform.rotation = rot;
+                    }
+                );
+
                 if (itemObj != null)
                     _spawnedItems.Add(itemObj);
             }
@@ -55,11 +68,9 @@ public class ItemSpawner : MonoBehaviour
     public void RemoveItem(NetworkRunner runner, NetworkObject item)
     {
         if (item == null) return;
-
         if (_spawnedItems.Contains(item))
             _spawnedItems.Remove(item);
-
         if (runner != null && item != null && runner.IsServer)
-            runner.Despawn(item); 
+            runner.Despawn(item);
     }
 }

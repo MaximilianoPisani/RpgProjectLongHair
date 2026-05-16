@@ -1474,6 +1474,7 @@ GameObject:
   - component: {fileID: 1626658859710510846}
   - component: {fileID: 504851028678181858}
   - component: {fileID: 8012974000402878717}
+  - component: {fileID: 6389904242048963037}
   m_Layer: 6
   m_Name: Player Mecano
   m_TagString: Player
@@ -1591,6 +1592,7 @@ MonoBehaviour:
   - {fileID: 3451855441021840746}
   - {fileID: 8669877731037165159}
   - {fileID: 1626658859710510846}
+  - {fileID: 6389904242048963037}
   - {fileID: 8511789763993353943}
   - {fileID: 4981121483645908282}
   ForceRemoteRenderTimeframe: 0
@@ -1971,6 +1973,18 @@ MonoBehaviour:
   OnDamageChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6389904242048963037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6542864224881935982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0989710dbf4450f48acf32e886ca0290, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6921007751941972638
 GameObject:
   m_ObjectHideFlags: 0

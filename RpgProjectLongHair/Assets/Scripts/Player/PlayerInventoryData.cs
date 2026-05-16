@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using Fusion;
@@ -13,26 +13,28 @@ public class PlayerInventoryData : NetworkBehaviour
 
     private PlayerCloudSave _cloudSave;
 
+    private PlayerSaveData _cachedSaveData = new PlayerSaveData();
+
     public override void Spawned()
     {
         if (!HasInputAuthority) return;
+        _cloudSave = GetComponent<PlayerCloudSave>()
+                  ?? gameObject.AddComponent<PlayerCloudSave>();
 
-        _cloudSave = GetComponent<PlayerCloudSave>();
-        if (_cloudSave == null)
-            _cloudSave = gameObject.AddComponent<PlayerCloudSave>();
+        PlayerPrefs.DeleteKey(LocalKey);
+        PlayerPrefs.Save();
 
         _ = LoadFromCloud();
     }
 
     private async Task LoadFromCloud()
     {
-        PlayerSaveData saveData = await _cloudSave.LoadPlayerData(); 
+        _cachedSaveData = await _cloudSave.LoadPlayerData();
 
         Items.Clear();
-
-        if (saveData.inventoryItemIds != null)
+        if (_cachedSaveData.inventoryItemIds != null)
         {
-            foreach (int id in saveData.inventoryItemIds)
+            foreach (int id in _cachedSaveData.inventoryItemIds)
                 if (id != 0)
                     Items.Add(new ItemData { id = id, type = ItemType.Weapon });
         }
@@ -46,26 +48,59 @@ public class PlayerInventoryData : NetworkBehaviour
 
     public bool AddItem(ItemData item)
     {
-        if (!HasInputAuthority) return false;
+        if (!HasInputAuthority)
+            return false;
+
+        ItemSO itemSO = ItemDatabase.GetItemByIdStatic(item.id);
+
+        if (itemSO != null &&
+            itemSO.weaponCategory == WeaponCategory.CraftItem)
+        {
+            bool alreadyExists = Items.Exists(x => x.id == item.id);
+
+            if (alreadyExists)
+            {
+                Debug.LogWarning($"[Inventory] Craft item duplicado bloqueado: {item.id}");
+                return false;
+            }
+        }
+
         Items.Add(item);
+
+        Debug.Log($"[Inventory] Item agregado: {item.id}");
+
         _ = SaveToCloud();
         OnInventoryChanged?.Invoke();
+
         return true;
     }
 
     public bool RemoveItem(int id)
     {
-        if (!HasInputAuthority) return false;
-        var found = Items.Find(x => x.id == id);
-        if (found.id == 0) return false;
-        Items.Remove(found);
+        if (!HasInputAuthority)
+            return false;
+
+        int index = Items.FindIndex(x => x.id == id);
+
+        if (index == -1)
+        {
+            Debug.LogWarning($"[Inventory] RemoveItem: id {id} no encontrado");
+            return false;
+        }
+
+        Items.RemoveAt(index);
+
+        Debug.Log($"[Inventory] Item removido: {id}");
+
         _ = SaveToCloud();
         OnInventoryChanged?.Invoke();
+
         return true;
     }
 
     public bool HasItem(int id) => Items.Exists(x => x.id == id);
     public bool HasCraftItem(int id) => HasItem(id);
+
     public bool HasAllCraftItems(List<CraftItemSO> required)
     {
         foreach (var item in required)
@@ -77,13 +112,11 @@ public class PlayerInventoryData : NetworkBehaviour
     {
         if (_cloudSave == null) return;
 
-        var saveData = await _cloudSave.LoadPlayerData(); 
-
-        saveData.inventoryItemIds = new int[Items.Count];
+        _cachedSaveData.inventoryItemIds = new int[Items.Count];
         for (int i = 0; i < Items.Count; i++)
-            saveData.inventoryItemIds[i] = Items[i].id;
+            _cachedSaveData.inventoryItemIds[i] = Items[i].id;
 
-        await _cloudSave.SavePlayerData(saveData);
+        await _cloudSave.SavePlayerData(_cachedSaveData);
         SaveToPrefs();
     }
 

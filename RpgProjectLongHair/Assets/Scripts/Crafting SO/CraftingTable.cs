@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CraftingTable : MonoBehaviour
@@ -11,26 +12,19 @@ public class CraftingTable : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private CraftingUI _craftingUI;
-    [SerializeField] private GameObject _canvasTable; // panel "presioná E"
+    [SerializeField] private GameObject _canvasTable;
 
     private PlayerInventoryData _playerInventory;
-
     private CraftRecipeSO _currentRecipe;
+
+    public float InteractRadius => _interactRadius;
+
+    private static readonly List<CraftingTable> _registry = new List<CraftingTable>();
+    public static IReadOnlyList<CraftingTable> All => _registry;
 
     private void Update()
     {
         if (_playerInventory == null) return;
-
-        float dist = Vector3.Distance(transform.position, _playerInventory.transform.position);
-        bool cerca = dist <= _interactRadius;
-
-        if (!cerca)
-        {
-            _playerInventory = null;
-            _currentRecipe = null;
-            _canvasTable.SetActive(false);
-            return;
-        }
 
         _canvasTable.SetActive(!_craftingUI.IsOpen);
 
@@ -39,23 +33,31 @@ public class CraftingTable : MonoBehaviour
 
         _craftingUI.Show(_currentRecipe, _playerInventory);
     }
-
-    private void OnTriggerEnter(Collider other)
+    private void OnEnable()
     {
-        if (!other.CompareTag("Player")) return;
+        _registry.Add(this);
+    }
 
-        //Obtener el tipo de personaje
-        var characterData = other.GetComponent<PlayerCharacterData>();
-        if (characterData == null) return;
+    private void OnDisable()
+    {
+        _registry.Remove(this);
+    }
 
-        //ASignar receta según personaje
-        _currentRecipe = characterData.characterType == CharacterType.Fungi 
-        ? _recipeFungi 
-        : _recipeMecano;
-
-        //obtener Inventario
-        var inventory = other.GetComponent<PlayerInventoryData>();
-        if (inventory == null) return;
+    public void RegisterLocalPlayer(PlayerInventoryData inventory, CharacterType characterType)
+    {
         _playerInventory = inventory;
+        _currentRecipe = characterType == CharacterType.Fungi ? _recipeFungi : _recipeMecano;
+        _canvasTable.SetActive(true);
+        Debug.Log($"[CraftingTable] Jugador registrado: {characterType}");
+    }
+
+    public void UnregisterLocalPlayer()
+    {
+        _playerInventory = null;
+        _currentRecipe = null;
+        _canvasTable.SetActive(false);
+
+        if (_craftingUI.IsOpen)
+            _craftingUI.Hide();
     }
 }

@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.Collections.Generic;
 
 public class CraftingUI : MonoBehaviour
 {
@@ -49,33 +48,76 @@ public class CraftingUI : MonoBehaviour
             itemsText += $"{estado} {item.itemName}\n";
         }
         _txtItems.text = itemsText;
-
-        // Habilitar botón solo si tiene todos los items
         _btnCraft.interactable = _playerInventory.HasAllCraftItems(_recipe.requiredItems);
     }
 
     private void OnCraft()
     {
-        if (_recipe.resultItem == null)
+        if (_recipe == null || _recipe.resultItem == null)
+            return;
+
+        if (_playerInventory == null)
+            return;
+
+        if (!_playerInventory.HasAllCraftItems(_recipe.requiredItems))
         {
-            Debug.LogError("[CraftingUI] resultItem no asignado en la receta");
+            Debug.LogWarning("[Crafting] Faltan items");
             return;
         }
 
-        // Consumir los 3 items del inventario
         foreach (var item in _recipe.requiredItems)
-            _playerInventory.RemoveItem(item.id);
+        {
+            bool removed = _playerInventory.RemoveItem(item.id);
 
-        // Agregar el arma crafteada al inventario
+            if (!removed)
+            {
+                Debug.LogError($"[Crafting] No se pudo remover {item.id}");
+                return;
+            }
+        }
+
         var weaponData = new ItemData
         {
             id = _recipe.resultItem.id,
             type = _recipe.resultItem.type
         };
-        _playerInventory.AddItem(weaponData);
 
-        Debug.Log($"[CraftingUI] Crafteado: {_recipe.resultItem.itemName}");
+        bool added = _playerInventory.AddItem(weaponData);
+
+        if (!added)
+        {
+            Debug.LogError("[Crafting] No se pudo agregar arma");
+            return;
+        }
+
+        Debug.Log($"[Crafting] Arma creada: {_recipe.resultItem.itemName}");
+
         Hide();
+    }
+
+    private System.Collections.IEnumerator ShowScreenLog(string msg)
+    {
+        var go = new GameObject("DebugLog");
+        var canvas = go.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 999;
+        go.AddComponent<UnityEngine.UI.CanvasScaler>();
+        go.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+
+        var textGo = new GameObject("Text");
+        textGo.transform.SetParent(go.transform, false);
+        var text = textGo.AddComponent<TMPro.TextMeshProUGUI>();
+        text.text = msg;
+        text.fontSize = 18;
+        text.color = Color.yellow;
+        var rt = textGo.GetComponent<RectTransform>();
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
+        rt.offsetMin = new Vector2(10, 10);
+        rt.offsetMax = new Vector2(-10, -10);
+
+        yield return new WaitForSeconds(10f);
+        Destroy(go);
     }
 
     public void Hide()
