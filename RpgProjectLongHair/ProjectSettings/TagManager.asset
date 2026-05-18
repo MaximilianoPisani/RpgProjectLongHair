@@ -9,6 +9,7 @@ TagManager:
   - Projectile
   - HUD_XP
   - Environment
+  - Water
   layers:
   - Default
   - TransparentFX

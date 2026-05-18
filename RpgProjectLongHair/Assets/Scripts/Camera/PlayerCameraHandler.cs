@@ -3,7 +3,7 @@ using Fusion;
 
 public class PlayerCameraHandler : NetworkBehaviour
 {
-    [SerializeField] private GameObject _playerCameraRoot; // Object with Camera and CinemachineVirtualCamera
+    [SerializeField] private GameObject _playerCameraRoot;
 
     public override void Spawned()
     {
@@ -15,13 +15,16 @@ public class PlayerCameraHandler : NetworkBehaviour
 
         if (HasInputAuthority)
         {
-            // Enable camera only for this local player
             _playerCameraRoot.SetActive(true);
-            Debug.Log($"[PlayerCameraHandler] Camera activated for local player {Object.InputAuthority}");
+            // Inicializar la cámara
+            var playerCamera = _playerCameraRoot.GetComponentInChildren<PlayerCamera>();
+            if (playerCamera != null)
+                playerCamera.Init(transform);
+
+            Debug.Log($"[PlayerCameraHandler] Cámara activada para jugador local {Object.InputAuthority}");
         }
         else
         {
-            // Disable other players cameras
             _playerCameraRoot.SetActive(false);
         }
     }

@@ -89,7 +89,7 @@ public class NetworkController : MonoBehaviour
 
     private void HandlePlayerSpawned(NetworkObject playerObj)
     {
-        Debug.Log("[NetworkController] Player spawned ? gameplay");
+        Debug.Log("[NetworkController] Player spawned -> gameplay");
         _runnerManager.OnPlayerSpawned -= HandlePlayerSpawned;
         _isConnecting = false;
         _lobbyPanel.SetActive(false);
