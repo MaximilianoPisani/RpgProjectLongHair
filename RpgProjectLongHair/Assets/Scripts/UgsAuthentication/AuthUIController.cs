@@ -243,16 +243,23 @@ public class AuthUIController : MonoBehaviour
         if (!ValidateSignInInputs(username, password)) return;
 
         SetLoginButtons(false);
-        await AuthenticationManager.Instance.SignIn(username, password);
+
+        bool success =
+            await AuthenticationManager.Instance
+                .SignIn(username, password);
+
         SetLoginButtons(true);
 
-        if (AuthenticationManager.Instance.IsSessionValid)
+        if (success)
         {
             OnAuthSuccess();
         }
         else
         {
-            SetError(loginGeneralError, "Usuario o contraseña incorrectos.");
+            SetError(
+                loginGeneralError,
+                "Usuario/contraseña incorrectos o la cuenta ya está en uso."
+            );
         }
     }
 

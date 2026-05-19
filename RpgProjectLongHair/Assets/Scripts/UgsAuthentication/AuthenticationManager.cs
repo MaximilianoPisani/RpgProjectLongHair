@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
@@ -6,6 +7,8 @@ using UnityEngine;
 public class AuthenticationManager : MonoBehaviour
 {
     public static AuthenticationManager Instance { get; private set; }
+
+    private string _currentSessionId;
 
     private async void Awake()
     {
@@ -67,60 +70,96 @@ public class AuthenticationManager : MonoBehaviour
     }
 
     // Sign In
-    public async Task SignIn(string username, string password)
+    public async Task<bool> SignIn(string username, string password)
     {
         if (AuthenticationService.Instance.IsSignedIn)
-        {
-            Debug.LogWarning("[Auth] Ya hay sesión activa");
-            return;
-        }
-        if (!ValidateInputs(username, password)) return;
+            return false;
 
         try
         {
             await AuthenticationService.Instance
                 .SignInWithUsernamePasswordAsync(username, password);
-            Debug.Log("[Auth] Login exitoso");
-            LogPlayerId();
-        }
-        catch (AuthenticationException e)
-        {
-            switch (e.ErrorCode)
+
+            SessionData currentSession =
+                await SessionManager.Instance.GetSessionData();
+
+            if (currentSession != null &&
+           currentSession.isOnline)
             {
-                case 10001:
-                    Debug.LogError("[Auth] Usuario o contraseña con formato incorrecto");
-                    break;
-                case 10003:
-                    Debug.LogError("[Auth] Sesión expirada. Intentá de nuevo.");
-                    break;
-                default:
-                    Debug.LogError("[Auth] Error en login: " + e.Message);
-                    break;
+                long now = System.DateTime.UtcNow.Ticks;
+
+                long diffMinutes =
+                    (now - currentSession.lastSeenTicks)
+                    / System.TimeSpan.TicksPerMinute;
+
+                bool sessionExpired = diffMinutes > 2;
+
+                if (!sessionExpired)
+                {
+                    Debug.LogError("Cuenta ya en uso");
+
+                    AuthenticationService.Instance.SignOut();
+
+                    return false;
+                }
             }
+
+            _currentSessionId = System.Guid.NewGuid().ToString();
+
+            await SessionManager.Instance.SetOnline(
+                true,
+                _currentSessionId
+            );
+
+            Debug.Log("Login OK");
+
+            return true;
         }
-        catch (RequestFailedException e)
+        catch (Exception e)
         {
-            if (e.ErrorCode == 401)
-                Debug.LogError("[Auth] Usuario o contraseña incorrectos");
-            else
-                Debug.LogError("[Auth] Error servidor (login): " + e.Message);
+            Debug.LogError(e);
+            return false;
         }
     }
 
     // Sign In Anónimo 
     public async Task SignInAnonymously()
     {
-        if (AuthenticationService.Instance.IsSignedIn)
-        {
-            AuthenticationService.Instance.SignOut(true);
-        }
-
-        AuthenticationService.Instance.ClearSessionToken();
-
         try
         {
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            if (AuthenticationService.Instance.IsSignedIn)
+            {
+                await SessionManager.Instance.SetOnline(
+                    false,
+                    _currentSessionId
+                );
+
+                AuthenticationService.Instance.SignOut(true);
+            }
+
+            AuthenticationService.Instance.ClearSessionToken();
+
+            PlayerCloudSave[] saves =
+                FindObjectsByType<PlayerCloudSave>(
+                    FindObjectsSortMode.None);
+
+            foreach (var save in saves)
+            {
+                save.ClearCache();
+            }
+
+            await AuthenticationService.Instance
+                .SignInAnonymouslyAsync();
+
+            _currentSessionId = System.Guid.NewGuid().ToString();
+
+            await SessionManager.Instance.SetOnline(
+                true,
+                _currentSessionId
+            );
+
             Debug.Log("[Auth] Login anónimo NUEVO");
+
             LogPlayerId();
         }
         catch (System.Exception e)
@@ -129,11 +168,18 @@ public class AuthenticationManager : MonoBehaviour
         }
     }
 
-    public void SignOut()
+    public async void SignOut()
     {
         if (AuthenticationService.Instance.IsSignedIn)
         {
+            await SessionManager.Instance.SetOnline(
+                false,
+                _currentSessionId
+            );
+
             AuthenticationService.Instance.SignOut();
+
+            _currentSessionId = null;
             Debug.Log("[Auth] Sesión cerrada");
         }
     }
@@ -158,6 +204,27 @@ public class AuthenticationManager : MonoBehaviour
             return false;
         }
         return true;
+    }
+
+    private async void OnApplicationQuit()
+    {
+        try
+        {
+            if (AuthenticationService.Instance != null &&
+                AuthenticationService.Instance.IsSignedIn)
+            {
+                await SessionManager.Instance.SetOnline(
+                    false,
+                    _currentSessionId
+                );
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning(
+                "[Auth] No se pudo cerrar sesión limpiamente: "
+                + e.Message);
+        }
     }
 
     public bool IsSessionValid =>
