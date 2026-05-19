@@ -38,32 +38,78 @@ public class AuthenticationManager : MonoBehaviour
     // Sign Up 
     public async Task<int?> SignUp(string username, string password)
     {
-        if (!ValidateInputs(username, password)) return null;
+        if (!ValidateInputs(username, password))
+            return null;
 
         try
         {
             await AuthenticationService.Instance
                 .SignUpWithUsernamePasswordAsync(username, password);
 
+            SessionData currentSession =
+                await SessionManager.Instance.GetSessionData();
+
+            if (currentSession != null &&
+                currentSession.isOnline)
+            {
+                long now = DateTime.UtcNow.Ticks;
+
+                long diffMinutes =
+                    (now - currentSession.lastSeenTicks)
+                    / TimeSpan.TicksPerMinute;
+
+                bool sessionExpired = diffMinutes > 2;
+
+                if (!sessionExpired)
+                {
+                    Debug.LogError(
+                        "[Auth] Cuenta ya en uso");
+
+                    ClearLocalSession();
+
+                    return 99999;
+                }
+            }
+
+            _currentSessionId =
+                Guid.NewGuid().ToString();
+
+            await SessionManager.Instance.SetOnline(
+                true,
+                _currentSessionId
+            );
+
             Debug.Log("[Auth] Registro exitoso");
+
             LogPlayerId();
+
             return null;
         }
         catch (AuthenticationException e)
         {
-            Debug.LogError("[Auth] Error en registro: " + e.Message);
+            Debug.LogError(
+                "[Auth] Error en registro: "
+                + e.Message);
 
-            if (e.Message.ToLower().Contains("username already exists"))
+            if (e.Message.ToLower()
+                .Contains("username already exists"))
+            {
                 return 10002;
+            }
 
             return e.ErrorCode;
         }
         catch (RequestFailedException e)
         {
-            Debug.LogError("[Auth] Error servidor (registro): " + e.Message);
+            Debug.LogError(
+                "[Auth] Error servidor (registro): "
+                + e.Message);
 
-            if (e.Message.ToLower().Contains("username already exists"))
+            if (e.Message.ToLower()
+                .Contains("username already exists"))
+            {
                 return 10002;
+            }
 
             return e.ErrorCode;
         }
@@ -170,18 +216,45 @@ public class AuthenticationManager : MonoBehaviour
 
     public async void SignOut()
     {
-        if (AuthenticationService.Instance.IsSignedIn)
+        try
         {
-            await SessionManager.Instance.SetOnline(
-                false,
-                _currentSessionId
-            );
+            if (AuthenticationService.Instance != null &&
+                AuthenticationService.Instance.IsSignedIn)
+            {
+                await SessionManager.Instance.SetOnline(
+                    false,
+                    _currentSessionId
+                );
 
-            AuthenticationService.Instance.SignOut();
+                ClearLocalSession();
 
-            _currentSessionId = null;
-            Debug.Log("[Auth] Sesión cerrada");
+                Debug.Log("[Auth] Sesión cerrada");
+            }
         }
+        catch (Exception e)
+        {
+            Debug.LogError(
+                "[Auth] Error cerrando sesión: "
+                + e.Message);
+        }
+    }
+
+    private void ClearLocalSession()
+    {
+        AuthenticationService.Instance.SignOut(true);
+
+        AuthenticationService.Instance.ClearSessionToken();
+
+        PlayerCloudSave[] saves =
+            FindObjectsByType<PlayerCloudSave>(
+                FindObjectsSortMode.None);
+
+        foreach (var save in saves)
+        {
+            save.ClearCache();
+        }
+
+        _currentSessionId = null;
     }
 
     private void LogPlayerId()
