@@ -19,14 +19,14 @@ public class PlayerExp : NetworkBehaviour
         _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
 
         _cloud = GetComponent<PlayerCloudSave>();
-        if (_cloud == null) _cloud = gameObject.AddComponent<PlayerCloudSave>();
+        if (_cloud == null)
+            _cloud = gameObject.AddComponent<PlayerCloudSave>();
 
-        if (Object.HasStateAuthority)
+        if (Object.HasInputAuthority)
         {
             var data = await _cloud.LoadPlayerData();
-            Level = data.level;
-            CurrentExp = data.exp;
-            ExpToNextLevel = expConfig.CalcExpToNext(Level);
+
+            RPC_SendInitialExp(data.level, data.exp);
         }
 
         if (Object.HasInputAuthority)
@@ -35,7 +35,9 @@ public class PlayerExp : NetworkBehaviour
                 _expCanvas.SetActive(true);
 
             _hud = GetComponentInChildren<PlayerExpHUD>(true);
-            if (_hud != null) _hud.Bind(this);
+
+            if (_hud != null)
+                _hud.Bind(this);
         }
         else
         {
@@ -79,5 +81,13 @@ public class PlayerExp : NetworkBehaviour
     public void RPC_RequestAddExp(int amount)
     {
         AddExperience(amount);
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_SendInitialExp(int level, int exp)
+    {
+        Level = level;
+        CurrentExp = exp;
+        ExpToNextLevel = expConfig.CalcExpToNext(Level);
     }
 }
