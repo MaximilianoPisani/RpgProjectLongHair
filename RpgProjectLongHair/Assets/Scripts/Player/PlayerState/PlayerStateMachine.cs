@@ -103,7 +103,6 @@ public class PlayerStateMachine : NetworkBehaviour
 
     public override void Render()
     {
-        Debug.Log($"[RENDER] NetworkedStateId cambió a {NetworkedStateId} | InputAuth:{Object.HasInputAuthority} | currentState:{GetStateId(_currentState)}");
         // El host ya tiene el estado correcto, solo necesita sincronizar clientes
         foreach (var change in _stateChangeDetector.DetectChanges(this))
         {
@@ -209,10 +208,13 @@ public class PlayerStateMachine : NetworkBehaviour
             ? Combat.meleeOrigin.position
             : origin + forward * 0.5f + Vector3.up;
 
+        int damageableLayer = LayerMask.GetMask("Damageable");
+        LayerMask combinedMask = Combat.enemyLayer | damageableLayer;
+
         Collider[] hits = Physics.OverlapSphere(
             attackOrigin,
             Combat.meleeData.HitRadius,
-            Combat.enemyLayer
+            combinedMask
         );
 
         foreach (var hit in hits)
@@ -235,9 +237,22 @@ public class PlayerStateMachine : NetworkBehaviour
                 );
 
                 Debug.Log($"[RPC Melee] Hit enemy - Damage: {finalDamage}");
+                continue;
+            }
+
+            var chainAnchor = hit.GetComponentInParent<DamageableChainAnchor>();
+                if (chainAnchor != null && chainAnchor.Object.HasStateAuthority)
+                {
+                    var stats = GetComponent<PlayerStats>();
+                    int finalDamage = stats != null ? stats.CurrentDamage : damage;
+
+                    chainAnchor.ApplyDamageServer(finalDamage, Object.InputAuthority);
+
+                    Debug.Log($"[RPC Melee] Hit chain anchor - Damage: {finalDamage}");
+                    continue;
+                }
             }
         }
-    }
 
     private void OnDrawGizmosSelected()
     {

@@ -1,5 +1,6 @@
 using Fusion;
 using UnityEngine;
+using static Fusion.NetworkBehaviour;
 
 public class DamageableChainAnchor : NetworkBehaviour
 {
@@ -21,9 +22,12 @@ public class DamageableChainAnchor : NetworkBehaviour
     // Flag local — lo lee el FixedUpdate nativo de Unity
     private bool _pendingBreak = false;
     private bool _breakExecuted = false;
+    private ChangeDetector _changeDetector;
 
     public override void Spawned()
     {
+        _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
+
         if (Object.HasStateAuthority)
         {
             CurrentHealth = maxHealth;
@@ -48,7 +52,8 @@ public class DamageableChainAnchor : NetworkBehaviour
             chainSetup?.BreakAtIndex(breakAtLinkIndex, breakImpulse);
             PlayBreakFeedback();
 
-            chainSetup?.DestroyAll(10f);
+            if (Object.HasStateAuthority)
+                chainSetup?.DestroyAll(10f);
         }
     }
 
@@ -69,6 +74,21 @@ public class DamageableChainAnchor : NetworkBehaviour
 
         if (breakSFX != null)
             AudioSource.PlayClipAtPoint(breakSFX, transform.position);
+    }
+
+    public override void Render()
+    {
+        foreach (var change in _changeDetector.DetectChanges(this))
+        {
+            if (change == nameof(IsBroken) && IsBroken && !_breakExecuted)
+            {
+                _breakExecuted = true;
+                chainSetup?.BreakAtIndex(breakAtLinkIndex, breakImpulse);
+                PlayBreakFeedback();
+
+                chainSetup?.DestroyAll(10f);
+            }
+        }
     }
 
     public float HealthPercent => CurrentHealth / maxHealth;
