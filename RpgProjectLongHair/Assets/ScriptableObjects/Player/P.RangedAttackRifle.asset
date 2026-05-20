@@ -21,7 +21,7 @@ MonoBehaviour:
   _lifetimeSeconds: 50
   _targetLayer:
     serializedVersion: 2
-    m_Bits: 264
+    m_Bits: 2312
   _fireMode: 0
   _requireReleaseToShootAgain: 1
   _shootFrameTime: 0.1

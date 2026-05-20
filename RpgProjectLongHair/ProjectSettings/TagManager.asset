@@ -22,7 +22,7 @@ TagManager:
   - EnemyHitbox
   - UIPlayer
   - NavMeshWalkable
-  - 
+  - Damageable
   - 
   - 
   - 

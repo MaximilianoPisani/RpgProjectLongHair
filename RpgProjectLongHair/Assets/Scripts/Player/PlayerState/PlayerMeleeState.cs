@@ -347,7 +347,10 @@ public class PlayerMeleeState : IPlayerState
             ? settings.meleeOrigin.position
             : _sm.transform.position + _sm.transform.forward * 0.5f + Vector3.up;
 
-        Collider[] hits = Physics.OverlapSphere(origin, _meleeData.HitRadius, settings.enemyLayer);
+        int damageableLayer = LayerMask.GetMask("Damageable");
+        LayerMask combinedMask = settings.enemyLayer | damageableLayer;
+
+        Collider[] hits = Physics.OverlapSphere(origin, _meleeData.HitRadius, combinedMask);
 
         foreach (var hit in hits)
         {
@@ -366,6 +369,18 @@ public class PlayerMeleeState : IPlayerState
                 PlayerRageHandler.NotifyDamageDealt(_sm.Object.InputAuthority, damage);
 
                 Debug.Log($"[Melee] Hit enemy - Damage: {damage}");
+            }
+
+            var chainAnchor = hit.GetComponentInParent<DamageableChainAnchor>();
+            if (chainAnchor != null && _sm.Object.HasStateAuthority)
+            {
+                var stats = _sm.GetComponent<PlayerStats>();
+                int damage = stats != null ? stats.CurrentDamage : _currentAttackConfig.damage;
+
+                chainAnchor.ApplyDamageServer(damage, _sm.Object.InputAuthority);
+
+                Debug.Log($"[Melee] Hit chain anchor - Damage: {damage}");
+                continue;
             }
         }
 

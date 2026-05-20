@@ -29,6 +29,8 @@ public class Projectile : NetworkBehaviour
         Life = TickTimer.CreateFromSeconds(Runner, data.LifetimeSeconds > 0f ? data.LifetimeSeconds : 5f);
 
         _targetLayerMask = (int)data.TargetLayer;
+        int damageableLayer = LayerMask.GetMask("Damageable");
+        //      _targetLayerMask |= damageableLayer;
 
         transform.SetPositionAndRotation(
             spawnPos,
@@ -78,6 +80,17 @@ public class Projectile : NetworkBehaviour
             {
                 foreach (var col in hits)
                 {
+                    var chainAnchor = col.GetComponentInParent<DamageableChainAnchor>();
+
+                    if (chainAnchor != null && chainAnchor.Object.HasStateAuthority)
+                    {
+                        int finalDamage = GetFinalDamage();
+                        chainAnchor.ApplyDamageServer(finalDamage, Attacker);
+                        _consumed = true;
+                        DespawnSafe();
+                        return;
+                    }
+
                     var hb = col.GetComponentInParent<Hitbox>();
                     var eh = col.GetComponentInParent<EnemyHealth>();
 
