@@ -298,8 +298,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1188935277675178698}
   - component: {fileID: 1867362873641618135}
-  - component: {fileID: 2426283638629490392}
   - component: {fileID: 8739609674831251766}
+  - component: {fileID: 6768084547217242082}
+  - component: {fileID: 740014971565352914}
   m_Layer: 11
   m_Name: Anchor_Ranged
   m_TagString: Untagged
@@ -343,24 +344,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2426283638629490392
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2197254374283897120}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e629212a2de07cc48b04669ce86fc4d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 20
-  chainSetup: {fileID: 881878530405853524}
-  breakAtLinkIndex: 3
-  breakImpulse: {x: 0, y: -5, z: 0}
-  breakVFX: {fileID: 0}
-  breakSFX: {fileID: 0}
 --- !u!114 &8739609674831251766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -373,13 +356,57 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SortKey: 677037063
+  SortKey: 2627069345
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 2426283638629490392}
+  - {fileID: 6768084547217242082}
   ForceRemoteRenderTimeframe: 0
+--- !u!114 &6768084547217242082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2197254374283897120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5666a12f0e67338449dbb372a5c7e469, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 20
+  OnActivated:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 740014971565352914}
+        m_TargetAssemblyTypeName: ChainBreakListener, Assembly-CSharp
+        m_MethodName: Execute
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &740014971565352914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2197254374283897120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d52771d45b2b7ab4a9d506a4dad2f7dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chainSetup: {fileID: 972000868383585653}
+  breakAtLinkIndex: 3
+  breakImpulse: {x: 0, y: -10, z: 0}
+  destroyDelay: 10
 --- !u!1 &2424868696880891827
 GameObject:
   m_ObjectHideFlags: 0
@@ -1238,7 +1265,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 789926572444567397}
-  - component: {fileID: 881878530405853524}
+  - component: {fileID: 972000868383585653}
   m_Layer: 0
   m_Name: obj_obstacle_stone
   m_TagString: Untagged
@@ -1268,7 +1295,7 @@ Transform:
   - {fileID: 5813299052970945185}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &881878530405853524
+--- !u!114 &972000868383585653
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1277,7 +1304,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6254987486781039111}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c24240fc70361504cb40d6c5d0f5b482, type: 3}
+  m_Script: {fileID: 11500000, guid: 67807700846c64743af4040f50c054b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   links:
@@ -1664,10 +1691,11 @@ GameObject:
   m_Component:
   - component: {fileID: 5813299052970945185}
   - component: {fileID: 8297229494054798742}
-  - component: {fileID: 1367375727599182758}
   - component: {fileID: 1730396633758422897}
   - component: {fileID: 6823021370225615594}
   - component: {fileID: 5720053200144627926}
+  - component: {fileID: 1283419318249469037}
+  - component: {fileID: 5780525170204606950}
   m_Layer: 11
   m_Name: Anchor_Melee
   m_TagString: Untagged
@@ -1684,7 +1712,7 @@ Transform:
   m_GameObject: {fileID: 8099796107732554016}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 12.29, y: -1.81, z: -0.32}
+  m_LocalPosition: {x: 11.62, y: -1.81, z: -0.32}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1711,24 +1739,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1367375727599182758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8099796107732554016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e629212a2de07cc48b04669ce86fc4d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 20
-  chainSetup: {fileID: 881878530405853524}
-  breakAtLinkIndex: 3
-  breakImpulse: {x: 0, y: -5, z: 0}
-  breakVFX: {fileID: 0}
-  breakSFX: {fileID: 0}
 --- !u!114 &1730396633758422897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1741,12 +1751,12 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SortKey: 1516181463
+  SortKey: 3466213745
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 1367375727599182758}
+  - {fileID: 5780525170204606950}
   ForceRemoteRenderTimeframe: 0
 --- !u!33 &6823021370225615594
 MeshFilter:
@@ -1801,6 +1811,50 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1283419318249469037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8099796107732554016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d52771d45b2b7ab4a9d506a4dad2f7dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chainSetup: {fileID: 972000868383585653}
+  breakAtLinkIndex: 2
+  breakImpulse: {x: 0, y: -10, z: 0}
+  destroyDelay: 5
+--- !u!114 &5780525170204606950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8099796107732554016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5666a12f0e67338449dbb372a5c7e469, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 20
+  OnActivated:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1283419318249469037}
+        m_TargetAssemblyTypeName: ChainBreakListener, Assembly-CSharp
+        m_MethodName: Execute
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8269338363921332754
 GameObject:
   m_ObjectHideFlags: 0

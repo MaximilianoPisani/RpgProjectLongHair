@@ -80,12 +80,12 @@ public class Projectile : NetworkBehaviour
             {
                 foreach (var col in hits)
                 {
-                    var chainAnchor = col.GetComponentInParent<DamageableChainAnchor>();
+                    var damageable = col.GetComponentInParent<DamageableObject>();
 
-                    if (chainAnchor != null && chainAnchor.Object.HasStateAuthority)
+                    if (damageable != null && damageable.Object.HasStateAuthority)
                     {
                         int finalDamage = GetFinalDamage();
-                        chainAnchor.ApplyDamageServer(finalDamage, Attacker);
+                        damageable.ApplyDamageServer(finalDamage, Attacker);
                         _consumed = true;
                         DespawnSafe();
                         return;

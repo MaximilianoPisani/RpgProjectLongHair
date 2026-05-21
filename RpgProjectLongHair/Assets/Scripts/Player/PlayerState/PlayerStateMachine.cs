@@ -240,13 +240,13 @@ public class PlayerStateMachine : NetworkBehaviour
                 continue;
             }
 
-            var chainAnchor = hit.GetComponentInParent<DamageableChainAnchor>();
-                if (chainAnchor != null && chainAnchor.Object.HasStateAuthority)
+            var damageable = hit.GetComponentInParent<DamageableObject>();
+                if (damageable != null && damageable.Object.HasStateAuthority)
                 {
                     var stats = GetComponent<PlayerStats>();
                     int finalDamage = stats != null ? stats.CurrentDamage : damage;
 
-                    chainAnchor.ApplyDamageServer(finalDamage, Object.InputAuthority);
+                    damageable.ApplyDamageServer(finalDamage, Object.InputAuthority);
 
                     Debug.Log($"[RPC Melee] Hit chain anchor - Damage: {finalDamage}");
                     continue;
