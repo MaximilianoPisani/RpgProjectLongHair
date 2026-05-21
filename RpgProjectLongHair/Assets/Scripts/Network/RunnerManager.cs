@@ -52,6 +52,8 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     public static bool IsInputBlocked { get; private set; } = false;
     public static bool IsInventoryOpen { get; private set; } = false;
 
+    private bool _duplicateLoginDetected;
+
     public async void StartRunner(GameMode mode, string sessionName, Action onFail)
     {
         _isBrowserOnly = false;
@@ -306,7 +308,10 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (_connectedPlayerIds.Contains(playerId))
         {
-            Debug.LogWarning($"[RunnerManager] Login duplicado detectado: {playerId}");
+            Debug.LogWarning(
+                $"[RunnerManager] Login duplicado detectado: {playerId}");
+
+            _duplicateLoginDetected = true;
 
             runner.Disconnect(player);
 
@@ -484,19 +489,20 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         RoomBrowser.Instance?.RefreshList(sessionList);
     }
 
-    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    public void OnDisconnectedFromServer(
+        NetworkRunner runner,
+        NetDisconnectReason reason)
     {
         Debug.Log(
-            $"[RunnerManager] Desconectado: {reason} | " +
-            $"browserOnly:{_isBrowserOnly} | " +
-            $"controlled:{_isShuttingDownControlled}"
-        );
+            $"[RunnerManager] Desconectado: {reason}");
 
         if (_isShuttingDownControlled)
         {
-            Debug.Log("[RunnerManager] Desconexión controlada — ignorando");
+            Debug.Log(
+                "[RunnerManager] Desconexión controlada");
 
             _runner = null;
+
             return;
         }
 
@@ -504,11 +510,12 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         string message;
 
-        if (_isTryingToJoin)
+        if (_duplicateLoginDetected)
         {
-            message = "Esta cuenta ya está en uso. Iniciá sesión de nuevo.";
-            _isTryingToJoin = false;
-            _wasRejectedByDuplicateLogin = true;
+            message =
+                "Esta cuenta ya está en uso.";
+
+            _duplicateLoginDetected = false;
         }
         else
         {
@@ -522,11 +529,13 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             };
         }
 
-        Debug.LogWarning($"[RunnerManager] {message}");
+        Debug.LogWarning(
+            $"[RunnerManager] {message}");
 
         AuthenticationManager.Instance?.SignOut();
 
-        GameFlowManager.Instance?.ForceReturnToLogin(message);
+        GameFlowManager.Instance
+            ?.ForceReturnToLogin(message);
     }
 
     public void OnConnectFailed(NetworkRunner runner, NetAddress remote, NetConnectFailedReason reason)

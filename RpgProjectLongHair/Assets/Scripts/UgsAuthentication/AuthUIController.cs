@@ -224,10 +224,18 @@ public class AuthUIController : MonoBehaviour
             switch (errorCode)
             {
                 case 10002:
-                    SetError(regUsernameError, "El nombre de usuario ya está en uso.");
+                    SetError(regUsernameError,
+                        "El nombre de usuario ya está en uso.");
                     break;
+
+                case 99999:
+                    SetError(regUsernameError,
+                        "Esta cuenta ya está en uso.");
+                    break;
+
                 default:
-                    SetError(regUsernameError, "No se pudo completar el registro. Intentá de nuevo.");
+                    SetError(regUsernameError,
+                        "No se pudo completar el registro.");
                     break;
             }
         }
@@ -243,16 +251,23 @@ public class AuthUIController : MonoBehaviour
         if (!ValidateSignInInputs(username, password)) return;
 
         SetLoginButtons(false);
-        await AuthenticationManager.Instance.SignIn(username, password);
+
+        bool success =
+            await AuthenticationManager.Instance
+                .SignIn(username, password);
+
         SetLoginButtons(true);
 
-        if (AuthenticationManager.Instance.IsSessionValid)
+        if (success)
         {
             OnAuthSuccess();
         }
         else
         {
-            SetError(loginGeneralError, "Usuario o contraseña incorrectos.");
+            SetError(
+                loginGeneralError,
+                "Usuario/contraseña incorrectos o la cuenta ya está en uso."
+            );
         }
     }
 
