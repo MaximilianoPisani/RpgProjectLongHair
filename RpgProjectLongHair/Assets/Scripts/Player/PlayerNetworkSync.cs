@@ -138,6 +138,58 @@ public class PlayerNetworkSync : NetworkBehaviour
         }
     }
 
+    // ========== NUEVOS MÉTODOS PARA ACTUALIZAR FLAGS DIRECTAMENTE ==========
+
+    public void SetJumpingFlag(bool value)
+    {
+        byte flags = AnimationFlags;
+        if (value)
+            flags |= FLAG_JUMPING;
+        else
+            flags &= unchecked((byte)~FLAG_JUMPING);
+
+        if (Object.HasStateAuthority)
+            AnimationFlags = flags;
+        else if (Object.HasInputAuthority)
+            RPC_SetJumpingFlag(value);
+
+        _animator?.SetBool("isJumping", value);
+    }
+
+    public void SetFallingFlag(bool value)
+    {
+        byte flags = AnimationFlags;
+        if (value)
+            flags |= FLAG_FALLING;
+        else
+            flags &= unchecked((byte)~FLAG_FALLING);
+
+        if (Object.HasStateAuthority)
+            AnimationFlags = flags;
+        else if (Object.HasInputAuthority)
+            RPC_SetFallingFlag(value);
+
+        _animator?.SetBool("isFalling", value);
+    }
+
+    public void SetLandingFlag(bool value)
+    {
+        byte flags = AnimationFlags;
+        if (value)
+            flags |= FLAG_LANDING;
+        else
+            flags &= unchecked((byte)~FLAG_LANDING);
+
+        if (Object.HasStateAuthority)
+            AnimationFlags = flags;
+        else if (Object.HasInputAuthority)
+            RPC_SetLandingFlag(value);
+
+        _animator?.SetBool("isLanding", value);
+    }
+
+    // ========== MÉTODOS EXISTENTES MODIFICADOS ==========
+
     public void SetIsReloading(bool value)
     {
         byte flags = AnimationFlags;
@@ -227,6 +279,10 @@ public class PlayerNetworkSync : NetworkBehaviour
         {
             SyncedJumpTrigger++;
             _animator?.SetTrigger("Jump");
+            // MODIFICADO: Forzar actualización inmediata del flag
+            byte flags = AnimationFlags;
+            flags |= FLAG_JUMPING;
+            AnimationFlags = flags;
         }
         else if (Object.HasInputAuthority)
         {
@@ -255,6 +311,11 @@ public class PlayerNetworkSync : NetworkBehaviour
         {
             SyncedFallTrigger++;
             _animator?.SetTrigger("Fall");
+            // MODIFICADO: Forzar actualización inmediata del flag
+            byte flags = AnimationFlags;
+            flags |= FLAG_FALLING;
+            flags &= unchecked((byte)~FLAG_JUMPING); // Quitar jumping
+            AnimationFlags = flags;
         }
         else if (Object.HasInputAuthority)
         {
@@ -269,6 +330,12 @@ public class PlayerNetworkSync : NetworkBehaviour
         {
             SyncedLandTrigger++;
             _animator?.SetTrigger("Land");
+            // MODIFICADO: Forzar actualización inmediata del flag
+            byte flags = AnimationFlags;
+            flags |= FLAG_LANDING;
+            flags &= unchecked((byte)~FLAG_FALLING); // Quitar falling
+            flags &= unchecked((byte)~FLAG_JUMPING); // Quitar jumping
+            AnimationFlags = flags;
         }
         else if (Object.HasInputAuthority)
         {
@@ -276,6 +343,7 @@ public class PlayerNetworkSync : NetworkBehaviour
             RPC_TriggerLand();
         }
     }
+
     public void TriggerShellVFX()
     {
         if (Object.HasStateAuthority)
@@ -292,6 +360,7 @@ public class PlayerNetworkSync : NetworkBehaviour
             RPC_TriggerFireVFX();
     }
 
+    // ========== RPCs EXISTENTES ==========
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RPC_TriggerMelee() => SyncedMeleeTrigger++;
@@ -300,16 +369,40 @@ public class PlayerNetworkSync : NetworkBehaviour
     private void RPC_TriggerShoot() => SyncedShootTrigger++;
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    private void RPC_TriggerJump() => SyncedJumpTrigger++;
+    private void RPC_TriggerJump()
+    {
+        SyncedJumpTrigger++;
+        // MODIFICADO: Forzar actualización inmediata del flag
+        byte flags = AnimationFlags;
+        flags |= FLAG_JUMPING;
+        AnimationFlags = flags;
+    }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RPC_TriggerDie() => SyncedDieTrigger++;
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    private void RPC_TriggerFall() => SyncedFallTrigger++;
+    private void RPC_TriggerFall()
+    {
+        SyncedFallTrigger++;
+        // MODIFICADO: Forzar actualización inmediata del flag
+        byte flags = AnimationFlags;
+        flags |= FLAG_FALLING;
+        flags &= unchecked((byte)~FLAG_JUMPING);
+        AnimationFlags = flags;
+    }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    private void RPC_TriggerLand() => SyncedLandTrigger++;
+    private void RPC_TriggerLand()
+    {
+        SyncedLandTrigger++;
+        // MODIFICADO: Forzar actualización inmediata del flag
+        byte flags = AnimationFlags;
+        flags |= FLAG_LANDING;
+        flags &= unchecked((byte)~FLAG_FALLING);
+        flags &= unchecked((byte)~FLAG_JUMPING);
+        AnimationFlags = flags;
+    }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RPC_SetIsReloading(bool value)
@@ -341,4 +434,39 @@ public class PlayerNetworkSync : NetworkBehaviour
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RPC_TriggerFireVFX() => SyncedFireVFXTrigger++;
+
+    // ========== NUEVOS RPCs PARA FLAGS ==========
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_SetJumpingFlag(bool value)
+    {
+        byte flags = AnimationFlags;
+        if (value)
+            flags |= FLAG_JUMPING;
+        else
+            flags &= unchecked((byte)~FLAG_JUMPING);
+        AnimationFlags = flags;
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_SetFallingFlag(bool value)
+    {
+        byte flags = AnimationFlags;
+        if (value)
+            flags |= FLAG_FALLING;
+        else
+            flags &= unchecked((byte)~FLAG_FALLING);
+        AnimationFlags = flags;
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_SetLandingFlag(bool value)
+    {
+        byte flags = AnimationFlags;
+        if (value)
+            flags |= FLAG_LANDING;
+        else
+            flags &= unchecked((byte)~FLAG_LANDING);
+        AnimationFlags = flags;
+    }
 }

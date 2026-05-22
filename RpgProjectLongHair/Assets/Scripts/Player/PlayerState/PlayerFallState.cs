@@ -20,13 +20,23 @@ public class PlayerFallState : IPlayerState
             _sm.Animator.SetBool("isLanding", false);
         }
 
-        _sm.GetComponent<PlayerNetworkSync>()?.TriggerFall();
+        var netSync = _sm.GetComponent<PlayerNetworkSync>();
+        if (netSync != null)
+        {
+            netSync.SetFallingFlag(true);
+            netSync.TriggerFall();
+        }
     }
 
     public void Exit()
     {
         if (_sm.Animator != null)
             _sm.Animator.SetBool("isFalling", false);
+
+        // NUEVO: Limpiar flag al salir
+        var netSync = _sm.GetComponent<PlayerNetworkSync>();
+        if (netSync != null)
+            netSync.SetFallingFlag(false);
     }
 
     public void Tick(NetworkInputData input)

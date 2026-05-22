@@ -23,13 +23,19 @@ public class PlayerLandState : IPlayerState
             _sm.Animator.SetFloat("speed", speed / _sm.Player.SprintSpeed);
         }
 
-        _sm.GetComponent<PlayerNetworkSync>()?.TriggerLand();
+        var netSync = _sm.GetComponent<PlayerNetworkSync>();
+        if (netSync != null)
+        {
+            netSync.SetLandingFlag(true);
+            netSync.TriggerLand();
+        }
     }
 
     public void Exit()
     {
-        if (_sm.Animator != null)
-            _sm.Animator.SetBool("isLanding", false);
+        var netSync = _sm.GetComponent<PlayerNetworkSync>();
+        if (netSync != null)
+            netSync.SetLandingFlag(false);
     }
 
     public void Tick(NetworkInputData input)

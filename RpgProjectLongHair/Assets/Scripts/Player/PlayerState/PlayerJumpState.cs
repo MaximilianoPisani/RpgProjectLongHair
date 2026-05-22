@@ -13,8 +13,6 @@ public class PlayerJumpState : IPlayerState
     {
         _sm.IsJumping = true;
 
-        _sm.IsJumping = true;
-
         if (_sm.Object.HasStateAuthority)
         {
             _sm.Player.Jump();
@@ -29,13 +27,24 @@ public class PlayerJumpState : IPlayerState
             _sm.Animator.SetBool("isFalling", false);
         }
 
-        _sm.GetComponent<PlayerNetworkSync>()?.TriggerJump();
+        // MODIFICADO: Actualizar flag directamente y luego disparar trigger
+        var netSync = _sm.GetComponent<PlayerNetworkSync>();
+        if (netSync != null)
+        {
+            netSync.SetJumpingFlag(true);
+            netSync.TriggerJump();
+        }
     }
 
     public void Exit()
     {
         if (_sm.Animator != null)
             _sm.Animator.SetBool("isJumping", false);
+
+        // NUEVO: Limpiar flag al salir
+        var netSync = _sm.GetComponent<PlayerNetworkSync>();
+        if (netSync != null)
+            netSync.SetJumpingFlag(false);
     }
 
     public void Tick(NetworkInputData input)
