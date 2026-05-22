@@ -23,7 +23,7 @@ MonoBehaviour:
   equipPrefab: {fileID: 3784861427520222797, guid: 32717ed7d04f9514e97d51308f84b87f, type: 3}
   rightHandPrefab: {fileID: 0}
   leftHandPrefab: {fileID: 0}
-  vfxConfig: {fileID: 0}
+  vfxConfig: {fileID: 11400000, guid: 085a630dd10f4d549acb056f60adf596, type: 2}
   baseDamage: 0
   visualPrefab: {fileID: 0}
   owner: 0

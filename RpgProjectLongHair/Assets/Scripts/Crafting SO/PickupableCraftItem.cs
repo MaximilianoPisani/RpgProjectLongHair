@@ -14,6 +14,7 @@ public class PickupableCraftItem : NetworkBehaviour
     private Collider _collider;
     private bool _localPicked;
     private Coroutine _feedbackCoroutine;
+    private PickupVFXController _vfxController;
 
     public CraftItemSO CraftItemSO => _craftItemSO;
     public int ItemId => _craftItemSO != null ? _craftItemSO.id : 0;
@@ -23,6 +24,7 @@ public class PickupableCraftItem : NetworkBehaviour
         _collider = GetComponent<Collider>();
 
         SetupVisual();
+        SetupVFX();
 
         if (_txtFeedback != null)
             _txtFeedback.gameObject.SetActive(false);
@@ -37,6 +39,14 @@ public class PickupableCraftItem : NetworkBehaviour
             Destroy(child.gameObject);
 
         Instantiate(_craftItemSO.visualPrefab, _visualRoot);
+    }
+
+    private void SetupVFX()
+    {
+        if (_craftItemSO == null || _craftItemSO.vfxConfig == null) return;
+
+        _vfxController = gameObject.AddComponent<PickupVFXController>();
+        _vfxController.Initialize(_visualRoot, _craftItemSO.vfxConfig);
     }
 
     public bool TryMarkPicked()
@@ -79,6 +89,9 @@ public class PickupableCraftItem : NetworkBehaviour
         IsPicked = true;
 
         if (Object == null || !Object.IsValid) return;
+
+        if (_vfxController != null)
+            _vfxController.DestroyVFX();
 
         Runner.Despawn(Object);
     }
