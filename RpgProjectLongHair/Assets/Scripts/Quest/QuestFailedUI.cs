@@ -19,12 +19,13 @@ public class QuestFailedUI : MonoBehaviour
         _txtTitle.text = "¡MISIÓN FALLIDA!";
         _panel.SetActive(true);
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-
         if (_hideCoroutine != null)
             StopCoroutine(_hideCoroutine);
         _hideCoroutine = StartCoroutine(HideAfterDelay());
+
+        _panel.SetActive(true);
+
+        UiStateManager.OpenBlockingUI();
     }
 
     private IEnumerator HideAfterDelay()
@@ -36,9 +37,16 @@ public class QuestFailedUI : MonoBehaviour
     public void Hide()
     {
         _panel.SetActive(false);
-        _hideCoroutine = null;
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        UiStateManager.CloseBlockingUI();
+    }
+
+    private void OnDisable()
+    {
+        if (_panel != null && _panel.activeSelf)
+        {
+            _panel.SetActive(false);
+            UiStateManager.CloseBlockingUI();
+        }
     }
 }

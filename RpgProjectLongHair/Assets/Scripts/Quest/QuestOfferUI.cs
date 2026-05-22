@@ -29,15 +29,16 @@ public class QuestOfferUI : MonoBehaviour
 
     public void Show(QuestDataSO data, QuestController controller)
     {
-        Debug.Log($"[QuestOfferUI] Show - panel={_panel != null} - txtName={_txtQuestName != null} - btnAccept={_btnAccept != null}");
+        UiStateManager.OpenBlockingUI();
 
         _questData = data;
         _questController = controller;
+
         _txtQuestName.text = data.questName;
         _txtQuestDescription.text = data.questDescription;
+
         _panel.SetActive(true);
 
-        // Mostrar cursor y bloquear input de camara
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -45,15 +46,17 @@ public class QuestOfferUI : MonoBehaviour
     private void OnAccept()
     {
         _questController.RPC_StartMission(_questData.questId, default);
+
         _panel.SetActive(false);
 
-        // Ocultar cursor y devolver el control
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        UiStateManager.CloseBlockingUI();
+    }
 
-        // Forzar el foco al juego
-        UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+    private void OnCancel()
+    {
+        _panel.SetActive(false);
 
+        UiStateManager.CloseBlockingUI();
     }
 
     private void Update()
@@ -61,16 +64,17 @@ public class QuestOfferUI : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape) && _panel.activeSelf)
         {
             _panel.SetActive(false);
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+
+            UiStateManager.CloseBlockingUI();
         }
     }
-    private void OnCancel()
+
+    private void OnDisable()
     {
-        _panel.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+        if (_panel != null && _panel.activeSelf)
+        {
+            _panel.SetActive(false);
+            UiStateManager.CloseBlockingUI();
+        }
     }
 }

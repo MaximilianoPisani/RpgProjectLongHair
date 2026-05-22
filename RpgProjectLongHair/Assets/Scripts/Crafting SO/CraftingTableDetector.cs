@@ -11,7 +11,7 @@ public class CraftingTableDetector : NetworkBehaviour
     {
         if (!HasInputAuthority)
         {
-            Destroy(this);
+            Destroy(this); 
             return;
         }
 

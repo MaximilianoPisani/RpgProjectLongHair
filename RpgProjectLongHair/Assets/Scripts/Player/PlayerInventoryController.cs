@@ -35,12 +35,34 @@ public class PlayerInventoryController : MonoBehaviour
     }
     private void Update()
     {
-        bool togglePressed = Input.GetKeyDown(KeyCode.I) || (Input.GetKeyDown(KeyCode.Escape) && _isOpen);
-        if (togglePressed)
+        if (_isOpen && !_inventoryPanel.activeSelf)
         {
-            _isOpen = Input.GetKeyDown(KeyCode.I) ? !_isOpen : false;
-            RunnerManager.SetInventoryOpen(_isOpen);
+            _isOpen = false;
+            UiStateManager.CloseBlockingUI();
+        }
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (!_isOpen && UiStateManager.HasBlockingUI)
+                return;
+
+            _isOpen = !_isOpen;
+
             _inventoryPanel.SetActive(_isOpen);
+
+            if (_isOpen)
+                UiStateManager.OpenBlockingUI();
+            else
+                UiStateManager.CloseBlockingUI();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && _isOpen)
+        {
+            _isOpen = false;
+
+            _inventoryPanel.SetActive(false);
+
+            UiStateManager.CloseBlockingUI();
         }
     }
 
@@ -136,5 +158,15 @@ public class PlayerInventoryController : MonoBehaviour
             }
 
         }
+    }
+    public void ForceClose()
+    {
+        if (!_isOpen)
+            return;
+
+        _isOpen = false;
+        _inventoryPanel.SetActive(false);
+
+        UiStateManager.CloseBlockingUI();
     }
 }

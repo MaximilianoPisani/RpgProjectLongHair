@@ -18,22 +18,35 @@ public class QuestCompleteUI : MonoBehaviour
     {
         _btnContinue.onClick.AddListener(OnContinue);
     }
+    private void Update()
+    {
+        if (!_panel.activeSelf) return;
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Hide();
+    }
     public void Show(QuestDataSO data)
     {
-        Debug.Log("[QuestCompleteUI] Show llamado");
+        if (_panel.activeSelf) return;
+        _panel.SetActive(true);
+        UiStateManager.OpenBlockingUI();
         _txtTitle.text = "¡Misión completada!";
         _txtRewards.text = $"XP: {data.xp}";
-        _panel.SetActive(true);
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
     }
 
     private void OnContinue()
     {
+        Hide();
+    }
+
+    private void Hide()
+    {
+        if (!_panel.activeSelf) return; 
         _panel.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+        UiStateManager.CloseBlockingUI();
+    }
+
+    private void OnDisable()
+    {
     }
 }

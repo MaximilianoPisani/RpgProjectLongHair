@@ -124,47 +124,61 @@ public class PlayerCamera : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (_target == null) return;
+        if (_target == null)
+            return;
 
-        // Input de ratón
         if (Cursor.lockState == CursorLockMode.Locked)
         {
             _yaw += Input.GetAxis("Mouse X") * mouseSensitivity;
             _pitch -= Input.GetAxis("Mouse Y") * mouseSensitivity;
+
             _pitch = Mathf.Clamp(_pitch, minPitch, maxPitch);
         }
 
-        // Calcular rotación
         Quaternion rotation = Quaternion.Euler(_pitch, _yaw, 0f);
 
-        // Calcular distancia objetivo con colisiones
         float maxDistance = offset.magnitude;
         float collisionDistance = CalculateCollisionDistance(_target.position, rotation);
+
         _targetDistance = Mathf.Min(collisionDistance, maxDistance);
 
-        // Suavizado de distancia (acercamiento rápido, alejamiento más lento)
-        float speed = (_currentDistance > _targetDistance) ? smoothSpeed : returnSpeed;
-        _currentDistance = Mathf.Lerp(_currentDistance, _targetDistance, Time.deltaTime * speed);
+        float speed =
+            (_currentDistance > _targetDistance)
+            ? smoothSpeed
+            : returnSpeed;
 
-        // Aplicar offset escalado según la distancia actual
-        Vector3 scaledOffset = offset.normalized * _currentDistance;
-        transform.position = _target.position + rotation * scaledOffset;
+        _currentDistance = Mathf.Lerp(
+            _currentDistance,
+            _targetDistance,
+            Time.deltaTime * speed);
 
-        // Look target
-        Vector3 lookTarget = _target.position + rotation * lookOffset;
+        Vector3 scaledOffset =
+            offset.normalized * _currentDistance;
+
+        transform.position =
+            _target.position + rotation * scaledOffset;
+
+        Vector3 lookTarget =
+            _target.position + rotation * lookOffset;
+
         transform.LookAt(lookTarget);
 
-        // Cambio de hombro
-        if (Input.GetKeyDown(KeyCode.Q) && !RunnerManager.IsInventoryOpen)
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             lookOffset.x *= -1f;
         }
 
-        // Debug visual
         if (debugMode)
         {
-            Debug.DrawLine(_target.position, transform.position, Color.blue);
-            Debug.DrawLine(_target.position, lookTarget, Color.yellow);
+            Debug.DrawLine(
+                _target.position,
+                transform.position,
+                Color.blue);
+
+            Debug.DrawLine(
+                _target.position,
+                lookTarget,
+                Color.yellow);
         }
     }
 
