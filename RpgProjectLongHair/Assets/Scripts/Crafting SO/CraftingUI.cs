@@ -27,6 +27,13 @@ public class CraftingUI : MonoBehaviour
         _panel.SetActive(false);
     }
 
+    private void Update()
+    {
+        if (!_panel.activeSelf) return;
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Hide();
+    }
     public void Show(CraftRecipeSO recipe, PlayerInventoryData inventory)
     {
         _recipe = recipe;
@@ -34,8 +41,8 @@ public class CraftingUI : MonoBehaviour
         _txtRecipeName.text = _recipe.recipeName;
         RefreshItemList();
         _panel.SetActive(true);
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        UiStateManager.OpenBlockingUI();
+                                      
     }
 
     private void RefreshItemList()
@@ -53,25 +60,22 @@ public class CraftingUI : MonoBehaviour
 
     private void OnCraft()
     {
-        if (_recipe == null || _recipe.resultItem == null)
-            return;
-
-        if (_playerInventory == null)
-            return;
+        if (_recipe == null || _recipe.resultItem == null) { Hide(); return; }
+        if (_playerInventory == null) { Hide(); return; }
 
         if (!_playerInventory.HasAllCraftItems(_recipe.requiredItems))
         {
             Debug.LogWarning("[Crafting] Faltan items");
-            return;
+            return; 
         }
 
         foreach (var item in _recipe.requiredItems)
         {
             bool removed = _playerInventory.RemoveItem(item.id);
-
             if (!removed)
             {
                 Debug.LogError($"[Crafting] No se pudo remover {item.id}");
+                Hide(); 
                 return;
             }
         }
@@ -83,15 +87,14 @@ public class CraftingUI : MonoBehaviour
         };
 
         bool added = _playerInventory.AddItem(weaponData);
-
         if (!added)
         {
             Debug.LogError("[Crafting] No se pudo agregar arma");
+            Hide(); 
             return;
         }
 
         Debug.Log($"[Crafting] Arma creada: {_recipe.resultItem.itemName}");
-
         Hide();
     }
 
@@ -122,9 +125,11 @@ public class CraftingUI : MonoBehaviour
 
     public void Hide()
     {
+        if (!_panel.activeSelf) return;
         _panel.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+
+        UiStateManager.ForceReset();
+
         UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
     }
 }

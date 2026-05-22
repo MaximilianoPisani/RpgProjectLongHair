@@ -49,10 +49,10 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private int _scrollDelta;
     private bool _scrollConsumed;
-    public static bool IsInputBlocked { get; private set; } = false;
-    public static bool IsInventoryOpen { get; private set; } = false;
 
     private bool _duplicateLoginDetected;
+
+    public static bool IsInputBlocked { get; private set; }
 
     public async void StartRunner(GameMode mode, string sessionName, Action onFail)
     {
@@ -216,19 +216,6 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
         _isShuttingDownControlled = false;
     }
 
-    // Helpers de gameplay
-    public static void SetInventoryOpen(bool open)
-    {
-        IsInventoryOpen = open;
-        Cursor.lockState = open ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = open;
-    }
-
-    public static void SetInputBlocked(bool blocked)
-    {
-        IsInputBlocked = blocked;
-    }
-
     public void RemoveItem(NetworkObject item)
     {
         if (item != null && item.Runner != null)
@@ -238,11 +225,15 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     // Update — cola de inputs
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && !IsInventoryOpen) _lockOnQueued = true;
-        if (Input.GetKeyDown(KeyCode.Space) && !IsInventoryOpen) _jumpQueued = true;
-        _isSprinting = Input.GetKey(KeyCode.LeftShift) && !IsInventoryOpen;
+        if (Input.GetKeyDown(KeyCode.F) && !UiStateManager.HasBlockingUI)
+            _lockOnQueued = true;
 
-        if (!IsInventoryOpen)
+        if (Input.GetKeyDown(KeyCode.Space) && !UiStateManager.HasBlockingUI)
+            _jumpQueued = true;
+
+        _isSprinting = Input.GetKey(KeyCode.LeftShift) && !UiStateManager.HasBlockingUI;
+
+        if (!UiStateManager.HasBlockingUI)
         {
             float scroll = Input.GetAxisRaw("Mouse ScrollWheel");
 
@@ -406,11 +397,12 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        if (IsInventoryOpen || IsInputBlocked)
+        if (UiStateManager.HasBlockingUI || IsInputBlocked)
         {
             _lastAttackHeld = false;
             _scrollDelta = 0;
             _scrollConsumed = false;
+
             input.Set(new NetworkInputData());
             return;
         }
@@ -538,6 +530,10 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             ?.ForceReturnToLogin(message);
     }
 
+    public static void SetInputBlocked(bool blocked)
+    {
+        IsInputBlocked = blocked;
+    }
     public void OnConnectFailed(NetworkRunner runner, NetAddress remote, NetConnectFailedReason reason)
     {
         Debug.LogWarning($"[RunnerManager] Conexión fallida: {reason}");

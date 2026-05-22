@@ -31,12 +31,15 @@ public class QuestInviteUI : MonoBehaviour
 
     public void Show(QuestDataSO data, QuestController controller)
     {
+
+        _panel.SetActive(true);
+
+        UiStateManager.OpenBlockingUI();
+
         _questController = controller;
         _missionId = data.questId;
         _txtQuestName.text = $"Misión: {data.questName}";
         _panel.SetActive(true);
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
 
         // Reiniciar timer si ya había uno corriendo
         if (_timerCoroutine != null)
@@ -84,10 +87,17 @@ public class QuestInviteUI : MonoBehaviour
 
     private void Hide()
     {
-        _timerCoroutine = null;
         _panel.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+
+        UiStateManager.CloseBlockingUI();
+    }
+
+    private void OnDisable()
+    {
+        if (_panel != null && _panel.activeSelf)
+        {
+            _panel.SetActive(false);
+            UiStateManager.CloseBlockingUI();
+        }
     }
 }
