@@ -17,19 +17,19 @@ MonoBehaviour:
   _cooldown: 1.5
   _hitRadius: 3
   _comboAttacks:
-  - attackDuration: 0.45
-    hitFrameTime: 0.3
+  - attackDuration: 1
+    hitFrameTime: 0.5
     comboWindowOpenTime: 0
     comboWindowCloseTime: 0
     damage: 25
     animationStateName: attackMelee
     attackVFX:
       vfxPrefab: {fileID: 802242170397950454, guid: 301d42be74e184c48af74ba3bab116f7, type: 3}
-      vfxSpawnTime: 0.26
+      vfxSpawnTime: 0.45
       localOffset: {x: 0, y: 0.2, z: 0.5}
       followTransform: 1
       customDuration: 0
-  - attackDuration: 1.1
+  - attackDuration: 1.5
     hitFrameTime: 0.5
     comboWindowOpenTime: 0
     comboWindowCloseTime: 0
@@ -37,7 +37,7 @@ MonoBehaviour:
     animationStateName: attackMelee1
     attackVFX:
       vfxPrefab: {fileID: 802242170397950454, guid: de972d60dfa3916409e1abcf02830ea7, type: 3}
-      vfxSpawnTime: 0.35
+      vfxSpawnTime: 0.45
       localOffset: {x: 0, y: 0.4, z: 0.5}
       followTransform: 1
       customDuration: 0
