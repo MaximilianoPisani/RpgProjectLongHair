@@ -33,6 +33,20 @@ public class PlayerVFXSync : NetworkBehaviour
                                 config.localOffset, config.followTransform, config.customDuration);
     }
 
+    public void SpawnLevelUpVFX(AttackVFXConfig config)
+    {
+        if (config == null || config.vfxPrefab == null) return;
+
+        Vector3 worldPos = transform.position;
+        Quaternion worldRot = transform.rotation;
+
+        _vfxController?.SpawnLevelUpVFX(config); // local inmediato
+
+        if (Object.HasStateAuthority)
+            RPC_SpawnLevelUpVFX(config.vfxPrefab.name, worldPos, worldRot,
+                                config.localOffset, config.followTransform, config.customDuration);
+    }
+
     public void OnShellVFXTriggered()
     {
         var config = GetCurrentShellConfig();
@@ -57,6 +71,13 @@ public class PlayerVFXSync : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)] //Proxies, no All
     private void RPC_SpawnSlashVFX(string prefabName, Vector3 pos, Quaternion rot,
                                     Vector3 offset, bool follow, float duration)
+    {
+        _vfxController?.SpawnVFXFromName(prefabName, pos, rot, offset, follow, duration, _combat);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
+    private void RPC_SpawnLevelUpVFX(string prefabName, Vector3 pos, Quaternion rot,
+                                     Vector3 offset, bool follow, float duration)
     {
         _vfxController?.SpawnVFXFromName(prefabName, pos, rot, offset, follow, duration, _combat);
     }

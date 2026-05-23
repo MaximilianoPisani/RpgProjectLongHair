@@ -13,6 +13,7 @@ public class PlayerExp : NetworkBehaviour
     private ChangeDetector _changeDetector;
     private PlayerCloudSave _cloud;
     private PlayerExpHUD _hud;
+    private PlayerVFXSync _vfxSync;
 
     public override async void Spawned()
     {
@@ -21,6 +22,8 @@ public class PlayerExp : NetworkBehaviour
         _cloud = GetComponent<PlayerCloudSave>();
         if (_cloud == null)
             _cloud = gameObject.AddComponent<PlayerCloudSave>();
+
+        _vfxSync = GetComponent<PlayerVFXSync>();
 
         if (Object.HasInputAuthority)
         {
@@ -69,6 +72,11 @@ public class PlayerExp : NetworkBehaviour
             CurrentExp -= ExpToNextLevel;
             Level++;
             ExpToNextLevel = expConfig.CalcExpToNext(Level);
+
+            if (expConfig.levelUpVFX != null && _vfxSync != null)
+            {
+                _vfxSync.SpawnLevelUpVFX(expConfig.levelUpVFX);
+            }
         }
 
         var saveData = await _cloud.LoadPlayerData();

@@ -11,6 +11,9 @@ public class PlayerVFXController : MonoBehaviour
     [SerializeField] private Transform fireEjectionPoint;
     [SerializeField] private Transform[] shootPoints;
 
+    [Header("Level Up VFX")]
+    [SerializeField] private Transform levelUpSpawnPoint;
+
     public void SpawnSlashVFX(AttackVFXConfig config)
     {
         if (config == null || config.vfxPrefab == null) return;
@@ -25,6 +28,13 @@ public class PlayerVFXController : MonoBehaviour
         if (point == null && shootPoints != null && shootPoints.Length > 0)
             point = shootPoints[0];
         SpawnVFXLocal(config, point ?? transform);
+    }
+
+    public void SpawnLevelUpVFX(AttackVFXConfig config)
+    {
+        if (config == null || config.vfxPrefab == null) return;
+        Transform point = levelUpSpawnPoint != null ? levelUpSpawnPoint : transform;
+        SpawnVFXLocal(config, point);
     }
 
     public void SpawnFireEjectionVFX(AttackVFXConfig config)

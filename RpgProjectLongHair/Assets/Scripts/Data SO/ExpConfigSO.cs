@@ -14,6 +14,9 @@ public class ExpConfigSO : ScriptableObject
     public int questExp = 120;
     public int craftExp = 10;
 
+    [Header("Level Up VFX")]
+    public AttackVFXConfig levelUpVFX;
+
     public int GetExp(ExpEvent evt, int hint = 0)
     {
         return evt switch

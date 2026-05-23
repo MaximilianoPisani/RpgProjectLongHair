@@ -1657,6 +1657,7 @@ MonoBehaviour:
   shellEjectionPoint: {fileID: 0}
   fireEjectionPoint: {fileID: 3729135848879202249}
   shootPoints: []
+  levelUpSpawnPoint: {fileID: 2922442543794048035}
 --- !u!114 &411337141550204832
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1735,7 +1735,7 @@ MonoBehaviour:
   _Level: 0
   _CurrentExp: 0
   _ExpToNextLevel: 0
-  expConfig: {fileID: 11400000, guid: cba863bba89c4384b875ed03cef3bb49, type: 2}
+  expConfig: {fileID: 11400000, guid: bacb707b0b4cf744cafa1839cfe1605a, type: 2}
   _expCanvas: {fileID: 0}
 --- !u!114 &1914926753053738333
 MonoBehaviour:
@@ -1949,6 +1949,7 @@ MonoBehaviour:
   shellEjectionPoint: {fileID: 8753025977005764114}
   fireEjectionPoint: {fileID: 2596254764854971430}
   shootPoints: []
+  levelUpSpawnPoint: {fileID: 5671510570809192406}
 --- !u!114 &3451855441021840746
 MonoBehaviour:
   m_ObjectHideFlags: 0
