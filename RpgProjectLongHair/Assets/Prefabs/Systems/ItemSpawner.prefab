@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4569322173382619969}
   m_Layer: 0
-  m_Name: RespawnItem_1
+  m_Name: RespawnWeapon_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -93,6 +93,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8847470558875805212}
   m_LocalEulerAnglesHint: {x: -89.98021, y: 0.000000009768291, z: 0}
+--- !u!1 &3024751556482424481
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2438532679352502551}
+  m_Layer: 0
+  m_Name: RespawnWeapon_4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2438532679352502551
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3024751556482424481}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 12.4, y: 55.31666, z: 333.53}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8847470558875805212}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3884935628012041560
 GameObject:
   m_ObjectHideFlags: 0
@@ -217,6 +248,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8847470558875805212}
   m_LocalEulerAnglesHint: {x: -89.98021, y: 0.000000009768291, z: 0}
+--- !u!1 &5746773684253017006
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7170146168009253586}
+  m_Layer: 0
+  m_Name: RespawnWeapon_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7170146168009253586
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5746773684253017006}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 12.6, y: 55.31666, z: 328.91}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8847470558875805212}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6084788687371625092
 GameObject:
   m_ObjectHideFlags: 0
@@ -227,7 +289,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6950854433125056883}
   m_Layer: 0
-  m_Name: RespawnItem_2
+  m_Name: RespawnWeapon_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -279,9 +341,11 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4569322173382619969}
+  - {fileID: 7170146168009253586}
   - {fileID: 145705073794364754}
   - {fileID: 1401866748778385400}
   - {fileID: 6950854433125056883}
+  - {fileID: 2438532679352502551}
   - {fileID: 6243278810527912181}
   - {fileID: 3808671422050224876}
   - {fileID: 9193386956823576780}
@@ -335,13 +399,21 @@ MonoBehaviour:
     SpawnPoints:
     - {fileID: 4109625222807986510}
     Count: 1
-  - Prefab: {fileID: 3291579623491846271, guid: 128c63384ad4eb340b282a0775efede0, type: 3}
+  - Prefab: {fileID: 1057492792692869932, guid: 1a7cdb7b5605ad54b814b20b905965a8, type: 3}
     SpawnPoints:
     - {fileID: 145705073794364754}
     Count: 1
-  - Prefab: {fileID: 657853016456573222, guid: f56066aadd4c06144948c549ec73f7b8, type: 3}
+  - Prefab: {fileID: 1057492792692869932, guid: 7fd5d18eef0d48044bf0155c60a69036, type: 3}
     SpawnPoints:
     - {fileID: 1401866748778385400}
+    Count: 1
+  - Prefab: {fileID: 3365196860612750413, guid: 5fcff9543f52f814aa739f6cecba615c, type: 3}
+    SpawnPoints:
+    - {fileID: 7170146168009253586}
+    Count: 1
+  - Prefab: {fileID: 4507827183060901697, guid: 01406e3e3d634c643800a099bc0567af, type: 3}
+    SpawnPoints:
+    - {fileID: 2438532679352502551}
     Count: 1
 --- !u!1 &8387205082330589500
 GameObject:

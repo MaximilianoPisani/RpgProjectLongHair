@@ -20,7 +20,7 @@ MonoBehaviour:
   amount: 0
   slotPrefab: {fileID: 6399456027509336925, guid: fc6469d6a63518c419f07918ff533ba4, type: 3}
   isDualWield: 0
-  equipPrefab: {fileID: 5491631660660866000, guid: fdbb34d543358084ba5f467a68691a66, type: 3}
+  equipPrefab: {fileID: 5491631660660866000, guid: abfdb2582193be64ab1e1b2c907fa7f2, type: 3}
   rightHandPrefab: {fileID: 5491631660660866000, guid: fdbb34d543358084ba5f467a68691a66, type: 3}
   leftHandPrefab: {fileID: 0}
   armorMesh: {fileID: 0}

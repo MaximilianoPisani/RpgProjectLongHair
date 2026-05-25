@@ -29,3 +29,4 @@ MonoBehaviour:
   vfxConfig: {fileID: 0}
   baseDamage: 0
   baseDefense: 40
+  owner: 1

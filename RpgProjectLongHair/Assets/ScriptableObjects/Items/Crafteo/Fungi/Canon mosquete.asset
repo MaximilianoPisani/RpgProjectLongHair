@@ -29,5 +29,5 @@ MonoBehaviour:
   vfxConfig: {fileID: 11400000, guid: 085a630dd10f4d549acb056f60adf596, type: 2}
   baseDamage: 0
   baseDefense: 0
+  owner: 1
   visualPrefab: {fileID: 0}
-  owner: 0
