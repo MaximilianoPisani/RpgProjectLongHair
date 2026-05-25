@@ -79,9 +79,6 @@ public class Player : NetworkBehaviour
                 _ncc.Move(moveDir); // NCC mueve pero NO rota si LockRotation = true
             }
         }
-
-        if (input.interact && Object.HasInputAuthority)
-            GetComponent<PlayerInventoryController>()?.TryPickupItem();
     }
     private void UpdateCoyoteTimer(float deltaTime)
     {

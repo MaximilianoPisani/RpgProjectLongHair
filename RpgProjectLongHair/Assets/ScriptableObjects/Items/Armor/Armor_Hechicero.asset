@@ -28,4 +28,4 @@ MonoBehaviour:
   armorSkinnedPrefab: {fileID: 0}
   vfxConfig: {fileID: 0}
   baseDamage: 0
-  baseDefense: 0
+  baseDefense: 40

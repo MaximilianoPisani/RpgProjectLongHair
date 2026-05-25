@@ -70,6 +70,9 @@ public class PlayerInventoryController : MonoBehaviour
 
             UiStateManager.CloseBlockingUI();
         }
+
+        if (Input.GetKeyDown(KeyCode.E)) // o la tecla que uses para interact
+            TryPickupItem();
     }
 
     private void OnDestroy()
@@ -129,13 +132,31 @@ public class PlayerInventoryController : MonoBehaviour
         {
             if (hit.TryGetComponent<PickupableItem>(out var pickup))
             {
+                Debug.Log($"[Pickup] Arma detectada: {pickup.gameObject.name}");
                 if (pickup.Object == null || !pickup.Object.IsValid) continue;
+
+                var characterData = GetComponent<PlayerCharacterData>();
+                if (characterData == null) return;
+
+                if (pickup.ItemDataSO.owner != CharacterType.None &&
+                    pickup.ItemDataSO.owner != characterData.characterType)
+                {
+                    pickup.ShowFeedback("¡ESTE ITEM NO TE PERTENECE!");
+                    return;
+                }
+
+                if (!pickup.TryMarkPicked()) return;
+
+                if (_inventoryData.HasItem(pickup.ItemData.id))
+                {
+                    Debug.Log($"[Pickup] Ya tenés {pickup.ItemDataSO.itemName}");
+                    return;
+                }
 
                 bool added = _inventoryData.AddItem(pickup.ItemData);
                 if (added)
-                {
                     pickup.RPC_RequestDespawn();
-                }
+
                 return;
             }
 
@@ -145,14 +166,14 @@ public class PlayerInventoryController : MonoBehaviour
 
                 var characterData = GetComponent<PlayerCharacterData>();
                 if (characterData == null) return;
+
                 if (craftPickup.CraftItemSO.owner != characterData.characterType)
                 {
                     craftPickup.ShowFeedback("¡ESTE ITEM NO TE PERTENECE!");
                     return;
                 }
 
-                if (!craftPickup.TryMarkPicked())
-                    return;
+                if (!craftPickup.TryMarkPicked()) return;
 
                 if (_inventoryData.HasItem(craftPickup.ItemId))
                 {
@@ -167,12 +188,10 @@ public class PlayerInventoryController : MonoBehaviour
                 };
                 bool added = _inventoryData.AddItem(craftItemData);
                 if (added)
-                {
                     craftPickup.RPC_RequestDespawn();
-                }
+
                 return;
             }
-
         }
     }
     public void ForceClose()

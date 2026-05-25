@@ -42,4 +42,7 @@ public class ItemSO : ScriptableObject
     [Header("Stats")]
     public int baseDamage;
     public int baseDefense;
+
+    [Header("Restricciones")]
+    public CharacterType owner;
 }

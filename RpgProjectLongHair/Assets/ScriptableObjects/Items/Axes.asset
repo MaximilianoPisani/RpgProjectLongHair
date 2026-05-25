@@ -23,5 +23,10 @@ MonoBehaviour:
   equipPrefab: {fileID: 9222434869062965706, guid: 4695d39e56f08684090e9909e74e1668, type: 3}
   rightHandPrefab: {fileID: 9222434869062965706, guid: 4695d39e56f08684090e9909e74e1668, type: 3}
   leftHandPrefab: {fileID: 782208515926188420, guid: ec46a1861586f9b4c9e0a7f1d03598ec, type: 3}
+  armorMesh: {fileID: 0}
+  armorMaterials: []
+  armorSkinnedPrefab: {fileID: 0}
   vfxConfig: {fileID: 11400000, guid: 2bcc8fdfb49b3794bad6c9232a57d3b4, type: 2}
   baseDamage: 30
+  baseDefense: 0
+  owner: 1
