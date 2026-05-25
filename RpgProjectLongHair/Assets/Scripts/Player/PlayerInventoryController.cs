@@ -17,8 +17,8 @@ public class PlayerInventoryController : MonoBehaviour
 
     private void Start()
     {
-        var nb = GetComponentInParent<NetworkBehaviour>();
-        if (nb != null && !nb.HasInputAuthority)
+        var netObj = GetComponentInParent<NetworkObject>();
+        if (netObj != null && !netObj.HasInputAuthority)
         {
             Destroy(this);
             return;
@@ -31,7 +31,13 @@ public class PlayerInventoryController : MonoBehaviour
             _inventoryData.OnInventoryChanged += RefreshInventoryUI;
 
         if (_equipManager != null)
-            _equipManager.OnEquippedChanged += RefreshEquipState;
+            _equipManager.OnEquippedChanged += _ => RefreshEquipState();
+
+        var armorData = GetComponent<PlayerArmorData>();
+        if (armorData != null)
+            armorData.OnArmorChanged += _ => RefreshEquipState();
+
+        RefreshInventoryUI();
     }
     private void Update()
     {
@@ -72,20 +78,23 @@ public class PlayerInventoryController : MonoBehaviour
             _inventoryData.OnInventoryChanged -= RefreshInventoryUI;
 
         if (_equipManager != null)
-            _equipManager.OnEquippedChanged -= RefreshEquipState;
+            _equipManager.OnEquippedChanged -= _ => RefreshEquipState();
+
+        var armorData = GetComponent<PlayerArmorData>();
+        if (armorData != null)
+            armorData.OnArmorChanged -= _ => RefreshEquipState();
     }
 
     private void RefreshInventoryUI()
     {
-        if (_uiManager == null || _inventoryData == null)
-            return;
+        if (_uiManager == null || _inventoryData == null) return;
 
         _uiManager.Clear();
 
         foreach (var data in _inventoryData.Items)
         {
-            if (data.id == 0)
-                continue;
+
+            if (data.id == 0) continue;
 
             ItemSO itemSO = ItemDatabase.GetItemByIdStatic(data.id);
 
@@ -93,7 +102,7 @@ public class PlayerInventoryController : MonoBehaviour
                 _uiManager.AddItem(itemSO, OnInventorySlotClicked);
         }
 
-        RefreshEquipState(_equipManager.EquippedItemId);
+        RefreshEquipState();
     }
 
     private void OnInventorySlotClicked(ItemSO item)
@@ -101,9 +110,16 @@ public class PlayerInventoryController : MonoBehaviour
         _equipManager?.OnSlotClicked(item);
     }
 
-    private void RefreshEquipState(int equippedId)
+    private void RefreshEquipState()
     {
-        _uiManager?.HighlightEquipped(equippedId);
+        if (_uiManager == null) return;
+
+        int weaponId = _equipManager != null ? _equipManager.EquippedItemId : 0;
+
+        var armorData = GetComponent<PlayerArmorData>();
+        int armorId = armorData != null ? armorData.EquippedArmorId : 0;
+
+        _uiManager.HighlightEquippedMultiple(weaponId, armorId);
     }
 
     public void TryPickupItem()

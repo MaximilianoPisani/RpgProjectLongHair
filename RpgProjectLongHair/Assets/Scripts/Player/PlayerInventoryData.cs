@@ -30,20 +30,26 @@ public class PlayerInventoryData : NetworkBehaviour
     private async Task LoadFromCloud()
     {
         _cachedSaveData = await _cloudSave.LoadPlayerData();
-
         Items.Clear();
+
         if (_cachedSaveData.inventoryItemIds != null)
         {
             foreach (int id in _cachedSaveData.inventoryItemIds)
-                if (id != 0)
-                    Items.Add(new ItemData { id = id, type = ItemType.Weapon });
+            {
+                if (id == 0) continue;
+                var itemSO = ItemDatabase.GetItemByIdStatic(id);
+                Items.Add(new ItemData
+                {
+                    id = id,
+                    type = itemSO != null ? itemSO.type : ItemType.Misc
+                });
+            }
         }
 
         if (Items.Count == 0)
             LoadFromPrefs();
 
         OnInventoryChanged?.Invoke();
-        Debug.Log($"[Inventory] Cargado: {Items.Count} items");
     }
 
     public bool AddItem(ItemData item)

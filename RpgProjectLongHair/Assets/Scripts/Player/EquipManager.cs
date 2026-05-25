@@ -53,8 +53,18 @@ public class EquipManager : NetworkBehaviour
             return;
         }
 
+        if (item.type == ItemType.Armor)
+        {
+            GetComponent<ArmorEquipManager>()?.RequestEquipArmor(item);
+            return;
+        }
+
         int idToSend = EquippedItemId == item.id ? 0 : item.id;
-        RPC_RequestEquip(idToSend);
+
+        if (Object.HasStateAuthority)
+            EquippedItemId = idToSend;
+        else
+            RPC_RequestEquip(idToSend);
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
@@ -90,6 +100,8 @@ public class EquipManager : NetworkBehaviour
             Debug.LogWarning($"EquipManager: ItemSO {EquippedItemId} not found");
             return;
         }
+
+        if (item.type == ItemType.Armor) return;
 
         if (item.isDualWield)
         {
@@ -186,6 +198,10 @@ public class EquipManager : NetworkBehaviour
         if (currentIndex < 0) currentIndex = 0;
 
         int nextIndex = (currentIndex + direction + ids.Count) % ids.Count;
-        RPC_RequestEquip(ids[nextIndex]);
+
+        if (Object.HasStateAuthority)
+            EquippedItemId = ids[nextIndex];
+        else
+            RPC_RequestEquip(ids[nextIndex]);
     }
 }

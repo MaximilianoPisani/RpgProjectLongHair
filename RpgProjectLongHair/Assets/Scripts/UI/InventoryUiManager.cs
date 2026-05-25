@@ -6,8 +6,7 @@ using UnityEngine.UI;
 // Manager local para mostrar el inventario
 public class InventoryUiManager : MonoBehaviour
 {
-    [SerializeField] private Transform _contentParent;
-
+    private Transform _contentParent;
     private readonly Dictionary<int, InventorySlot> _slotsById = new();
 
     public void SetContent(Transform content)
@@ -17,15 +16,12 @@ public class InventoryUiManager : MonoBehaviour
 
     public void AddItem(ItemSO item, Action<ItemSO> onClick)
     {
-        if (item == null || _contentParent == null)
-            return;
-
-        if (_slotsById.ContainsKey(item.id))
-            return;
+        if (item == null || _contentParent == null) return;
+        if (_slotsById.ContainsKey(item.id)) return;
 
         if (item.slotPrefab == null)
         {
-            Debug.LogWarning($"[InventoryUiManager] El item '{item.itemName}' (id:{item.id}) no tiene SlotPrefab asignado");
+            Debug.LogWarning($"[InventoryUiManager] '{item.itemName}' (id:{item.id}) no tiene slotPrefab asignado");
             return;
         }
 
@@ -51,13 +47,11 @@ public class InventoryUiManager : MonoBehaviour
         }
     }
 
-    public void HighlightEquipped(int equippedId)
+    public void HighlightEquippedMultiple(params int[] equippedIds)
     {
+        var equippedSet = new HashSet<int>(equippedIds);
         foreach (var kv in _slotsById)
-        {
-            bool isEquipped = kv.Key == equippedId;
-            kv.Value.SetEquipped(isEquipped);
-        }
+            kv.Value.SetEquipped(equippedSet.Contains(kv.Key));
     }
 
     public void Clear()

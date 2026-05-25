@@ -8,4 +8,78 @@ AvatarMask:
   m_PrefabAsset: {fileID: 0}
   m_Name: Upper_FungiMask
   m_Mask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
-  m_Elements: []
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.L
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.L/Brazo.L
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.L/Brazo.L/Antebrazo.L
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.L/Brazo.L/Antebrazo.L/Mano.L
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.L/Brazo.L/Antebrazo.L/Mano.L/armSocked.L
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.L/Brazo.L/Antebrazo.L/Mano.L/Dedos.L
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.L/Brazo.L/Antebrazo.L/Mano.L/Pulgar.L
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.L/Brazo.L/Antebrazo.L/Mano.L/Pulgar.L/Pulgar.L.001
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.R
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.R/Brazo.R
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.R/Brazo.R/Antebrazo.R
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.R/Brazo.R/Antebrazo.R/Mano.R
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.R/Brazo.R/Antebrazo.R/Mano.R/armSocked.R
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.R/Brazo.R/Antebrazo.R/Mano.R/Dedos.R
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.R/Brazo.R/Antebrazo.R/Mano.R/Pulgar.R
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Clavicula.R/Brazo.R/Antebrazo.R/Mano.R/Pulgar.R/Pulgar.R.001
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Cuello
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001/Columna.002/Cuello/Cabeza
+    m_Weight: 1
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Pierna.L
+    m_Weight: 0
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Pierna.L/Pierna.L.001
+    m_Weight: 0
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Pierna.L/Pierna.L.001/Pie.L
+    m_Weight: 0
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Pierna.R
+    m_Weight: 0
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Pierna.R/Pierna.R.001
+    m_Weight: 0
+  - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Pierna.R/Pierna.R.001/Pie.R
+    m_Weight: 0
+  - m_Path: obj_Char_PlayerFungi
+    m_Weight: 1
+  - m_Path: obj_CharArmor_Chest_Erudito
+    m_Weight: 1
+  - m_Path: obj_CharArmor_Chest_Hechicero
+    m_Weight: 1
+  - m_Path: obj_CharArmor_Head_Hechicero
+    m_Weight: 1
+  - m_Path: obj_CharArmor_Legs_Erudito
+    m_Weight: 1
