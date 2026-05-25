@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 101
   itemName: Canon mosquete
-  icon: {fileID: 0}
+  icon: {fileID: -1629458960, guid: 3ae843fc0462ce74c8cc2521eccb1bea, type: 3}
   type: 0
   weaponCategory: 4
   amount: 0
@@ -23,7 +23,11 @@ MonoBehaviour:
   equipPrefab: {fileID: 8294984411714850430, guid: 42eab65d3be806a44af974b8273bed54, type: 3}
   rightHandPrefab: {fileID: 0}
   leftHandPrefab: {fileID: 0}
+  armorMesh: {fileID: 0}
+  armorMaterials: []
+  armorSkinnedPrefab: {fileID: 0}
   vfxConfig: {fileID: 11400000, guid: 085a630dd10f4d549acb056f60adf596, type: 2}
   baseDamage: 0
+  baseDefense: 0
   visualPrefab: {fileID: 0}
   owner: 0

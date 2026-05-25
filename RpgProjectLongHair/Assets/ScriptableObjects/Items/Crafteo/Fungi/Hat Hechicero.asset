@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6fbbc0d6ce1a2f44091fd70ced46befd, type: 3}
-  m_Name: Rotor gatling
+  m_Name: Hat Hechicero
   m_EditorClassIdentifier: 
-  id: 104
-  itemName: Rotor gatling
+  id: 107
+  itemName: Hat Hechicero
   icon: {fileID: -1629458960, guid: 3ae843fc0462ce74c8cc2521eccb1bea, type: 3}
-  type: 0
+  type: 1
   weaponCategory: 4
   amount: 0
-  slotPrefab: {fileID: 6399456027509336925, guid: 56edf9cdae5d8f540bba63ca8c9507db, type: 3}
+  slotPrefab: {fileID: 6399456027509336925, guid: 03dc8506ab5983d4990a69fa41045520, type: 3}
   isDualWield: 0
-  equipPrefab: {fileID: 3784861427520222797, guid: f4e082fe3ff75134fb4bfbceec1934f0, type: 3}
+  equipPrefab: {fileID: 3784861427520222797, guid: 7fd5d18eef0d48044bf0155c60a69036, type: 3}
   rightHandPrefab: {fileID: 0}
   leftHandPrefab: {fileID: 0}
   armorMesh: {fileID: 0}
@@ -30,4 +30,4 @@ MonoBehaviour:
   baseDamage: 0
   baseDefense: 0
   visualPrefab: {fileID: 0}
-  owner: 1
+  owner: 0

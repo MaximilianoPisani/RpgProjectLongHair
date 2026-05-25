@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 20
   itemName: Hechichero Armor
-  icon: {fileID: 0}
+  icon: {fileID: -1629458960, guid: 3ae843fc0462ce74c8cc2521eccb1bea, type: 3}
   type: 1
   weaponCategory: 0
   amount: 0
   slotPrefab: {fileID: 6507808912153291426, guid: 5eef77b05141a624a8896ee1159d44dd, type: 3}
   isDualWield: 0
-  equipPrefab: {fileID: 0}
+  equipPrefab: {fileID: 6430017753437063297, guid: f56066aadd4c06144948c549ec73f7b8, type: 3}
   rightHandPrefab: {fileID: 0}
   leftHandPrefab: {fileID: 0}
   armorMesh: {fileID: -4162367940858050143, guid: d0252f0abfa359241a3b2ef0407217ce, type: 3}
