@@ -45,6 +45,16 @@ public class PlayerSpawner : MonoBehaviour
 
         if (spawned != null)
         {
+            if (runner.LocalPlayer == playerRef)
+            {
+                GameObject startCam = GameObject.Find("StartCamera");
+                if (startCam != null)
+                    startCam.SetActive(false);
+
+                if (_showDebugLogs)
+                    Debug.Log("[PlayerSpawner] StartCamera desactivada para jugador local.");
+            }
+
             if (_showDebugLogs)
                 Debug.Log($"[PlayerSpawner] Spawneado personaje {characterIndex} " +
                           $"(prefab índice {prefabIndex}) para {playerRef} en {spawnPoint.position}");
