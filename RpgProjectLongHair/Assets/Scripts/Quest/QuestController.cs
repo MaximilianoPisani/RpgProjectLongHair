@@ -7,49 +7,47 @@ public class QuestController : NetworkBehaviour
     private QuestDataSO _currentQuest;
     private List<QuestController> _partyMembers = new(); //  nueva lista
 
+    private readonly HashSet<string> _completedQuests = new();
+
     public QuestDataSO CurrentQuest => _currentQuest;
 
     private const string MISSION_PATH = "Quest/";
 
+    private static QuestController _activeMissionOwner;
+    private static string _activeMissionId;
+
     #region Networking
 
     #region Server
+
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     public void RPC_StartMission(string missionId, RpcInfo info)
     {
         if (!Object.HasStateAuthority) return;
-
-        if (string.IsNullOrEmpty(missionId))
-        {
-            RPC_ClientHandleError("Se recibió un id nulo al intentar iniciar una mission");
-            return;
-        }
+        if (string.IsNullOrEmpty(missionId)) return;
+        if (_completedQuests.Contains(missionId)) return;
 
         var missionData = Resources.Load<QuestDataSO>($"{MISSION_PATH}{missionId}");
-        if (missionData == null)
-        {
-            RPC_ClientHandleError($"No se encontró la misión {missionId}");
-            return;
-        }
+        if (missionData == null) return;
+
+        _activeMissionOwner = this;
+        _activeMissionId = missionId;
+        _partyMembers.Clear();
 
         StartNewQuest(missionData);
         RPC_NotifyMissionStarted(missionId);
 
-        if (missionData.allowTeleportParty)
+        var runnerManager = FindFirstObjectByType<RunnerManager>();
+        if (runnerManager == null) return;
+
+        foreach (var playerObj in runnerManager.SpawnedPlayers.Values)
         {
-            Debug.Log($"[QuestController] allowTeleportParty=true - players={FindFirstObjectByType<RunnerManager>()?.SpawnedPlayers.Count}");
+            var questController = playerObj.GetComponent<QuestController>();
+            if (questController == null) continue;
+            if (questController == this) continue;
+            if (questController.HasCompletedQuest(missionId)) continue;
 
-            var runnerManager = FindFirstObjectByType<RunnerManager>();
-            foreach (var playerObj in runnerManager.SpawnedPlayers.Values)
-            {
-                var questController = playerObj.GetComponent<QuestController>();
-                if (questController == null) continue;
-                if (questController == this) continue;
-
-                Debug.Log($"[QuestController] Invitando a: {playerObj.name}");
-                _partyMembers.Add(questController); //  guardar invitado
-                questController.RPC_InviteToQuest(missionId);
-            }
+            questController.RPC_InviteToQuest(missionId);
         }
     }
     #endregion
@@ -83,8 +81,17 @@ public class QuestController : NetworkBehaviour
     private void RPC_NotifyMissionFailed()
     {
         Debug.Log("[QuestController] RPC_NotifyMissionFailed recibido");
-        if (_currentQuest == null) return;
-        MissionEvents.OnMissionFailed?.Invoke(_currentQuest);
+        var quest = _currentQuest;
+        if (quest == null) return;
+        MissionEvents.OnMissionFailed?.Invoke(quest);
+
+        // Limpiar estado del cliente
+        TrackEvents.OnTrackEvent -= TrackStep;
+        if (_currentQuest != null)
+        {
+            Destroy(_currentQuest);
+            _currentQuest = null;
+        }
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
@@ -102,8 +109,7 @@ public class QuestController : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
     private void RPC_InviteToQuest(string missionId)
     {
-        Debug.Log($"[QuestController] RPC_InviteToQuest llegó al cliente");
-        if (_currentQuest != null) return;
+        if (_completedQuests.Contains(missionId)) return;
 
         var missionData = Resources.Load<QuestDataSO>($"{MISSION_PATH}{missionId}");
         if (missionData == null) return;
@@ -117,13 +123,45 @@ public class QuestController : NetworkBehaviour
         //TODO: implementar manejo de errores
     }
 
+    public void HandlePlayerDeath()
+    {
+        if (!Object.HasStateAuthority) return;
+
+        if (_activeMissionOwner == this)
+            FailureQuest();
+        else
+            LeaveQuestAsMember();
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_LeaveQuest()
+    {
+        if (!Object.HasStateAuthority) return;
+        HandlePlayerDeath();
+    }
+
+    private void LeaveQuestAsMember()
+    {
+        if (_activeMissionOwner != null)
+            _activeMissionOwner._partyMembers.Remove(this);
+
+        TrackEvents.OnTrackEvent -= TrackStep;
+
+        if (_currentQuest != null)
+        {
+            Destroy(_currentQuest);
+            _currentQuest = null;
+        }
+
+        RPC_NotifyMissionFailed();
+    }
     #endregion
 
     #endregion
 
     public void StartNewQuest(QuestDataSO questData)
     {
-        Debug.Log($"[QuestTester] Misión inisiada: {questData.questName}.");
+        Debug.Log($"[QuestTester] Misión iniciada: {questData.questName}.");
 
         TrackEvents.OnTrackEvent -= TrackStep;
         TrackEvents.OnTrackEvent += TrackStep;
@@ -132,6 +170,7 @@ public class QuestController : NetworkBehaviour
             Destroy(_currentQuest);
 
         _currentQuest = Instantiate(questData);
+
         MissionEvents.OnMissionStart?.Invoke(_currentQuest);
     }
 
@@ -162,43 +201,79 @@ public class QuestController : NetworkBehaviour
 
     public void FailureQuest()
     {
-        Debug.Log($"[QuestController] ¡Misión fallida!: {_currentQuest.questName}");
-        Debug.Log($"[QuestController] FailureQuest - partyMembers={_partyMembers.Count}");
+        if (_currentQuest == null)
+            return;
 
-        RPC_NotifyMissionFailed(); // avisa al dueño
+        RPC_NotifyMissionFailed();
 
-        //  avisa a todos los invitados
         foreach (var member in _partyMembers)
         {
-            if (member != null)
-                member.RPC_NotifyMissionFailed();
-        }
-        _partyMembers.Clear();
+            if (member == null) continue;
 
+            member.RPC_NotifyMissionFailed();
+            TrackEvents.OnTrackEvent -= member.TrackStep;
+
+            if (member._currentQuest != null)
+            {
+                Destroy(member._currentQuest);
+                member._currentQuest = null;
+            }
+        }
+
+        _partyMembers.Clear();
+        TrackEvents.OnTrackEvent -= TrackStep;
         Destroy(_currentQuest);
         _currentQuest = null;
-        TrackEvents.OnTrackEvent -= TrackStep;
+        _activeMissionOwner = null;
+        _activeMissionId = null;
     }
 
     private void CompleteQuest()
     {
-        Debug.Log($"[QuestController] ¡Misión completada!: {_currentQuest.questName}");
+        Debug.Log($"[QUEST COMPLETE] Owner={name} Members={_partyMembers.Count}");
 
-        RPC_NotifyMissionComplete(); //  avisa al dueño
+        if (_currentQuest == null)
+            return;
 
-        foreach (var member in _partyMembers) //  avisa a los invitados
-        {
-            if (member != null)
-                member.RPC_NotifyMissionComplete();
-        }
-        _partyMembers.Clear();
+        string questId = _currentQuest.questId;
+        int xp = _currentQuest.xp; 
+
+        MarkQuestCompleted(questId);
 
         var playerExp = GetComponent<PlayerExp>();
-        playerExp.AddExperience(_currentQuest.xp);
+        if (playerExp != null)
+            playerExp.AddExperience(xp);
 
+        RPC_NotifyMissionComplete();
+
+        foreach (var member in _partyMembers)
+        {
+            if (member == null) continue;
+
+            member.MarkQuestCompleted(questId);
+
+            var memberExp = member.GetComponent<PlayerExp>();
+            if (memberExp != null)
+                memberExp.AddExperience(xp);
+
+            member.RPC_NotifyMissionComplete();
+            TrackEvents.OnTrackEvent -= member.TrackStep;
+
+            if (member._currentQuest != null)
+            {
+                Destroy(member._currentQuest);
+                member._currentQuest = null;
+            }
+        }
+
+        _partyMembers.Clear();
+
+        TrackEvents.OnTrackEvent -= TrackStep;
         Destroy(_currentQuest);
         _currentQuest = null;
-        TrackEvents.OnTrackEvent -= TrackStep;
+
+        _activeMissionOwner = null;
+        _activeMissionId = null;
     }
 
     private void OnDestroy()
@@ -207,5 +282,85 @@ public class QuestController : NetworkBehaviour
             Destroy(_currentQuest);
 
         TrackEvents.OnTrackEvent -= TrackStep;
+    }
+
+    public bool HasCompletedQuest(string questId)
+    {
+        return _completedQuests.Contains(questId);
+    }
+
+    public void MarkQuestCompleted(string questId)
+    {
+        if (string.IsNullOrEmpty(questId))
+            return;
+
+        _completedQuests.Add(questId);
+
+        Debug.Log($"Quest completada guardada: {questId}");
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_RegisterAcceptedPlayer(PlayerRef player)
+    {
+        if (!Object.HasStateAuthority)
+            return;
+
+        var runnerManager = FindFirstObjectByType<RunnerManager>();
+
+        if (runnerManager == null)
+            return;
+
+        if (!runnerManager.SpawnedPlayers.TryGetValue(
+                player,
+                out var playerObject))
+            return;
+
+        var questController =
+            playerObject.GetComponent<QuestController>();
+
+        if (questController == null)
+            return;
+
+        if (_partyMembers.Contains(questController))
+            return;
+
+        _partyMembers.Add(questController);
+
+        Debug.Log(
+            $"Jugador aceptó misión: {questController.name}");
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_RequestJoinMission(string missionId)
+    {
+        if (!Object.HasStateAuthority) return;
+
+        if (_activeMissionOwner == null || _activeMissionId != missionId)
+        {
+            Debug.LogWarning($"[QuestController] RPC_RequestJoinMission: no hay owner activo para {missionId}");
+            return;
+        }
+
+        var runnerManager = FindFirstObjectByType<RunnerManager>();
+        if (runnerManager == null) return;
+
+        if (!runnerManager.SpawnedPlayers.TryGetValue(Object.InputAuthority, out var playerObject))
+            return;
+
+        var questController = playerObject.GetComponent<QuestController>();
+        if (questController == null) return;
+
+        if (_activeMissionOwner._partyMembers.Contains(questController)) return;
+
+        _activeMissionOwner._partyMembers.Add(questController);
+
+        questController.RPC_NotifyMissionStarted(missionId);
+
+        Debug.Log($"[QuestController] {questController.name} unido a misión {missionId}");
+    }
+
+    public static QuestController GetMissionOwner()
+    {
+        return _activeMissionOwner;
     }
 }

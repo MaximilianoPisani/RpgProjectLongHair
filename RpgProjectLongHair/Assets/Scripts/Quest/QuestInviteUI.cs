@@ -62,19 +62,19 @@ public class QuestInviteUI : MonoBehaviour
         Debug.Log("[QuestInviteUI] Timer expirado, cerrando panel");
         Hide();
     }
-
     private void OnAccept()
     {
         if (_timerCoroutine != null)
             StopCoroutine(_timerCoroutine);
 
-        _questController.RPC_StartMission(_missionId, default);
         var questData = Resources.Load<QuestDataSO>($"Quest/{_missionId}");
-        if (questData != null && questData.teleportDestination != Vector3.zero)
-        {
+        if (questData == null) { Hide(); return; }
+
+        _questController.RPC_RequestJoinMission(_missionId);
+
+        if (questData.teleportDestination != Vector3.zero)
             _questController.RPC_RequestTeleport(questData.teleportDestination);
-            Debug.Log($"[QuestInviteUI] Teleport solicitado a {questData.teleportDestination}");
-        }
+
         Hide();
     }
 
