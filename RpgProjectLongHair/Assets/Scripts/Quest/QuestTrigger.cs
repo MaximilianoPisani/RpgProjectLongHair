@@ -1,7 +1,5 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
-
+using Fusion;
 
 public class QuestTrigger : MonoBehaviour
 {
@@ -10,53 +8,74 @@ public class QuestTrigger : MonoBehaviour
     [SerializeField] private GameObject _canvasNPC;
     [SerializeField] private float _interactRadius = 3f;
 
-    private QuestController _questController;
+    private QuestController _localQuestController;
 
-    private void OnTriggerEnter(Collider other)
+    private void Start()
     {
-        Debug.Log($"[QuestTrigger] OnTriggerEnter: {other.name} tag={other.tag}");
-
-        if (!other.CompareTag("Player")) return;
-        _questController = other.GetComponent<QuestController>();
-
-        Debug.Log($"[QuestTrigger] QuestController encontrado: {_questController != null}");
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (!other.CompareTag("Player")) return;
-        _questController = null;
-        
+        _canvasNPC.SetActive(false);
     }
 
     private void Update()
     {
-        if (_questController == null) return;
-
-        float dist = Vector3.Distance(transform.position, _questController.transform.position);
-        bool cerca = dist <= _interactRadius;
-
-        // Si el player se alejó, limpiamos la referencia manualmente
-        if (!cerca)
+        if (_localQuestController == null)
         {
-            _questController = null;
+            FindLocalPlayer();
+            if (_localQuestController == null)
+            {
+                _canvasNPC.SetActive(false);
+                return;
+            }
+        }
+
+        float distance = Vector3.Distance(
+            transform.position,
+            _localQuestController.transform.position);
+
+        bool isNear = distance <= _interactRadius;
+
+        QuestDataSO questData =
+            Resources.Load<QuestDataSO>($"Quest/{_missionId}");
+
+        if (questData == null)
+        {
             _canvasNPC.SetActive(false);
             return;
         }
 
-        // Mostrar canvas NPC solo si está cerca, sin misión y sin UI abierta
-        bool mostrar = _questController.CurrentQuest == null && !_questOfferUI.IsOpen;
-        _canvasNPC.SetActive(mostrar);
+        bool alreadyCompleted =
+            _localQuestController.HasCompletedQuest(questData.questId);
 
-        // Interacción con E
-        if (!Input.GetKeyDown(KeyCode.E)) return;
-        if (_questController.CurrentQuest != null) return;
+        bool canInteract =
+            isNear &&
+            !alreadyCompleted &&
+            _localQuestController.CurrentQuest == null &&
+            !_questOfferUI.IsOpen &&
+            !UiStateManager.HasBlockingUI;
 
-        var questData = Resources.Load<QuestDataSO>($"Quest/{_missionId}");
-        if (questData != null)
+        _canvasNPC.SetActive(canInteract);
+
+        if (!canInteract)
+            return;
+
+        if (!Input.GetKeyDown(KeyCode.E))
+            return;
+
+        _canvasNPC.SetActive(false);
+
+        _questOfferUI.Show(
+            questData,
+            _localQuestController);
+    }
+
+    private void FindLocalPlayer()
+    {
+        foreach (var controller in FindObjectsByType<QuestController>(FindObjectsSortMode.None))
         {
-            _canvasNPC.SetActive(false);
-            _questOfferUI.Show(questData, _questController);
+            if (controller.HasInputAuthority)
+            {
+                _localQuestController = controller;
+                return;
+            }
         }
     }
 }

@@ -10,9 +10,9 @@ public class QuestEnemyPool : MonoBehaviour
 
     private void OnEnable()
     {
-        MissionEvents.OnMissionStart    += OnMissionStart;    // mision inicia -> spawn enemigos
-        MissionEvents.OnMissionComplete += OnMissionComplete; // mision completa -> despawn
-        MissionEvents.OnMissionFailed   += OnMissionFailed;   // mision falla -> despawn
+        MissionEvents.OnMissionStart += OnMissionStart;
+        MissionEvents.OnMissionComplete += OnMissionComplete;
+        MissionEvents.OnMissionFailed += OnMissionFailed;
     }
 
     private void OnDisable()
@@ -24,26 +24,37 @@ public class QuestEnemyPool : MonoBehaviour
 
     private void OnMissionStart(QuestDataSO data)
     {
-        // Solo activar si es MI mision
-        if (data.questId != _missionId) return;
+        Debug.Log(
+            $"[QuestEnemyPool] Evento recibido {data.questId} / esperado {_missionId}");
 
-        // Si ya hay enemigos spawneados, no duplicar
-        if (_spawnedEnemies.Count > 0) return; 
+        if (data.questId != _missionId)
+            return;
 
-        Debug.Log($"[QuestEnemyPool] OnMissionStart llamado - enemigos actuales={_spawnedEnemies.Count}");
+        if (_spawnedEnemies.Count > 0)
+            return;
 
-        // Buscar el NetworkRunner en la escena
         var runner = FindFirstObjectByType<NetworkRunner>();
-        if (runner == null || !runner.IsServer) return;
 
-        // Spawnear los enemigos de la mision
+        if (runner == null || !runner.IsServer)
+            return;
+
         foreach (var spawnData in _spawnDatas)
         {
-            if (spawnData.Prefab == null) continue;
+            if (spawnData.Prefab == null)
+                continue;
+
             for (int i = 0; i < spawnData.Count; i++)
             {
-                Transform point = spawnData.SpawnPoints[i % spawnData.SpawnPoints.Length];
-                NetworkObject enemy = runner.Spawn(spawnData.Prefab, point.position, Quaternion.identity);
+                Transform point =
+                    spawnData.SpawnPoints[
+                        i % spawnData.SpawnPoints.Length];
+
+                NetworkObject enemy =
+                    runner.Spawn(
+                        spawnData.Prefab,
+                        point.position,
+                        Quaternion.identity);
+
                 if (enemy != null)
                     _spawnedEnemies.Add(enemy);
             }
@@ -52,14 +63,28 @@ public class QuestEnemyPool : MonoBehaviour
 
     private void OnMissionComplete(QuestDataSO data)
     {
-        if (data.questId != _missionId) return;
+        if (data.questId != _missionId)
+            return;
+
+        Debug.Log(
+            $"[QuestEnemyPool] MissionComplete {_missionId}");
+
         DespawnEnemies();
+
+        _spawnedEnemies.Clear();
     }
 
     private void OnMissionFailed(QuestDataSO data)
     {
-        if (data.questId != _missionId) return;
+        if (data.questId != _missionId)
+            return;
+
+        Debug.Log(
+            $"[QuestEnemyPool] MissionFailed {_missionId}");
+
         DespawnEnemies();
+
+        _spawnedEnemies.Clear();
     }
 
     private void DespawnEnemies()

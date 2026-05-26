@@ -98,15 +98,11 @@ public class PlayerHealth : NetworkBehaviour
         if (sm != null)
             sm.ChangeState(new PlayerDeadState(sm));
 
-        // SOLO el servidor cambia el estado; los clientes lo recibirán
-        // via NetworkedStateId en el Render() de PlayerStateMachine
         if (HasStateAuthority)
         {
-            GetComponent<PlayerStateMachine>()?.ChangeState(new PlayerDeadState(GetComponent<PlayerStateMachine>()));
-
             var questController = GetComponent<QuestController>();
             if (questController?.CurrentQuest != null)
-                questController.FailureQuest();
+                questController.HandlePlayerDeath();
         }
     }
 
