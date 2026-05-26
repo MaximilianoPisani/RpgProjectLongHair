@@ -2136,6 +2136,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _knockbackMultiplier: 1
   _baseKnockbackSpeed: 6
+  _maxForceScale: 3
   _deceleration: 14
   _maxDuration: 0.35
   _minForceThreshold: 5
@@ -2169,6 +2170,8 @@ MonoBehaviour:
   PlayerLayer:
     serializedVersion: 2
     m_Bits: 64
+  _rotationSpeed: 10
+  _lookAtPlayerWhileChasing: 1
   attackOrigin: {fileID: 5162140186112679462}
   _navMeshCheckInterval: 0.5
   _navMeshSearchRadius: 2
@@ -2189,7 +2192,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7171795225345368329}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 74f9bf8289edc4c4ca188783e54608dd, type: 3}
+  m_Avatar: {fileID: 9000000, guid: 6b22be67ffc737949a05ef22cb3825d6, type: 3}
   m_Controller: {fileID: 9100000, guid: a18ff6942276a4e4fb08c0c8f24619c3, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
