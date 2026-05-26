@@ -7,7 +7,7 @@ AvatarMask:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Upper_FungiMask
-  m_Mask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
+  m_Mask: 01000000010000000100000000000000000000000100000001000000010000000100000001000000010000000100000001000000
   m_Elements:
   - m_Path: 
     m_Weight: 1
@@ -16,9 +16,9 @@ AvatarMask:
   - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro
     m_Weight: 1
   - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna
     m_Weight: 1
   - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Columna/Columna.001
@@ -74,12 +74,12 @@ AvatarMask:
   - m_Path: arm_Char_PlayerFungi/Ctrol.Maetro/Ctrol.Cadera/Cadera/Pierna.R/Pierna.R.001/Pie.R
     m_Weight: 0
   - m_Path: obj_Char_PlayerFungi
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: obj_CharArmor_Chest_Erudito
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: obj_CharArmor_Chest_Hechicero
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: obj_CharArmor_Head_Hechicero
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: obj_CharArmor_Legs_Erudito
-    m_Weight: 1
+    m_Weight: 0
