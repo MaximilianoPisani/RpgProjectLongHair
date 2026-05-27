@@ -48,7 +48,7 @@ public class QuestTrigger : MonoBehaviour
         bool canInteract =
             isNear &&
             !alreadyCompleted &&
-            _localQuestController.CurrentQuest == null &&
+            !QuestController.HasActiveMission() &&
             !_questOfferUI.IsOpen &&
             !UiStateManager.HasBlockingUI;
 
