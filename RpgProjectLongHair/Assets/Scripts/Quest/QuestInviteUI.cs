@@ -72,9 +72,6 @@ public class QuestInviteUI : MonoBehaviour
 
         _questController.RPC_RequestJoinMission(_missionId);
 
-        if (questData.teleportDestination != Vector3.zero)
-            _questController.RPC_RequestTeleport(questData.teleportDestination);
-
         Hide();
     }
 

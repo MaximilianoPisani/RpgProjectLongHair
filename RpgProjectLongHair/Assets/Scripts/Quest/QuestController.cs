@@ -54,19 +54,16 @@ public class QuestController : NetworkBehaviour
 
     #region Client
 
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    public void RPC_RequestTeleport(Vector3 destination)
+    private void TeleportPlayer(Vector3 destination)
     {
-        if (!Object.HasStateAuthority) return;
+        var player = GetComponent<Player>();
 
-        var cc = Object.GetComponent<CharacterController>();
-        if (cc != null) cc.enabled = false;
+        if (player != null)
+        {
+            player.TeleportTo(destination);
 
-        Object.transform.position = destination;
-
-        if (cc != null) cc.enabled = true;
-
-        Debug.Log($"[QuestController] Teleport ejecutado a {destination}");
+            Debug.Log($"[QuestController] TP aplicado correctamente a {name}");
+        }
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
@@ -154,6 +151,9 @@ public class QuestController : NetworkBehaviour
         }
 
         RPC_NotifyMissionFailed();
+
+        _activeMissionOwner = null;
+        _activeMissionId = null;
     }
     #endregion
 
@@ -333,34 +333,43 @@ public class QuestController : NetworkBehaviour
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     public void RPC_RequestJoinMission(string missionId)
     {
-        if (!Object.HasStateAuthority) return;
-
-        if (_activeMissionOwner == null || _activeMissionId != missionId)
-        {
-            Debug.LogWarning($"[QuestController] RPC_RequestJoinMission: no hay owner activo para {missionId}");
+        if (!Object.HasStateAuthority)
             return;
+
+        if (_activeMissionOwner == null)
+            return;
+
+        if (_activeMissionId != missionId)
+            return;
+
+        var missionData =
+            Resources.Load<QuestDataSO>($"{MISSION_PATH}{missionId}");
+
+        if (missionData == null)
+            return;
+
+        if (_activeMissionOwner._partyMembers.Contains(this))
+            return;
+
+        _activeMissionOwner._partyMembers.Add(this);
+
+        RPC_NotifyMissionStarted(missionId);
+
+        if (missionData.allowTeleportParty)
+        {
+            TeleportPlayer(missionData.teleportDestination);
         }
 
-        var runnerManager = FindFirstObjectByType<RunnerManager>();
-        if (runnerManager == null) return;
-
-        if (!runnerManager.SpawnedPlayers.TryGetValue(Object.InputAuthority, out var playerObject))
-            return;
-
-        var questController = playerObject.GetComponent<QuestController>();
-        if (questController == null) return;
-
-        if (_activeMissionOwner._partyMembers.Contains(questController)) return;
-
-        _activeMissionOwner._partyMembers.Add(questController);
-
-        questController.RPC_NotifyMissionStarted(missionId);
-
-        Debug.Log($"[QuestController] {questController.name} unido a misión {missionId}");
+        Debug.Log(
+            $"[QuestController] {name} unido y teletransportado");
     }
 
     public static QuestController GetMissionOwner()
     {
         return _activeMissionOwner;
+    }
+    public static bool HasActiveMission()
+    {
+        return _activeMissionOwner != null;
     }
 }

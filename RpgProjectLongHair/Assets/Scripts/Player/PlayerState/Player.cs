@@ -102,21 +102,27 @@ public class Player : NetworkBehaviour
             QueryTriggerInteraction.Ignore
         );
     }
-
-    public bool IsGrounded() => _coyoteTimer > 0f;
-
-    public bool IsPhysicallyGroundedPublic() => IsPhysicallyGrounded();
-
     public void TeleportTo(Vector3 position)
     {
+        if (_ncc == null)
+            _ncc = GetComponent<NetworkCharacterController>();
+
         if (_ncc != null)
         {
             _ncc.Velocity = Vector3.zero;
             _ncc.Teleport(position);
         }
         else
+        {
             transform.position = position;
+        }
+
+        Debug.Log($"[Player] TeleportTo => {position}");
     }
+
+    public bool IsGrounded() => _coyoteTimer > 0f;
+
+    public bool IsPhysicallyGroundedPublic() => IsPhysicallyGrounded();
 
     public float GetHorizontalSpeed()
     {
