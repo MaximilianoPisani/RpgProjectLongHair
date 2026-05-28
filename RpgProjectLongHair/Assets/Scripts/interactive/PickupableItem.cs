@@ -16,13 +16,20 @@ public class PickupableItem : NetworkBehaviour
     private bool _localPicked;
     private PickupVFXController _vfxController;
     private Coroutine _feedbackCoroutine;
+    private GameObject _spawnedMinimapIcon;
     public ItemSO ItemDataSO => itemDataSO;
+
+    [Header("Minimap")]
+    [SerializeField] private GameObject _minimapIconPrefab;
+    [SerializeField] private Vector3 _iconOffset = new Vector3(0, 3f, 0);
+    [SerializeField] private Vector3 _iconRotation;
 
     public override void Spawned()
     {
         _collider = GetComponent<Collider>();
         SetupVisual();
         SetupVFX();
+        SpawnMinimapIcon();
 
         if (_txtFeedback != null)
             _txtFeedback.gameObject.SetActive(false);
@@ -57,6 +64,21 @@ public class PickupableItem : NetworkBehaviour
         {
             Instantiate(itemDataSO.equipPrefab, _visualRoot);
         }
+    }
+
+    private void SpawnMinimapIcon()
+    {
+        if (_minimapIconPrefab == null) return;
+
+        _spawnedMinimapIcon = Instantiate(
+            _minimapIconPrefab,
+            transform
+        );
+
+        _spawnedMinimapIcon.transform.localPosition = _iconOffset;
+
+        _spawnedMinimapIcon.transform.localRotation =
+            Quaternion.Euler(_iconRotation);
     }
 
     public void ShowFeedback(string message)
@@ -109,6 +131,11 @@ public class PickupableItem : NetworkBehaviour
         if (_vfxController != null)
         {
             _vfxController.DestroyVFX();
+        }
+
+        if (_spawnedMinimapIcon != null)
+        {
+            Destroy(_spawnedMinimapIcon);
         }
 
         Runner.Despawn(Object);

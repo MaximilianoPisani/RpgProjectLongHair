@@ -1,20 +1,27 @@
 using UnityEngine;
 
-public class MinimapBillboard : MonoBehaviour
+public class MinimapIconRotation : MonoBehaviour
 {
+    [SerializeField]
+    private Vector3 rotationOffset =
+        new Vector3(90f, 0f, 0f);
+
+    private Transform _localPlayer;
+
+    private void Start()
+    {
+        if (PlayerCamera.Local != null)
+            _localPlayer = PlayerCamera.Local.transform.root;
+    }
+
     private void LateUpdate()
     {
-        Camera cam = PlayerCamera.Local != null
-            ? PlayerCamera.Local.GetComponent<Camera>()
-            : Camera.main;
+        if (_localPlayer == null) return;
 
-        if (cam == null) return;
-
-        Vector3 euler = transform.eulerAngles;
-
-        // Solo seguir la rotación Y de la cámara
-        euler.y = cam.transform.eulerAngles.y;
-
-        transform.eulerAngles = euler;
+        transform.rotation = Quaternion.Euler(
+            rotationOffset.x,
+            _localPlayer.eulerAngles.y + rotationOffset.y,
+            rotationOffset.z
+        );
     }
 }
