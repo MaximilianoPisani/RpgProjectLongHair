@@ -15,6 +15,13 @@ public class PickupableCraftItem : NetworkBehaviour
     private bool _localPicked;
     private Coroutine _feedbackCoroutine;
     private PickupVFXController _vfxController;
+    private GameObject _spawnedMinimapIcon;
+
+
+    [Header("Minimap")]
+    [SerializeField] private GameObject _minimapIconPrefab;
+    [SerializeField] private Vector3 _iconOffset = new Vector3(0, 3f, 0);
+    [SerializeField] private Vector3 _iconRotation;
 
     public CraftItemSO CraftItemSO => _craftItemSO;
     public int ItemId => _craftItemSO != null ? _craftItemSO.id : 0;
@@ -25,6 +32,7 @@ public class PickupableCraftItem : NetworkBehaviour
 
         SetupVisual();
         SetupVFX();
+        SpawnMinimapIcon();
 
         if (_txtFeedback != null)
             _txtFeedback.gameObject.SetActive(false);
@@ -39,6 +47,21 @@ public class PickupableCraftItem : NetworkBehaviour
             Destroy(child.gameObject);
 
         Instantiate(_craftItemSO.visualPrefab, _visualRoot);
+    }
+
+    private void SpawnMinimapIcon()
+    {
+        if (_minimapIconPrefab == null) return;
+
+        _spawnedMinimapIcon = Instantiate(
+            _minimapIconPrefab,
+            transform
+        );
+
+        _spawnedMinimapIcon.transform.localPosition = _iconOffset;
+
+        _spawnedMinimapIcon.transform.localRotation =
+            Quaternion.Euler(_iconRotation);
     }
 
     private void SetupVFX()
@@ -92,6 +115,11 @@ public class PickupableCraftItem : NetworkBehaviour
 
         if (_vfxController != null)
             _vfxController.DestroyVFX();
+
+        if (_spawnedMinimapIcon != null)
+        {
+            Destroy(_spawnedMinimapIcon);
+        }
 
         Runner.Despawn(Object);
     }
