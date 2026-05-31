@@ -155,7 +155,7 @@ public class PlayerInventoryController : MonoBehaviour
 
                 bool added = _inventoryData.AddItem(pickup.ItemData);
                 if (added)
-                    pickup.RPC_RequestDespawn();
+                    pickup.RPC_RequestPickup();
 
                 return;
             }
@@ -188,7 +188,7 @@ public class PlayerInventoryController : MonoBehaviour
                 };
                 bool added = _inventoryData.AddItem(craftItemData);
                 if (added)
-                    craftPickup.RPC_RequestDespawn();
+                    craftPickup.RPC_RequestPickup();
 
                 return;
             }

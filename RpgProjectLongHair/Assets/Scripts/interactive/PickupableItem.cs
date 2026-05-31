@@ -10,22 +10,67 @@ public class PickupableItem : NetworkBehaviour
     [SerializeField] private Transform _visualRoot;
     [SerializeField] private TextMeshProUGUI _txtFeedback;
 
+    [Header("Respawn items for network")]
+    [SerializeField] private float _respawnTime = 30f; // tiempo de respawn
+
     [Networked] private NetworkBool IsPicked { get; set; }
+    [Networked] private TickTimer _respawnTimer {  get; set; } // - timer de Fusion
 
     private Collider _collider;
     private bool _localPicked;
     private PickupVFXController _vfxController;
     private Coroutine _feedbackCoroutine;
+
+    // Cache de renderers visuales (NO UI)
+    private Renderer[] _cachedRenderers;
     public ItemSO ItemDataSO => itemDataSO;
 
     public override void Spawned()
     {
         _collider = GetComponent<Collider>();
-        SetupVisual();
+
+        // Cachear renderers UNA VEZ
+        CacheVisualRenderers();
+
+        //SetupVisual();
         SetupVFX();
 
         if (_txtFeedback != null)
             _txtFeedback.gameObject.SetActive(false);
+
+        // si respawneó, asegurar que esté activo
+        if (!IsPicked)
+            SetVisualActive(true);
+    }
+
+    private void CacheVisualRenderers()
+    {
+        var allRenderers = GetComponentsInChildren<Renderer>(true);
+        var visualList = new System.Collections.Generic.List<Renderer>();
+
+        foreach (var rend in allRenderers)
+        {
+            // Ignorar CanvasRenderer (UI)
+            if (rend is CanvasRenderer) continue;
+
+            // Ignorar si está dentro de un Canvas
+            if (rend.GetComponentInParent<Canvas>() != null) continue;
+
+            visualList.Add(rend);
+        }
+
+        _cachedRenderers = visualList.ToArray();
+    }
+
+    public override void FixedUpdateNetwork()
+    {
+        // solo el StateAuthority maneja el timer
+        if (!HasStateAuthority) return;
+
+        if (IsPicked && _respawnTimer.Expired(Runner))
+        {
+            RPC_Respawn();
+        }
     }
 
     public bool TryMarkPicked()
@@ -76,7 +121,7 @@ public class PickupableItem : NetworkBehaviour
 
         // Crear el controlador de VFX
         _vfxController = gameObject.AddComponent<PickupVFXController>();
-        _vfxController.Initialize(_visualRoot, itemDataSO.vfxConfig);
+        _vfxController.Initialize(_visualRoot != null ? _visualRoot : transform, itemDataSO.vfxConfig);
     }
     public ItemData ItemData => new ItemData // Datos que se envían al inventario (NetworkArray)
     {
@@ -99,18 +144,70 @@ public class PickupableItem : NetworkBehaviour
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_RequestDespawn()
+    public void RPC_RequestPickup()
     {
-        if (IsPicked) return;         //NUEVO: guard en el servidor
-        IsPicked = true;
-
+        if (IsPicked) return;
         if (Object == null || !Object.IsValid) return;
 
-        if (_vfxController != null)
+        // Iniciar respawn timer
+        IsPicked = true;
+        _respawnTimer = TickTimer.CreateFromSeconds(Runner, _respawnTime);
+
+        // Desactivar visualmente
+        RPC_SetPickedVisual(true);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_SetPickedVisual(bool picked)
+    {
+        SetVisualActive(!picked);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_Respawn()
+    {
+        IsPicked = false;
+        _localPicked = false;
+
+        if (_collider != null)
+            _collider.enabled = true;
+
+        SetVisualActive(true);
+    }
+    private void SetVisualActive(bool active)
+    {
+        // Activar/desactivar renderers cacheados
+        if (_cachedRenderers != null)
         {
-            _vfxController.DestroyVFX();
+            foreach (var rend in _cachedRenderers)
+            {
+                if (rend != null)
+                    rend.enabled = active;
+            }
         }
 
-        Runner.Despawn(Object);
+        // VFX
+        if (_vfxController != null)
+        {
+            if (active) _vfxController.RestoreVFX();
+            else _vfxController.HideVFX();
+        }
     }
+
+
+    //[Rpc(RpcSources.All, RpcTargets.StateAuthority)]  
+    //public void RPC_RequestDespawn()
+    //{
+    //    if (IsPicked) return;         NUEVO: guard en el servidor
+    //    IsPicked = true;
+
+    //    if (Object == null || !Object.IsValid) return;
+
+    //    if (_vfxController != null)
+    //    {
+    //        _vfxController.DestroyVFX();
+    //    }
+
+    //    Runner.Despawn(Object);
+    //}
 }

@@ -9,12 +9,19 @@ public class PickupableCraftItem : NetworkBehaviour
     [SerializeField] private Transform _visualRoot;
     [SerializeField] private TextMeshProUGUI _txtFeedback;
 
+    [Header("Respawn items for network")]
+    [SerializeField] private float _respawnTime = 30f; // tiempo de respawn
+
     [Networked] private NetworkBool IsPicked { get; set; }
+    [Networked] private TickTimer _respawnTimer { get; set; } // - timer de Fusion
 
     private Collider _collider;
     private bool _localPicked;
     private Coroutine _feedbackCoroutine;
     private PickupVFXController _vfxController;
+
+    // Cache de renderers visuales (NO UI)
+    private Renderer[] _cachedRenderers;
 
     public CraftItemSO CraftItemSO => _craftItemSO;
     public int ItemId => _craftItemSO != null ? _craftItemSO.id : 0;
@@ -23,11 +30,49 @@ public class PickupableCraftItem : NetworkBehaviour
     {
         _collider = GetComponent<Collider>();
 
-        SetupVisual();
+        //SetupVisual();
+
+        // Cachear renderers UNA VEZ
+        CacheVisualRenderers();
+
         SetupVFX();
 
         if (_txtFeedback != null)
             _txtFeedback.gameObject.SetActive(false);
+
+        // si respawneó, asegurar que esté activo
+        if (!IsPicked)
+            SetVisualActive(true);
+    }
+
+    private void CacheVisualRenderers()
+    {
+        var allRenderers = GetComponentsInChildren<Renderer>(true);
+        var visualList = new System.Collections.Generic.List<Renderer>();
+
+        foreach (var rend in allRenderers)
+        {
+            // Ignorar CanvasRenderer (UI)
+            if (rend is CanvasRenderer) continue;
+
+            // Ignorar si está dentro de un Canvas
+            if (rend.GetComponentInParent<Canvas>() != null) continue;
+
+            visualList.Add(rend);
+        }
+
+        _cachedRenderers = visualList.ToArray();
+    }
+
+    public override void FixedUpdateNetwork()
+    {
+        // solo el StateAuthority maneja el timer
+        if (!HasStateAuthority) return;
+
+        if (IsPicked && _respawnTimer.Expired(Runner))
+        {
+            RPC_Respawn();
+        }
     }
 
     private void SetupVisual()
@@ -39,6 +84,26 @@ public class PickupableCraftItem : NetworkBehaviour
             Destroy(child.gameObject);
 
         Instantiate(_craftItemSO.visualPrefab, _visualRoot);
+    }
+
+    private void SetVisualActive(bool active)
+    {
+        // Activar/desactivar renderers cacheados
+        if (_cachedRenderers != null)
+        {
+            foreach (var rend in _cachedRenderers)
+            {
+                if (rend != null)
+                    rend.enabled = active;
+            }
+        }
+
+        // VFX
+        if (_vfxController != null)
+        {
+            if (active) _vfxController.RestoreVFX();
+            else _vfxController.HideVFX();
+        }
     }
 
     private void SetupVFX()
@@ -83,16 +148,46 @@ public class PickupableCraftItem : NetworkBehaviour
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_RequestDespawn()
+    public void RPC_RequestPickup()
     {
         if (IsPicked) return;
-        IsPicked = true;
-
         if (Object == null || !Object.IsValid) return;
 
-        if (_vfxController != null)
-            _vfxController.DestroyVFX();
-
-        Runner.Despawn(Object);
+        IsPicked = true;
+        _respawnTimer = TickTimer.CreateFromSeconds(Runner, _respawnTime);
+        RPC_SetPickedVisual(true);
     }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_SetPickedVisual(bool picked)
+    {
+        SetVisualActive(!picked);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_Respawn()
+    {
+        IsPicked = false;
+        _localPicked = false;
+
+        if (_collider != null)
+            _collider.enabled = true;
+
+        SetVisualActive(true);
+    }
+
+
+    //[Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    //public void RPC_RequestDespawn()
+    //{
+    //    if (IsPicked) return;
+    //    IsPicked = true;
+
+    //    if (Object == null || !Object.IsValid) return;
+
+    //    if (_vfxController != null)
+    //        _vfxController.DestroyVFX();
+
+    //    Runner.Despawn(Object);
+    //}
 }

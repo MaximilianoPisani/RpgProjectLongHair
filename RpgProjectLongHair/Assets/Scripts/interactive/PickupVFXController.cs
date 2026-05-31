@@ -88,11 +88,10 @@ public class PickupVFXController : MonoBehaviour
         }
     }
 
-    public void DestroyVFX()
+    public void HideVFX()
     {
         if (_vfxInstance != null)
         {
-            // Detener partículas
             ParticleSystem[] particles = _vfxInstance.GetComponentsInChildren<ParticleSystem>();
             foreach (var ps in particles)
             {
@@ -100,8 +99,38 @@ public class PickupVFXController : MonoBehaviour
             }
 
             Destroy(_vfxInstance);
+            _vfxInstance = null;
         }
+    }
 
+    public void RestoreVFX()
+    {
+        if (_config != null && _vfxInstance == null)
+        {
+            SpawnVFX();
+        }
+    }
+
+    public void DestroyVFX()
+    {
+        HideVFX();
         Destroy(this);
     }
+
+    //public void DestroyVFX()
+    //{
+    //    if (_vfxInstance != null)
+    //    {
+    //        // Detener partículas
+    //        ParticleSystem[] particles = _vfxInstance.GetComponentsInChildren<ParticleSystem>();
+    //        foreach (var ps in particles)
+    //        {
+    //            ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+    //        }
+
+    //        Destroy(_vfxInstance);
+    //    }
+
+    //    Destroy(this);
+    //}
 }
