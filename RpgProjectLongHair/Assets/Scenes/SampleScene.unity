@@ -211,6 +211,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI Canvas Quest
       objectReference: {fileID: 0}
+    - target: {fileID: 5835602981802825853, guid: e206e8a9b8ef6364289666e3b74d5524, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6073726741476226316, guid: e206e8a9b8ef6364289666e3b74d5524, type: 3}
       propertyPath: _txtTimer
       value: 
@@ -302,6 +306,18 @@ PrefabInstance:
     - target: {fileID: 6718917943972929061, guid: e206e8a9b8ef6364289666e3b74d5524, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7865595281238106781, guid: e206e8a9b8ef6364289666e3b74d5524, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7865595281238106781, guid: e206e8a9b8ef6364289666e3b74d5524, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7865595281238106781, guid: e206e8a9b8ef6364289666e3b74d5524, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -311
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3472,15 +3488,15 @@ PrefabInstance:
       objectReference: {fileID: 656428240036111067, guid: 033b7af8660d29c489e932dcaab5cbda, type: 3}
     - target: {fileID: 5420383089012868443, guid: de786ac3f62021d4e9497fa6b287fc02, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -28.23
+      value: 4.07
       objectReference: {fileID: 0}
     - target: {fileID: 5420383089012868443, guid: de786ac3f62021d4e9497fa6b287fc02, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 26.54694
+      value: 55.31666
       objectReference: {fileID: 0}
     - target: {fileID: 5420383089012868443, guid: de786ac3f62021d4e9497fa6b287fc02, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 149.67
+      value: 324.3
       objectReference: {fileID: 0}
     - target: {fileID: 5420383089012868443, guid: de786ac3f62021d4e9497fa6b287fc02, type: 3}
       propertyPath: m_LocalRotation.w
