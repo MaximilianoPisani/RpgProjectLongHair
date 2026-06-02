@@ -4472,7 +4472,7 @@ GameObject:
   - component: {fileID: 6829087698301340843}
   - component: {fileID: 4748771455615458418}
   m_Layer: 10
-  m_Name: Terrain (1)
+  m_Name: Terrain_0002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6135,7 +6135,7 @@ Terrain:
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
   m_DrawInstanced: 0
-  m_DrawTreesAndFoliage: 1
+  m_DrawTreesAndFoliage: 0
   m_StaticShadowCaster: 0
   m_IgnoreQualitySettings: 0
   m_ReflectionProbeUsage: 1
