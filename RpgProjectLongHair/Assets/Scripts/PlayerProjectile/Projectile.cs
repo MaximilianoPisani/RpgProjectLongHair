@@ -14,6 +14,7 @@ public class Projectile : NetworkBehaviour
 
     private int _targetLayerMask;
     private bool _consumed;
+    private int _navMeshWalkableMask;
 
     private const string ENVIRONMENT_TAG = "Environment";
 
@@ -26,18 +27,37 @@ public class Projectile : NetworkBehaviour
         Damage = Mathf.Max(0, data.Damage);
         StartPos = spawnPos;
         Attacker = attacker;
-        Life = TickTimer.CreateFromSeconds(Runner, data.LifetimeSeconds > 0f ? data.LifetimeSeconds : 5f);
+        Life = TickTimer.CreateFromSeconds(
+            Runner,
+            data.LifetimeSeconds > 0f ? data.LifetimeSeconds : 5f);
 
-        _targetLayerMask = (int)data.TargetLayer;
-        int damageableLayer = LayerMask.GetMask("Damageable");
-        //      _targetLayerMask |= damageableLayer;
+        _targetLayerMask = data.TargetLayer.value;
+
+        _navMeshWalkableMask = LayerMask.GetMask("NavMeshWalkable");
 
         transform.SetPositionAndRotation(
             spawnPos,
-            Dir != Vector3.zero ? Quaternion.LookRotation(Dir) : transform.rotation
+            Dir != Vector3.zero
+                ? Quaternion.LookRotation(Dir)
+                : transform.rotation
         );
 
         _consumed = false;
+
+        IgnoreNonTargetColliders();
+    }
+
+    private void IgnoreNonTargetColliders()
+    {
+        var ownCollider = GetComponent<Collider>();
+        if (ownCollider == null) return;
+
+        var allColliders = Physics.OverlapSphere(transform.position, 500f);
+        foreach (var col in allColliders)
+        {
+            if (((_targetLayerMask >> col.gameObject.layer) & 1) == 0)
+                Physics.IgnoreCollision(ownCollider, col, true);
+        }
     }
 
     public override void FixedUpdateNetwork()
@@ -51,21 +71,28 @@ public class Projectile : NetworkBehaviour
             return;
         }
 
-        Vector3 oldPos = transform.position;
-        Vector3 newPos = oldPos + Dir * Speed * Runner.DeltaTime;
+        Vector3 previousPosition = transform.position;
 
-        float distance = Vector3.Distance(oldPos, newPos);
-        if (Physics.Raycast(oldPos, Dir, out RaycastHit environmentHit, distance + HitRadius))
+        transform.position += Dir * Speed * Runner.DeltaTime;
+
+        Vector3 movement = transform.position - previousPosition;
+        float distance = movement.magnitude;
+
+        if (distance > 0f)
         {
-            if (environmentHit.collider.CompareTag(ENVIRONMENT_TAG))
+            if (Physics.SphereCast(
+                    previousPosition,
+                    HitRadius,
+                    movement.normalized,
+                    out RaycastHit hit,
+                    distance,
+                    _navMeshWalkableMask,
+                    QueryTriggerInteraction.Ignore))
             {
-                _consumed = true;
                 DespawnSafe();
                 return;
             }
         }
-
-        transform.position = newPos;
 
         if (!_consumed && Damage > 0)
         {
@@ -85,7 +112,12 @@ public class Projectile : NetworkBehaviour
                     if (damageable != null && damageable.Object.HasStateAuthority)
                     {
                         int finalDamage = GetFinalDamage();
-                        damageable.ApplyDamageServer(finalDamage, Attacker);
+
+                        damageable.ApplyDamageServer(
+                            finalDamage,
+                            Attacker
+                        );
+
                         _consumed = true;
                         DespawnSafe();
                         return;
@@ -97,22 +129,51 @@ public class Projectile : NetworkBehaviour
                     if (hb != null)
                     {
                         int finalDamage = GetFinalDamage();
-                        if (EnemyHealth.TryApplyFromHitbox(hb, finalDamage, Attacker))
+
+                        if (EnemyHealth.TryApplyFromHitbox(
+                            hb,
+                            finalDamage,
+                            Attacker))
                         {
-                            PlayerRageHandler.NotifyDamageDealt(Attacker, finalDamage);
-                            EnemyKnockback.TryApplyProjectileKnockback(hb.Root.gameObject, Dir, finalDamage);
+                            PlayerRageHandler.NotifyDamageDealt(
+                                Attacker,
+                                finalDamage
+                            );
+
+                            EnemyKnockback.TryApplyProjectileKnockback(
+                                hb.Root.gameObject,
+                                Dir,
+                                finalDamage
+                            );
+
                             _consumed = true;
                             DespawnSafe();
                             return;
                         }
                     }
 
-                    if (eh != null && eh.Object && eh.Object.HasStateAuthority)
+                    if (eh != null &&
+                        eh.Object &&
+                        eh.Object.HasStateAuthority)
                     {
                         int finalDamage = GetFinalDamage();
-                        eh.ApplyDamageServer(finalDamage, Attacker);
-                        PlayerRageHandler.NotifyDamageDealt(Attacker, finalDamage);
-                        EnemyKnockback.TryApplyProjectileKnockback(eh.gameObject, Dir, finalDamage);
+
+                        eh.ApplyDamageServer(
+                            finalDamage,
+                            Attacker
+                        );
+
+                        PlayerRageHandler.NotifyDamageDealt(
+                            Attacker,
+                            finalDamage
+                        );
+
+                        EnemyKnockback.TryApplyProjectileKnockback(
+                            eh.gameObject,
+                            Dir,
+                            finalDamage
+                        );
+
                         _consumed = true;
                         DespawnSafe();
                         return;
@@ -121,8 +182,11 @@ public class Projectile : NetworkBehaviour
             }
         }
 
-        if (Life.Expired(Runner) || Vector3.Distance(StartPos, transform.position) >= MaxRange)
+        if (Life.Expired(Runner) ||
+            Vector3.Distance(StartPos, transform.position) >= MaxRange)
+        {
             DespawnSafe();
+        }
     }
 
     private int GetFinalDamage()

@@ -14,6 +14,7 @@ public class EnemyProjectile : NetworkBehaviour
     private int _targetLayerMask;
     private bool _consumed;
 
+    private int _navMeshWalkableMask;
     private const string ENVIRONMENT_TAG = "Environment";
 
     public void InitServer(Vector3 direction, RangedAttackData data, Vector3 spawnPos)
@@ -24,13 +25,20 @@ public class EnemyProjectile : NetworkBehaviour
         HitRadius = data.HitRadius > 0f ? data.HitRadius : 0.3f;
         Damage = Mathf.Max(0, data.Damage);
         StartPos = spawnPos;
-        Life = TickTimer.CreateFromSeconds(Runner, data.LifetimeSeconds > 0f ? data.LifetimeSeconds : 5f);
+
+        Life = TickTimer.CreateFromSeconds(
+            Runner,
+            data.LifetimeSeconds > 0f ? data.LifetimeSeconds : 5f);
 
         _targetLayerMask = (int)data.TargetLayer;
 
+        _navMeshWalkableMask = LayerMask.GetMask("NavMeshWalkable");
+
         transform.SetPositionAndRotation(
             spawnPos,
-            Dir != Vector3.zero ? Quaternion.LookRotation(Dir) : transform.rotation
+            Dir != Vector3.zero
+                ? Quaternion.LookRotation(Dir)
+                : transform.rotation
         );
 
         _consumed = false;
@@ -38,7 +46,8 @@ public class EnemyProjectile : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (!Runner.IsRunning || !Object.HasStateAuthority) return;
+        if (!Runner.IsRunning || !Object.HasStateAuthority)
+            return;
 
         if (Speed <= 0f || Dir == Vector3.zero)
         {
@@ -46,21 +55,28 @@ public class EnemyProjectile : NetworkBehaviour
             return;
         }
 
-        Vector3 oldPos = transform.position;
-        Vector3 newPos = oldPos + Dir * Speed * Runner.DeltaTime;
+        Vector3 previousPosition = transform.position;
 
-        float distance = Vector3.Distance(oldPos, newPos);
-        if (Physics.Raycast(oldPos, Dir, out RaycastHit environmentHit, distance + HitRadius))
+        transform.position += Dir * Speed * Runner.DeltaTime;
+
+        Vector3 movement = transform.position - previousPosition;
+        float distance = movement.magnitude;
+
+        if (distance > 0f)
         {
-            if (environmentHit.collider.CompareTag(ENVIRONMENT_TAG))
+            if (Physics.SphereCast(
+                    previousPosition,
+                    HitRadius,
+                    movement.normalized,
+                    out RaycastHit hit,
+                    distance,
+                    _navMeshWalkableMask,
+                    QueryTriggerInteraction.Ignore))
             {
-                _consumed = true;
                 DespawnSafe();
                 return;
             }
         }
-
-        transform.position = newPos;
 
         if (!_consumed && Damage > 0)
         {
@@ -75,10 +91,15 @@ public class EnemyProjectile : NetworkBehaviour
             {
                 foreach (var col in hits)
                 {
-                    if (col.TryGetComponent<PlayerHealth>(out var ph) ||
-                        col.GetComponentInParent<PlayerHealth>() is { } parentPh && (ph = parentPh) != null)
+                    var ph = col.GetComponentInParent<PlayerHealth>();
+
+                    if (ph != null)
                     {
-                        ph.TakeDamage(Damage, transform.position);
+                        ph.TakeDamage(
+                            Damage,
+                            transform.position
+                        );
+
                         _consumed = true;
                         DespawnSafe();
                         return;
@@ -87,8 +108,11 @@ public class EnemyProjectile : NetworkBehaviour
             }
         }
 
-        if (Life.Expired(Runner) || Vector3.Distance(StartPos, transform.position) >= MaxRange)
+        if (Life.Expired(Runner) ||
+            Vector3.Distance(StartPos, transform.position) >= MaxRange)
+        {
             DespawnSafe();
+        }
     }
 
     private void DespawnSafe()
