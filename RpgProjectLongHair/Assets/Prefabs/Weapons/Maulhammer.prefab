@@ -68,7 +68,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.416}
+  m_AnchoredPosition: {x: 0, y: 3}
   m_SizeDelta: {x: 5, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &6710836877603042631
@@ -390,9 +390,7 @@ MonoBehaviour:
   itemDataSO: {fileID: 11400000, guid: b668c5365c08234478ae76127ed8a622, type: 2}
   _visualRoot: {fileID: 3238946909473500049}
   _txtFeedback: {fileID: 202965876707054480}
-  _minimapIconPrefab: {fileID: 945286990489471284, guid: 1379c7fc9b8661144b079ee131b20a72, type: 3}
-  _iconOffset: {x: 0, y: 3, z: 0}
-  _iconRotation: {x: 90, y: 0, z: 0}
+  _respawnTime: 30
 --- !u!114 &4507827183060901697
 MonoBehaviour:
   m_ObjectHideFlags: 0

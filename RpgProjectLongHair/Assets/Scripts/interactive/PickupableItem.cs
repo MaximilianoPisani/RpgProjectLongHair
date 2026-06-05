@@ -11,7 +11,7 @@ public class PickupableItem : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI _txtFeedback;
 
     [Header("Respawn items for network")]
-    [SerializeField] private float _respawnTime = 30f; // tiempo de respawn
+    [SerializeField] private float _respawnTime = 15f; // tiempo de respawn
 
     [Networked] private NetworkBool IsPicked { get; set; }
     [Networked] private TickTimer _respawnTimer {  get; set; } // - timer de Fusion
