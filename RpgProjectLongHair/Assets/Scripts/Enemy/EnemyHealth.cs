@@ -208,10 +208,18 @@ public class EnemyHealth : NetworkBehaviour
 
         playerExp.AddExperience(exp);
 
-        if (_isQuestEnemy)
-            TrackEvents.OnTrackEvent?.Invoke(QuestIds.KILL_MISSION_ENEMY, 1);
+        if (_isQuestEnemy) {
+            // FIX: Enviar el kill directamente al QuestController owner para filtrado de party
+            var missionOwner = QuestController.GetMissionOwner();
+            if (missionOwner != null)
+                missionOwner.ReportKill(_lastAttacker);
+            else
+                TrackEvents.OnTrackEvent?.Invoke(QuestIds.KILL_MISSION_ENEMY, 1);
+        }
         else
+        {
             TrackEvents.OnTrackEvent?.Invoke(QuestIds.KILL_ENEMY, 1);
+        }
     }
 
 }

@@ -6,7 +6,6 @@ public class PlayerRangeState : IPlayerState
     private PlayerStateMachine _sm;
     private RangedAttackData _rangeData;
     private IWeaponAnimatable _weaponAnim;
-    private const float RotationSpeed = 720f;
     private enum ShootPhase
     {
         Idle,
@@ -264,14 +263,7 @@ public class PlayerRangeState : IPlayerState
         Vector3 flatDir = new Vector3(dir.x, 0f, dir.z).normalized;
 
         if (flatDir.sqrMagnitude > 0.01f)
-        {
-            Quaternion targetRot = Quaternion.LookRotation(flatDir);
-            _sm.transform.rotation = Quaternion.RotateTowards(
-                _sm.transform.rotation,
-                targetRot,
-                RotationSpeed * _sm.Runner.DeltaTime
-            );
-        }
+            _sm.transform.rotation = Quaternion.LookRotation(flatDir);
     }
     // ==================== RELOADING ====================
 
@@ -314,36 +306,32 @@ public class PlayerRangeState : IPlayerState
     {
         Debug.Log("[Range] Spawning projectile");
 
-        // El proyectil siempre se spawnea, rage no lo afecta
         if (_sm.Object.HasInputAuthority && !_sm.Object.HasStateAuthority)
-            RPC_SpawnProjectile();
+            RPC_SpawnProjectile(_sm.InputData.aimPoint);
 
         if (_sm.Object.HasStateAuthority)
-            ExecuteSpawnProjectile();
+            ExecuteSpawnProjectile(_sm.InputData.aimPoint);
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
-    private void RPC_SpawnProjectile()
+    private void RPC_SpawnProjectile(Vector3 aimPoint)
     {
-        ExecuteSpawnProjectile();
+        ExecuteSpawnProjectile(aimPoint);
     }
 
-    private void ExecuteSpawnProjectile()
+    private void ExecuteSpawnProjectile(Vector3 aimPoint)
     {
         var settings = _sm.Combat;
-        if (_rangeData == null)
-            return;
+        if (_rangeData == null) return;
 
         Vector3 spawnPos = (settings.shootPoints != null && settings.shootPoints.Length > 0)
             ? settings.shootPoints[0].position
             : _sm.transform.position + _sm.transform.forward + Vector3.up;
 
-        Vector3 direction = _sm.InputData.shootDirection;
+        Vector3 direction = (aimPoint - spawnPos).normalized;
 
         if (direction.sqrMagnitude < 0.001f)
             direction = _sm.transform.forward;
-
-        direction.Normalize();
 
         PlayerRef attacker = _sm.Object.InputAuthority;
 
@@ -355,7 +343,6 @@ public class PlayerRangeState : IPlayerState
             onBeforeSpawned: (runner, obj) =>
             {
                 var projectile = obj.GetComponent<Projectile>();
-
                 if (projectile != null)
                     projectile.InitServer(direction, _rangeData, attacker, spawnPos);
             }
@@ -400,13 +387,6 @@ public class PlayerRangeState : IPlayerState
         Vector3 flatDir = new Vector3(direction.x, 0f, direction.z).normalized;
 
         if (flatDir.sqrMagnitude > 0.01f)
-        {
-            Quaternion targetRot = Quaternion.LookRotation(flatDir);
-            _sm.transform.rotation = Quaternion.RotateTowards(
-                _sm.transform.rotation,
-                targetRot,
-                RotationSpeed * _sm.Runner.DeltaTime
-            );
-        }
+            _sm.transform.rotation = Quaternion.LookRotation(flatDir);
     }
 }

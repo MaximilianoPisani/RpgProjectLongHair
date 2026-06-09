@@ -440,7 +440,7 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
                 aimPoint = ray.origin + ray.direction * 200f;
             }
 
-            shootDir = cameraTransform.forward.normalized;
+            shootDir = new Vector3(cameraTransform.forward.x, 0f, cameraTransform.forward.z).normalized;
         }
 
 
