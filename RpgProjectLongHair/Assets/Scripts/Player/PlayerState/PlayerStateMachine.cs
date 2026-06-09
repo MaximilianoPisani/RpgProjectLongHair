@@ -128,14 +128,14 @@ public class PlayerStateMachine : NetworkBehaviour
                               NetworkedStateId == PlayerStateId.Idle
                            || NetworkedStateId == PlayerStateId.Move));
                 if (shouldSync)
-            {
-                // Resetear IsJumping cuando volvemos a tierra
-                if (NetworkedStateId == PlayerStateId.Idle
-                 || NetworkedStateId == PlayerStateId.Move)
-                    IsJumping = false;
+                {
+                    // Resetear IsJumping cuando volvemos a tierra
+                    if (NetworkedStateId == PlayerStateId.Idle
+                     || NetworkedStateId == PlayerStateId.Move)
+                        IsJumping = false;
 
-                SyncStateOnClient(NetworkedStateId);
-            }
+                    SyncStateOnClient(NetworkedStateId);
+                }
             }
             else
             {
@@ -241,18 +241,18 @@ public class PlayerStateMachine : NetworkBehaviour
             }
 
             var damageable = hit.GetComponentInParent<DamageableObject>();
-                if (damageable != null && damageable.Object.HasStateAuthority)
-                {
-                    var stats = GetComponent<PlayerStats>();
-                    int finalDamage = stats != null ? stats.CurrentDamage : damage;
+            if (damageable != null && damageable.Object.HasStateAuthority)
+            {
+                var stats = GetComponent<PlayerStats>();
+                int finalDamage = stats != null ? stats.CurrentDamage : damage;
 
-                    damageable.ApplyDamageServer(finalDamage, Object.InputAuthority);
+                damageable.ApplyDamageServer(finalDamage, Object.InputAuthority);
 
-                    Debug.Log($"[RPC Melee] Hit chain anchor - Damage: {finalDamage}");
-                    continue;
-                }
+                Debug.Log($"[RPC Melee] Hit chain anchor - Damage: {finalDamage}");
+                continue;
             }
         }
+    }
 
     private void OnDrawGizmosSelected()
     {

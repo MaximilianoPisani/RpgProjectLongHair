@@ -16,6 +16,8 @@ public class Projectile : NetworkBehaviour
     private bool _consumed;
     private int _navMeshWalkableMask;
 
+    [SerializeField] private LayerMask _breakOnLayer;
+
     private const string ENVIRONMENT_TAG = "Environment";
 
     public void InitServer(Vector3 direction, RangedAttackData data, PlayerRef attacker, Vector3 spawnPos)
@@ -33,7 +35,7 @@ public class Projectile : NetworkBehaviour
 
         _targetLayerMask = data.TargetLayer.value;
 
-        _navMeshWalkableMask = LayerMask.GetMask("NavMeshWalkable");
+        _navMeshWalkableMask = _breakOnLayer.value;
 
         transform.SetPositionAndRotation(
             spawnPos,
