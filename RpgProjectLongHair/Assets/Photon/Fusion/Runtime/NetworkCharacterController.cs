@@ -133,7 +133,7 @@ namespace Fusion {
     }
 
     public override void Render() {
-      NetworkTRSP.Render(this, transform, false, false, false, ref _initial);
+      NetworkTRSP.Render(this, transform, true, true, false, ref _initial);
     }
 
     void IBeforeAllTicks.BeforeAllTicks(bool resimulation, int tickCount) {

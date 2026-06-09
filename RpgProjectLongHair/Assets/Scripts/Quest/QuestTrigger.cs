@@ -42,12 +42,12 @@ public class QuestTrigger : MonoBehaviour
             return;
         }
 
-        bool alreadyCompleted =
-            _localQuestController.HasCompletedQuest(questData.questId);
+        //bool alreadyCompleted =
+        //    _localQuestController.HasCompletedQuest(questData.questId);
 
         bool canInteract =
             isNear &&
-            !alreadyCompleted &&
+            //!alreadyCompleted &&
             !QuestController.HasActiveMission() &&
             !_questOfferUI.IsOpen &&
             !UiStateManager.HasBlockingUI;
