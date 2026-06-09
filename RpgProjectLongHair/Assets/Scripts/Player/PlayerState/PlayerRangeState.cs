@@ -278,6 +278,8 @@ public class PlayerRangeState : IPlayerState
             _weaponAnim?.PlayReload();
         }
 
+        _sm.GetComponent<PlayerNetworkSync>()?.SetIsReloading(true);
+
         Debug.Log($"[Range] Started reloading - Duration: {_rangeData.ReloadDuration}s");
     }
     private void UpdateReloadingPhase(NetworkInputData input)
@@ -292,6 +294,8 @@ public class PlayerRangeState : IPlayerState
 
         if (!_sm.Runner.IsResimulation && _sm.Animator != null) 
             _sm.Animator.SetBool("IsReloading", false);
+
+        _sm.GetComponent<PlayerNetworkSync>()?.SetIsReloading(false);
 
         _sm.AttackCooldown = TickTimer.CreateFromSeconds(_sm.Runner, _rangeData.Cooldown);
 

@@ -119,6 +119,9 @@ public class PlayerStateMachine : NetworkBehaviour
                                  || _currentState is PlayerFallState
                                  || _currentState is PlayerLandState;
 
+                bool currentIsBusy = _currentState is PlayerMeleeState
+                                 || _currentState is PlayerRangeState;
+
                 bool shouldSync = NetworkedStateId == PlayerStateId.Jump
                           || NetworkedStateId == PlayerStateId.Fall
                           || NetworkedStateId == PlayerStateId.Land
@@ -126,7 +129,13 @@ public class PlayerStateMachine : NetworkBehaviour
                           // Salir del ciclo aéreo cuando el host confirma tierra
                           || (currentIsAirborne && (
                               NetworkedStateId == PlayerStateId.Idle
-                           || NetworkedStateId == PlayerStateId.Move));
+                           || NetworkedStateId == PlayerStateId.Move))
+
+                || (currentIsBusy && (
+                              NetworkedStateId == PlayerStateId.Idle
+                           || NetworkedStateId == PlayerStateId.Move
+                           || NetworkedStateId == PlayerStateId.Jump
+                           || NetworkedStateId == PlayerStateId.Fall));
                 if (shouldSync)
                 {
                     // Resetear IsJumping cuando volvemos a tierra
@@ -173,6 +182,15 @@ public class PlayerStateMachine : NetworkBehaviour
             PlayerStateId.Dead => new PlayerDeadState(this),
             _ => new PlayerIdleState(this)
         };
+
+        bool isProxy = !Object.HasInputAuthority && !Object.HasStateAuthority;
+
+        if (isProxy)
+        {
+            // Proxy remoto: solo actualizar referencia
+            _currentState = newState;
+            return;
+        }
 
         _currentState?.Exit();
         _currentState = newState;
