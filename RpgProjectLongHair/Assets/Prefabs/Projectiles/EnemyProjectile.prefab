@@ -175,6 +175,9 @@ MonoBehaviour:
   _breakOnLayer:
     serializedVersion: 2
     m_Bits: 0
+  _enemyLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!65 &3739701106461096355
 BoxCollider:
   m_ObjectHideFlags: 0

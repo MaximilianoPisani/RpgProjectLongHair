@@ -81,6 +81,8 @@ public class EnemyRangedController : EnemyBaseController
         Vector3 targetPos = GetTargetChestPosition();
         Vector3 direction = (targetPos - spawnPos).normalized;
 
+        NetworkObject ownerNetObj = Object;
+
         Runner.Spawn(
             _rangedAttackData.ProjectilePrefab,
             spawnPos,
@@ -90,7 +92,7 @@ public class EnemyRangedController : EnemyBaseController
             {
                 var proj = spawned.GetComponent<EnemyProjectile>();
                 if (proj != null)
-                    proj.InitServer(direction, _rangedAttackData, spawnPos);
+                    proj.InitServer(direction, _rangedAttackData, spawnPos, ownerNetObj);
             }
         );
     }
