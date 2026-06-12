@@ -7,4 +7,7 @@ public static class QuestIds
     // IDs de tracking
     public const string KILL_ENEMY = "Kill_Enemy";
     public const string KILL_MISSION_ENEMY = "Kill_Mission_Enemy";
+
+    public const string PICK_WEAPON_PART = "Pick_WeaponPart";
+    public const string CRAFT_WEAPON = "Craft_Weapon";
 }

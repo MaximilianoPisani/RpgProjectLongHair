@@ -30,6 +30,8 @@ public class QuestCompleteUI : MonoBehaviour
         if (_panel.activeSelf) return;
         _panel.SetActive(true);
         UiStateManager.OpenBlockingUI();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         _txtTitle.text = "¡Misión completada!";
         _txtRewards.text = $"XP: {data.xp}";
     }
@@ -41,9 +43,11 @@ public class QuestCompleteUI : MonoBehaviour
 
     private void Hide()
     {
-        if (!_panel.activeSelf) return; 
+        if (!_panel.activeSelf) return;
         _panel.SetActive(false);
         UiStateManager.CloseBlockingUI();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void OnDisable()

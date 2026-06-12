@@ -94,7 +94,9 @@ public class CraftingUI : MonoBehaviour
             return;
         }
 
-        Debug.Log($"[Crafting] Arma creada: {_recipe.resultItem.itemName}");
+        if (!string.IsNullOrEmpty(_recipe.questTrackId))
+            TrackEvents.OnTrackEvent?.Invoke(_recipe.questTrackId, 1);
+
         Hide();
     }
 

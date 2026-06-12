@@ -15,6 +15,9 @@ public class QuestDataSO : ScriptableObject
     public int xp;
     public int coins;
 
+    [Header("Multiplayer")]
+    public bool allowPartyInvite = true;
+
     public bool UpdateProgress(string id, int amount, out bool success)
     {
         success = false;

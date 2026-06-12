@@ -18,5 +18,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6ec5f82d1a7097a49831160023f150bd, type: 2}
   - {fileID: 11400000, guid: 487f28214da785441bd7ae6b5f559c78, type: 2}
   resultItem: {fileID: 11400000, guid: 328c4700892e4394bb9bb4f614e1f86d, type: 2}
+  questTrackId: Craft_Weapon
   resultWeaponName: Gatling
   resultIcon: {fileID: 0}

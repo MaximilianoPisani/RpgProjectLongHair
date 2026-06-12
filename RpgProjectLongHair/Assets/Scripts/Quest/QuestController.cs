@@ -1,12 +1,13 @@
+using UnityEngine;
 using Fusion;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 public class QuestController : NetworkBehaviour
 {
     private QuestDataSO _currentQuest;
     private List<QuestController> _partyMembers = new(); //  nueva lista
+
+    private readonly HashSet<string> _completedQuests = new();
 
     public QuestDataSO CurrentQuest => _currentQuest;
 
@@ -24,6 +25,7 @@ public class QuestController : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
         if (string.IsNullOrEmpty(missionId)) return;
+        if (_completedQuests.Contains(missionId)) return;
 
         var missionData = Resources.Load<QuestDataSO>($"{MISSION_PATH}{missionId}");
         if (missionData == null) return;
@@ -35,14 +37,29 @@ public class QuestController : NetworkBehaviour
         StartNewQuest(missionData);
         RPC_NotifyMissionStarted(missionId);
 
+        if (!missionData.allowPartyInvite)
+        {
+            Debug.Log($"[QuestController] Mission {missionId} started without party invites");
+            return;
+        }
+
         var runnerManager = FindFirstObjectByType<RunnerManager>();
-        if (runnerManager == null) return;
+
+        if (runnerManager == null)
+            return;
 
         foreach (var playerObj in runnerManager.SpawnedPlayers.Values)
         {
             var questController = playerObj.GetComponent<QuestController>();
-            if (questController == null) continue;
-            if (questController == this) continue;
+
+            if (questController == null)
+                continue;
+
+            if (questController == this)
+                continue;
+
+            if (questController.HasCompletedQuest(missionId))
+                continue;
 
             questController.RPC_InviteToQuest(missionId);
         }
@@ -68,16 +85,7 @@ public class QuestController : NetworkBehaviour
     {
         Debug.Log("[QuestController] RPC_NotifyMissionComplete recibido");
         if (_currentQuest == null) return;
-
-        // FIX: Limpieza completa del estado local en el cliente
-        TrackEvents.OnTrackEvent -= TrackStep;
         MissionEvents.OnMissionComplete?.Invoke(_currentQuest);
-
-        if (_currentQuest != null)
-        {
-            DestroyImmediate(_currentQuest);
-            _currentQuest = null;
-        }
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
@@ -86,14 +94,13 @@ public class QuestController : NetworkBehaviour
         Debug.Log("[QuestController] RPC_NotifyMissionFailed recibido");
         var quest = _currentQuest;
         if (quest == null) return;
-
-        // FIX: Limpieza completa del estado local en el cliente
-        TrackEvents.OnTrackEvent -= TrackStep;
         MissionEvents.OnMissionFailed?.Invoke(quest);
 
+        // Limpiar estado del cliente
+        TrackEvents.OnTrackEvent -= TrackStep;
         if (_currentQuest != null)
         {
-            DestroyImmediate(_currentQuest);
+            Destroy(_currentQuest);
             _currentQuest = null;
         }
     }
@@ -113,8 +120,7 @@ public class QuestController : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
     private void RPC_InviteToQuest(string missionId)
     {
-        // FIX: Ignorar duplicados si ya tenemos esta misión activa
-        if (_currentQuest != null && _currentQuest.questId == missionId) return;
+        if (_completedQuests.Contains(missionId)) return;
 
         var missionData = Resources.Load<QuestDataSO>($"{MISSION_PATH}{missionId}");
         if (missionData == null) return;
@@ -167,40 +173,15 @@ public class QuestController : NetworkBehaviour
 
     #endregion
 
-    // FIX: Nuevo método para filtrar kills por membresía del party
-    public void ReportKill(PlayerRef killer)
-    {
-        if (!Object.HasStateAuthority) return;
-        if (_currentQuest == null) return;
-
-        bool isPartyMember = false;
-        if (Runner.TryGetPlayerObject(killer, out var killerObj))
-        {
-            var killerQC = killerObj.GetComponent<QuestController>();
-            if (killerQC == this) isPartyMember = true;
-            else if (_partyMembers.Contains(killerQC)) isPartyMember = true;
-        }
-
-        if (!isPartyMember) return;
-
-        TrackStep(QuestIds.KILL_MISSION_ENEMY, 1);
-    }
-
     public void StartNewQuest(QuestDataSO questData)
     {
         Debug.Log($"[QuestTester] Misión iniciada: {questData.questName}.");
 
-        // FIX: Limpieza previa de suscripciones
         TrackEvents.OnTrackEvent -= TrackStep;
-
-        // FIX: Solo el host (StateAuthority) procesa eventos de tracking globales
-        if (Object.HasStateAuthority)
-        {
-            TrackEvents.OnTrackEvent += TrackStep;
-        }
+        TrackEvents.OnTrackEvent += TrackStep;
 
         if (_currentQuest != null)
-            DestroyImmediate(_currentQuest);
+            Destroy(_currentQuest);
 
         _currentQuest = Instantiate(questData);
 
@@ -217,45 +198,19 @@ public class QuestController : NetworkBehaviour
 
         Debug.Log($"[QuestController] TrackStep recibido: id={stepId}, progress={progress}");
 
-        // FIX: Solo el host ejecuta la lógica de completitud/fallo
-        if (Object.HasStateAuthority)
+        if (!_currentQuest.UpdateProgress(stepId, progress, out var isSuccess))
         {
-            if (!_currentQuest.UpdateProgress(stepId, progress, out var isSuccess))
-            {
-                Debug.Log($"[QuestController] Progreso actualizado, mision en curso");
-                MissionEvents.OnUpdateProgress?.Invoke(_currentQuest);
-
-                // FIX: Sincronizar progreso a miembros del party para que actualicen su UI
-                foreach (var member in _partyMembers)
-                {
-                    if (member == null) continue;
-                    member.RPC_UpdateQuestUI(stepId, progress);
-                }
-                return;
-            }
-
-            Debug.Log($"[QuestController] Mision terminada, isSuccess={isSuccess}");
-
-            if (isSuccess)
-                CompleteQuest();
-            else
-                FailureQuest();
-        }
-        else
-        {
-            // Cliente: actualizar datos locales para UI (vía RPC o evento local)
-            _currentQuest.UpdateProgress(stepId, progress, out _);
+            Debug.Log($"[QuestController] Progreso actualizado, mision en curso");
             MissionEvents.OnUpdateProgress?.Invoke(_currentQuest);
+            return;
         }
-    }
 
-    // FIX: RPC para sincronizar progreso de UI a clientes sin lógica de completitud
-    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
-    private void RPC_UpdateQuestUI(string stepId, int progress)
-    {
-        if (_currentQuest == null) return;
-        _currentQuest.UpdateProgress(stepId, progress, out _);
-        MissionEvents.OnUpdateProgress?.Invoke(_currentQuest);
+        Debug.Log($"[QuestController] Mision terminada, isSuccess={isSuccess}");
+
+        if (isSuccess)
+            CompleteQuest();
+        else
+            FailureQuest();
     }
 
     public void FailureQuest()
@@ -274,19 +229,15 @@ public class QuestController : NetworkBehaviour
 
             if (member._currentQuest != null)
             {
-                // FIX: Destruir la instancia del miembro, no la del host
-                DestroyImmediate(member._currentQuest);
+                Destroy(member._currentQuest);
                 member._currentQuest = null;
             }
         }
 
         _partyMembers.Clear();
         TrackEvents.OnTrackEvent -= TrackStep;
-        if (_currentQuest != null)
-        {
-            DestroyImmediate(_currentQuest);
-            _currentQuest = null;
-        }
+        Destroy(_currentQuest);
+        _currentQuest = null;
         _activeMissionOwner = null;
         _activeMissionId = null;
     }
@@ -301,7 +252,7 @@ public class QuestController : NetworkBehaviour
         string questId = _currentQuest.questId;
         int xp = _currentQuest.xp; 
 
-       // MarkQuestCompleted(questId);
+        MarkQuestCompleted(questId);
 
         var playerExp = GetComponent<PlayerExp>();
         if (playerExp != null)
@@ -313,7 +264,7 @@ public class QuestController : NetworkBehaviour
         {
             if (member == null) continue;
 
-           // member.MarkQuestCompleted(questId);
+            member.MarkQuestCompleted(questId);
 
             var memberExp = member.GetComponent<PlayerExp>();
             if (memberExp != null)
@@ -324,8 +275,7 @@ public class QuestController : NetworkBehaviour
 
             if (member._currentQuest != null)
             {
-                // FIX: Destruir la instancia del miembro, no la del host
-                DestroyImmediate(member._currentQuest);
+                Destroy(member._currentQuest);
                 member._currentQuest = null;
             }
         }
@@ -333,11 +283,8 @@ public class QuestController : NetworkBehaviour
         _partyMembers.Clear();
 
         TrackEvents.OnTrackEvent -= TrackStep;
-        if (_currentQuest != null)
-        {
-            DestroyImmediate(_currentQuest);
-            _currentQuest = null;
-        }
+        Destroy(_currentQuest);
+        _currentQuest = null;
 
         _activeMissionOwner = null;
         _activeMissionId = null;
@@ -345,26 +292,26 @@ public class QuestController : NetworkBehaviour
 
     private void OnDestroy()
     {
-        // FIX: Asegurar limpieza de suscripciones al destruir el objeto
-        TrackEvents.OnTrackEvent -= TrackStep;
         if (_currentQuest != null)
-            DestroyImmediate(_currentQuest);
+            Destroy(_currentQuest);
+
+        TrackEvents.OnTrackEvent -= TrackStep;
     }
 
-    //public bool HasCompletedQuest(string questId)
-    //{
-    //    return _completedQuests.Contains(questId);
-    //}
+    public bool HasCompletedQuest(string questId)
+    {
+        return _completedQuests.Contains(questId);
+    }
 
-    //public void MarkQuestCompleted(string questId)
-    //{
-    //    if (string.IsNullOrEmpty(questId))
-    //        return;
+    public void MarkQuestCompleted(string questId)
+    {
+        if (string.IsNullOrEmpty(questId))
+            return;
 
-    //    _completedQuests.Add(questId);
+        _completedQuests.Add(questId);
 
-    //    Debug.Log($"Quest completada guardada: {questId}");
-    //}
+        Debug.Log($"Quest completada guardada: {questId}");
+    }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     public void RPC_RegisterAcceptedPlayer(PlayerRef player)

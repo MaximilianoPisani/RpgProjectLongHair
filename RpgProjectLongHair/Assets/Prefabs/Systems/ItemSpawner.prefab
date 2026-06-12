@@ -371,50 +371,74 @@ MonoBehaviour:
     SpawnPoints:
     - {fileID: 4569322173382619969}
     Count: 1
+    SpawnOnQuestStart: 0
+    QuestId: 
   - Prefab: {fileID: -2134455544203264837, guid: abfdb2582193be64ab1e1b2c907fa7f2, type: 3}
     SpawnPoints:
     - {fileID: 6950854433125056883}
     Count: 1
+    SpawnOnQuestStart: 0
+    QuestId: 
   - Prefab: {fileID: 1057492792692869932, guid: 31ed1d5f751d3e348ba5eb62398629bd, type: 3}
     SpawnPoints:
     - {fileID: 6243278810527912181}
     Count: 1
+    SpawnOnQuestStart: 1
+    QuestId: quest_craft_weapon
   - Prefab: {fileID: 1057492792692869932, guid: f4e082fe3ff75134fb4bfbceec1934f0, type: 3}
     SpawnPoints:
     - {fileID: 3808671422050224876}
     Count: 1
+    SpawnOnQuestStart: 1
+    QuestId: quest_craft_weapon
   - Prefab: {fileID: 7367654128530244139, guid: db727c8cf04cb7e4793894b0805a50ff, type: 3}
     SpawnPoints:
     - {fileID: 9193386956823576780}
     Count: 1
+    SpawnOnQuestStart: 1
+    QuestId: quest_craft_weapon
   - Prefab: {fileID: 1057492792692869932, guid: 96d0cf1b4daebd14a92027c892bafcea, type: 3}
     SpawnPoints:
     - {fileID: 1318400025244105971}
     Count: 1
+    SpawnOnQuestStart: 1
+    QuestId: quest_craft_weapon
   - Prefab: {fileID: 1057492792692869932, guid: 32717ed7d04f9514e97d51308f84b87f, type: 3}
     SpawnPoints:
     - {fileID: 1129441075785239630}
     Count: 1
+    SpawnOnQuestStart: 1
+    QuestId: quest_craft_weapon
   - Prefab: {fileID: 7367654128530244139, guid: 42eab65d3be806a44af974b8273bed54, type: 3}
     SpawnPoints:
     - {fileID: 4109625222807986510}
     Count: 1
+    SpawnOnQuestStart: 1
+    QuestId: quest_craft_weapon
   - Prefab: {fileID: 1057492792692869932, guid: 1a7cdb7b5605ad54b814b20b905965a8, type: 3}
     SpawnPoints:
     - {fileID: 145705073794364754}
     Count: 1
+    SpawnOnQuestStart: 0
+    QuestId: 
   - Prefab: {fileID: 1057492792692869932, guid: 7fd5d18eef0d48044bf0155c60a69036, type: 3}
     SpawnPoints:
     - {fileID: 1401866748778385400}
     Count: 1
+    SpawnOnQuestStart: 0
+    QuestId: 
   - Prefab: {fileID: 3365196860612750413, guid: 5fcff9543f52f814aa739f6cecba615c, type: 3}
     SpawnPoints:
     - {fileID: 7170146168009253586}
     Count: 1
+    SpawnOnQuestStart: 0
+    QuestId: 
   - Prefab: {fileID: 4507827183060901697, guid: 01406e3e3d634c643800a099bc0567af, type: 3}
     SpawnPoints:
     - {fileID: 2438532679352502551}
     Count: 1
+    SpawnOnQuestStart: 0
+    QuestId: 
 --- !u!1 &8387205082330589500
 GameObject:
   m_ObjectHideFlags: 0
