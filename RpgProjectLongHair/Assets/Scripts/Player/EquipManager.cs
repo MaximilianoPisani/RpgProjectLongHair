@@ -38,7 +38,11 @@ public class EquipManager : NetworkBehaviour
 
     public void OnSlotClicked(ItemSO item)
     {
-        if (!HasInputAuthority || item == null) return;
+        if (!HasInputAuthority || item == null)
+            return;
+
+        if (!IsEquipable(item))
+            return;
 
         var sm = GetComponent<PlayerStateMachine>();
         if (sm != null && sm.IsBusy)
@@ -50,12 +54,6 @@ public class EquipManager : NetworkBehaviour
         if (!_inventory.HasItem(item.id))
         {
             Debug.LogWarning($"[Equip] Item {item.itemName} no está en el inventario local");
-            return;
-        }
-
-        if (item.type == ItemType.Armor)
-        {
-            GetComponent<ArmorEquipManager>()?.RequestEquipArmor(item);
             return;
         }
 
@@ -100,6 +98,9 @@ public class EquipManager : NetworkBehaviour
             Debug.LogWarning($"EquipManager: ItemSO {EquippedItemId} not found");
             return;
         }
+
+        if (!IsEquipable(item))
+            return;
 
         if (item.type == ItemType.Armor) return;
 
@@ -186,16 +187,33 @@ public class EquipManager : NetworkBehaviour
     public void CycleEquip(int direction)
     {
         var sm = GetComponent<PlayerStateMachine>();
-        if (sm != null && sm.IsBusy) return;
+        if (sm != null && sm.IsBusy)
+            return;
 
         var ids = new List<int> { 0 };
-        foreach (var item in _inventory.Items)
-            if (item.id != 0) ids.Add(item.id);
 
-        if (ids.Count <= 1) return;
+        foreach (var itemData in _inventory.Items)
+        {
+            if (itemData.id == 0)
+                continue;
+
+            ItemSO itemSO = ItemDatabase.GetItemByIdStatic(itemData.id);
+
+            if (itemSO == null)
+                continue;
+
+            if (!IsEquipable(itemSO))
+                continue;
+
+            ids.Add(itemData.id);
+        }
+
+        if (ids.Count <= 1)
+            return;
 
         int currentIndex = ids.IndexOf(EquippedItemId);
-        if (currentIndex < 0) currentIndex = 0;
+        if (currentIndex < 0)
+            currentIndex = 0;
 
         int nextIndex = (currentIndex + direction + ids.Count) % ids.Count;
 
@@ -203,5 +221,22 @@ public class EquipManager : NetworkBehaviour
             EquippedItemId = ids[nextIndex];
         else
             RPC_RequestEquip(ids[nextIndex]);
+    }
+
+    private bool IsEquipable(ItemSO item)
+    {
+        if (item == null)
+            return false;
+
+        if (item.type == ItemType.QuestItem)
+            return false;
+
+        if (item.type == ItemType.Armor)
+            return false;
+
+        if (item.weaponCategory == WeaponCategory.CraftItem)
+            return false;
+
+        return true;
     }
 }

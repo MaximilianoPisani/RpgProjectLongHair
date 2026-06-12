@@ -398,9 +398,8 @@ MonoBehaviour:
   _craftItemSO: {fileID: 11400000, guid: a9997c3a026b7dd4ab2f5a059bb19e04, type: 2}
   _visualRoot: {fileID: 2367072731909432755}
   _txtFeedback: {fileID: 3984811551663329574}
-  _minimapIconPrefab: {fileID: 945286990489471284, guid: 8c826e3e22d8ec34cb91af3454a837e0, type: 3}
-  _iconOffset: {x: 0, y: 3, z: 0}
-  _iconRotation: {x: 90, y: 0, z: 0}
+  _respawnTime: 15
+  _questTrackId: Pick_WeaponPart
 --- !u!114 &5600417645379303956
 MonoBehaviour:
   m_ObjectHideFlags: 0

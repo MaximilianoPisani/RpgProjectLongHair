@@ -37,15 +37,29 @@ public class QuestController : NetworkBehaviour
         StartNewQuest(missionData);
         RPC_NotifyMissionStarted(missionId);
 
+        if (!missionData.allowPartyInvite)
+        {
+            Debug.Log($"[QuestController] Mission {missionId} started without party invites");
+            return;
+        }
+
         var runnerManager = FindFirstObjectByType<RunnerManager>();
-        if (runnerManager == null) return;
+
+        if (runnerManager == null)
+            return;
 
         foreach (var playerObj in runnerManager.SpawnedPlayers.Values)
         {
             var questController = playerObj.GetComponent<QuestController>();
-            if (questController == null) continue;
-            if (questController == this) continue;
-            if (questController.HasCompletedQuest(missionId)) continue;
+
+            if (questController == null)
+                continue;
+
+            if (questController == this)
+                continue;
+
+            if (questController.HasCompletedQuest(missionId))
+                continue;
 
             questController.RPC_InviteToQuest(missionId);
         }

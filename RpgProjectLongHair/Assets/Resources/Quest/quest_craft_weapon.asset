@@ -10,16 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f7509b862d7d3784099463d4fd0681b8, type: 3}
-  m_Name: quest_test_001
+  m_Name: quest_craft_weapon
   m_EditorClassIdentifier: 
-  questId: quest_test_001
-  questName: Tutorial
-  questDescription: Eliminar 2 enemigos
+  questId: quest_craft_weapon
+  questName: Fabrica arma a distancia
+  questDescription: Consigue items y craftea tu arma a distancia
   questSteps:
-  - targetId: Kill_Mission_Enemy
-    amount: 2
+  - targetId: Pick_WeaponPart
+    amount: 3
+  - targetId: Craft_Weapon
+    amount: 1
   failureSteps: []
-  allowTeleportParty: 1
+  allowTeleportParty: 0
   teleportDestination: {x: -2, y: 59, z: 335}
-  xp: 140
+  xp: 60
   coins: 0
+  allowPartyInvite: 0

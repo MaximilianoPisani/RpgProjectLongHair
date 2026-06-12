@@ -10,6 +10,9 @@ public class CraftRecipeSO : ScriptableObject
     //acá no va el resultante que está hecho? y la pensé mal al itemSO que no me andaba,
     //o sea no necesito llenar con datos nuevos como hacía con los item para craftear, antes de este codigo
 
+    [Header("Quest Integration")]
+    public string questTrackId;
+
     //test 
     public string resultWeaponName;
     public Sprite resultIcon;

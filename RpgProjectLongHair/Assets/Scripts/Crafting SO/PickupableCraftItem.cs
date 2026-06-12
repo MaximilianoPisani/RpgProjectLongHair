@@ -26,6 +26,10 @@ public class PickupableCraftItem : NetworkBehaviour
     public CraftItemSO CraftItemSO => _craftItemSO;
     public int ItemId => _craftItemSO != null ? _craftItemSO.id : 0;
 
+    [Header("Quest Tracking")]
+    [SerializeField] private string _questTrackId = "";
+    public string QuestTrackId => _questTrackId;
+
     public override void Spawned()
     {
         _collider = GetComponent<Collider>();
@@ -176,6 +180,11 @@ public class PickupableCraftItem : NetworkBehaviour
         SetVisualActive(true);
     }
 
+    public void NotifyPickedForQuest()
+    {
+        if (!string.IsNullOrEmpty(_questTrackId))
+            TrackEvents.OnTrackEvent?.Invoke(_questTrackId, 1);
+    }
 
     //[Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     //public void RPC_RequestDespawn()

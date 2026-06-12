@@ -402,12 +402,17 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
             _lastAttackHeld = false;
             _scrollDelta = 0;
             _scrollConsumed = false;
+            _jumpQueued = false;      
+            _lockOnQueued = false;   
+            _isSprinting = false;     
 
             input.Set(new NetworkInputData());
             return;
         }
 
-        Vector3 inputMove = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        Vector3 inputMove = Vector3.zero;
+        if (!UiStateManager.HasBlockingUI && !IsInputBlocked)
+            inputMove = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 
         if (inputMove.magnitude < 0.1f)
             inputMove = Vector3.zero;

@@ -18,5 +18,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9bdff672a6f7aba44a71d9dd6634930a, type: 2}
   - {fileID: 11400000, guid: e30d0165993c27f4a9bf4a097254d7c7, type: 2}
   resultItem: {fileID: 11400000, guid: 51a804f6a8ca40740b9c36c15b5dc1b0, type: 2}
+  questTrackId: Craft_Weapon
   resultWeaponName: Mosquete
   resultIcon: {fileID: 0}

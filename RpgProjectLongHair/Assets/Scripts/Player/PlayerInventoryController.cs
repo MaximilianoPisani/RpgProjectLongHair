@@ -188,9 +188,11 @@ public class PlayerInventoryController : MonoBehaviour
                 };
                 bool added = _inventoryData.AddItem(craftItemData);
                 if (added)
+                {
                     craftPickup.RPC_RequestPickup();
-
-                return;
+                    if (!string.IsNullOrEmpty(craftPickup.QuestTrackId))
+                        TrackEvents.OnTrackEvent?.Invoke(craftPickup.QuestTrackId, 1);
+                }
             }
         }
     }
