@@ -15,6 +15,10 @@ public class QuestDataSO : ScriptableObject
     public int xp;
     public int coins;
 
+    [Header("Restrictions")]
+    [Tooltip("False = una sola vez por player (crafting). True = se puede repetir (kill missions).")]
+    public bool isRepeatable = true; // <-- NUEVO
+
     [Header("Multiplayer")]
     public bool allowPartyInvite = true;
 

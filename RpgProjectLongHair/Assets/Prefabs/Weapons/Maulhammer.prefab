@@ -391,7 +391,7 @@ MonoBehaviour:
   itemDataSO: {fileID: 11400000, guid: b668c5365c08234478ae76127ed8a622, type: 2}
   _visualRoot: {fileID: 3238946909473500049}
   _txtFeedback: {fileID: 202965876707054480}
-  _respawnTime: 30
+  _respawnTime: 15
 --- !u!114 &4507827183060901697
 MonoBehaviour:
   m_ObjectHideFlags: 0

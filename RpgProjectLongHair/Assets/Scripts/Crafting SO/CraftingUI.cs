@@ -18,6 +18,9 @@ public class CraftingUI : MonoBehaviour
     private CraftRecipeSO _recipe;
     private PlayerInventoryData _playerInventory;
 
+    // FIX: Cachear el QuestController para llamar RPC
+    private QuestController _questController;
+
     public bool IsOpen => _panel.activeSelf;
 
     private void Start()
@@ -38,6 +41,10 @@ public class CraftingUI : MonoBehaviour
     {
         _recipe = recipe;
         _playerInventory = inventory;
+
+        // FIX: Buscar QuestController en el mismo player
+        _questController = inventory?.GetComponent<QuestController>();
+
         _txtRecipeName.text = _recipe.recipeName;
         RefreshItemList();
         _panel.SetActive(true);
@@ -94,8 +101,12 @@ public class CraftingUI : MonoBehaviour
             return;
         }
 
-        if (!string.IsNullOrEmpty(_recipe.questTrackId))
-            TrackEvents.OnTrackEvent?.Invoke(_recipe.questTrackId, 1);
+        // FIX: Enviar RPC al host en lugar de evento estático
+        if (!string.IsNullOrEmpty(_recipe.questTrackId) && _questController != null)
+        {
+            _questController.RPC_ReportCraft(_recipe.questTrackId);
+            Debug.Log($"[CraftingUI] RPC_ReportCraft enviado: {_recipe.questTrackId}");
+        }
 
         Hide();
     }

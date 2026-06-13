@@ -39,11 +39,15 @@ public class QuestController : NetworkBehaviour
         if (!Object.HasStateAuthority) return;
         if (string.IsNullOrEmpty(missionId)) return;
 
-        // FIX #1: Eliminado el bloqueo por _completedQuests para permitir reintentos
-        // if (_completedQuests.Contains(missionId)) return;
-
         var missionData = Resources.Load<QuestDataSO>($"{MISSION_PATH}{missionId}");
         if (missionData == null) return;
+
+        // FIX: Bloquear solo si es NO repetible y ya fue completada
+        if (!missionData.isRepeatable && _completedQuests.Contains(missionId))
+        {
+            Debug.Log($"[QuestController] Quest {missionId} ya completada y no es repetible.");
+            return;
+        }
 
         _activeMissionOwner = this;
         _activeMissionId = missionId;
@@ -475,5 +479,23 @@ public class QuestController : NetworkBehaviour
     public static bool HasActiveMission()
     {
         return _activeMissionOwner != null;
+    }
+
+    /// <summary>
+    /// Llamado desde el cliente cuando craftea un item. 
+    /// El host verifica si tiene la quest activa y actualiza progreso.
+    /// </summary>
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_ReportCraft(string questTrackId)
+    {
+        if (!Object.HasStateAuthority) return;
+        if (_currentQuest == null) return;
+        if (string.IsNullOrEmpty(questTrackId)) return;
+
+        Debug.Log($"[QuestController] ReportCraft recibido: {questTrackId} de {name}");
+
+        // El TrackStep ya verifica internamente si el questTrackId coincide 
+        // con algún QuestSteps.targetId de la quest actual
+        TrackStep(questTrackId, 1);
     }
 }

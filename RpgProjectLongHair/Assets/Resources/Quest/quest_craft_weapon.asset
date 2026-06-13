@@ -25,4 +25,5 @@ MonoBehaviour:
   teleportDestination: {x: -2, y: 59, z: 335}
   xp: 60
   coins: 0
+  isRepeatable: 0
   allowPartyInvite: 0
