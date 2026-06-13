@@ -76,6 +76,50 @@ public class EnemyKamikazeExplodeState : IEnemyState
         float radius = data.HitRadius;
         Vector3 origin = _enemy.transform.position;
 
+        // ========== FIX: Determinar quién provocó la explosión ==========
+        PlayerRef killerRef = PlayerRef.None;
+
+        if (_enemy.TargetPlayer != null)
+        {
+            var targetNetObj = _enemy.TargetPlayer.GetComponent<NetworkObject>()
+                            ?? _enemy.TargetPlayer.GetComponentInParent<NetworkObject>();
+            if (targetNetObj != null)
+                killerRef = targetNetObj.InputAuthority;
+        }
+
+        // Fallback: player más cercano si no hay target
+        if (killerRef == PlayerRef.None)
+        {
+            Collider[] nearbyPlayers = Physics.OverlapSphere(origin, radius * 2f, _enemy.PlayerLayer);
+            float closestDist = float.MaxValue;
+            NetworkObject closestPlayer = null;
+
+            foreach (var hit in nearbyPlayers)
+            {
+                if (!hit.CompareTag("Player")) continue;
+                var netObj = hit.GetComponent<NetworkObject>() ?? hit.GetComponentInParent<NetworkObject>();
+                if (netObj == null) continue;
+
+                float dist = Vector3.Distance(origin, hit.transform.position);
+                if (dist < closestDist)
+                {
+                    closestDist = dist;
+                    closestPlayer = netObj;
+                }
+            }
+
+            if (closestPlayer != null)
+                killerRef = closestPlayer.InputAuthority;
+        }
+
+        // Reportar kill antes de aplicar daño de explosión
+        if (killerRef != PlayerRef.None)
+        {
+            var health = _enemy.GetComponent<EnemyHealth>();
+            health?.ReportDeathForQuest(killerRef);
+        }
+        // ========== FIN FIX ==========
+
         Collider[] hits = Physics.OverlapSphere(
             origin,
             radius,

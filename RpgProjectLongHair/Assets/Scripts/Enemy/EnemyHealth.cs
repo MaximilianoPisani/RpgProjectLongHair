@@ -222,4 +222,17 @@ public class EnemyHealth : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Llamado cuando el enemigo muere por efectos propios (ej: kamikaze explota por proximidad).
+    /// Simula un kill atribuido al player especificado para quest tracking.
+    /// </summary>
+    public void ReportDeathForQuest(PlayerRef killer)
+    {
+        if (!Object.HasStateAuthority) return;
+        if (IsDead) return; // Ya fue procesado por daño normal
+
+        _lastAttacker = killer;
+        GiveKillExp();
+    }
+
 }
