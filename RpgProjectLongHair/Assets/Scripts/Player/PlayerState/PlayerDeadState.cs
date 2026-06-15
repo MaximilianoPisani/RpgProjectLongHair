@@ -50,8 +50,6 @@ public class PlayerDeadState : IPlayerState
         animator.ResetTrigger("Jump");
         animator.ResetTrigger("Fall");
         animator.ResetTrigger("Land");
-
-        _sm.GetComponent<PlayerNetworkSync>()?.TriggerDie();
     }
 
     public void Exit()

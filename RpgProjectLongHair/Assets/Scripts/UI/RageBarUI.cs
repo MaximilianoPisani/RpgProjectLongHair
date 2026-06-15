@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class RageBarUI : MonoBehaviour
 {
@@ -11,9 +12,12 @@ public class RageBarUI : MonoBehaviour
     [Header("Smooth Fill")]
     [SerializeField] private float _fillSpeed = 3f;
 
+    [Header("Key Hint")]
+    [SerializeField] private GameObject _keyHintObject; 
+    [SerializeField] private string _activationKey = "Q"; 
+
     private float _targetFill = 0f;
     private float _currentFill = 0f;
-
     private PlayerRageHandler _cachedHandler;
 
     private void OnEnable()
@@ -21,6 +25,13 @@ public class RageBarUI : MonoBehaviour
         PlayerRageHandler.OnChargeChanged += HandleChargeChanged;
         PlayerRageHandler.OnRageActivated += HandleRageActivated;
         PlayerRageHandler.OnRageDeactivated += HandleRageDeactivated;
+
+        if (_keyHintObject != null)
+        {
+            var tmp = _keyHintObject.GetComponentInChildren<TextMeshProUGUI>();
+            if (tmp != null) tmp.text = _activationKey;
+            _keyHintObject.SetActive(false);
+        }
     }
 
     private void OnDisable()
@@ -37,14 +48,17 @@ public class RageBarUI : MonoBehaviour
         if (handler == null) return;
 
         _targetFill = handler.GetNormalizedBar();
-
         _currentFill = Mathf.Lerp(_currentFill, _targetFill, Time.deltaTime * _fillSpeed);
         _fillImage.fillAmount = _currentFill;
-
         _fillImage.color = handler.IsRageActive ? _activeColor : _chargingColor;
 
+        bool showReady = handler.IsChargeFull() && !handler.IsRageActive;
+
         if (_readyIndicator != null)
-            _readyIndicator.SetActive(handler.IsChargeFull() && !handler.IsRageActive);
+            _readyIndicator.SetActive(showReady);
+
+        if (_keyHintObject != null)
+            _keyHintObject.SetActive(showReady);
     }
 
     private void HandleChargeChanged(float current, float max)
@@ -52,8 +66,9 @@ public class RageBarUI : MonoBehaviour
         _targetFill = current / max;
         _fillImage.color = _chargingColor;
 
-        if (_readyIndicator != null)
-            _readyIndicator.SetActive(current >= max);
+        bool full = current >= max;
+        if (_readyIndicator != null) _readyIndicator.SetActive(full);
+        if (_keyHintObject != null) _keyHintObject.SetActive(full);
     }
 
     private void HandleRageActivated()
@@ -63,8 +78,8 @@ public class RageBarUI : MonoBehaviour
         _fillImage.fillAmount = 1f;
         _fillImage.color = _activeColor;
 
-        if (_readyIndicator != null)
-            _readyIndicator.SetActive(false);
+        if (_readyIndicator != null) _readyIndicator.SetActive(false);
+        if (_keyHintObject != null) _keyHintObject.SetActive(false);
     }
 
     private void HandleRageDeactivated()
@@ -74,8 +89,8 @@ public class RageBarUI : MonoBehaviour
         _fillImage.fillAmount = 0f;
         _fillImage.color = _chargingColor;
 
-        if (_readyIndicator != null)
-            _readyIndicator.SetActive(false);
+        if (_readyIndicator != null) _readyIndicator.SetActive(false);
+        if (_keyHintObject != null) _keyHintObject.SetActive(false);
     }
 
     private PlayerRageHandler GetLocalRageHandler()

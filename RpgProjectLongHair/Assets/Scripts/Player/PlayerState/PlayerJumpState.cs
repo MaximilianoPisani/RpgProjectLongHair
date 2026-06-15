@@ -13,9 +13,13 @@ public class PlayerJumpState : IPlayerState
     {
         _sm.IsJumping = true;
 
-        if (_sm.Object.HasStateAuthority)
+        if (_sm.Object.HasStateAuthority || _sm.Object.HasInputAuthority)
         {
             _sm.Player.Jump();
+        }
+
+        if (_sm.Object.HasStateAuthority)
+        {
             _minAirTimer = TickTimer.CreateFromSeconds(_sm.Runner, 0.1f);
             _minLandTimer = TickTimer.CreateFromSeconds(_sm.Runner, 0.3f);
         }
@@ -27,7 +31,6 @@ public class PlayerJumpState : IPlayerState
             _sm.Animator.SetBool("isFalling", false);
         }
 
-        // MODIFICADO: Actualizar flag directamente y luego disparar trigger
         var netSync = _sm.GetComponent<PlayerNetworkSync>();
         if (netSync != null)
         {

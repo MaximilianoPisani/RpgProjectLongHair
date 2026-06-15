@@ -79,7 +79,7 @@ public class PlayerStateMachine : NetworkBehaviour
         }
 
         // Caída: solo host inicia
-        if (Object.HasStateAuthority)
+        if (Object.HasStateAuthority || Object.HasInputAuthority)
         {
             if ((_currentState is PlayerIdleState || _currentState is PlayerMoveState)
                 && PlayerFallState.ShouldFall(this))
@@ -170,6 +170,7 @@ public class PlayerStateMachine : NetworkBehaviour
     private void SyncStateOnClient(PlayerStateId stateId)
     {
         Debug.Log($"[SYNC CLIENT] Aplicando {stateId} | currentState:{GetStateId(_currentState)}");
+
         IPlayerState newState = stateId switch
         {
             PlayerStateId.Idle => new PlayerIdleState(this),
@@ -183,17 +184,10 @@ public class PlayerStateMachine : NetworkBehaviour
             _ => new PlayerIdleState(this)
         };
 
-        bool isProxy = !Object.HasInputAuthority && !Object.HasStateAuthority;
-
-        if (isProxy)
-        {
-            // Proxy remoto: solo actualizar referencia
-            _currentState = newState;
-            return;
-        }
-
         _currentState?.Exit();
+
         _currentState = newState;
+
         _currentState.Enter();
     }
 

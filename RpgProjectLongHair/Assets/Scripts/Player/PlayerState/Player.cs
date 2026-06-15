@@ -49,22 +49,19 @@ public class Player : NetworkBehaviour
         UpdateCoyoteTimer(Runner.DeltaTime);
 
         var sm = GetComponent<PlayerStateMachine>();
-        bool isInAir = sm != null && (sm.CurrentState is PlayerJumpState || sm.CurrentState is PlayerFallState);
+        bool isInAir = sm != null && (sm.CurrentState is PlayerJumpState
+                                   || sm.CurrentState is PlayerFallState);
         bool isAiming = false;
         if (sm?.CurrentState is PlayerRangeState rangeState)
             isAiming = !rangeState.IsReloading;
 
         _ncc.LockRotation = isAiming;
-
         float targetSpeed = input.sprint ? sprintSpeed : walkSpeed;
         _ncc.maxSpeed = targetSpeed;
 
-        // Delegar control de rotación al estado activo
-        _ncc.LockRotation = isAiming;
-
         Vector3 moveDir = new Vector3(input.moveDirection.x, 0f, input.moveDirection.z);
 
-        if (Object.HasStateAuthority)
+        if (Object.HasStateAuthority || Object.HasInputAuthority)
         {
             float originalAcceleration = _ncc.acceleration;
 
@@ -76,7 +73,7 @@ public class Player : NetworkBehaviour
             }
             else
             {
-                _ncc.Move(moveDir); // NCC mueve pero NO rota si LockRotation = true
+                _ncc.Move(moveDir);
             }
         }
     }
