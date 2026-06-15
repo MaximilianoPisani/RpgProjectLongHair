@@ -22,10 +22,14 @@ public class StatuePose : MonoBehaviour
         if (animator == null || clip == null)
             return;
 
+        if (!animator.isActiveAndEnabled)
+            return;
+
         float normalizedTime = frame / (clip.length * clip.frameRate);
 
         animator.Play(0, 0, normalizedTime);
         animator.Update(0f);
         animator.speed = 0f;
+        animator.enabled = false;
     }
 }

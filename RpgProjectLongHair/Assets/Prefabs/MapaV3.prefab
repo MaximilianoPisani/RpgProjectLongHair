@@ -20276,7 +20276,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1603248584383982106
 Transform:
   m_ObjectHideFlags: 0
@@ -41194,6 +41194,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: obj_bridgeOnWater
       objectReference: {fileID: 0}
+    - target: {fileID: 1870301493687848510, guid: 383484fdeef43ca4d93365ea9834fef4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8069857640340804612, guid: 383484fdeef43ca4d93365ea9834fef4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -142.84
@@ -41369,6 +41373,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 98c5f956014f84c4b86bf69498b489fe, type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 98c5f956014f84c4b86bf69498b489fe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 98c5f956014f84c4b86bf69498b489fe, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -41667,6 +41675,10 @@ PrefabInstance:
     - target: {fileID: 1896241248023597252, guid: d9b93f252da6165428fb47bd49bac4e1, type: 3}
       propertyPath: m_Name
       value: env_planesWaters
+      objectReference: {fileID: 0}
+    - target: {fileID: 1896241248023597252, guid: d9b93f252da6165428fb47bd49bac4e1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -42037,6 +42049,10 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7439d5a3c683f9c47a6c9244ba2bb5fe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7439d5a3c683f9c47a6c9244ba2bb5fe, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
@@ -42262,6 +42278,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 49ab08d272325c348b91d754e09758c3, type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 49ab08d272325c348b91d754e09758c3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 49ab08d272325c348b91d754e09758c3, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -42748,6 +42768,10 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7e067721c4bec6a42a02a956d858737b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7e067721c4bec6a42a02a956d858737b, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
@@ -42931,6 +42955,10 @@ PrefabInstance:
     - target: {fileID: 5248121718780238190, guid: 74e1cee5d0e478641bee53ed2cf7830e, type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5248121718780238190, guid: 74e1cee5d0e478641bee53ed2cf7830e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -43168,6 +43196,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f7325d9901c76c945bb933814795251c, type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f7325d9901c76c945bb933814795251c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f7325d9901c76c945bb933814795251c, type: 3}
       propertyPath: m_StaticEditorFlags

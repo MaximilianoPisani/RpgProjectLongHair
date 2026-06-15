@@ -1936,6 +1936,10 @@ PrefabInstance:
       propertyPath: m_Range
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4630140054481686087, guid: 7a38518ee28a2a14bb8cf2474e86f2e1, type: 3}
+      propertyPath: m_Lightmapping
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5305515319103366146, guid: 7a38518ee28a2a14bb8cf2474e86f2e1, type: 3}
       propertyPath: m_Name
       value: CFXR2 Firewall A
