@@ -41,6 +41,12 @@ public class EquipManager : NetworkBehaviour
         if (!HasInputAuthority || item == null)
             return;
 
+        if (item.type == ItemType.Armor)
+        {
+            GetComponent<ArmorEquipManager>()?.RequestEquipArmor(item);
+            return;
+        }
+
         if (!IsEquipable(item))
             return;
 
