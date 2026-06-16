@@ -1359,6 +1359,7 @@ MonoBehaviour:
   _inventoryContent: {fileID: 7150831077238457635}
   _inventoryPanel: {fileID: 4778606941127678815}
   _pickupRange: 2
+  _questItemMapping: {fileID: 11400000, guid: 66d4074411c84d34dab4ec099130a72a, type: 2}
 --- !u!114 &8957313202645999744
 MonoBehaviour:
   m_ObjectHideFlags: 0

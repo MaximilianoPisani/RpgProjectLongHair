@@ -22,6 +22,9 @@ public class QuestDataSO : ScriptableObject
     [Header("Multiplayer")]
     public bool allowPartyInvite = true;
 
+    [Header("Character Restriction")]
+    [Tooltip("None = cualquier personaje puede hacer esta misión")]
+    public CharacterType requiredCharacter = CharacterType.None;
     public bool UpdateProgress(string id, int amount, out bool success)
     {
         success = false;

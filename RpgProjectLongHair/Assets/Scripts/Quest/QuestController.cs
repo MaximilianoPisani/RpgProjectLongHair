@@ -264,9 +264,9 @@ public class QuestController : NetworkBehaviour
             if (!_currentQuest.UpdateProgress(stepId, progress, out var isSuccess))
             {
                 Debug.Log($"[QuestController] Progreso actualizado, mision en curso");
-                MissionEvents.OnUpdateProgress?.Invoke(_currentQuest);
 
-                // FIX: Sincronizar progreso a miembros del party para que actualicen su UI
+                RPC_UpdateQuestUI(stepId, progress);
+
                 foreach (var member in _partyMembers)
                 {
                     if (member == null) continue;
@@ -497,5 +497,15 @@ public class QuestController : NetworkBehaviour
         // El TrackStep ya verifica internamente si el questTrackId coincide 
         // con algún QuestSteps.targetId de la quest actual
         TrackStep(questTrackId, 1);
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_ReportTrackEvent(string trackId, int amount)
+    {
+        if (!Object.HasStateAuthority) return;
+        if (_currentQuest == null) return;
+
+        Debug.Log($"[QuestController] RPC_ReportTrackEvent: {trackId} x{amount}");
+        TrackStep(trackId, amount);
     }
 }

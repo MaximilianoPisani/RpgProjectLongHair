@@ -13,6 +13,8 @@ public class PlayerInventoryController : MonoBehaviour
     [Header("Pickup")]
     [SerializeField] private float _pickupRange = 2f;
 
+    private QuestController _questController;
+
     private bool _isOpen = false;
 
     private void Start()
@@ -23,6 +25,7 @@ public class PlayerInventoryController : MonoBehaviour
             Destroy(this);
             return;
         }
+        _questController = GetComponentInParent<QuestController>();
 
         if (_uiManager != null && _inventoryContent != null)
             _uiManager.SetContent(_inventoryContent);
@@ -190,8 +193,12 @@ public class PlayerInventoryController : MonoBehaviour
                 if (added)
                 {
                     craftPickup.RPC_RequestPickup();
+
                     if (!string.IsNullOrEmpty(craftPickup.QuestTrackId))
-                        TrackEvents.OnTrackEvent?.Invoke(craftPickup.QuestTrackId, 1);
+                    {
+                        if (_questController != null)
+                            _questController.RPC_ReportTrackEvent(craftPickup.QuestTrackId, 1);
+                    }
                 }
             }
         }

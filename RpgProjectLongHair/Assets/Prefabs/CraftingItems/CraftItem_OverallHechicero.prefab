@@ -265,7 +265,7 @@ MonoBehaviour:
   _visualRoot: {fileID: 8451133336053472482}
   _txtFeedback: {fileID: 2361295711285155182}
   _respawnTime: 15
-  _questTrackId: 
+  _questTrackId: Pick_Armor
 --- !u!114 &6554340961826589035
 MonoBehaviour:
   m_ObjectHideFlags: 0

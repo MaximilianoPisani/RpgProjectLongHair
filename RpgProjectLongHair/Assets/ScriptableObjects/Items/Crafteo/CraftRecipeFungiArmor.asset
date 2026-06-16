@@ -17,5 +17,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9ddaac09621bfb44e93c13b557ee8f74, type: 2}
   - {fileID: 11400000, guid: 84891cff734bceb40938ead24fc83d3f, type: 2}
   resultItem: {fileID: 11400000, guid: d391bfc0cdbc4ee4ab49be0d19cec21f, type: 2}
+  questTrackId: Craft_Armor
   resultWeaponName: Hechicero Armor
   resultIcon: {fileID: 0}

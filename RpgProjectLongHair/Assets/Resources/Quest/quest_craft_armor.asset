@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7509b862d7d3784099463d4fd0681b8, type: 3}
+  m_Name: quest_craft_armor
+  m_EditorClassIdentifier: 
+  questId: quest_craft_armor
+  questName: Fabrica armadura fungi
+  questDescription: 'Consigue items y craftea tu armadura '
+  questSteps:
+  - targetId: Pick_Armor
+    amount: 2
+  - targetId: Craft_Armor
+    amount: 1
+  failureSteps: []
+  allowTeleportParty: 0
+  teleportDestination: {x: -2, y: 59, z: 335}
+  xp: 60
+  coins: 0
+  isRepeatable: 0
+  allowPartyInvite: 0
+  requiredCharacter: 1

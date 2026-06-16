@@ -9,6 +9,7 @@ public class QuestTrigger : MonoBehaviour
     [SerializeField] private float _interactRadius = 3f;
 
     private QuestController _localQuestController;
+    private PlayerCharacterData _localCharacterData;
 
     private void Start()
     {
@@ -42,12 +43,17 @@ public class QuestTrigger : MonoBehaviour
             return;
         }
 
-        //bool alreadyCompleted =
-        //    _localQuestController.HasCompletedQuest(questData.questId);
+        // Chequeo de character requerido
+        bool characterAllowed = true;
+        if (questData.requiredCharacter != CharacterType.None)
+        {
+            characterAllowed = _localCharacterData != null
+                && _localCharacterData.characterType == questData.requiredCharacter;
+        }
 
         bool canInteract =
             isNear &&
-            //!alreadyCompleted &&
+            characterAllowed &&
             !QuestController.HasActiveMission() &&
             !_questOfferUI.IsOpen &&
             !UiStateManager.HasBlockingUI;
@@ -62,9 +68,7 @@ public class QuestTrigger : MonoBehaviour
 
         _canvasNPC.SetActive(false);
 
-        _questOfferUI.Show(
-            questData,
-            _localQuestController);
+        _questOfferUI.Show(questData, _localQuestController);
     }
 
     private void FindLocalPlayer()
@@ -74,6 +78,8 @@ public class QuestTrigger : MonoBehaviour
             if (controller.HasInputAuthority)
             {
                 _localQuestController = controller;
+                // Cachear el CharacterData del mismo GameObject
+                _localCharacterData = controller.GetComponent<PlayerCharacterData>();
                 return;
             }
         }
