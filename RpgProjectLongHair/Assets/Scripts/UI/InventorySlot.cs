@@ -8,7 +8,7 @@ public class InventorySlot : MonoBehaviour
     private ItemSO _currentItem;
 
     private static readonly Color EquippedColor = Color.white;
-    private static readonly Color UnequippedColor = new Color(1f, 1f, 1f, 0.35f);
+    private static readonly Color UnequippedColor = new Color(1f, 1f, 1f, 1f);
 
     public void SetData(ItemSO item)
     {
