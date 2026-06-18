@@ -23,6 +23,7 @@ public class ItemProximityPrompt : MonoBehaviour
         var netObj = GetComponentInParent<NetworkObject>();
         if (netObj != null && !netObj.HasInputAuthority)
         {
+            if (_promptPanel != null) Destroy(_promptPanel);
             Destroy(this);
             return;
         }
@@ -87,13 +88,13 @@ public class ItemProximityPrompt : MonoBehaviour
         {
             string itemName = _nearestItem.ItemDataSO != null
                 ? _nearestItem.ItemDataSO.itemName : "Item";
-            ShowPrompt($"[{_keyLabel}] Recoger {itemName}");
+            ShowPrompt($"[{_keyLabel}] Collect {itemName}");
         }
         else if (_nearestCraftItem != null)
         {
             string craftName = _nearestCraftItem.CraftItemSO != null
                 ? _nearestCraftItem.CraftItemSO.itemName : "Item";
-            ShowPrompt($"[{_keyLabel}] Recoger {craftName}");
+            ShowPrompt($"[{_keyLabel}] Collect {craftName}");
         }
         else
         {
