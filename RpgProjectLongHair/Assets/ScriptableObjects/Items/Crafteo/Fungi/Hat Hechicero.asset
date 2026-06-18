@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Hat Hechicero
   m_EditorClassIdentifier: 
   id: 107
-  itemName: Hat Hechicero
+  itemName: 'Hat '
   icon: {fileID: -1629458960, guid: 3ae843fc0462ce74c8cc2521eccb1bea, type: 3}
   type: 1
   weaponCategory: 4

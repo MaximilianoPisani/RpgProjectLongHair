@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Rotor gatling
   m_EditorClassIdentifier: 
   id: 104
-  itemName: Rotor gatling
+  itemName: 'Rotor '
   icon: {fileID: -1629458960, guid: 3ae843fc0462ce74c8cc2521eccb1bea, type: 3}
   type: 0
   weaponCategory: 4
