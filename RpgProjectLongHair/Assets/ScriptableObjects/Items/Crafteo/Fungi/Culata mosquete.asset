@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 102
   itemName: 'Culata '
-  icon: {fileID: -1629458960, guid: 3ae843fc0462ce74c8cc2521eccb1bea, type: 3}
+  icon: {fileID: 21300000, guid: 79d21a66be70bc04397a704328cfaa27, type: 3}
   type: 0
   weaponCategory: 4
   amount: 0

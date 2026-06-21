@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 2
   itemName: Axes
-  icon: {fileID: 540400383, guid: 3ae843fc0462ce74c8cc2521eccb1bea, type: 3}
+  icon: {fileID: 21300000, guid: 2fc2be30fa4b83c468a7cd875789b393, type: 3}
   type: 0
   weaponCategory: 0
   amount: 0

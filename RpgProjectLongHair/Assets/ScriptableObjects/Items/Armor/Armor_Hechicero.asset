@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 20
   itemName: Hechichero Armor
-  icon: {fileID: -1629458960, guid: 3ae843fc0462ce74c8cc2521eccb1bea, type: 3}
+  icon: {fileID: 21300000, guid: 9c6c027b368b40944a5b9cb295cef683, type: 3}
   type: 1
   weaponCategory: 0
   amount: 0
