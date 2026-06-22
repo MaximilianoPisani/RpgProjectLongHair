@@ -198,6 +198,13 @@ public class PlayerMeleeState : IPlayerState
 
         _sm.GetComponent<PlayerNetworkSync>()?.TriggerMelee();
 
+        // NUEVO: Sonidos al iniciar el ataque
+        if (_sm.Object.HasInputAuthority)
+        {
+            AudioManager.Instance.PlaySwordAir();      // viento del arma
+            AudioManager.Instance.PlayBlandir();       // esfuerzo del player
+        }
+
         Debug.Log($"[Melee] Combo Attack {_comboIndex} started - Duration: {_currentAttackConfig.attackDuration}s");
     }
 
@@ -382,6 +389,11 @@ public class PlayerMeleeState : IPlayerState
                 Debug.Log($"[Melee] Hit chain anchor - Damage: {damage}");
                 continue;
             }
+        }
+
+        if (hits.Length > 0)
+        {
+            AudioManager.Instance.PlayAttackMelee();
         }
 
         PlayHitFeedback();

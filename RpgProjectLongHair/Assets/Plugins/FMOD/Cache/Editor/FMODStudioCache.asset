@@ -1,0 +1,1326 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9206731573061424083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_attack_rango-mecano
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_attack_rango-mecano
+  Guid:
+    Data1: 663867455
+    Data2: 1303288651
+    Data3: 1446243231
+    Data4: -944160893
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 8064
+--- !u!114 &-8860544143497892380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/amb/amb_wind
+  m_EditorClassIdentifier: 
+  Path: event:/amb/amb_wind
+  Guid:
+    Data1: -1416724462
+    Data2: 1238123930
+    Data3: -1262507875
+    Data4: -1111067069
+  Banks:
+  - {fileID: -3268837747820549361}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 783167268244252090}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 299859
+--- !u!114 &-7930449397151302801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_steps_wood
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_steps_wood
+  Guid:
+    Data1: -326882073
+    Data2: 1273191009
+    Data3: 264965256
+    Data4: 1339466414
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -7692891639625193586}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 956
+--- !u!114 &-7692891639625193586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/sfx_steps_wood/state_steps
+  m_EditorClassIdentifier: 
+  Name: state_steps
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 4237228223
+    data2: 1446962992
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - walk
+  - run
+  Exists: 1
+--- !u!114 &-7215256294398879399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Sfx_World.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/FMOD/Banks/Desktop/Sfx_World.bank
+  Name: Sfx_World
+  StudioPath: bank:/Sfx_World
+  lastModified: 639176705283412373
+  FileSizes: []
+  Exists: 1
+--- !u!114 &-6454211061865191731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_steps-mecano
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_steps-mecano
+  Guid:
+    Data1: 1248640094
+    Data2: 1154913390
+    Data3: -2091635537
+    Data4: -1519278846
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -2137903596427425523}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1400
+--- !u!114 &-6423788744489902971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_attack_rango-reload
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_attack_rango-reload
+  Guid:
+    Data1: 1199461754
+    Data2: 1120259386
+    Data3: -220385618
+    Data4: -432849040
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 600
+--- !u!114 &-6238316409480855773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_world/sfx_pickUp
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_world/sfx_pickUp
+  Guid:
+    Data1: 831982393
+    Data2: 1309135140
+    Data3: 1376529322
+    Data4: -197369662
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 400
+--- !u!114 &-6111580210093895042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_steps_grave-cave
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_steps_grave-cave
+  Guid:
+    Data1: -2057550216
+    Data2: 1191924002
+    Data3: -212289907
+    Data4: 531580856
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: 892143686496953250}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 975
+--- !u!114 &-6070716657850309176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.strings.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/FMOD/Banks/Desktop/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 639176705279256862
+  FileSizes:
+  - Name: 
+    Value: 3032
+  Exists: 1
+--- !u!114 &-5994177079489220508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_player-takeDamage
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_player-takeDamage
+  Guid:
+    Data1: -1301938091
+    Data2: 1202512780
+    Data3: 77309865
+    Data4: -1319764775
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 520
+--- !u!114 &-5688031359792420797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_steps_grave
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_steps_grave
+  Guid:
+    Data1: -535022020
+    Data2: 1283873492
+    Data3: -727954776
+    Data4: 1975404342
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: 4870867929421636719}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 980
+--- !u!114 &-5592242568985885749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/music/music
+  m_EditorClassIdentifier: 
+  Path: event:/music/music
+  Guid:
+    Data1: 1257155258
+    Data2: 1115458017
+    Data3: 417255852
+    Data4: -1518192292
+  Banks:
+  - {fileID: 5817327003505038268}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: 847613738422336185}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 122255
+--- !u!114 &-4925749419379374126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_world/sfx_stone
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_world/sfx_stone
+  Guid:
+    Data1: -169661513
+    Data2: 1332198651
+    Data3: -470144604
+    Data4: -728433944
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2880
+--- !u!114 &-4663641690826326366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/sfx_steps_wood-cave/state_steps
+  m_EditorClassIdentifier: 
+  Name: state_steps
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 4237228223
+    data2: 1446962992
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - walk
+  - run
+  Exists: 1
+--- !u!114 &-4653761375084631122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_player-agitation
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_player-agitation
+  Guid:
+    Data1: 479723040
+    Data2: 1088073708
+    Data3: 140772992
+    Data4: -1900409508
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &-4597791535862123972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Sfx_Enemy.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/FMOD/Banks/Desktop/Sfx_Enemy.bank
+  Name: Sfx_Enemy
+  StudioPath: bank:/Sfx_Enemy
+  lastModified: 639176705279891859
+  FileSizes: []
+  Exists: 1
+--- !u!114 &-3268837747820549361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Amb.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/FMOD/Banks/Desktop/Amb.bank
+  Name: Amb
+  StudioPath: bank:/Amb
+  lastModified: 639176705279116916
+  FileSizes: []
+  Exists: 1
+--- !u!114 &-2591889842995114951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_sword_air
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_sword_air
+  Guid:
+    Data1: 262316158
+    Data2: 1211314624
+    Data3: 1250549406
+    Data4: 525365425
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 510
+--- !u!114 &-2137903596427425523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/sfx_steps-mecano/state_steps
+  m_EditorClassIdentifier: 
+  Name: state_steps
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 4237228223
+    data2: 1446962992
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - walk
+  - run
+  Exists: 1
+--- !u!114 &-1069070873569719880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_player-takeDamage-mecano
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_player-takeDamage-mecano
+  Guid:
+    Data1: -1839864278
+    Data2: 1285879601
+    Data3: -284438105
+    Data4: -446026057
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1220
+--- !u!114 &-664037130975267549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_world/sfx_levelUp
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_world/sfx_levelUp
+  Guid:
+    Data1: 131696909
+    Data2: 1107422513
+    Data3: -826043518
+    Data4: 1687662926
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1200
+--- !u!114 &-513467946337455728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_attack_melee-mecano
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_attack_melee-mecano
+  Guid:
+    Data1: -1450807827
+    Data2: 1129770873
+    Data3: -95193210
+    Data4: 804869457
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d32cf7c32a3ed8347bac48ef5ed56d82, type: 3}
+  m_Name: FMODStudioCache
+  m_EditorClassIdentifier: 
+  EditorBanks:
+  - {fileID: -6070716657850309176}
+  - {fileID: -3268837747820549361}
+  - {fileID: 3883839177570843310}
+  - {fileID: 5817327003505038268}
+  - {fileID: -4597791535862123972}
+  - {fileID: 4492250335144090945}
+  - {fileID: -7215256294398879399}
+  - {fileID: 8572394864544398977}
+  EditorEvents:
+  - {fileID: -8860544143497892380}
+  - {fileID: 1091733941321408762}
+  - {fileID: -5592242568985885749}
+  - {fileID: -664037130975267549}
+  - {fileID: 1776486092395413059}
+  - {fileID: -4653761375084631122}
+  - {fileID: -1069070873569719880}
+  - {fileID: 1882705300148596535}
+  - {fileID: -6238316409480855773}
+  - {fileID: -5688031359792420797}
+  - {fileID: -9206731573061424083}
+  - {fileID: 960473577417060814}
+  - {fileID: 2129016945771335113}
+  - {fileID: -5994177079489220508}
+  - {fileID: 293618923089450920}
+  - {fileID: -6454211061865191731}
+  - {fileID: -6111580210093895042}
+  - {fileID: -6423788744489902971}
+  - {fileID: -2591889842995114951}
+  - {fileID: 2646256277020241093}
+  - {fileID: 1784889436251442953}
+  - {fileID: 5633161787387298052}
+  - {fileID: 1036080338412397774}
+  - {fileID: -4925749419379374126}
+  - {fileID: 7627410065294034573}
+  - {fileID: 6336567772443652095}
+  - {fileID: -7930449397151302801}
+  - {fileID: -513467946337455728}
+  - {fileID: 1775765636364725458}
+  - {fileID: 6975224861043308200}
+  - {fileID: 8559340910194115518}
+  - {fileID: 8836112322606411969}
+  EditorParameters: []
+  MasterBanks:
+  - {fileID: 3883839177570843310}
+  StringsBanks:
+  - {fileID: -6070716657850309176}
+  cacheVersion: 131860
+  cacheTime: 639176705283843279
+  SerializableEventsDict:
+  - key: event:/amb/amb_wind
+    index: 0
+  - key: event:/amb/amb_bird
+    index: 1
+  - key: event:/music/music
+    index: 2
+  - key: event:/sfx_world/sfx_levelUp
+    index: 3
+  - key: event:/sfx_player/sfx_player-jump
+    index: 4
+  - key: event:/sfx_player/sfx_player-agitation
+    index: 5
+  - key: event:/sfx_player/sfx_player-takeDamage-mecano
+    index: 6
+  - key: event:/sfx_enemy/sfx_attack_enemy-kamikaze
+    index: 7
+  - key: event:/sfx_world/sfx_pickUp
+    index: 8
+  - key: event:/sfx_player/sfx_steps_grave
+    index: 9
+  - key: event:/sfx_player/sfx_attack_rango-mecano
+    index: 10
+  - key: event:/sfx_world/sfx_chest
+    index: 11
+  - key: event:/sfx_enemy/sfx_attack_rango-enemy
+    index: 12
+  - key: event:/sfx_player/sfx_player-takeDamage
+    index: 13
+  - key: event:/sfx_player/sfx_player-blandir
+    index: 14
+  - key: event:/sfx_player/sfx_steps-mecano
+    index: 15
+  - key: event:/sfx_player/sfx_steps_grave-cave
+    index: 16
+  - key: event:/sfx_player/sfx_attack_rango-reload
+    index: 17
+  - key: event:/sfx_player/sfx_sword_air
+    index: 18
+  - key: event:/sfx_world/UI/sfx_ui_button-click
+    index: 19
+  - key: event:/sfx_player/sfx_steps_wood-cave
+    index: 20
+  - key: event:/sfx_player/sfx_drawSword
+    index: 21
+  - key: event:/sfx_world/sfx_checkPoint
+    index: 22
+  - key: event:/sfx_world/sfx_stone
+    index: 23
+  - key: event:/sfx_player/sfx_attack_rango
+    index: 24
+  - key: event:/sfx_player/sfx_attack_melee
+    index: 25
+  - key: event:/sfx_player/sfx_steps_wood
+    index: 26
+  - key: event:/sfx_player/sfx_attack_melee-mecano
+    index: 27
+  - key: event:/sfx_player/sfx_player-throw
+    index: 28
+  - key: event:/stg/stg_takeQuest
+    index: 29
+  - key: event:/stg/stg_victory
+    index: 30
+  - key: event:/stg/stg_deffeat
+    index: 31
+--- !u!114 &293618923089450920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_player-blandir
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_player-blandir
+  Guid:
+    Data1: 32513886
+    Data2: 1310845399
+    Data3: 1695875740
+    Data4: 41462174
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 260
+--- !u!114 &783167268244252090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/amb_wind/wind
+  m_EditorClassIdentifier: 
+  Name: wind
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 2997960630
+    data2: 2900810725
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
+--- !u!114 &847613738422336185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/music/music_state
+  m_EditorClassIdentifier: 
+  Name: music_state
+  StudioPath: 
+  Min: 0
+  Max: 2
+  Default: 0
+  ID:
+    data1: 2704922685
+    data2: 2835485230
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - menu
+  - explore
+  - battle
+  Exists: 1
+--- !u!114 &892143686496953250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/sfx_steps_grave-cave/state_steps
+  m_EditorClassIdentifier: 
+  Name: state_steps
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 4237228223
+    data2: 1446962992
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - walk
+  - run
+  Exists: 1
+--- !u!114 &960473577417060814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_world/sfx_chest
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_world/sfx_chest
+  Guid:
+    Data1: 1393737288
+    Data2: 1186296426
+    Data3: 1584867204
+    Data4: 1513050742
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 768
+--- !u!114 &1036080338412397774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_world/sfx_checkPoint
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_world/sfx_checkPoint
+  Guid:
+    Data1: -911355987
+    Data2: 1300948459
+    Data3: 213225612
+    Data4: 1168721673
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2500
+--- !u!114 &1091733941321408762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/amb/amb_bird
+  m_EditorClassIdentifier: 
+  Path: event:/amb/amb_bird
+  Guid:
+    Data1: -1575941395
+    Data2: 1196269838
+    Data3: 240198816
+    Data4: 2092092836
+  Banks:
+  - {fileID: -3268837747820549361}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 480496
+--- !u!114 &1775765636364725458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_player-throw
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_player-throw
+  Guid:
+    Data1: 1096745215
+    Data2: 1332758515
+    Data3: -1239456362
+    Data4: -1077265749
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 460
+--- !u!114 &1776486092395413059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_player-jump
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_player-jump
+  Guid:
+    Data1: 1946475287
+    Data2: 1260503660
+    Data3: -1589646957
+    Data4: 531929613
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &1784889436251442953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_steps_wood-cave
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_steps_wood-cave
+  Guid:
+    Data1: -501120117
+    Data2: 1335278569
+    Data3: -509361989
+    Data4: 1030906799
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -4663641690826326366}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1000
+--- !u!114 &1882705300148596535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_enemy/sfx_attack_enemy-kamikaze
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_enemy/sfx_attack_enemy-kamikaze
+  Guid:
+    Data1: 1143454513
+    Data2: 1212731610
+    Data3: -1675116905
+    Data4: -907077039
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &2129016945771335113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_enemy/sfx_attack_rango-enemy
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_enemy/sfx_attack_rango-enemy
+  Guid:
+    Data1: -128476336
+    Data2: 1144714375
+    Data3: -322904386
+    Data4: 478778301
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1896
+--- !u!114 &2646256277020241093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_world/UI/sfx_ui_button-click
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_world/UI/sfx_ui_button-click
+  Guid:
+    Data1: -145702273
+    Data2: 1289355090
+    Data3: -1197581648
+    Data4: 714130291
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 274
+--- !u!114 &3883839177570843310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/FMOD/Banks/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 639176705279226852
+  FileSizes: []
+  Exists: 1
+--- !u!114 &4492250335144090945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Sfx_Player.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/FMOD/Banks/Desktop/Sfx_Player.bank
+  Name: Sfx_Player
+  StudioPath: bank:/Sfx_Player
+  lastModified: 639176705283169282
+  FileSizes: []
+  Exists: 1
+--- !u!114 &4870867929421636719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/sfx_steps_grave/state_steps
+  m_EditorClassIdentifier: 
+  Name: state_steps
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 4237228223
+    data2: 1446962992
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - walk
+  - run
+  Exists: 1
+--- !u!114 &5633161787387298052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_drawSword
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_drawSword
+  Guid:
+    Data1: -303888496
+    Data2: 1178181715
+    Data3: 1265101974
+    Data4: 1795959578
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &5817327003505038268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Music.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/FMOD/Banks/Desktop/Music.bank
+  Name: Music
+  StudioPath: bank:/Music
+  lastModified: 639176705279811875
+  FileSizes: []
+  Exists: 1
+--- !u!114 &6336567772443652095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_attack_melee
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_attack_melee
+  Guid:
+    Data1: -1493282081
+    Data2: 1154528700
+    Data3: -1321104509
+    Data4: -370271673
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &6975224861043308200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/stg/stg_takeQuest
+  m_EditorClassIdentifier: 
+  Path: event:/stg/stg_takeQuest
+  Guid:
+    Data1: 1658771023
+    Data2: 1238106053
+    Data3: 1994635199
+    Data4: 1589908665
+  Banks:
+  - {fileID: 8572394864544398977}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1584
+--- !u!114 &7627410065294034573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_attack_rango
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_attack_rango
+  Guid:
+    Data1: -220142370
+    Data2: 1133014649
+    Data3: -248087907
+    Data4: 397658697
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1896
+--- !u!114 &8559340910194115518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/stg/stg_victory
+  m_EditorClassIdentifier: 
+  Path: event:/stg/stg_victory
+  Guid:
+    Data1: 1358595769
+    Data2: 1171079549
+    Data3: 633970065
+    Data4: -1822895411
+  Banks:
+  - {fileID: 8572394864544398977}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1584
+--- !u!114 &8572394864544398977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Stg.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/FMOD/Banks/Desktop/Stg.bank
+  Name: Stg
+  StudioPath: bank:/Stg
+  lastModified: 639176705283843279
+  FileSizes: []
+  Exists: 1
+--- !u!114 &8836112322606411969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/stg/stg_deffeat
+  m_EditorClassIdentifier: 
+  Path: event:/stg/stg_deffeat
+  Guid:
+    Data1: -655799080
+    Data2: 1127801914
+    Data3: -697450069
+    Data4: 884803960
+  Banks:
+  - {fileID: 8572394864544398977}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0

@@ -295,9 +295,23 @@ public class QuestController : NetworkBehaviour
     private void RPC_UpdateQuestUI(string stepId, int progress)
     {
         if (_currentQuest == null) return;
+
+        if (Object.HasStateAuthority)
+        {
+            MissionEvents.OnUpdateProgress?.Invoke(_currentQuest);
+            return;
+        }
+
         _currentQuest.UpdateProgress(stepId, progress, out _);
         MissionEvents.OnUpdateProgress?.Invoke(_currentQuest);
     }
+
+    //private void RPC_UpdateQuestUI(string stepId, int progress)
+    //{
+    //    if (_currentQuest == null) return;
+    //    _currentQuest.UpdateProgress(stepId, progress, out _);
+    //    MissionEvents.OnUpdateProgress?.Invoke(_currentQuest);
+    //}
 
     public void FailureQuest()
     {
