@@ -18,6 +18,12 @@ public class PlayerJumpState : IPlayerState
             _sm.Player.Jump();
         }
 
+        // Solo el jugador local escucha su propio salto
+        if (_sm.Object.HasInputAuthority)
+        {
+            AudioManager.Instance.PlayJump();
+        }
+
         if (_sm.Object.HasStateAuthority)
         {
             _minAirTimer = TickTimer.CreateFromSeconds(_sm.Runner, 0.1f);

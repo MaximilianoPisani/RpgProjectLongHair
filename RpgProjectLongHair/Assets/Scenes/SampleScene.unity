@@ -5922,7 +5922,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _missionId: quest_test_001
   _spawnDatas:
-  - Prefab: {fileID: -164565949365206626, guid: 26b82aefeed034a4c9460ff82205ac62, type: 3}
+  - Prefab: {fileID: 4928595746056103536, guid: f7a2e85bbf9726b4588052c5f71b2267, type: 3}
     SpawnPoints:
     - {fileID: 749296262}
     - {fileID: 651789806}
