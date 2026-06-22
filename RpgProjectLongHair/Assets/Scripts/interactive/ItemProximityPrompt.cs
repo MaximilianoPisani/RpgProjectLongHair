@@ -42,7 +42,6 @@ public class ItemProximityPrompt : MonoBehaviour
 
     private void ScanNearbyItems()
     {
-        // Si el inventario está abierto, ocultar prompt y no escanear
         if (IsInventoryOpen())
         {
             HidePrompt();
@@ -54,6 +53,7 @@ public class ItemProximityPrompt : MonoBehaviour
         float closestDist = _detectionRadius;
 
         Collider[] hits = Physics.OverlapSphere(transform.position, _detectionRadius);
+
         foreach (var hit in hits)
         {
             float dist = Vector3.Distance(transform.position, hit.transform.position);
@@ -61,7 +61,8 @@ public class ItemProximityPrompt : MonoBehaviour
             if (hit.TryGetComponent<PickupableItem>(out var item))
             {
                 if (item.Object == null || !item.Object.IsValid) continue;
-                if (!hit.enabled) continue;
+
+                if (item.IsAlreadyPicked) continue;
                 if (dist < closestDist)
                 {
                     closestDist = dist;
@@ -74,7 +75,8 @@ public class ItemProximityPrompt : MonoBehaviour
             if (hit.TryGetComponent<PickupableCraftItem>(out var craftItem))
             {
                 if (craftItem.Object == null || !craftItem.Object.IsValid) continue;
-                if (!hit.enabled) continue;
+
+                if (craftItem.IsAlreadyPicked) continue;
                 if (dist < closestDist)
                 {
                     closestDist = dist;
