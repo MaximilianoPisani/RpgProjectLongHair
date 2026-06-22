@@ -84,6 +84,12 @@ public class PlayerHealth : NetworkBehaviour
             HandleDeathOnClient();
         }
 
+        if (currentHealth < _previousHealth && _previousHealth > 0)
+        {
+            if (Object.HasInputAuthority)
+                AudioManager.Instance.PlayTakeDamage();
+        }
+
         _previousHealth = currentHealth;
     }
 
