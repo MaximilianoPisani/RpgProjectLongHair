@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 105
   itemName: 'Canon '
-  icon: {fileID: -1629458960, guid: 3ae843fc0462ce74c8cc2521eccb1bea, type: 3}
+  icon: {fileID: 21300000, guid: 2b30a8fc303295e469267c3031c05f04, type: 3}
   type: 0
   weaponCategory: 4
   amount: 0
