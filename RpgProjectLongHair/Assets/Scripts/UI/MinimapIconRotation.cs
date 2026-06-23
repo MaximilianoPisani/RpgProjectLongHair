@@ -1,26 +1,28 @@
+using Fusion;
 using UnityEngine;
 
-public class MinimapIconRotation : MonoBehaviour
+public class MinimapIconRotation : NetworkBehaviour // Hereda de NetworkBehaviour
 {
-    [SerializeField]
-    private Vector3 rotationOffset =
-        new Vector3(90f, 0f, 0f);
+    [SerializeField] private Vector3 rotationOffset = new Vector3(90f, 0f, 0f);
+    private Transform _myPlayerTransform;
 
-    private Transform _localPlayer;
-
-    private void Start()
+    public override void Spawned()
     {
-        if (PlayerCamera.Local != null)
-            _localPlayer = PlayerCamera.Local.transform.root;
+        // Solo el jugador que es dueño de este objeto busca su propio transform
+        if (Object.HasInputAuthority)
+        {
+            _myPlayerTransform = transform.root;
+        }
     }
 
     private void LateUpdate()
     {
-        if (_localPlayer == null) return;
+        // Si no soy el dueño, no hago nada
+        if (_myPlayerTransform == null) return;
 
         transform.rotation = Quaternion.Euler(
             rotationOffset.x,
-            _localPlayer.eulerAngles.y + rotationOffset.y,
+            _myPlayerTransform.eulerAngles.y + rotationOffset.y,
             rotationOffset.z
         );
     }
