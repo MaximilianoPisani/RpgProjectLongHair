@@ -25,6 +25,8 @@ public class PickupableItem : NetworkBehaviour
     private Renderer[] _cachedRenderers;
     public ItemSO ItemDataSO => itemDataSO;
 
+    public bool IsAlreadyPicked => IsPicked || _localPicked;
+
     public override void Spawned()
     {
         _collider = GetComponent<Collider>();

@@ -25,6 +25,7 @@ public class PickupableCraftItem : NetworkBehaviour
 
     public CraftItemSO CraftItemSO => _craftItemSO;
     public int ItemId => _craftItemSO != null ? _craftItemSO.id : 0;
+    public bool IsAlreadyPicked => IsPicked || _localPicked;
 
     [Header("Quest Tracking")]
     [SerializeField] private string _questTrackId = "";
