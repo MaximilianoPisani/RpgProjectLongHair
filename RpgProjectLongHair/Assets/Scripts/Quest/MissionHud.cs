@@ -32,6 +32,10 @@ public class MissionHud : MonoBehaviour
     {
         if (_questCompletedUI == null) return;
         if (_questProgressUI != null) _questProgressUI.Hide();
+
+        // NUEVO: Sonido de victoria
+        AudioManager.Instance.PlayVictoryQuest();
+
         _questCompletedUI.Show(data);
     }
 
@@ -50,6 +54,10 @@ public class MissionHud : MonoBehaviour
         var lqc = GetLocalController();
         if (lqc == null) return;
         if (_questFailedUI == null) return;
+
+        // NUEVO: Sonido de derrota
+        AudioManager.Instance.PlayDeffeatQuest();
+
         _questFailedUI.Show();
         if (_questProgressUI != null) _questProgressUI.Hide();
     }

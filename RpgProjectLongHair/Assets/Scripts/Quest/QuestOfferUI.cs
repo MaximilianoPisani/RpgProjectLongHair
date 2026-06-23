@@ -47,6 +47,9 @@ public class QuestOfferUI : MonoBehaviour
     {
         _questController.RPC_StartMission(_questData.questId, default);
 
+        // NUEVO: Sonido al aceptar quest
+        AudioManager.Instance.PlayTakeQuest();
+
         _panel.SetActive(false);
 
         UiStateManager.CloseBlockingUI();

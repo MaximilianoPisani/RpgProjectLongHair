@@ -124,7 +124,7 @@ MonoBehaviour:
   Path: Assets/Plugins/FMOD/Banks/Desktop/Sfx_World.bank
   Name: Sfx_World
   StudioPath: bank:/Sfx_World
-  lastModified: 639176705283412373
+  lastModified: 639177616023764012
   FileSizes: []
   Exists: 1
 --- !u!114 &-6454211061865191731
@@ -252,7 +252,7 @@ MonoBehaviour:
   Path: Assets/Plugins/FMOD/Banks/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639176705279256862
+  lastModified: 639177616023454193
   FileSizes:
   - Name: 
     Value: 3032
@@ -435,7 +435,7 @@ MonoBehaviour:
   Path: Assets/Plugins/FMOD/Banks/Desktop/Sfx_Enemy.bank
   Name: Sfx_Enemy
   StudioPath: bank:/Sfx_Enemy
-  lastModified: 639176705279891859
+  lastModified: 639177616023654076
   FileSizes: []
   Exists: 1
 --- !u!114 &-3268837747820549361
@@ -453,7 +453,7 @@ MonoBehaviour:
   Path: Assets/Plugins/FMOD/Banks/Desktop/Amb.bank
   Name: Amb
   StudioPath: bank:/Amb
-  lastModified: 639176705279116916
+  lastModified: 639177616023232165
   FileSizes: []
   Exists: 1
 --- !u!114 &-2591889842995114951
@@ -650,7 +650,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -6070716657850309176}
   cacheVersion: 131860
-  cacheTime: 639176705283843279
+  cacheTime: 639177616023784000
   SerializableEventsDict:
   - key: event:/amb/amb_wind
     index: 0
@@ -1079,7 +1079,7 @@ MonoBehaviour:
   Path: Assets/Plugins/FMOD/Banks/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639176705279226852
+  lastModified: 639177616023252145
   FileSizes: []
   Exists: 1
 --- !u!114 &4492250335144090945
@@ -1097,7 +1097,7 @@ MonoBehaviour:
   Path: Assets/Plugins/FMOD/Banks/Desktop/Sfx_Player.bank
   Name: Sfx_Player
   StudioPath: bank:/Sfx_Player
-  lastModified: 639176705283169282
+  lastModified: 639177616023744024
   FileSizes: []
   Exists: 1
 --- !u!114 &4870867929421636719
@@ -1168,7 +1168,7 @@ MonoBehaviour:
   Path: Assets/Plugins/FMOD/Banks/Desktop/Music.bank
   Name: Music
   StudioPath: bank:/Music
-  lastModified: 639176705279811875
+  lastModified: 639177616023634089
   FileSizes: []
   Exists: 1
 --- !u!114 &6336567772443652095
@@ -1294,7 +1294,7 @@ MonoBehaviour:
   Path: Assets/Plugins/FMOD/Banks/Desktop/Stg.bank
   Name: Stg
   StudioPath: bank:/Stg
-  lastModified: 639176705283843279
+  lastModified: 639177616023784000
   FileSizes: []
   Exists: 1
 --- !u!114 &8836112322606411969
