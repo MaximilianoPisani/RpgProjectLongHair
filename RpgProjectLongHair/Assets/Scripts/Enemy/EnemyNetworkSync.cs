@@ -270,6 +270,12 @@ public class EnemyNetworkSync : NetworkBehaviour
         RPC_SpawnExplosionVFX(position);
     }
 
+    public void TriggerKamikazeExplosionSound()
+    {
+        if (!Object.HasStateAuthority) return;
+        RPC_PlayKamikazeExplosionSound();
+    }
+
     // ===== RPCs =====
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
@@ -356,6 +362,12 @@ public class EnemyNetworkSync : NetworkBehaviour
     {
         var ragdoll = GetComponent<EnemyRagdoll>();
         ragdoll?.ActivateRagdoll(deathForce);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_PlayKamikazeExplosionSound()
+    {
+        AudioManager.Instance.PlayAttackEnemyKamikaze();
     }
 
     // ===== HELPERS =====

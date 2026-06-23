@@ -69,6 +69,9 @@ public class EnemyKamikazeExplodeState : IEnemyState
         if (_exploded) return;
         _exploded = true;
 
+        // NUEVO: Sonido de explosión al explotar realmente
+        _networkSync?.TriggerKamikazeExplosionSound();
+
         var data = _enemy.KamikazeData;
         if (data == null) return;
 
