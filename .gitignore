@@ -94,3 +94,8 @@ fmod_editor.log
 # SI ignorar: bancos duplicados en StreamingAssets (ya están en Plugins/FMOD/Banks)
 /[Aa]ssets/StreamingAssets/**/*.bank
 /[Aa]ssets/StreamingAssets/**/*.bank.meta
+
+# If the source bank files are kept outside of the StreamingAssets folder then these can be ignored.
+# Log files can be ignored.
+fmod_editor.log
+Assets/Plugins/FMOD/Cache/Editor/FMODStudioCache.asset
