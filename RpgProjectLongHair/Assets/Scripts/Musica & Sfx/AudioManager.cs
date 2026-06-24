@@ -39,7 +39,7 @@ public class AudioManager : MonoBehaviour
     public EventReference attackEnemyKamikazeEvent;
 
     [Header("Ambient")]
-    public EventReference ambWindEvent;
+    //public EventReference ambWindEvent;
     public EventReference ambBirdEvent;
 
     [Header("Music")]
@@ -210,11 +210,11 @@ public class AudioManager : MonoBehaviour
     // Ambient (2D - sin posición)
     // NOTA: Si son loops, más adelante se cambiarán a Play/Stop controlado
     // ============================================
-    public void PlayAmbWind()
-    {
-        if (!ambWindEvent.IsNull)
-            RuntimeManager.PlayOneShot(ambWindEvent);
-    }
+    //public void PlayAmbWind()
+    //{
+    //    if (!ambWindEvent.IsNull)
+    //        RuntimeManager.PlayOneShot(ambWindEvent);
+    //}
 
     public void PlayAmbBird()
     {
