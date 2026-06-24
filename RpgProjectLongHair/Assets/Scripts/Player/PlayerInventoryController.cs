@@ -158,8 +158,10 @@ public class PlayerInventoryController : MonoBehaviour
 
                 bool added = _inventoryData.AddItem(pickup.ItemData);
                 if (added)
+                {
                     pickup.RPC_RequestPickup();
-
+                    AudioManager.Instance.PlayPickUp();
+                }
                 return;
             }
 
@@ -199,6 +201,7 @@ public class PlayerInventoryController : MonoBehaviour
                         if (_questController != null)
                             _questController.RPC_ReportTrackEvent(craftPickup.QuestTrackId, 1);
                     }
+                    AudioManager.Instance.PlayPickUp();
                 }
             }
         }

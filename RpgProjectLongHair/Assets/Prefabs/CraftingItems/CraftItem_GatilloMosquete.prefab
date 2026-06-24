@@ -247,6 +247,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 611587450779657963}
   - {fileID: 6554340961826589035}
+  - {fileID: 6644635820242661136}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &611587450779657963
 MonoBehaviour:
@@ -475,6 +476,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f01e2a8b605edcb4dad997b8bf180398, type: 3}
+--- !u!114 &6644635820242661136 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -3730266713446169173, guid: f01e2a8b605edcb4dad997b8bf180398, type: 3}
+  m_PrefabInstance: {fileID: 1156601719358335675}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c33ca5cf0be3d744dba800f1cb8b8433, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8611555994325151088 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7462314704331294667, guid: f01e2a8b605edcb4dad997b8bf180398, type: 3}

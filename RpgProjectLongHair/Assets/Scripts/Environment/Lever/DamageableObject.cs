@@ -41,6 +41,8 @@ public class DamageableObject : NetworkBehaviour
             {
                 _activationExecuted = true;
                 OnActivated?.Invoke();
+
+                AudioManager.Instance.PlayStone();
             }
         }
     }

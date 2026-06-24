@@ -1,4 +1,5 @@
 using Fusion;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
@@ -9,6 +10,9 @@ public class CheckpointZone : NetworkBehaviour
     [Header("Feedback")]
     [SerializeField] private Animator _animator;
     [SerializeField] private ParticleSystem _vfxPrefab;
+
+    // NUEVO: Track de players que ya activaron este checkpoint
+    private HashSet<PlayerRef> _activatedPlayers = new HashSet<PlayerRef>();
 
     private void Awake()
     {
@@ -21,6 +25,12 @@ public class CheckpointZone : NetworkBehaviour
         if (!other.TryGetComponent<PlayerCheckpoint>(out var checkpoint)) return;
         if (!checkpoint.HasInputAuthority) return;
 
+        // NUEVO: Si ya activó, no hacer nada
+        if (_activatedPlayers.Contains(checkpoint.Object.InputAuthority)) return;
+
+        // NUEVO: Marcar como activado
+        _activatedPlayers.Add(checkpoint.Object.InputAuthority);
+
         Vector3 spawnPos = _spawnPoint != null
             ? _spawnPoint.position
             : transform.position;
@@ -32,6 +42,8 @@ public class CheckpointZone : NetworkBehaviour
 
     private void PlayLocalFeedback()
     {
+        AudioManager.Instance.PlayCheckPoint();
+
         if (_animator != null)
             _animator.SetTrigger("Activate");
 

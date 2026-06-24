@@ -10,6 +10,7 @@ public class AudioManager : MonoBehaviour
     public EventReference uiClickEvent;
     public EventReference levelUpEvent;
     public EventReference checkPointEvent;
+    public EventReference stoneEvent;
     public EventReference chestEvent;
 
     [Header("Player Actions")]
@@ -80,6 +81,12 @@ public class AudioManager : MonoBehaviour
     {
         if (!checkPointEvent.IsNull)
             RuntimeManager.PlayOneShot(checkPointEvent);
+    }
+
+    public void PlayStone()
+    {
+        if (!stoneEvent.IsNull)
+            RuntimeManager.PlayOneShot(stoneEvent);
     }
 
     public void PlayChest()

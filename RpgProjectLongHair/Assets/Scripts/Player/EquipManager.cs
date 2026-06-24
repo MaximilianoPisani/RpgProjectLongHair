@@ -88,6 +88,12 @@ public class EquipManager : NetworkBehaviour
     {
         RenderEquippedItem();
         OnEquippedChanged?.Invoke(EquippedItemId);
+
+        // NUEVO: Solo el jugador local escucha su propio equip
+        if (HasInputAuthority && EquippedItemId != 0)
+        {
+            AudioManager.Instance.PlayDrawSword();
+        }
     }
 
     private void RenderEquippedItem()
