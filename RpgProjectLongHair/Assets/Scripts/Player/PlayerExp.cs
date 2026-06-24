@@ -58,6 +58,12 @@ public class PlayerExp : NetworkBehaviour
                 if (Object.HasInputAuthority && _hud != null)
                     _hud.OnExpUpdated(CurrentExp, ExpToNextLevel, Level);
             }
+
+            // NUEVO: Sonido de level up
+            if (change == nameof(Level) && Object.HasInputAuthority)
+            {
+                AudioManager.Instance.PlayLevelUp();
+            }
         }
     }
 
