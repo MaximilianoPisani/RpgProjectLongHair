@@ -1589,7 +1589,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 793ad05dd7663a540b0c0a0aaba7d8f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activationDistance: 20
+  activationDistance: 50
   deactivationDistance: 50
 --- !u!114 &3114467905501756027
 MonoBehaviour:
