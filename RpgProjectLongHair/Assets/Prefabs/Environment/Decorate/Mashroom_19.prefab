@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 832469897778894673}
   - component: {fileID: 4333128472766322932}
   - component: {fileID: 2001474184786406462}
-  - component: {fileID: 4966597468699936782}
   m_Layer: 0
   m_Name: Mashroom_19
   m_TagString: Untagged
@@ -87,25 +86,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4966597468699936782
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 55826992181890539}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -5605364895467666848, guid: 988d5b55525c5a24fa076a4b886f395c, type: 3}

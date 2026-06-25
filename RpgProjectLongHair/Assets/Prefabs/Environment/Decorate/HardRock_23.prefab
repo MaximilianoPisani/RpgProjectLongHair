@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4018471702015317665}
   - component: {fileID: 30295039915202820}
   - component: {fileID: 2850592077963259342}
-  - component: {fileID: 6300474450131638159}
+  - component: {fileID: 9153721236390313430}
   m_Layer: 0
   m_Name: HardRock_23
   m_TagString: Untagged
@@ -87,8 +87,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &6300474450131638159
-MeshCollider:
+--- !u!65 &9153721236390313430
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -105,7 +105,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 1035285895641174860, guid: ca52518a2c7a985409d33cf0ede45453, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 1.2576519, y: 0.7566304, z: 2.4882214}
+  m_Center: {x: -0.06286818, y: 0.38123584, z: -0.2645462}

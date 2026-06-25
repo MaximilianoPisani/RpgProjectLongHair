@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3325983979675098212}
   - component: {fileID: 1839614188195124161}
   - component: {fileID: 4495551281329563403}
-  - component: {fileID: 7546606905372505672}
+  - component: {fileID: 6892019027752870481}
   m_Layer: 0
   m_Name: Skull_05
   m_TagString: Untagged
@@ -87,8 +87,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7546606905372505672
-MeshCollider:
+--- !u!65 &6892019027752870481
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -105,7 +105,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4384306851105088153, guid: 423cc698891b89444a1d6e73b562f98f, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 1.145458, y: 0.4830236, z: 0.7822535}
+  m_Center: {x: 0, y: 0.23807342, z: 0.0061196536}

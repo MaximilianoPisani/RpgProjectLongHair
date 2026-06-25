@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7938353965642490495}
   - component: {fileID: 6450677808252333530}
   - component: {fileID: 9106733661326203152}
-  - component: {fileID: 2545836676624795435}
+  - component: {fileID: 3526805573107796810}
   m_Layer: 0
   m_Name: Bones_05
   m_TagString: Untagged
@@ -87,8 +87,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2545836676624795435
-MeshCollider:
+--- !u!65 &3526805573107796810
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -105,7 +105,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 8531260918842268492, guid: a212cbc00d88bc24d98105800193b585, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 1.6120012, y: 1.631217, z: 1.8210979}
+  m_Center: {x: 0.53800285, y: 0.7463449, z: 0}
