@@ -33,6 +33,13 @@ public class MissionHud : MonoBehaviour
             var lqc = GetLocalController();
             if (lqc != null && lqc.CurrentQuest != null)
             {
+                // FIX: Si la misión no permite abandono, no abrir el panel
+                if (!lqc.CurrentQuest.canAbandon)
+                {
+                    Debug.Log("[MissionHud] Esta misión no permite ser abandonada.");
+                    return;
+                }
+
                 // Solo abrir si no hay otro panel bloqueante (oferta, invite, complete, etc.)
                 if (!UiStateManager.HasBlockingUI)
                 {

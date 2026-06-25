@@ -28,4 +28,5 @@ MonoBehaviour:
   isRepeatable: 0
   allowPartyInvite: 0
   failOnDeath: 0
+  canAbandon: 0
   requiredCharacter: 0

@@ -26,6 +26,10 @@ public class QuestDataSO : ScriptableObject
     [Tooltip("Si está marcado, morir falla la misión. Si no, la muerte no tiene consecuencias para la quest.")]
     public bool failOnDeath = true;
 
+    [Header("Abandon Conditions")]
+    [Tooltip("Si está marcado, el jugador puede abandonar la misión manualmente con la tecla R. Si no, el panel de abandono no se mostrará.")]
+    public bool canAbandon = true;
+
     [Header("Character Restriction")]
     [Tooltip("None = cualquier personaje puede hacer esta misión")]
     public CharacterType requiredCharacter = CharacterType.None;
