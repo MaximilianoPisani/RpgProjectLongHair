@@ -17,7 +17,8 @@ MonoBehaviour:
   useHitsInsteadOfDamage: 1
   chargePerHit: 25
   extraChargeFromDamage: 0.2
-  damageMultiplier: 1.75
+  automaticWeaponChargeMultiplier: 0.35
+  damageMultiplier: 2
   activeDuration: 20
   activationKey: 104
   weaponVFXConfigs:

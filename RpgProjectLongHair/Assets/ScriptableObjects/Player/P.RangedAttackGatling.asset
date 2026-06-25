@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: P.RangedAttackGatling
   m_EditorClassIdentifier: 
   _attackRange: 35
-  _damage: 10
+  _damage: 20
   _cooldown: 0.1
   _hitRadius: 0.86
   _projectilePrefab: {fileID: 4028938312772070145, guid: d924951f8e151df4ba90bb00a313339a, type: 3}
@@ -28,7 +28,7 @@ MonoBehaviour:
   _shootDuration: 0.6
   _reloadDuration: 3.5
   _fireRate: 0.15
-  _maxContinuousFireTime: 5
+  _maxContinuousFireTime: 9
   _fireEjectionVFX:
     vfxPrefab: {fileID: 2574898397583427364, guid: eb6d326ce04a828408f3c03db64db6dc, type: 3}
     vfxSpawnTime: 0.6

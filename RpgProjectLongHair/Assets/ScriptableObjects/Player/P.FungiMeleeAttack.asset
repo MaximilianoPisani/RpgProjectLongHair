@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: P.FungiMeleeAttack
   m_EditorClassIdentifier: 
   _attackRange: 0
-  _damage: 45
+  _damage: 60
   _cooldown: 0.5
   _hitRadius: 1.6
   _comboAttacks:
@@ -21,7 +21,7 @@ MonoBehaviour:
     hitFrameTime: 0.15
     comboWindowOpenTime: 0.3
     comboWindowCloseTime: 0.35
-    damage: 30
+    damage: 60
     animationStateName: Attack1
     attackVFX:
       vfxPrefab: {fileID: 802242170397950454, guid: 973a3b3d7812e2c41ad5ebc91844f0c2, type: 3}
@@ -33,7 +33,7 @@ MonoBehaviour:
     hitFrameTime: 0.22
     comboWindowOpenTime: 0.44
     comboWindowCloseTime: 0.55
-    damage: 30
+    damage: 60
     animationStateName: Attack2
     attackVFX:
       vfxPrefab: {fileID: 7393661223654865908, guid: ebac32cec53ae804f9aa9f13a92a0c90, type: 3}
@@ -45,7 +45,7 @@ MonoBehaviour:
     hitFrameTime: 0.75
     comboWindowOpenTime: 0.8
     comboWindowCloseTime: 1
-    damage: 50
+    damage: 80
     animationStateName: Attack3
     attackVFX:
       vfxPrefab: {fileID: 3130428516026584381, guid: 74f5c04ec45a530489aabb8a50e0e151, type: 3}
