@@ -22,6 +22,10 @@ public class QuestDataSO : ScriptableObject
     [Header("Multiplayer")]
     public bool allowPartyInvite = true;
 
+    [Header("Failure Conditions")]
+    [Tooltip("Si está marcado, morir falla la misión. Si no, la muerte no tiene consecuencias para la quest.")]
+    public bool failOnDeath = true;
+
     [Header("Character Restriction")]
     [Tooltip("None = cualquier personaje puede hacer esta misión")]
     public CharacterType requiredCharacter = CharacterType.None;

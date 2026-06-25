@@ -173,6 +173,8 @@ public class QuestController : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
 
+        if (_currentQuest != null && !_currentQuest.failOnDeath) return;
+
         if (_activeMissionOwner == this)
             FailureQuest();
         else

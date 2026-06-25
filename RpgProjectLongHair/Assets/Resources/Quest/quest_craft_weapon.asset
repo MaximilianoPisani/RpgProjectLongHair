@@ -27,3 +27,5 @@ MonoBehaviour:
   coins: 0
   isRepeatable: 0
   allowPartyInvite: 0
+  failOnDeath: 0
+  requiredCharacter: 0
