@@ -4,33 +4,33 @@ using Fusion;
 
 public class MinimapInstance : NetworkBehaviour
 {
+    [Header("Referencias")]
     public Camera minimapCamera;
-    public Image minimapImage; // Mantenemos el componente Image que ya tienes
-    public Material baseMaterial; // Arrastra tu "mat_minimap" aquí
+    public RawImage minimapDisplay;   // Usa RawImage, no Image con material
+    public GameObject minimapHUDRoot;
 
     public override void Spawned()
     {
-        if (Object.HasInputAuthority)
+        if (!Object.HasInputAuthority)
         {
-            // 1. Crear Textura
-            RenderTexture localRT = new RenderTexture(256, 256, 16);
-            localRT.Create();
-
-            // 2. CREAR INSTANCIA DEL MATERIAL (La clave está aquí)
-            // No uses el material original directamente en la UI.
-            Material instancedMat = new Material(baseMaterial);
-
-            // 3. Asignar la textura a esta copia privada del material
-            instancedMat.mainTexture = localRT;
-
-            // 4. Asignar todo
-            minimapCamera.targetTexture = localRT;
-            minimapImage.material = instancedMat; // ASIGNA LA COPIA, NO EL ORIGINAL
+            // Desactivar el HUD COMPLETO, no solo la cámara
+            minimapHUDRoot.SetActive(false);
+            return;
         }
-        else
+
+        // Solo llega acá el jugador local
+        RenderTexture localRT = new RenderTexture(256, 256, 16);
+        localRT.Create();
+
+        minimapCamera.targetTexture = localRT;
+        minimapDisplay.texture = localRT; // RawImage acepta la textura directamente
+    }
+    void OnDestroy()
+    {
+        // Limpiar la RenderTexture al destruirse
+        if (minimapCamera != null && minimapCamera.targetTexture != null)
         {
-            // Si no soy yo, asegúrate de que la cámara no esté activa
-            if (minimapCamera != null) minimapCamera.gameObject.SetActive(false);
+            minimapCamera.targetTexture.Release();
         }
     }
 }

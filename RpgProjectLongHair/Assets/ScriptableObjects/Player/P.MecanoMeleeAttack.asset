@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: P.MecanoMeleeAttack
   m_EditorClassIdentifier: 
   _attackRange: 0
-  _damage: 45
+  _damage: 70
   _cooldown: 0.8
   _hitRadius: 1.6
   _comboAttacks:
@@ -21,7 +21,7 @@ MonoBehaviour:
     hitFrameTime: 0.21
     comboWindowOpenTime: 0.3
     comboWindowCloseTime: 0.35
-    damage: 60
+    damage: 70
     animationStateName: Attack_1
     attackVFX:
       vfxPrefab: {fileID: 802242170397950454, guid: b54a0f927d2f04a4d9f6a949652ad2dd, type: 3}
@@ -33,7 +33,7 @@ MonoBehaviour:
     hitFrameTime: 0.35
     comboWindowOpenTime: 0.48
     comboWindowCloseTime: 0.55
-    damage: 60
+    damage: 70
     animationStateName: Attack_2
     attackVFX:
       vfxPrefab: {fileID: 802242170397950454, guid: e30f5d12591e1ee4cbbf0552b5bb7412, type: 3}
@@ -45,7 +45,7 @@ MonoBehaviour:
     hitFrameTime: 1.35
     comboWindowOpenTime: 1.34
     comboWindowCloseTime: 1.38
-    damage: 80
+    damage: 90
     animationStateName: Attack_3
     attackVFX:
       vfxPrefab: {fileID: 802242170397950454, guid: 0bae66f16fbd47147ac27cb941b5c843, type: 3}

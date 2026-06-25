@@ -27,6 +27,6 @@ MonoBehaviour:
   armorMaterials: []
   armorSkinnedPrefab: {fileID: 0}
   vfxConfig: {fileID: 11400000, guid: 74724eaef99bc28459ee0ed24e71da57, type: 2}
-  baseDamage: 10
+  baseDamage: 20
   baseDefense: 0
   owner: 2
