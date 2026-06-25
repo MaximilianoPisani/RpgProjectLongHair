@@ -203,8 +203,10 @@ public class QuestController : NetworkBehaviour
 
         RPC_NotifyMissionFailed();
 
-        _activeMissionOwner = null;
-        _activeMissionId = null;
+        // FIX: Un miembro que abandona NO debe limpiar las referencias globales.
+        // Solo el owner debe hacerlo en FailureQuest o CompleteQuest.
+        // _activeMissionOwner = null;
+        // _activeMissionId = null;
     }
     #endregion
 
