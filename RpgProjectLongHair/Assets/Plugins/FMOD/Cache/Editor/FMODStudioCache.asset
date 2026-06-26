@@ -252,10 +252,10 @@ MonoBehaviour:
   Path: Assets/Plugins/FMOD/Banks/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639178961532309099
+  lastModified: 639180691993533762
   FileSizes:
   - Name: 
-    Value: 3032
+    Value: 3122
   Exists: 1
 --- !u!114 &-5994177079489220508
 MonoBehaviour:
@@ -340,6 +340,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 122255
+--- !u!114 &-4975094509276164792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_player/sfx_playerMecano-jump
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_player/sfx_playerMecano-jump
+  Guid:
+    Data1: 1955935893
+    Data2: 1299237017
+    Data3: 1300872103
+    Data4: -1030569229
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-4925749419379374126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -366,7 +393,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 2880
+  Length: 1752
 --- !u!114 &-4663641690826326366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -590,6 +617,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-126301074927311654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/sfx_world/sfx_gate
+  m_EditorClassIdentifier: 
+  Path: event:/sfx_world/sfx_gate
+  Guid:
+    Data1: -1852174480
+    Data2: 1117057519
+    Data3: 1474076852
+    Data4: -39804105
+  Banks:
+  - {fileID: 4492250335144090945}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2403
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -644,13 +698,15 @@ MonoBehaviour:
   - {fileID: 6975224861043308200}
   - {fileID: 8559340910194115518}
   - {fileID: 8836112322606411969}
+  - {fileID: -126301074927311654}
+  - {fileID: -4975094509276164792}
   EditorParameters: []
   MasterBanks:
   - {fileID: 3883839177570843310}
   StringsBanks:
   - {fileID: -6070716657850309176}
   cacheVersion: 131860
-  cacheTime: 639178993323578467
+  cacheTime: 639180691993638895
   SerializableEventsDict:
   - key: event:/amb/amb_wind
     index: 0
@@ -1079,7 +1135,7 @@ MonoBehaviour:
   Path: Assets/Plugins/FMOD/Banks/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639178961532279112
+  lastModified: 639180653943491809
   FileSizes: []
   Exists: 1
 --- !u!114 &4492250335144090945
@@ -1097,7 +1153,7 @@ MonoBehaviour:
   Path: Assets/Plugins/FMOD/Banks/Desktop/Sfx_Player.bank
   Name: Sfx_Player
   StudioPath: bank:/Sfx_Player
-  lastModified: 639178993323578467
+  lastModified: 639180691993638895
   FileSizes: []
   Exists: 1
 --- !u!114 &4870867929421636719
