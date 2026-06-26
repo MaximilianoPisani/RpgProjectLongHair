@@ -1,15 +1,21 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class EnemyRagdoll : MonoBehaviour
 {
     [Header("Ragdoll Settings")]
-    [SerializeField] private float ragdollDuration = 3f;
+    [SerializeField] private float ragdollDuration = 8f;
     [SerializeField] private float deathForceMultiplier = 5f;
+
+    [Header("Hit Reaction")]
+    [SerializeField] private float hitForceMultiplier = 40f;
+    [SerializeField] private float hitUpwardForce = 12f;
+    [SerializeField] private float spreadForce = 8f;
+    [SerializeField] private float spreadRadius = 0.5f;
 
     [Header("References")]
     [SerializeField] private Animator animator;
-    [Tooltip("Collider principal que NO debe desactivarse (recibe daño)")]
-    [SerializeField] private Collider mainCollider; // NUEVO
+    [Tooltip("Collider principal que recibe daÃ±o â€” NO se desactiva hasta la muerte")]
+    [SerializeField] private Collider mainCollider;
 
     private Rigidbody[] ragdollRigidbodies;
     private Collider[] ragdollColliders;
@@ -20,24 +26,18 @@ public class EnemyRagdoll : MonoBehaviour
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
 
-        // Si no se asignó, buscar el collider en el root
         if (mainCollider == null)
             mainCollider = GetComponent<Collider>();
 
-        // Guardar Rigidbodies
         ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
 
-        // Guardar colliders EXCEPTO el principal
         var allColliders = GetComponentsInChildren<Collider>();
         var ragdollList = new System.Collections.Generic.List<Collider>();
-
         foreach (var col in allColliders)
         {
-            // Excluir el collider principal
             if (col != mainCollider)
                 ragdollList.Add(col);
         }
-
         ragdollColliders = ragdollList.ToArray();
 
         Debug.Log($"[Ragdoll] Setup: {ragdollRigidbodies.Length} rigidbodies, " +
@@ -50,40 +50,42 @@ public class EnemyRagdoll : MonoBehaviour
     {
         if (isRagdollActive) return;
 
-        Debug.Log($"[Ragdoll] Activating ragdoll on {gameObject.name}");
-
-        // 1. Desactivar Animator
+        // 1. Desactivar Animator (con culling mode para evitar invisibilidad)
         if (animator != null)
+        {
+            animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
             animator.enabled = false;
+        }
 
-        // 2. Desactivar el collider principal (ya no necesita recibir daño)
+        // 2. Evitar culling en SkinnedMeshRenderers
+        foreach (var skinnedMesh in GetComponentsInChildren<SkinnedMeshRenderer>())
+            skinnedMesh.updateWhenOffscreen = true;
+
+        // 3. Desactivar collider principal
         if (mainCollider != null)
             mainCollider.enabled = false;
 
-        // 3. Activar Rigidbodies del ragdoll
+        // 4. Activar Rigidbodies y poner en layer Damageable
         foreach (Rigidbody rb in ragdollRigidbodies)
         {
             rb.isKinematic = false;
             rb.useGravity = true;
+            rb.gameObject.layer = LayerMask.NameToLayer("Damageable");
 
             if (deathForce != Vector3.zero)
-            {
                 rb.AddForce(deathForce * deathForceMultiplier, ForceMode.Impulse);
-            }
         }
 
-        // 4. Activar colliders del ragdoll
+        // 5. Activar colliders del ragdoll
         foreach (Collider col in ragdollColliders)
-        {
             col.enabled = true;
-        }
 
         isRagdollActive = true;
+        Debug.Log($"[Ragdoll] Activated on {gameObject.name}");
     }
 
     private void DeactivateRagdoll()
     {
-        // Solo desactivar los colliders del ragdoll, NO el principal
         foreach (Rigidbody rb in ragdollRigidbodies)
         {
             rb.isKinematic = true;
@@ -91,16 +93,66 @@ public class EnemyRagdoll : MonoBehaviour
         }
 
         foreach (Collider col in ragdollColliders)
-        {
             col.enabled = false;
-        }
 
-        // El mainCollider se mantiene activo para recibir daño
         if (mainCollider != null)
             mainCollider.enabled = true;
 
         isRagdollActive = false;
     }
 
+    public void ApplyHitForce(Vector3 hitPoint, Vector3 hitDirection, float forceScale = 1f)
+    {
+        if (!isRagdollActive) return;
+
+        Rigidbody closestRb = GetClosestRigidbody(hitPoint);
+        if (closestRb == null) return;
+
+        // Fuerza principal en el hueso mÃ¡s cercano
+        Vector3 mainForce = (hitDirection.normalized * hitForceMultiplier
+                          + Vector3.up * hitUpwardForce) * forceScale;
+        closestRb.AddForce(mainForce, ForceMode.Impulse);
+
+        // Spread solo a huesos cercanos al punto de impacto
+        foreach (Rigidbody rb in ragdollRigidbodies)
+        {
+            if (rb == closestRb) continue;
+
+            float distanceToHit = Vector3.Distance(rb.position, hitPoint);
+            if (distanceToHit > spreadRadius) continue;
+
+            // Solo fuerza hacia arriba para evitar deslizamiento
+            Vector3 secondaryForce = Vector3.up * (hitUpwardForce * 0.5f) * forceScale;
+            rb.AddForce(secondaryForce, ForceMode.Impulse);
+        }
+
+        Debug.Log($"[Ragdoll] Hit! Main bone: {closestRb.name}, Force: {mainForce}");
+    }
+
+    private Rigidbody GetClosestRigidbody(Vector3 point)
+    {
+        Rigidbody closest = null;
+        float closestDistance = float.MaxValue;
+
+        foreach (Rigidbody rb in ragdollRigidbodies)
+        {
+            float distance = Vector3.Distance(rb.position, point);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closest = rb;
+            }
+        }
+
+        return closest;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, spreadRadius);
+    }
+
     public float RagdollDuration => ragdollDuration;
+    public bool IsActive => isRagdollActive;
 }

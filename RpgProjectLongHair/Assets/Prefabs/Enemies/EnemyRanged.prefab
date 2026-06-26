@@ -1634,10 +1634,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca7ed13cc93dfb3448a61f1298d3692a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ragdollDuration: 4
+  ragdollDuration: 15
   deathForceMultiplier: 35
   animator: {fileID: 1797295556181063118}
   mainCollider: {fileID: 818729507882848107}
+  hitForceMultiplier: 50
+  hitUpwardForce: 30
+  spreadForce: 20
+  spreadRadius: 0.6
 --- !u!1 &5835113331965107001
 GameObject:
   m_ObjectHideFlags: 0
