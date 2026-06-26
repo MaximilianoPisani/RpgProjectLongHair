@@ -18,10 +18,12 @@ public class PlayerJumpState : IPlayerState
             _sm.Player.Jump();
         }
 
-        // Solo el jugador local escucha su propio salto
+        // NUEVO: Obtener CharacterType y pasarlo al audio
         if (_sm.Object.HasInputAuthority)
         {
-            AudioManager.Instance.PlayJump();
+            var charData = _sm.GetComponent<PlayerCharacterData>();
+            var type = charData != null ? charData.characterType : CharacterType.Fungi;
+            AudioManager.Instance.PlayJump(type);
         }
 
         if (_sm.Object.HasStateAuthority)
