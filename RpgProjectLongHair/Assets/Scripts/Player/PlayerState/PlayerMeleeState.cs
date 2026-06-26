@@ -201,8 +201,11 @@ public class PlayerMeleeState : IPlayerState
         // NUEVO: Sonidos al iniciar el ataque
         if (_sm.Object.HasInputAuthority)
         {
-            AudioManager.Instance.PlaySwordAir();      // viento del arma
-            AudioManager.Instance.PlayBlandir();       // esfuerzo del player
+            var charData = _sm.GetComponent<PlayerCharacterData>();
+            var type = charData != null ? charData.characterType : CharacterType.Fungi;
+
+            AudioManager.Instance.PlaySwordAir();
+            AudioManager.Instance.PlayBlandir(type);  // ahora con tipo
         }
 
         Debug.Log($"[Melee] Combo Attack {_comboIndex} started - Duration: {_currentAttackConfig.attackDuration}s");

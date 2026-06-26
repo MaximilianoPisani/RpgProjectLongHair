@@ -176,6 +176,13 @@ MonoBehaviour:
       Data3: -470144604
       Data4: -728433944
     Path: event:/sfx_world/sfx_stone
+  gateEvent:
+    Guid:
+      Data1: -1852174480
+      Data2: 1117057519
+      Data3: 1474076852
+      Data4: -39804105
+    Path: event:/sfx_world/sfx_gate
   chestEvent:
     Guid:
       Data1: 1393737288
@@ -232,6 +239,34 @@ MonoBehaviour:
       Data3: 140772992
       Data4: -1900409508
     Path: event:/sfx_player/sfx_player-agitation
+  playerMecSteps:
+    Guid:
+      Data1: 1248640094
+      Data2: 1154913390
+      Data3: -2091635537
+      Data4: -1519278846
+    Path: event:/sfx_player/sfx_steps-mecano
+  playerMecRango:
+    Guid:
+      Data1: 663867455
+      Data2: 1303288651
+      Data3: 1446243231
+      Data4: -944160893
+    Path: event:/sfx_player/sfx_attack_rango-mecano
+  playerMecTakeDamage:
+    Guid:
+      Data1: -1839864278
+      Data2: 1285879601
+      Data3: -284438105
+      Data4: -446026057
+    Path: event:/sfx_player/sfx_player-takeDamage-mecano
+  playerMecJump:
+    Guid:
+      Data1: 1955935893
+      Data2: 1299237017
+      Data3: 1300872103
+      Data4: -1030569229
+    Path: event:/sfx_player/sfx_playerMecano-jump
   swordAirEvent:
     Guid:
       Data1: 262316158
@@ -3570,7 +3605,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 254828928052788187, guid: a553e3cbb3151614fa671926ba92b48d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2091621875}
   m_SourcePrefab: {fileID: 100100000, guid: a553e3cbb3151614fa671926ba92b48d, type: 3}
 --- !u!1 &848905749
 GameObject:
@@ -7107,6 +7145,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 150e9a2f63bfa9c4e86f7369fb21909d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1920523335 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 219871977558296237, guid: 7f428c348dd35fa4dbf6addb18a454f8, type: 3}
+  m_PrefabInstance: {fileID: 2126028600}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1920523343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1920523335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8700965286bc8de4285e36757890d9e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1926762626
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7406,6 +7461,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 150e9a2f63bfa9c4e86f7369fb21909d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2091621866 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 254828928052788187, guid: a553e3cbb3151614fa671926ba92b48d, type: 3}
+  m_PrefabInstance: {fileID: 847413878}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2091621875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2091621866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a19f950d29b1d8e47b2b98a272d92cdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2100514362
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7594,7 +7666,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 219871977558296237, guid: 7f428c348dd35fa4dbf6addb18a454f8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1920523343}
   m_SourcePrefab: {fileID: 100100000, guid: 7f428c348dd35fa4dbf6addb18a454f8, type: 3}
 --- !u!1001 &2135411203
 PrefabInstance:

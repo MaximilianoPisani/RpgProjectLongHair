@@ -87,7 +87,11 @@ public class PlayerHealth : NetworkBehaviour
         if (currentHealth < _previousHealth && _previousHealth > 0)
         {
             if (Object.HasInputAuthority)
-                AudioManager.Instance.PlayTakeDamage();
+            {
+                var charData = GetComponent<PlayerCharacterData>();
+                var type = charData != null ? charData.characterType : CharacterType.Fungi;
+                AudioManager.Instance.PlayTakeDamage(type);
+            }
         }
 
         _previousHealth = currentHealth;

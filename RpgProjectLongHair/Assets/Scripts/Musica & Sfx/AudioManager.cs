@@ -11,9 +11,10 @@ public class AudioManager : MonoBehaviour
     public EventReference levelUpEvent;
     public EventReference checkPointEvent;
     public EventReference stoneEvent;
+    public EventReference gateEvent;
     public EventReference chestEvent;
 
-    [Header("Player Actions")]
+    [Header("Player Fungi Actions")]
     public EventReference playerJumpEvent;
     public EventReference playerThrowEvent;
     public EventReference playerBlandirEvent;
@@ -21,6 +22,13 @@ public class AudioManager : MonoBehaviour
     public EventReference pickUpEvent;
     public EventReference drawSwordEvent;
     public EventReference playerAgitation;
+
+    [Header("Player Mecano Actions")]
+    //public EventReference playerMecMele;
+    public EventReference playerMecSteps;
+    public EventReference playerMecRango;
+    public EventReference playerMecTakeDamage;
+    public EventReference playerMecJump;
 
     [Header("Combat")]
     public EventReference swordAirEvent;
@@ -88,6 +96,11 @@ public class AudioManager : MonoBehaviour
         if (!stoneEvent.IsNull)
             RuntimeManager.PlayOneShot(stoneEvent);
     }
+    public void PlayGate()
+    {
+        if (!gateEvent.IsNull)
+            RuntimeManager.PlayOneShot(gateEvent);
+    }
 
     public void PlayChest()
     {
@@ -98,10 +111,18 @@ public class AudioManager : MonoBehaviour
     // ============================================
     // Player (2D - sin posición)
     // ============================================
-    public void PlayJump()
+    public void PlayJump(CharacterType type)
     {
-        if (!playerJumpEvent.IsNull)
-            RuntimeManager.PlayOneShot(playerJumpEvent);
+        if (type == CharacterType.Mecano)
+        {
+            if (!playerMecJump.IsNull)
+               RuntimeManager.PlayOneShot(playerMecJump);
+        }
+        else
+        {
+            if (!playerJumpEvent.IsNull)
+                RuntimeManager.PlayOneShot(playerJumpEvent);
+        }
     }
 
     public void PlayThrow()
@@ -110,16 +131,33 @@ public class AudioManager : MonoBehaviour
             RuntimeManager.PlayOneShot(playerThrowEvent);
     }
 
-    public void PlayBlandir()
+    public void PlayBlandir(CharacterType type)
     {
-        if (!playerBlandirEvent.IsNull)
-            RuntimeManager.PlayOneShot(playerBlandirEvent);
+        if (type == CharacterType.Mecano)
+        {
+            //if (!playerBlandirEvent.IsNull)
+            //    RuntimeManager.PlayOneShot(playerBlandirEvent); EL blandir es el esfuerzo verbal
+            return;
+        }
+        else
+        {
+            if (!playerBlandirEvent.IsNull)
+                RuntimeManager.PlayOneShot(playerBlandirEvent);
+        }
     }
 
-    public void PlayTakeDamage()
+    public void PlayTakeDamage(CharacterType type)
     {
-        if (!playerTakeDamageEvent.IsNull)
-            RuntimeManager.PlayOneShot(playerTakeDamageEvent);
+        if (type == CharacterType.Mecano)
+        {
+            if (!playerMecTakeDamage.IsNull)
+                RuntimeManager.PlayOneShot(playerMecTakeDamage);
+        }
+        else
+        {
+            if (!playerTakeDamageEvent.IsNull)
+                RuntimeManager.PlayOneShot(playerTakeDamageEvent);
+        }
     }
 
     public void PlayPickUp()
