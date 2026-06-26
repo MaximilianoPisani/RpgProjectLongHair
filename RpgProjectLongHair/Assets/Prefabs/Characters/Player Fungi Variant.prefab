@@ -2950,7 +2950,7 @@ MonoBehaviour:
   collisionPadding: 0.8
   smoothSpeed: 16
   returnSpeed: 5
-  debugMode: 1
+  debugMode: 0
 --- !u!114 &2366059695780906291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3001,7 +3001,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _detector: {fileID: 2366059695780906291}
   _volume: {fileID: 6053068172538528406}
-  _showDebugUI: 1
+  _showDebugUI: 0
   _toggleKey: 284
 --- !u!1 &6430640276454630577
 GameObject:

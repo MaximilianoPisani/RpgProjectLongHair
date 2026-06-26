@@ -338,6 +338,8 @@ public class PlayerMeleeState : IPlayerState
 
         if (!_sm.Object.HasInputAuthority) return;
 
+        TryHitRagdoll();
+
         if (_sm.Object.HasStateAuthority)
             ApplyMeleeDamage();
         else
@@ -346,6 +348,38 @@ public class PlayerMeleeState : IPlayerState
                 _sm.transform.forward,
                 _currentAttackConfig.damage
             );
+    }
+
+    private void TryHitRagdoll()
+    {
+        var settings = _sm.Combat;
+        if (settings == null) return;
+
+        Vector3 origin = settings.meleeOrigin != null
+            ? settings.meleeOrigin.position
+            : _sm.transform.position + _sm.transform.forward * 0.5f + Vector3.up;
+
+        float ragdollRadius = _meleeData.HitRadius * 2f;
+        Collider[] ragdollHits = Physics.OverlapSphere(origin, ragdollRadius);
+
+        foreach (var hit in ragdollHits)
+        {
+            var ragdoll = hit.GetComponentInParent<EnemyRagdoll>();
+            if (ragdoll == null || !ragdoll.IsActive) continue;
+
+            var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
+            if (enemyHealth == null || !enemyHealth.Object) continue;
+
+            var stats = _sm.GetComponent<PlayerStats>();
+            int damage = stats != null ? stats.CurrentDamage : _currentAttackConfig.damage;
+
+            if (_sm.Object.HasStateAuthority)
+                enemyHealth.ApplyDamageServer(damage, _sm.Object.InputAuthority);
+            else
+                enemyHealth.RPC_ApplyRagdollDamage(damage);
+
+            break; // un hit por swing
+        }
     }
 
     private void ApplyMeleeDamage()
@@ -389,33 +423,6 @@ public class PlayerMeleeState : IPlayerState
                 damageable.ApplyDamageServer(damage, _sm.Object.InputAuthority);
                 hitSomething = true;
             }
-        }
-
-        float ragdollRadius = _meleeData.HitRadius * 2f;
-        Collider[] ragdollHits = Physics.OverlapSphere(origin, ragdollRadius);
-
-        foreach (var hit in ragdollHits)
-        {
-            var ragdoll = hit.GetComponentInParent<EnemyRagdoll>();
-            if (ragdoll == null || !ragdoll.IsActive) continue;
-
-            var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
-            if (enemyHealth == null || !enemyHealth.Object) continue;
-
-            var stats = _sm.GetComponent<PlayerStats>();
-            int damage = stats != null ? stats.CurrentDamage : _currentAttackConfig.damage;
-
-            if (_sm.Object.HasStateAuthority)
-            {
-                // Host: aplica directo
-                enemyHealth.ApplyDamageServer(damage, _sm.Object.InputAuthority);
-            }
-            else if (_sm.Object.HasInputAuthority)
-            {
-                // Cliente: envía RPC al servidor
-                enemyHealth.RPC_ApplyRagdollDamage(damage);
-            }
-            break;
         }
 
         // Guard original — solo para lo que sigue (feedback de audio)
