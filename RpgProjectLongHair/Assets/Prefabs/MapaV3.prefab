@@ -10143,6 +10143,7 @@ GameObject:
   - component: {fileID: 5501230049183778131}
   - component: {fileID: 8920275233332461624}
   - component: {fileID: 3131659673430776961}
+  - component: {fileID: 5491475093565223919}
   m_Layer: 0
   m_Name: obj_Cartel
   m_TagString: Untagged
@@ -10218,6 +10219,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5491475093565223919
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363065969651089931}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5495902117074765545, guid: e0bb3e9e71322a44ca5d32edf8dc3bd0, type: 3}
 --- !u!1 &1674034601333681165
 GameObject:
   m_ObjectHideFlags: 0
@@ -42508,6 +42531,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4637695387459072881, guid: 96c07411df826bc4d85d32eb3fc51f2b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6507929292518943364}
+    - targetCorrespondingSourceObject: {fileID: 4637695387459072881, guid: 96c07411df826bc4d85d32eb3fc51f2b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9086572618457146905}
   m_SourcePrefab: {fileID: 100100000, guid: 96c07411df826bc4d85d32eb3fc51f2b, type: 3}
 --- !u!1 &254828928052788187 stripped
 GameObject:
@@ -42546,6 +42572,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   door: {fileID: 6755313787395149326}
 --- !u!114 &6507929292518943364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254828928052788187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a19f950d29b1d8e47b2b98a272d92cdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &9086572618457146905
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
