@@ -13,13 +13,17 @@ MonoBehaviour:
   m_Name: quest_test_001
   m_EditorClassIdentifier: 
   questId: quest_test_001
-  questName: Tutorial
+  questName: Protectores de Ciudad Mecano
   questDescription: Eliminar 2 enemigos
   questSteps:
   - targetId: Kill_Mission_Enemy
     amount: 2
   failureSteps: []
   allowTeleportParty: 1
-  teleportDestination: {x: -2, y: 59, z: 335}
+  teleportDestination: {x: 86, y: 19, z: 28}
   xp: 140
   coins: 0
+  isRepeatable: 1
+  allowPartyInvite: 1
+  failOnDeath: 1
+  requiredCharacter: 0
