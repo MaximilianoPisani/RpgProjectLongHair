@@ -1,4 +1,4 @@
-using Fusion;
+﻿using Fusion;
 using UnityEngine;
 
 public class PlayerMeleeState : IPlayerState
@@ -111,7 +111,7 @@ public class PlayerMeleeState : IPlayerState
             }
             else
             {
-                // FIX: si el jugador est� en movimiento, salir al estado de locomoci�n
+                // FIX: si el jugador está en movimiento, salir al estado de locomoción
                 _sm.ChangeState(new PlayerMoveState(_sm));
                 return;
             }
@@ -338,6 +338,8 @@ public class PlayerMeleeState : IPlayerState
 
         if (!_sm.Object.HasInputAuthority) return;
 
+        TryHitRagdoll();
+
         if (_sm.Object.HasStateAuthority)
             ApplyMeleeDamage();
         else
@@ -346,6 +348,38 @@ public class PlayerMeleeState : IPlayerState
                 _sm.transform.forward,
                 _currentAttackConfig.damage
             );
+    }
+
+    private void TryHitRagdoll()
+    {
+        var settings = _sm.Combat;
+        if (settings == null) return;
+
+        Vector3 origin = settings.meleeOrigin != null
+            ? settings.meleeOrigin.position
+            : _sm.transform.position + _sm.transform.forward * 0.5f + Vector3.up;
+
+        float ragdollRadius = _meleeData.HitRadius * 2f;
+        Collider[] ragdollHits = Physics.OverlapSphere(origin, ragdollRadius);
+
+        foreach (var hit in ragdollHits)
+        {
+            var ragdoll = hit.GetComponentInParent<EnemyRagdoll>();
+            if (ragdoll == null || !ragdoll.IsActive) continue;
+
+            var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
+            if (enemyHealth == null || !enemyHealth.Object) continue;
+
+            var stats = _sm.GetComponent<PlayerStats>();
+            int damage = stats != null ? stats.CurrentDamage : _currentAttackConfig.damage;
+
+            if (_sm.Object.HasStateAuthority)
+                enemyHealth.ApplyDamageServer(damage, _sm.Object.InputAuthority);
+            else
+                enemyHealth.RPC_ApplyRagdollDamage(damage);
+
+            break; // un hit por swing
+        }
     }
 
     private void ApplyMeleeDamage()
@@ -360,7 +394,10 @@ public class PlayerMeleeState : IPlayerState
         int damageableLayer = LayerMask.GetMask("Damageable");
         LayerMask combinedMask = settings.enemyLayer | damageableLayer;
 
+        // ===== Detección normal (enemigos vivos) =====
         Collider[] hits = Physics.OverlapSphere(origin, _meleeData.HitRadius, combinedMask);
+
+        bool hitSomething = false;
 
         foreach (var hit in hits)
         {
@@ -369,15 +406,12 @@ public class PlayerMeleeState : IPlayerState
             if (enemyHealth != null && _sm.Object.HasStateAuthority)
             {
                 var stats = _sm.GetComponent<PlayerStats>();
-
-                int damage = stats != null
-                    ? stats.CurrentDamage
-                    : _currentAttackConfig.damage;
+                int damage = stats != null ? stats.CurrentDamage : _currentAttackConfig.damage;
 
                 enemyHealth.ApplyDamageServer(damage, _sm.Object.InputAuthority);
-
                 PlayerRageHandler.NotifyDamageDealt(_sm.Object.InputAuthority, damage);
 
+                hitSomething = true;
                 Debug.Log($"[Melee] Hit enemy - Damage: {damage}");
             }
 
@@ -386,18 +420,16 @@ public class PlayerMeleeState : IPlayerState
             {
                 var stats = _sm.GetComponent<PlayerStats>();
                 int damage = stats != null ? stats.CurrentDamage : _currentAttackConfig.damage;
-
                 damageable.ApplyDamageServer(damage, _sm.Object.InputAuthority);
-
-                Debug.Log($"[Melee] Hit chain anchor - Damage: {damage}");
-                continue;
+                hitSomething = true;
             }
         }
 
-        if (hits.Length > 0)
-        {
+        // Guard original — solo para lo que sigue (feedback de audio)
+        if (!_sm.Object.HasStateAuthority) return;
+
+        if (hitSomething)
             AudioManager.Instance.PlayAttackMelee();
-        }
 
         PlayHitFeedback();
     }

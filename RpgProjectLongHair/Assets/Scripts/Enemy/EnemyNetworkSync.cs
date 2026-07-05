@@ -201,9 +201,18 @@ public class EnemyNetworkSync : NetworkBehaviour
 
         SyncedDeathTrigger++;
         SyncedIsDead = true;
+
+        var ragdoll = GetComponent<EnemyRagdoll>();
+        float duration = ragdoll != null ? ragdoll.RagdollDuration : 3f;
+
+        Vector3 deathForce = -transform.forward + Vector3.up * 0.5f;
+
         _animController?.PlayDeath();
 
-        RPC_ActivateRagdoll(Vector3.zero);
+        RPC_ActivateRagdoll(deathForce);
+
+        // Iniciar fade + despawn en TODOS los clientes
+        RPC_StartFadeOut(duration);
     }
 
     public void TriggerExplode()
@@ -224,6 +233,12 @@ public class EnemyNetworkSync : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
         RPC_StopFlashLoop();
+    }
+    // ===== API PÚBLICA Ragdoll =====
+    public void ApplyRagdollForce(Vector3 hitPoint, Vector3 hitDirection)
+    {
+        if (!Object.HasStateAuthority) return;
+        RPC_ApplyRagdollForce(hitPoint, hitDirection);
     }
 
     // ===== API PÚBLICA VFX =====
@@ -357,11 +372,48 @@ public class EnemyNetworkSync : NetworkBehaviour
             mat.SetColor("_EmissionColor", _originalEmission);
     }
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_ApplyRagdollForce(Vector3 hitPoint, Vector3 hitDirection)
+    {
+        var ragdoll = GetComponent<EnemyRagdoll>();
+        if (ragdoll == null) return;
+
+        // Si el ragdoll no está activo todavía (RPC llegó fuera de orden), activarlo
+        if (!ragdoll.IsActive)
+            ragdoll.ActivateRagdoll(Vector3.zero);
+
+        ragdoll.ApplyHitForce(hitPoint, hitDirection);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_ApplyRagdollForcePublic(Vector3 hitPoint, Vector3 hitDirection)
+    {
+        var ragdoll = GetComponent<EnemyRagdoll>();
+        if (ragdoll == null) return;
+
+        // Activar si llegó antes que RPC_ActivateRagdoll
+        if (!ragdoll.IsActive)
+            ragdoll.ActivateRagdoll(Vector3.zero);
+
+        ragdoll.ApplyHitForce(hitPoint, hitDirection);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_ActivateRagdoll(Vector3 deathForce)
     {
         var ragdoll = GetComponent<EnemyRagdoll>();
         ragdoll?.ActivateRagdoll(deathForce);
+
+        // Desactivar NavMeshAgent en todos los clientes
+        var agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null) agent.enabled = false;
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_StartFadeOut(float totalDuration)
+    {
+        StartCoroutine(FadeOutCoroutine(totalDuration));
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -428,5 +480,49 @@ public class EnemyNetworkSync : NetworkBehaviour
 
         mat.SetColor("_EmissionColor", _originalEmission);
         _flashLoopCoroutine = null;
+    }
+
+    private System.Collections.IEnumerator FadeOutCoroutine(float totalDuration)
+    {
+        // Esperar que ragdoll caiga
+        yield return new WaitForSeconds(totalDuration * 0.6f);
+
+        float fadeDuration = totalDuration * 0.4f;
+        float elapsed = 0f;
+
+        var renderers = GetComponentsInChildren<Renderer>();
+
+        // Cambiar materiales a transparente
+        foreach (var r in renderers)
+        {
+            var mat = r.material;
+            mat.SetFloat("_Surface", 1f);
+            mat.SetFloat("_Blend", 0f);
+            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetInt("_ZWrite", 0);
+            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            mat.renderQueue = 3000;
+        }
+
+        while (elapsed < fadeDuration)
+        {
+            if (this == null || gameObject == null) yield break;
+
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / fadeDuration);
+
+            foreach (var r in renderers)
+            {
+                var col = r.material.color;
+                r.material.color = new Color(col.r, col.g, col.b, alpha);
+            }
+
+            yield return null;
+        }
+
+        // Solo host despawnea
+        if (Object.HasStateAuthority && Runner != null && Object != null)
+            Runner.Despawn(Object);
     }
 }

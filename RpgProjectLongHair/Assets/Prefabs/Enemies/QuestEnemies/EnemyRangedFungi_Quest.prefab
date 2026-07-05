@@ -2289,8 +2289,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca7ed13cc93dfb3448a61f1298d3692a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ragdollDuration: 4
+  ragdollDuration: 15
   deathForceMultiplier: 30
+  hitForceMultiplier: 40
+  hitUpwardForce: 30
+  spreadForce: 15
+  spreadRadius: 1
   animator: {fileID: 892926014339985389}
   mainCollider: {fileID: 7856483003115484394}
 --- !u!1 &7808436265388424472

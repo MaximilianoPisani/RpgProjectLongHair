@@ -3696,7 +3696,7 @@ MonoBehaviour:
   collisionPadding: 0.8
   smoothSpeed: 10
   returnSpeed: 5
-  debugMode: 1
+  debugMode: 0
 --- !u!114 &3878201629239260165
 MonoBehaviour:
   m_ObjectHideFlags: 0

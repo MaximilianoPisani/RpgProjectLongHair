@@ -1,4 +1,4 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using Fusion;
 using System;
 using System.Collections.Generic;
@@ -88,6 +88,17 @@ public class EnemyHealth : NetworkBehaviour
         TakeDamageServer(damage, info.Source);
     }
 
+    public void RPC_ApplyRagdollDamage(int damage, RpcInfo info = default)
+    {
+        // Solo procesamos si ya est√° muerto y tiene ragdoll activo
+        if (!IsDead) return;
+
+        var ragdoll = GetComponent<EnemyRagdoll>();
+        if (ragdoll == null || !ragdoll.IsActive) return;
+
+        ApplyPostDeathHitForce(info.Source);
+    }
+
     public void ApplyDamageServer(int damage, PlayerRef attacker)
     {
         TakeDamageServer(damage, attacker);
@@ -102,6 +113,12 @@ public class EnemyHealth : NetworkBehaviour
         if (!Object.HasStateAuthority) return;
 
         if (damage <= 0) return;
+
+        if (currentHealth <= 0)
+        {
+            ApplyPostDeathHitForce(attacker);
+            return;
+        }
 
         if (currentHealth <= 0) return;
 
@@ -118,10 +135,10 @@ public class EnemyHealth : NetworkBehaviour
             Vector3 playerPos = playerObj.transform.position;
             Vector3 enemyPos = transform.position;
 
-            // DirecciÛn desde el PLAYER hacia el ENEMIGO (hacia afuera)
+            // Direcci√≥n desde el PLAYER hacia el ENEMIGO (hacia afuera)
             Vector3 hitNormal = (enemyPos - playerPos).normalized;
 
-            // No necesitamos modificar la posiciÛn aquÌ, 
+            // No necesitamos modificar la posici√≥n aqu√≠, 
             // el VFXController ahora usa transform.position del enemigo
             RPC_SpawnHitVFX(transform.position, hitNormal);
         }
@@ -152,9 +169,25 @@ public class EnemyHealth : NetworkBehaviour
                 return;
             }
 
-            //Delegar al death state ó Èl hace el despawn retrasado
+            //Delegar al death state ‚Äî √©l hace el despawn retrasado
             enemyController?.ChangeState(new EnemyDeathState(enemyController));
         }
+    }
+
+    private void ApplyPostDeathHitForce(PlayerRef attacker)
+    {
+        var ragdoll = GetComponent<EnemyRagdoll>();
+        if (ragdoll == null) return; // ‚Üê Quitar el check IsActive aqu√≠ tambi√©n
+
+        if (!Runner.TryGetPlayerObject(attacker, out NetworkObject playerObj)) return;
+
+        Vector3 playerPos = playerObj.transform.position;
+        Vector3 enemyPos = transform.position;
+        Vector3 hitDirection = (enemyPos - playerPos).normalized;
+        Vector3 hitPoint = playerPos + (hitDirection * 0.8f);
+
+        var networkSync = GetComponent<EnemyNetworkSync>();
+        networkSync?.ApplyRagdollForce(hitPoint, hitDirection);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -229,7 +262,7 @@ public class EnemyHealth : NetworkBehaviour
     public void ReportDeathForQuest(PlayerRef killer)
     {
         if (!Object.HasStateAuthority) return;
-        if (IsDead) return; // Ya fue procesado por daÒo normal
+        if (IsDead) return; // Ya fue procesado por da√±o normal
 
         _lastAttacker = killer;
         GiveKillExp();

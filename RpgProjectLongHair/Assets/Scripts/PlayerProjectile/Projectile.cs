@@ -1,4 +1,4 @@
-using Fusion;
+﻿using Fusion;
 using UnityEngine;
 
 public class Projectile : NetworkBehaviour
@@ -181,6 +181,30 @@ public class Projectile : NetworkBehaviour
                         return;
                     }
                 }
+            }
+        }
+
+        if (!_consumed)
+        {
+            var ragdollHits = Physics.OverlapSphere(
+                transform.position,
+                HitRadius * 2f,
+                Physics.AllLayers,
+                QueryTriggerInteraction.Ignore
+            );
+
+            foreach (var col in ragdollHits)
+            {
+                var ragdoll = col.GetComponentInParent<EnemyRagdoll>();
+                if (ragdoll == null || !ragdoll.IsActive) continue;
+
+                var eh = col.GetComponentInParent<EnemyHealth>();
+                if (eh == null || !eh.Object || !eh.Object.HasStateAuthority) continue;
+
+                eh.ApplyDamageServer(GetFinalDamage(), Attacker);
+                _consumed = true;
+                DespawnSafe();
+                return;
             }
         }
 
