@@ -16,6 +16,8 @@ public class EquipManager : NetworkBehaviour
 
     public event Action<int> OnEquippedChanged;
 
+    public static event Action<ItemSO> OnLocalWeaponEquipped;
+
     [Networked, OnChangedRender(nameof(OnEquippedChangedRender))]
     public int EquippedItemId { get; set; }
 
@@ -89,10 +91,16 @@ public class EquipManager : NetworkBehaviour
         RenderEquippedItem();
         OnEquippedChanged?.Invoke(EquippedItemId);
 
-        // NUEVO: Solo el jugador local escucha su propio equip
-        if (HasInputAuthority && EquippedItemId != 0)
+        if (HasInputAuthority)
         {
-            AudioManager.Instance.PlayDrawSword();
+            ItemSO equippedItem = EquippedItemId != 0
+                ? ItemDatabase.GetItemByIdStatic(EquippedItemId)
+                : null;
+
+            OnLocalWeaponEquipped?.Invoke(equippedItem);
+
+            if (EquippedItemId != 0)
+                AudioManager.Instance.PlayDrawSword();
         }
     }
 
