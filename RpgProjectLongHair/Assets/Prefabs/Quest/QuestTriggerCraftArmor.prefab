@@ -335,6 +335,34 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -23.284
       objectReference: {fileID: 0}
+    - target: {fileID: 6014051389005368877, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 360
+      objectReference: {fileID: 0}
+    - target: {fileID: 6295192838066832680, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6295192838066832680, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 85036b3c1c78dc54c8e17690263ebcd7, type: 3}
+    - target: {fileID: 6295192838066832680, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6295192838066832680, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6295192838066832680, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6295192838066832680, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6377090599114096292, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
       propertyPath: m_Name
       value: 'NPCText '
@@ -342,6 +370,54 @@ PrefabInstance:
     - target: {fileID: 6764262875674945753, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
       propertyPath: m_Name
       value: QuestTriggerCraftArmor
+      objectReference: {fileID: 0}
+    - target: {fileID: 6857655307283213997, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_fontSize
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6857655307283213997, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 0ef98e53884b7a44c96d5b14157c6144, type: 2}
+    - target: {fileID: 6857655307283213997, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_fontStyle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6857655307283213997, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_fontColor.b
+      value: 0.5764706
+      objectReference: {fileID: 0}
+    - target: {fileID: 6857655307283213997, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_fontColor.g
+      value: 0.5764706
+      objectReference: {fileID: 0}
+    - target: {fileID: 6857655307283213997, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_fontColor.r
+      value: 0.5764706
+      objectReference: {fileID: 0}
+    - target: {fileID: 6857655307283213997, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6857655307283213997, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 826714585838347473, guid: 0ef98e53884b7a44c96d5b14157c6144, type: 2}
+    - target: {fileID: 6857655307283213997, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4287861651
+      objectReference: {fileID: 0}
+    - target: {fileID: 6857655307283213997, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7740449698465576573, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -2.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7740449698465576573, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -3.3
       objectReference: {fileID: 0}
     - target: {fileID: 8820400329314414406, guid: 36d1a49e270d0aa44bdc6634ac9a78db, type: 3}
       propertyPath: _spawnDatas.Array.data[0].Prefab
