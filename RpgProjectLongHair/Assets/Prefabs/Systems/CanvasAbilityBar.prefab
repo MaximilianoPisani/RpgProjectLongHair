@@ -316,8 +316,8 @@ RectTransform:
   m_LocalScale: {x: 4, y: 0.3898455, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4371165890689849466}
   - {fileID: 6688221883862287062}
+  - {fileID: 4371165890689849466}
   - {fileID: 1835394617262798863}
   m_Father: {fileID: 4499137233390902422}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -343,3 +343,5 @@ MonoBehaviour:
   _chargingColor: {r: 0.1251335, g: 0.42904446, b: 0.7169812, a: 1}
   _activeColor: {r: 0, g: 0.6686821, b: 1, a: 1}
   _fillSpeed: 3
+  _keyHintObject: {fileID: 0}
+  _activationKey: Q
