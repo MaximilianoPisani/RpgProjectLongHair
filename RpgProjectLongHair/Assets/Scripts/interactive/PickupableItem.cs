@@ -9,12 +9,13 @@ public class PickupableItem : NetworkBehaviour
     [SerializeField] private ItemSO itemDataSO;
     [SerializeField] private Transform _visualRoot;
     [SerializeField] private TextMeshProUGUI _txtFeedback;
+    [SerializeField] private GameObject _minimapIconObj; // ícono del minimapa (hijo del prefab)
 
     [Header("Respawn items for network")]
     [SerializeField] private float _respawnTime = 15f; // tiempo de respawn
 
     [Networked] private NetworkBool IsPicked { get; set; }
-    [Networked] private TickTimer _respawnTimer {  get; set; } // - timer de Fusion
+    [Networked] private TickTimer _respawnTimer { get; set; } // - timer de Fusion
 
     private Collider _collider;
     private bool _localPicked;
@@ -194,6 +195,10 @@ public class PickupableItem : NetworkBehaviour
             if (active) _vfxController.RestoreVFX();
             else _vfxController.HideVFX();
         }
+
+        // Ícono del minimapa
+        if (_minimapIconObj != null)
+            _minimapIconObj.SetActive(active);
     }
 
 
